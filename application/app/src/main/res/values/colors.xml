@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#336699</color>
+    <color name="colorSecondary">#336699</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorBackground">#000000</color>
+    <color name="colorTransparent">#00000000</color>
+
+    <color name="colorText">#DFFFFF</color>
+    <color name="colorTextTitle">#DFFFFF</color>
+    <color name="colorTextSubtitle">#585858</color>
+
+    <color name="colorIcon">#DFFFFF</color>
+
+    <color name="colorButtonPositive">#336699</color>
+    <color name="colorButtonNeutral">#DFFFFF</color>
+    <color name="colorButtonPressed">#AAFFFFFF</color>
+
+    <color name="colorDialogBackground">#B3000000</color>
+
+</resources>
