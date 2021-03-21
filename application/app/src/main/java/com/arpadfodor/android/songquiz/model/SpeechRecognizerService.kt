@@ -11,8 +11,6 @@ import android.util.Log
 object SpeechRecognizerService : RecognitionListener {
 
     private const val TAG = "SpeechRecognizerService"
-    private const val ACTIVATION_KEYWORD = "OK test"
-    private const val RECORD_AUDIO_REQUEST_CODE = 101
 
     var speechRecognizer: SpeechRecognizer? = null
 
