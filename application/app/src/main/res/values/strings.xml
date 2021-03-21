@@ -26,7 +26,7 @@
     <string name="menu_playlists">Playlists</string>
     <string name="menu_about">About</string>
 
-    <string name="about_text">Image by naobim from Pixabay</string>
+    <string name="about_text">Images by naobim &amp; Gordon Johnson from Pixabay.</string>
 
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
@@ -37,6 +37,7 @@
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>
 
+    <string name="AppImageDescription">App image</string>
     <string name="appDialogImageDescription">app dialog image</string>
     <string name="fabAddPlaylistDescription">Add playlist</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

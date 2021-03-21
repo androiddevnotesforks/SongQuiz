@@ -9,19 +9,21 @@ abstract class AppActivity(screenAlive: Boolean) : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        subscribeUI()
         setKeepScreenFlag()
+        permissionCheck()
+        subscribeViewModel()
         appearingAnimations()
     }
 
     override fun onPause() {
-        unsubscribeUI()
+        unsubscribeViewModel()
         super.onPause()
     }
 
     abstract fun appearingAnimations()
-    abstract fun subscribeUI()
-    abstract fun unsubscribeUI()
+    abstract fun permissionCheck()
+    abstract fun subscribeViewModel()
+    abstract fun unsubscribeViewModel()
 
     private fun setKeepScreenFlag(){
         if(keepScreenAlive){

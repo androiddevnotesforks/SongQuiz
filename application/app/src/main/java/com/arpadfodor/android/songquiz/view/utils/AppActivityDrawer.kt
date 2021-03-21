@@ -2,13 +2,20 @@ package com.arpadfodor.android.songquiz.view.utils
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import com.arpadfodor.android.songquiz.R
+import com.google.android.material.navigation.NavigationView
 
-abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive) {
+abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive), NavigationView.OnNavigationItemSelectedListener {
 
     abstract var activityDrawerLayout: DrawerLayout
+    abstract var appBarConfiguration: AppBarConfiguration
+    abstract var navController: NavController
 
     override fun onBackPressed() {
         if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
@@ -36,5 +43,17 @@ abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive
         exitDialog.show()
 
     }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param item The selected item
+     * @return true to display the item as the selected item
+     **/
+    abstract override fun onNavigationItemSelected(item: MenuItem): Boolean
 
 }

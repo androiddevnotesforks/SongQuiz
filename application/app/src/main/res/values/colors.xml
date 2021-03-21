@@ -9,9 +9,10 @@
 
     <color name="colorText">#DFFFFF</color>
     <color name="colorTextTitle">#DFFFFF</color>
-    <color name="colorTextSubtitle">#585858</color>
+    <color name="colorTextSubtitle">#DFFFFF</color>
 
     <color name="colorIcon">#DFFFFF</color>
+    <color name="colorRecording">#FF0000</color>
 
     <color name="colorButtonPositive">#336699</color>
     <color name="colorButtonNeutral">#DFFFFF</color>

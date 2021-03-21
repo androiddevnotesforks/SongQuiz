@@ -1,6 +1,7 @@
 package com.arpadfodor.android.songquiz
 
 import android.app.Application
+import com.arpadfodor.android.songquiz.model.SpeechRecognizerService
 import com.arpadfodor.android.songquiz.model.TextToSpeechService
 
 class ApplicationRoot : Application() {
@@ -12,6 +13,7 @@ class ApplicationRoot : Application() {
         super.onCreate()
 
         TextToSpeechService.init(applicationContext)
+        SpeechRecognizerService.init(applicationContext)
     }
 
 }

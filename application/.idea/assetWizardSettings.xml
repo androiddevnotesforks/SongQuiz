@@ -62,6 +62,19 @@
                                 <PersistentState>
                                   <option name="children">
                                     <map>
+                                      <entry key="backgroundImage">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="imagePath" value="B:\Dev\GitHub\University\Mobile SW Laboratory\SongQuiz\application\app\src\main\res\drawable\icon_music_notes.xml" />
+                                                <entry key="scalingPercent" value="210" />
+                                                <entry key="trimmed" value="true" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="foregroundClipArt">
                                         <value>
                                           <PersistentState>
@@ -79,8 +92,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="B:\Dev\GitHub\University\Mobile SW Laboratory\sources\song quiz - transparent.png" />
-                                                <entry key="scalingPercent" value="58" />
+                                                <entry key="imagePath" value="B:\Dev\GitHub\University\Mobile SW Laboratory\sources\song quiz head - transparent.png" />
+                                                <entry key="scalingPercent" value="67" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -108,12 +121,6 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
-                                    </map>
-                                  </option>
-                                  <option name="values">
-                                    <map>
-                                      <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="336699" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -303,8 +310,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="icon_question" />
-                            <entry key="sourceFile" value="C:\Users\Aaron\Desktop\help-24px.svg" />
+                            <entry key="outputName" value="icon_music_notes" />
+                            <entry key="sourceFile" value="C:\Users\Aaron\Desktop\music-5331221.svg" />
                           </map>
                         </option>
                       </PersistentState>

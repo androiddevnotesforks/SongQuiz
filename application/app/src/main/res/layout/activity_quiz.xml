@@ -21,6 +21,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_quiz" />
+    <include
+        android:id="@+id/quizContent"
+        layout="@layout/activity_quiz_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

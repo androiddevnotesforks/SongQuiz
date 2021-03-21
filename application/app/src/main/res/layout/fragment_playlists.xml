@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        style="@style/ParagraphBody"
         android:id="@+id/text_playlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

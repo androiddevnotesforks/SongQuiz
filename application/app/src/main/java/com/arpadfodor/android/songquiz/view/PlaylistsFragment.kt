@@ -5,31 +5,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.arpadfodor.android.songquiz.R
+import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
 
 class PlaylistsFragment : Fragment() {
 
-    private lateinit var playlistsViewModel: PlaylistsViewModel
+    private var _binding: FragmentPlaylistsBinding? = null
+    // This property is only valid between onCreateView and onDestroyView
+    private val binding get() = _binding!!
+
+    private lateinit var viewModel: PlaylistsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        playlistsViewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
+        super.onCreateView(inflater, container, savedInstanceState)
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
-        val root = inflater.inflate(R.layout.fragment_playlists, container, false)
-        val textView: TextView = root.findViewById(R.id.text_playlist)
-        val startQuizButton: Button = root.findViewById(R.id.btnStartQuiz)
+        val view = binding.root
+        return view
+    }
 
-        startQuizButton.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnStartQuiz.setOnClickListener {
             startActivity(Intent(this.requireContext(), QuizActivity::class.java))
         }
 
-        playlistsViewModel.text.observe(viewLifecycleOwner, Observer { textView.text = it })
-        return root
+        viewModel.text.observe(viewLifecycleOwner, Observer {
+            binding.textPlaylist.text = it
+        })
+
     }
 
 }
