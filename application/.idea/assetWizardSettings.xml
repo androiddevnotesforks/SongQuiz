@@ -310,8 +310,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="icon_music_notes" />
-                            <entry key="sourceFile" value="C:\Users\Aaron\Desktop\music-5331221.svg" />
+                            <entry key="outputName" value="icon_notification" />
+                            <entry key="sourceFile" value="C:\Users\Aaron\Desktop\circle_notifications_black_24dp.svg" />
                           </map>
                         </option>
                       </PersistentState>

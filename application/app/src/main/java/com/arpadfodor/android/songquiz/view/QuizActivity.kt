@@ -2,10 +2,7 @@ package com.arpadfodor.android.songquiz.view
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arpadfodor.android.songquiz.R
@@ -21,7 +18,9 @@ class QuizActivity : AppActivity(screenAlive = true) {
     private lateinit var binding: ActivityQuizBinding
     private lateinit var viewModel: QuizViewModel
 
-    private val recordAudioRequestCode = 101
+    override var activityRequiredPermissions = listOf(
+            Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,6 @@ class QuizActivity : AppActivity(screenAlive = true) {
     }
 
     override fun onBackPressed() {
-
         val closeDialog = AppDialog(this, getString(R.string.exit_quiz),
             getString(R.string.exit_quiz_dialog), R.drawable.icon_question)
 
@@ -46,40 +44,32 @@ class QuizActivity : AppActivity(screenAlive = true) {
         closeDialog.show()
     }
 
-    override fun appearingAnimations() {}
-
-    override fun permissionCheck() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), recordAudioRequestCode)
-        }
-    }
-
     override fun subscribeViewModel() {
 
-        binding.quizContent.userSpeechButton.setOnClickListener {
+        binding.content.userSpeechButton.setOnClickListener {
             viewModel.getUserInput()
         }
 
-        binding.quizContent.ttsSpeechButton.setOnClickListener {
-            viewModel.speakToUser("Welcome to song quiz! How many player wants to play?")
+        binding.content.ttsSpeechButton.setOnClickListener {
+            viewModel.speakToUser(clearUserInputText = true)
         }
 
         val userInputStateObserver = Observer<UserInputState> { state ->
             when(state){
                 UserInputState.ENABLED -> {
-                    binding.quizContent.userSpeechButton.setImageResource(R.drawable.icon_mic_on)
-                    binding.quizContent.userSpeechButton.isEnabled = true
+                    binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_on)
+                    binding.content.userSpeechButton.isEnabled = true
                 }
                 UserInputState.DISABLED -> {
-                    binding.quizContent.userSpeechButton.setImageResource(R.drawable.icon_mic_off)
-                    binding.quizContent.userSpeechButton.isEnabled = false
+                    binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_off)
+                    binding.content.userSpeechButton.isEnabled = false
                 }
                 UserInputState.RECORDING -> {
-                    binding.quizContent.userSpeechButton.setImageResource(R.drawable.icon_mic_rec)
-                    binding.quizContent.userSpeechButton.isEnabled = true
+                    binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_rec)
+                    binding.content.userSpeechButton.isEnabled = true
                 }
                 else -> {
-                    binding.quizContent.userSpeechButton.isEnabled = false
+                    binding.content.userSpeechButton.isEnabled = false
                 }
             }
         }
@@ -88,36 +78,43 @@ class QuizActivity : AppActivity(screenAlive = true) {
         val ttsStateObserver = Observer<TtsState> { state ->
             when(state){
                 TtsState.ENABLED -> {
-                    binding.quizContent.ttsSpeechButton.setImageResource(R.drawable.icon_listen)
-                    binding.quizContent.ttsSpeechButton.isEnabled = true
+                    binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_on)
+                    binding.content.ttsSpeechButton.isEnabled = true
                 }
                 TtsState.DISABLED -> {
-                    binding.quizContent.ttsSpeechButton.setImageResource(R.drawable.icon_listen)
-                    binding.quizContent.ttsSpeechButton.isEnabled = false
+                    binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_off)
+                    binding.content.ttsSpeechButton.isEnabled = false
                 }
                 TtsState.SPEAKING -> {
-                    binding.quizContent.ttsSpeechButton.setImageResource(R.drawable.icon_hourglass)
-                    binding.quizContent.ttsSpeechButton.isEnabled = false
+                    binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_speaking)
+                    binding.content.ttsSpeechButton.isEnabled = false
                 }
                 else -> {
-                    binding.quizContent.ttsSpeechButton.isEnabled = false
+                    binding.content.ttsSpeechButton.isEnabled = false
                 }
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
 
         val numListeningObserver = Observer<Int> { numListening ->
-            binding.quizContent.tvQuizCntr.text = numListening.toString()
+            binding.content.tvQuizCntr.text = numListening.toString()
         }
         viewModel.numListening.observe(this, numListeningObserver)
 
+
+        val infoObserver = Observer<String> { info ->
+            binding.content.tvInfo.text = info
+        }
+        viewModel.info.observe(this, infoObserver)
+
         val recognitionObserver = Observer<String> { recognition ->
-            binding.quizContent.tvRecognition.text = recognition
+            binding.content.tvRecognition.text = recognition
         }
         viewModel.recognition.observe(this, recognitionObserver)
 
     }
 
+    override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
 }

@@ -24,8 +24,7 @@ class PlaylistsFragment : Fragment() {
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

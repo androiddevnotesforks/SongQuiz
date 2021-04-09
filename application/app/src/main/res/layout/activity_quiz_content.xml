@@ -19,7 +19,7 @@
 
     <TextView
         style="@style/ParagraphBody"
-        android:id="@+id/tvRecognition"
+        android:id="@+id/tvInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
@@ -27,10 +27,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvQuizCntr" />
 
+    <TextView
+        style="@style/ParagraphBody"
+        android:id="@+id/tvRecognition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInfo" />
+
     <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ImageButton"
         android:id="@+id/userSpeechButton"
-        android:src="@drawable/icon_mic_rec"
+        android:src="@drawable/icon_mic_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +50,7 @@
     <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ImageButton"
         android:id="@+id/ttsSpeechButton"
-        android:src="@drawable/icon_listen"
+        android:src="@drawable/icon_sound_on"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/userSpeechButton"

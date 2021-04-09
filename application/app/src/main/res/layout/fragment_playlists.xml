@@ -35,7 +35,7 @@
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/fabAddPlaylistDescription"
         app:backgroundTint="@color/colorButtonPositive"
-        android:src="@drawable/icon_add"
+        android:src="@drawable/icon_add_playlist"
         app:tint="@color/colorIcon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -13,7 +13,7 @@
         android:theme="@style/Theme.SongQuiz.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/quizToolbar"
+            android:id="@+id/quiz_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -22,7 +22,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include
-        android:id="@+id/quizContent"
+        android:id="@+id/content"
         layout="@layout/activity_quiz_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

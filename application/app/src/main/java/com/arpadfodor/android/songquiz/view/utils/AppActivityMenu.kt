@@ -11,7 +11,10 @@ import androidx.navigation.ui.navigateUp
 import com.arpadfodor.android.songquiz.R
 import com.google.android.material.navigation.NavigationView
 
-abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive), NavigationView.OnNavigationItemSelectedListener {
+/**
+ * The app activity class having a drawer menu
+ */
+abstract class AppActivityMenu(screenAlive: Boolean) : AppActivity(screenAlive), NavigationView.OnNavigationItemSelectedListener {
 
     abstract var activityDrawerLayout: DrawerLayout
     abstract var appBarConfiguration: AppBarConfiguration
@@ -28,7 +31,7 @@ abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive
 
     /**
      * Asks for exit confirmation
-     **/
+     */
     private fun exitDialog(){
 
         val exitDialog = AppDialog(this, getString(R.string.exit_title),
@@ -54,6 +57,29 @@ abstract class AppActivityDrawer(screenAlive: Boolean) : AppActivity(screenAlive
      * @param item The selected item
      * @return true to display the item as the selected item
      **/
-    abstract override fun onNavigationItemSelected(item: MenuItem): Boolean
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+
+            R.id.nav_playlists -> {
+                navController.navigate(R.id.to_nav_playlists)
+            }
+
+            R.id.nav_about -> {
+                navController.navigate(R.id.to_nav_about)
+            }
+
+            else ->{
+                return false
+            }
+
+        }
+
+        if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            activityDrawerLayout.closeDrawer(GravityCompat.START)
+        }
+        return true
+
+    }
 
 }
