@@ -101,8 +101,26 @@ object SpeechRecognizerService : RecognitionListener {
      */
     override fun onError(errorCode: Int) {
         val errorMessage = getErrorText(errorCode)
-        Log.e(TAG,"onError: $errorMessage")
-        errorCallback(errorMessage)
+        val hasListeningStopped = hasErrorFinishedListening(errorCode)
+        Log.e(TAG,"onError: $errorMessage, has listening stopped: $hasListeningStopped")
+        if(hasListeningStopped){
+            errorCallback(errorMessage)
+        }
+    }
+
+    private fun hasErrorFinishedListening(errorCode: Int): Boolean{
+        return when(errorCode){
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> false
+            SpeechRecognizer.ERROR_CLIENT -> false
+            SpeechRecognizer.ERROR_AUDIO -> true
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> true
+            SpeechRecognizer.ERROR_NETWORK -> true
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> true
+            SpeechRecognizer.ERROR_NO_MATCH -> true
+            SpeechRecognizer.ERROR_SERVER -> true
+            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> true
+            else -> true
+        }
     }
 
     private fun getErrorText(errorCode: Int): String{

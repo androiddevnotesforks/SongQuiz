@@ -14,27 +14,34 @@ object ConversationService {
 
     /**
      * Returns the current info to the user
+     *
+     * @return a Pair<String, Boolean> where first: text to the user, second: whether immediate answer is required
      */
-    fun getCurrentInfo() : String{
-        val text = when(state){
-            0 -> "Welcome to song quiz! How many player wants to play?"
-            1 -> lastSaidByUser
-            else -> "Looks like an error occurred."
+    fun getCurrentInfo() : Pair<String, Boolean> {
+
+        val response = when(state){
+            0 -> Pair("Welcome to song quiz! How many player wants to play?", true)
+            1 -> Pair(lastSaidByUser, false)
+            else -> Pair("Looks like an error occurred.", false)
         }
+
         // reset the state now for testing
         state = 0
 
-        return text
+        return response
     }
 
     /**
      * Update state based on user input
+     *
+     * @param probableSpeeches      ArrayList<String> of probable user inputs
      */
-    fun userInput(probableSpeeches : ArrayList<String>){
+    fun userInput(probableSpeeches : ArrayList<String>) : Boolean{
         // process what the user said
         // now for testing
         state = 1
         lastSaidByUser = "Looks like you said: ${probableSpeeches[0]}"
+        return true
     }
 
 }

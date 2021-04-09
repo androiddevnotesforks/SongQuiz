@@ -2,9 +2,12 @@ package com.arpadfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.arpadfodor.android.songquiz.model.ConversationService
 import com.arpadfodor.android.songquiz.model.SpeechRecognizerService
 import com.arpadfodor.android.songquiz.model.TextToSpeechService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 enum class UserInputState{
     DISABLED, ENABLED, RECORDING
@@ -67,17 +70,21 @@ class QuizViewModel : ViewModel() {
         SpeechRecognizerService.stopListening()
     }
 
-    fun speakToUser(clearUserInputText: Boolean){
+    fun speakToUser(clearUserInputText: Boolean = false){
 
         if(userInputState.value == UserInputState.RECORDING){
             return
         }
-        // get the current info state
-        val text = ConversationService.getCurrentInfo()
+
+        userInputState.postValue(UserInputState.DISABLED)
+        ttsState.postValue(TtsState.SPEAKING)
+
+        // get the current info
+        val response = ConversationService.getCurrentInfo()
+        val text = response.first
+        val immediateAnswerNeeded = response.second
 
         val started = {
-            userInputState.postValue(UserInputState.DISABLED)
-            ttsState.postValue(TtsState.SPEAKING)
             info.postValue(text)
             if(clearUserInputText){
                 recognition.postValue("")
@@ -88,6 +95,13 @@ class QuizViewModel : ViewModel() {
             userInputState.postValue(UserInputState.ENABLED)
             ttsState.postValue(TtsState.ENABLED)
             numListening.postValue(numListening.value?.plus(1))
+
+            // immediate user response is expected
+            if(immediateAnswerNeeded){
+                viewModelScope.launch(Dispatchers.Main) {
+                    getUserInput()
+                }
+            }
         }
 
         val error = {
@@ -119,19 +133,19 @@ class QuizViewModel : ViewModel() {
             userInputState.postValue(UserInputState.ENABLED)
             ttsState.postValue(TtsState.ENABLED)
 
-            // update the value from the main thread
-            userInputState.value = UserInputState.ENABLED
-
             // update state
-            ConversationService.userInput(textList)
-            speakToUser(clearUserInputText = false)
+            val speakToUserNeeded = ConversationService.userInput(textList)
+            if(speakToUserNeeded){
+                viewModelScope.launch(Dispatchers.Main) {
+                    speakToUser()
+                }
+            }
         }
 
         val error = { errorMessage: String ->
-            // error is logged in service, no need to handle here
-            //recognition.postValue(errorMessage)
-            //userInputState.postValue(UserInputState.ENABLED)
-            //ttsState.postValue(TtsState.ENABLED)
+            recognition.postValue(errorMessage)
+            userInputState.postValue(UserInputState.ENABLED)
+            ttsState.postValue(TtsState.ENABLED)
         }
 
         SpeechRecognizerService.startListening(started, partial, result, error)

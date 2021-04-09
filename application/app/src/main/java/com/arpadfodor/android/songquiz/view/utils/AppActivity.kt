@@ -45,9 +45,6 @@ abstract class AppActivity(screenAlive: Boolean) : AppCompatActivity() {
                     getString(R.string.request_permission_description, it),
                     R.drawable.icon_warning
             )
-            requestPermissionDialog.setNegativeButton {
-                this.finish()
-            }
             requestPermissionDialog.setPositiveButton{
                 requestPermissionLauncher.launch(it)
             }
