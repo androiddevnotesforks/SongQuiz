@@ -1,8 +1,8 @@
 language: android
 android:
  components:
- - build-tools-28.0.3
- - android-28
+ - build-tools-30.0.3
+ - android-30
  - android-24
  - add-on
  - extra
@@ -11,15 +11,16 @@ android:
  - extra-google-googleplayservices
  - extra-google-m2repository
  - extra-android-m2repository
- - addon-google_apis-google-28
+ - addon-google_apis-google-30
  - sys-img-armeabi-v7a-android-24
 before_install:
- - yes | sdkmanager "platforms;android-28"
+ - yes | sdkmanager "platforms;android-30"
 env:
   global:
     - MALLOC_ARENA_MAX=2
   sudo: required
 before_script:
+ - cd application
  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
  - emulator -avd test -no-audio -no-window &
  - adb wait-for-device
@@ -34,6 +35,6 @@ deploy:
 notifications:
  email:
  recipients:
- - myemail@address.com
+ - arpadfodor01@gmail.com
  on_success: always
  on_failure: always
