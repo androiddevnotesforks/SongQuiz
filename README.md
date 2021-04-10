@@ -1,1 +1,1 @@
-# SongQuiz [![Build Status](https://travis-ci.com/arpadfodor/SongQuiz.svg?branch=release)](https://travis-ci.com/arpadfodor/SongQuiz)
+# SongQuiz [![Build Status](https://travis-ci.com/arpadfodor/SongQuiz.svg?branch=master)](https://travis-ci.com/arpadfodor/SongQuiz)
