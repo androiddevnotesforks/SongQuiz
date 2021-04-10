@@ -1,7 +1,8 @@
 package com.arpadfodor.android.songquiz.model.repository
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.arpadfodor.android.songquiz.model.api.ApiService
+import com.arpadfodor.android.songquiz.model.database.PlaylistDAO
+import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +11,15 @@ import javax.inject.Singleton
  */
 @Singleton
 class PlaylistsRepository @Inject constructor(
-    @ApplicationContext val context: Context
+    val dao: PlaylistDAO,
+    val apiService: ApiService
 ) {
+
+    fun addPlaylistById(id: Int){
+        val result = apiService.getPlaylistById(id)
+        //val toInsert = result.toPlaylist().toDbPlaylist()
+        val toInsert = Playlist(1).toDbPlaylist()
+        dao.insert(toInsert)
+    }
 
 }

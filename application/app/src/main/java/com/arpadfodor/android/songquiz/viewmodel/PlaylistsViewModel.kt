@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlaylistsViewModel @Inject constructor(
     var repository: PlaylistsRepository
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is playlist Fragment"

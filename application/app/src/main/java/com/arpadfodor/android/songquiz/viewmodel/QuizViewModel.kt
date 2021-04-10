@@ -24,7 +24,6 @@ class QuizViewModel @Inject constructor(
     var conversationService: ConversationService,
     var textToSpeechService: TextToSpeechService,
     var speechRecognizerService: SpeechRecognizerService
-
 ) : ViewModel() {
 
     /**
