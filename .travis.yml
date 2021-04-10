@@ -1,53 +1,31 @@
-sudo: required
 language: android
-jdk: oraclejdk8
-
+dist: trusty
 android:
   components:
-    - build-tools-30.0.3
-    - android-30
-    - android-21
-    - add-on
-    - extra
-    - platform-tools
     - tools
-    - extra-google-googleplayservices
+    - platform-tools
+
+    # The BuildTools version
+    - build-tools-30.0.3
+
+    # The SDK version
+    - android-30
+
+    # Additional components
+    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-30
-    - sys-img-armeabi-v7a-android-24
 
-env:
-  global:
-    - MALLOC_ARENA_MAX=2
-
+    # System image run emulator(s) during tests
+    - sys-img-x86-android-30
 before_install:
   - yes | sdkmanager "platforms;android-30"
   - chmod +x gradlew
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a -s "768x1280"
-  - emulator -avd test -no-audio -no-window &
-  - adb wait-for-device
-  - adb shell input keyevent 82 &
-
-before_script:
-  - cd application
-
-script:
-  - ./gradlew clean build
-  - ./gradlew test
-  - ./gradlew build check
-
-deploy:
-  provider: releases
-  apikey: $GITHUB_KEY
-  file: app/build/outputs/apk/release/app-release.apk
-  skip_cleanup: true
-  on:
-    tags: true
-
 notifications:
   email:
     recipients:
-    - arpadfodor01@gmail.com
+      - arpadfodor01@gmail.com
     on_success: always
     on_failure: always
+script:
+  - ./gradlew build
