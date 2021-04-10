@@ -12,6 +12,7 @@ import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.viewmodel.QuizViewModel
 import com.arpadfodor.android.songquiz.viewmodel.TtsState
 import com.arpadfodor.android.songquiz.viewmodel.UserInputState
+import dagger.hilt.android.AndroidEntryPoint
 
 class QuizActivity : AppActivity(screenAlive = true) {
 

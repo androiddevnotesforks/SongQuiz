@@ -39,6 +39,8 @@
 
     <string name="request_permission_title">Request permission</string>
     <string name="request_permission_description">In order to work properly, the following permission is needed: %1$s.</string>
+    <string name="denied_permission_title">Permission denied</string>
+    <string name="denied_permission_description">Limited functionality: some features may not work.</string>
 
     <string name="AppImageDescription">App image</string>
     <string name="appDialogImageDescription">app dialog image</string>

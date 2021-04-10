@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arpadfodor.android.songquiz.databinding.FragmentAboutBinding
+import com.arpadfodor.android.songquiz.view.utils.AppFragment
 import com.arpadfodor.android.songquiz.viewmodel.AboutViewModel
 
-class AboutFragment : Fragment() {
+class AboutFragment : AppFragment() {
 
     private var _binding: FragmentAboutBinding? = null
     // This property is only valid between onCreateView and onDestroyView
     private val binding get() = _binding!!
+
+    override var activityRequiredPermissions: List<String> = listOf()
 
     private lateinit var viewModel: AboutViewModel
 
@@ -34,4 +36,9 @@ class AboutFragment : Fragment() {
         })
 
     }
+
+    override fun subscribeViewModel() {}
+    override fun appearingAnimations() {}
+    override fun unsubscribeViewModel() {}
+
 }

@@ -1,6 +1,17 @@
 package com.arpadfodor.android.songquiz.model
 
-object ConversationService {
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
+
+/**
+ * Injected to bind lifecycle to a ViewModel scope
+ */
+@ViewModelScoped
+class ConversationService @Inject constructor(
+    @ApplicationContext val context: Context
+){
 
     var state = 0
     var lastSaidByUser = ""

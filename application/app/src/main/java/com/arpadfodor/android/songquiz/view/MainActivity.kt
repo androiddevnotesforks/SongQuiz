@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityMainBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivityMenu
+import dagger.hilt.android.AndroidEntryPoint
 
 class MainActivity() : AppActivityMenu(screenAlive = false) {
 

@@ -3,7 +3,9 @@ package com.arpadfodor.android.songquiz
 import android.app.Application
 import com.arpadfodor.android.songquiz.model.SpeechRecognizerService
 import com.arpadfodor.android.songquiz.model.TextToSpeechService
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class ApplicationRoot : Application() {
 
     companion object{
@@ -22,8 +24,6 @@ class ApplicationRoot : Application() {
      **/
     override fun onCreate() {
         super.onCreate()
-        TextToSpeechService.init(applicationContext)
-        SpeechRecognizerService.init(applicationContext)
     }
 
 }

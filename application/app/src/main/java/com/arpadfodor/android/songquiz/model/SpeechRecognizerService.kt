@@ -7,10 +7,17 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object SpeechRecognizerService : RecognitionListener {
-
-    private const val TAG = "SpeechRecognizerService"
+/**
+ * Injected everywhere as a singleton
+ */
+@Singleton
+class SpeechRecognizerService @Inject constructor(
+    @ApplicationContext val context: Context
+) : RecognitionListener{
 
     var speechRecognizer: SpeechRecognizer? = null
 
@@ -21,15 +28,15 @@ object SpeechRecognizerService : RecognitionListener {
 
     /**
      * Initialize speech recognizer
-     **/
-    fun init(context: Context){
+     */
+    init {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(this)
     }
 
     fun startListening(started: () -> Unit, partialResult: (ArrayList<String>) -> Unit,
                        result: (ArrayList<String>) -> Unit, error: (String) -> Unit){
-        Log.i(TAG,"startListening")
+        Log.i(this.javaClass.name,"startListening")
 
         startedCallback = started
         partialCallback = partialResult
@@ -55,14 +62,14 @@ object SpeechRecognizerService : RecognitionListener {
      * @param params parameters set by the recognition service. Reserved for future use.
      */
     override fun onReadyForSpeech(params: Bundle?) {
-        Log.i(TAG,"onReadyForSpeech")
+        Log.i(this.javaClass.name,"onReadyForSpeech")
     }
 
     /**
      * The user has started to speak.
      */
     override fun onBeginningOfSpeech() {
-        Log.i(TAG,"onBeginningOfSpeech")
+        Log.i(this.javaClass.name,"onBeginningOfSpeech")
         startedCallback()
     }
 
@@ -73,7 +80,7 @@ object SpeechRecognizerService : RecognitionListener {
      * @param rmsdB the new RMS dB value
      */
     override fun onRmsChanged(rmsdB: Float) {
-        Log.i(TAG,"onRmsChanged: $rmsdB")
+        Log.i(this.javaClass.name,"onRmsChanged: $rmsdB")
     }
 
     /**
@@ -84,14 +91,14 @@ object SpeechRecognizerService : RecognitionListener {
      * single channel audio stream. The sample rate is implementation dependent.
      */
     override fun onBufferReceived(buffer: ByteArray?) {
-        Log.i(TAG, "onBufferReceived: $buffer")
+        Log.i(this.javaClass.name, "onBufferReceived: $buffer")
     }
 
     /**
      * Called after the user stops speaking.
      **/
     override fun onEndOfSpeech() {
-        Log.i(TAG,"onEndOfSpeech")
+        Log.i(this.javaClass.name,"onEndOfSpeech")
     }
 
     /**
@@ -102,7 +109,7 @@ object SpeechRecognizerService : RecognitionListener {
     override fun onError(errorCode: Int) {
         val errorMessage = getErrorText(errorCode)
         val hasListeningStopped = hasErrorFinishedListening(errorCode)
-        Log.e(TAG,"onError: $errorMessage, has listening stopped: $hasListeningStopped")
+        Log.e(this.javaClass.name,"onError: $errorMessage, has listening stopped: $hasListeningStopped")
         if(hasListeningStopped){
             errorCallback(errorMessage)
         }

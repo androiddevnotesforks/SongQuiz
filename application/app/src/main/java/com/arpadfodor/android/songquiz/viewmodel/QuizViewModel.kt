@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.arpadfodor.android.songquiz.model.ConversationService
 import com.arpadfodor.android.songquiz.model.SpeechRecognizerService
 import com.arpadfodor.android.songquiz.model.TextToSpeechService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 enum class UserInputState{
     DISABLED, ENABLED, RECORDING
@@ -17,39 +19,45 @@ enum class TtsState{
     DISABLED, ENABLED, SPEAKING
 }
 
-class QuizViewModel : ViewModel() {
+@HiltViewModel
+class QuizViewModel @Inject constructor(
+    var conversationService: ConversationService,
+    var textToSpeechService: TextToSpeechService,
+    var speechRecognizerService: SpeechRecognizerService
+
+) : ViewModel() {
 
     /**
      * User speech input current state
-     **/
+     */
     val userInputState: MutableLiveData<UserInputState> by lazy {
         MutableLiveData<UserInputState>()
     }
 
     /**
      * Is text to speech currently speaking
-     **/
+     */
     val ttsState: MutableLiveData<TtsState> by lazy {
         MutableLiveData<TtsState>()
     }
 
     /**
      * Number of tts speak button presses
-     **/
+     */
     val numListening: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
 
     /**
      * Last info towards the user
-     **/
+     */
     val info: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
     /**
      * Last recognition
-     **/
+     */
     val recognition: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
@@ -63,11 +71,10 @@ class QuizViewModel : ViewModel() {
         ttsState.postValue(TtsState.ENABLED)
         numListening.postValue(0)
         recognition.postValue("")
-
-        ConversationService.reset()
-
-        TextToSpeechService.stop()
-        SpeechRecognizerService.stopListening()
+        // reset services
+        conversationService.reset()
+        textToSpeechService.stop()
+        speechRecognizerService.stopListening()
     }
 
     fun speakToUser(clearUserInputText: Boolean = false){
@@ -80,7 +87,7 @@ class QuizViewModel : ViewModel() {
         ttsState.postValue(TtsState.SPEAKING)
 
         // get the current info
-        val response = ConversationService.getCurrentInfo()
+        val response = conversationService.getCurrentInfo()
         val text = response.first
         val immediateAnswerNeeded = response.second
 
@@ -109,7 +116,7 @@ class QuizViewModel : ViewModel() {
             ttsState.postValue(TtsState.ENABLED)
         }
 
-        TextToSpeechService.speak(text, started, finished, error)
+        textToSpeechService.speak(text, started, finished, error)
 
     }
 
@@ -134,7 +141,7 @@ class QuizViewModel : ViewModel() {
             ttsState.postValue(TtsState.ENABLED)
 
             // update state
-            val speakToUserNeeded = ConversationService.userInput(textList)
+            val speakToUserNeeded = conversationService.userInput(textList)
             if(speakToUserNeeded){
                 viewModelScope.launch(Dispatchers.Main) {
                     speakToUser()
@@ -148,7 +155,7 @@ class QuizViewModel : ViewModel() {
             ttsState.postValue(TtsState.ENABLED)
         }
 
-        SpeechRecognizerService.startListening(started, partial, result, error)
+        speechRecognizerService.startListening(started, partial, result, error)
 
     }
 
