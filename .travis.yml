@@ -1,36 +1,37 @@
+sudo: required
 language: android
+jdk: oraclejdk8
+
 android:
   components:
-    - build-tools-28.0.3
-    - android-28
-    - android-24
-    - add-on
-    - extra
-    - platform-tools
     - tools
-    - extra-google-googleplayservices
+    - build-tools-30.0.3
+    - android-30
+    - android-22
+    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-28
     - sys-img-armeabi-v7a-android-24
 
 env:
   global:
     - MALLOC_ARENA_MAX=2
 
-sudo: required
-
 before_install:
-  - yes | sdkmanager "platforms;android-28"
+  - chmod +x gradlew
+  - yes | sdkmanager "platforms;android-30"
 
 before_script:
   - cd application
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
-  - adb wait-for-device
+  - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
-script: ./gradlew :app:build :app:connectedDebugAndroidTest
+script:
+  - ./gradlew clean build
+  - ./gradlew test
+  - ./gradlew build check
 
 deploy:
   provider: releases
