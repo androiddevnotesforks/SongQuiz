@@ -1,8 +1,6 @@
 package com.arpadfodor.android.songquiz
 
 import android.app.Application
-import com.arpadfodor.android.songquiz.model.SpeechRecognizerService
-import com.arpadfodor.android.songquiz.model.TextToSpeechService
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

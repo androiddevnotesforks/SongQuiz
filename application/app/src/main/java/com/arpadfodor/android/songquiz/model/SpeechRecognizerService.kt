@@ -57,7 +57,7 @@ class SpeechRecognizerService @Inject constructor(
     }
 
     /**
-     * Called when the endpointer is ready for the user to start speaking.
+     * Called when the end pointer is ready for the user to start speaking.
      *
      * @param params parameters set by the recognition service. Reserved for future use.
      */

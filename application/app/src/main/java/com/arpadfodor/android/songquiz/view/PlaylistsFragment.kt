@@ -26,7 +26,7 @@ class PlaylistsFragment : AppFragment() {
 
     private lateinit var viewModel: PlaylistsViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
@@ -41,7 +41,7 @@ class PlaylistsFragment : AppFragment() {
             startActivity(Intent(this.requireContext(), QuizActivity::class.java))
         }
 
-        viewModel.text.observe(viewLifecycleOwner, Observer {
+        viewModel.text.observe(viewLifecycleOwner, {
             binding.textPlaylist.text = it
         })
 

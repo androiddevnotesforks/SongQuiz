@@ -11,9 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityMainBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivityMenu
-import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity() : AppActivityMenu(screenAlive = false) {
+class MainActivity : AppActivityMenu(screenAlive = false) {
 
     private lateinit var binding: ActivityMainBinding
     override lateinit var activityDrawerLayout: DrawerLayout

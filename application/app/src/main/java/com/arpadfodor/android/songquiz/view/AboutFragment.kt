@@ -20,7 +20,7 @@ class AboutFragment : AppFragment() {
 
     private lateinit var viewModel: AboutViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
@@ -31,7 +31,7 @@ class AboutFragment : AppFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.text.observe(viewLifecycleOwner, Observer {
+        viewModel.text.observe(viewLifecycleOwner, {
             binding.textAbout.text = it
         })
 

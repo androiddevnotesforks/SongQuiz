@@ -12,7 +12,6 @@ import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.viewmodel.QuizViewModel
 import com.arpadfodor.android.songquiz.viewmodel.TtsState
 import com.arpadfodor.android.songquiz.viewmodel.UserInputState
-import dagger.hilt.android.AndroidEntryPoint
 
 class QuizActivity : AppActivity(screenAlive = true) {
 
@@ -98,7 +97,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel.ttsState.observe(this, ttsStateObserver)
 
         val numListeningObserver = Observer<Int> { numListening ->
-            binding.content.tvQuizCntr.text = numListening.toString()
+            binding.content.tvQuizCounter.text = numListening.toString()
         }
         viewModel.numListening.observe(this, numListeningObserver)
 
