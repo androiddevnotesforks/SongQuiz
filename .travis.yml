@@ -20,7 +20,10 @@ android:
     - sys-img-x86-android-30
 before_install:
   - yes | sdkmanager "platforms;android-30"
-  - chmod +x gradlew
+before_script:
+  - cd application
+script:
+  - chmod +x ./gradlew
 notifications:
   email:
     recipients:
