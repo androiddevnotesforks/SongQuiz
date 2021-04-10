@@ -4,13 +4,17 @@ jdk: oraclejdk8
 
 android:
   components:
-    - tools
     - build-tools-30.0.3
     - android-30
-    - android-22
-    - extra-google-google_play_services
+    - android-21
+    - add-on
+    - extra
+    - platform-tools
+    - tools
+    - extra-google-googleplayservices
     - extra-google-m2repository
     - extra-android-m2repository
+    - addon-google_apis-google-30
     - sys-img-armeabi-v7a-android-24
 
 env:
@@ -19,13 +23,14 @@ env:
 
 before_install:
   - yes | sdkmanager "platforms;android-30"
+  - chmod +x gradlew
+  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a -s "768x1280"
+  - emulator -avd test -no-audio -no-window &
+  - adb wait-for-device
+  - adb shell input keyevent 82 &
 
 before_script:
   - cd application
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
 
 script:
   - ./gradlew clean build
