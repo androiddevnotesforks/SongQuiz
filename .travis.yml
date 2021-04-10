@@ -1,40 +1,34 @@
 language: android
+dist: trusty
 android:
- components:
- - build-tools-30.0.3
- - android-30
- - android-24
- - add-on
- - extra
- - platform-tools
- - tools
- - extra-google-googleplayservices
- - extra-google-m2repository
- - extra-android-m2repository
- - addon-google_apis-google-30
- - sys-img-armeabi-v7a-android-24
+  components:
+    - tools
+    - platform-tools
+
+    # The BuildTools version
+    - build-tools-30.0.3
+
+    # The SDK version
+    - android-30
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+    # System image run emulator(s) during tests
+    - sys-img-x86-android-30
 before_install:
- - yes | sdkmanager "platforms;android-30"
-env:
-  global:
-    - MALLOC_ARENA_MAX=2
-  sudo: required
+  - yes | sdkmanager "platforms;android-30"
 before_script:
- - cd application
- - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
- - emulator -avd test &
- - adb wait-for-device
- - adb shell input keyevent 82 &
-deploy:
- provider: releases
- apikey: $GITHUB_KEY
- file: app/build/outputs/apk/release/app-release.apk
- skip_cleanup: true
- on:
- tags: true
+  - cd application
+script:
+  - chmod +x ./gradlew
 notifications:
- email:
- recipients:
- - arpadfodor01@gmail.com
- on_success: always
- on_failure: always
+  email:
+    recipients:
+      - arpadfodor01@gmail.com
+    on_success: always
+    on_failure: always
+script:
+  - ./gradlew build
