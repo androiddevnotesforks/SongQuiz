@@ -22,7 +22,7 @@ env:
 before_script:
  - cd application
  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
- - emulator -avd test -no-audio -no-window &
+ - emulator -avd test &
  - adb wait-for-device
  - adb shell input keyevent 82 &
 deploy:
