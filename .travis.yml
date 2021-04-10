@@ -22,6 +22,8 @@ before_install:
   - yes | sdkmanager "platforms;android-30"
 before_script:
   - cd application
+script:
+  - chmod +x ./gradlew
 notifications:
   email:
     recipients:
