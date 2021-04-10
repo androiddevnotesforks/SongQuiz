@@ -18,7 +18,6 @@ env:
     - MALLOC_ARENA_MAX=2
 
 before_install:
-  - chmod +x gradlew
   - yes | sdkmanager "platforms;android-30"
 
 before_script:
