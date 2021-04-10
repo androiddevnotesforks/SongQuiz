@@ -1,40 +1,48 @@
 language: android
 android:
- components:
- - build-tools-30.0.3
- - android-30
- - android-24
- - add-on
- - extra
- - platform-tools
- - tools
- - extra-google-googleplayservices
- - extra-google-m2repository
- - extra-android-m2repository
- - addon-google_apis-google-30
- - sys-img-armeabi-v7a-android-24
-before_install:
- - yes | sdkmanager "platforms;android-30"
+  components:
+    - build-tools-30.0.3
+    - android-30
+    - android-24
+    - add-on
+    - extra
+    - platform-tools
+    - tools
+    - extra-google-googleplayservices
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-30
+    - sys-img-armeabi-v7a-android-24
+
 env:
   global:
     - MALLOC_ARENA_MAX=2
-  sudo: required
+
+sudo: required
+
+before_install:
+  - yes | sdkmanager "platforms;android-30"
+
 before_script:
- - cd application
- - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
- - emulator -avd test &
- - adb wait-for-device
- - adb shell input keyevent 82 &
+  - cd application
+  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a -s "768x1280"
+  - emulator -avd test &
+  - adb wait-for-device
+  - adb shell input keyevent 82 &
+
+script: ./gradlew :app:build :app:connectedDebugAndroidTest
+
 deploy:
- provider: releases
- apikey: $GITHUB_KEY
- file: app/build/outputs/apk/release/app-release.apk
- skip_cleanup: true
- on:
- tags: true
+  provider: releases
+  apikey: $GITHUB_KEY
+  file: app/build/outputs/apk/release/app-release.apk
+  skip_cleanup: true
+  on:
+    tags: true
+
 notifications:
- email:
- recipients:
- - arpadfodor01@gmail.com
- on_success: always
- on_failure: always
+  email:
+    recipients:
+    - arpadfodor01@gmail.com
+    on_success: always
+    on_failure: always
