@@ -18,7 +18,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
     private lateinit var binding: ActivityQuizBinding
     private lateinit var viewModel: QuizViewModel
 
-    override var activityRequiredPermissions = listOf(
+    override var requiredPermissions = listOf(
             Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET
     )
 
