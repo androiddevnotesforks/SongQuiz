@@ -1,5 +1,6 @@
 package com.arpadfodor.android.songquiz.view
 
+import android.Manifest
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.ui.AppBarConfiguration
@@ -19,7 +20,9 @@ class MainActivity : AppActivityMenu(screenAlive = false) {
     override lateinit var appBarConfiguration: AppBarConfiguration
     override lateinit var navController: NavController
 
-    override var activityRequiredPermissions: List<String> = listOf()
+    override var requiredPermissions: List<String> = listOf(
+        Manifest.permission.INTERNET
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
