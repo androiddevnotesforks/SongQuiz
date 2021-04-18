@@ -15,11 +15,33 @@ class PlaylistsRepository @Inject constructor(
     val apiService: ApiService
 ) {
 
-    fun addPlaylistById(id: Int){
+    fun getPlaylists() : List<Playlist>{
+        val dbPlaylists = dao.getAll() ?: listOf()
+        val playlists = mutableListOf<Playlist>()
+        for(item in dbPlaylists){
+            playlists.add(item.toPlaylist())
+        }
+        return playlists
+    }
+
+    fun addPlaylistById(id: String) : Boolean{
         val result = apiService.getPlaylistById(id)
-        //val toInsert = result.toPlaylist().toDbPlaylist()
-        val toInsert = Playlist(1).toDbPlaylist()
+        if(result.id == ""){
+            return false
+        }
+        val playlist = result.toPlaylist()
+        val toInsert = playlist.toDbPlaylist()
         dao.insert(toInsert)
+        return true
+    }
+
+    fun deletePlaylistById(id: String){
+        dao.delete(id)
+    }
+
+    fun getGamePlaylistById(id: String) : Playlist{
+        val apiPlaylist = apiService.getPlaylistById(id)
+        return apiPlaylist.toPlaylist()
     }
 
 }

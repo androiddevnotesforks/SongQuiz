@@ -16,7 +16,7 @@ import javax.inject.Singleton
  * Injected everywhere as a singleton
  */
 @Singleton
-@Database(entities = [DbPlaylist::class], version = 1, exportSchema = false)
+@Database(entities = [DbPlaylist::class], version = 3, exportSchema = false)
 abstract class ApplicationDB : RoomDatabase() {
 
     companion object{

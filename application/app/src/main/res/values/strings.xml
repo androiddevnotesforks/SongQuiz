@@ -6,6 +6,8 @@
     <!ENTITY appVersion "v0.1">
     <!ENTITY appDate "20/03/2021">
     <!ENTITY appCreator "Arpad Fodor">
+    <!ENTITY clientId "51aee5a292494583852e135803681e05">
+    <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
     ]>
 
 <resources>
@@ -19,6 +21,7 @@
     <string name="maintenance_contact">arpadfodor01@gmail.com</string>
     <string name="maintenance_message_title">[%1$s][bug report]</string>
     <string name="store_page">http://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="client_info">&clientId;:&clientSec;</string>
 
     <string name="nav_header_title">&appName;</string>
     <string name="nav_header_subtitle">Do you know what you hear?</string>
@@ -33,6 +36,14 @@
 
     <string name="exit_quiz">Leaving this quiz</string>
     <string name="exit_quiz_dialog">Are you sure you want to exit this quiz?</string>
+
+    <string name="init_loading">Loading playlist…</string>
+    <string name="init_ready">Ready to play!</string>
+    <string name="init_error">Cannot find playlist. Please check your internet connection or make sure that the playlist still exists on Spotify.</string>
+
+    <string name="add_new_playlist">Add new playlist</string>
+    <string name="add_new_playlist_description">Type the Spotify Id of the playlist. You can find it in the playlist\'s URL.</string>
+    <string name="new_playlist_loading">Loading playlist…</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>
