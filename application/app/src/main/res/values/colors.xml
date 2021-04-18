@@ -10,6 +10,7 @@
     <color name="colorText">#DFFFFF</color>
     <color name="colorTextTitle">#DFFFFF</color>
     <color name="colorTextSubtitle">#DFFFFF</color>
+    <color name="colorTextInput">#DFFFFF</color>
 
     <color name="colorIcon">#DFFFFF</color>
     <color name="colorActive">#FF0000</color>

@@ -13,13 +13,13 @@ interface PlaylistDAO {
     fun getAll(): List<DbPlaylist>?
 
     @Query("SELECT * FROM ${ApplicationDB.PLAYLIST_TABLE_NAME} WHERE id=:playlistId ")
-    fun getById(playlistId: Int): List<DbPlaylist>?
+    fun getById(playlistId: String): List<DbPlaylist>?
 
     @Query("DELETE FROM ${ApplicationDB.PLAYLIST_TABLE_NAME}")
     fun deleteAll()
 
     @Query("DELETE FROM ${ApplicationDB.PLAYLIST_TABLE_NAME} WHERE id=:playlistId ")
-    fun delete(playlistId: Int)
+    fun delete(playlistId: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg item: DbPlaylist)

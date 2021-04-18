@@ -9,11 +9,16 @@ import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivity
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
+import com.arpadfodor.android.songquiz.viewmodel.PlaylistState
 import com.arpadfodor.android.songquiz.viewmodel.QuizViewModel
 import com.arpadfodor.android.songquiz.viewmodel.TtsState
 import com.arpadfodor.android.songquiz.viewmodel.UserInputState
 
 class QuizActivity : AppActivity(screenAlive = true) {
+
+    companion object{
+        const val PLAYLIST_KEY = "playlist key"
+    }
 
     private lateinit var binding: ActivityQuizBinding
     private lateinit var viewModel: QuizViewModel
@@ -31,6 +36,9 @@ class QuizActivity : AppActivity(screenAlive = true) {
         setSupportActionBar(binding.quizToolbar)
 
         viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
+
+        val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
+        viewModel.setPlaylistById(playlistId)
     }
 
     override fun onBackPressed() {
@@ -51,7 +59,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
         }
 
         binding.content.ttsSpeechButton.setOnClickListener {
-            viewModel.speakToUser(clearUserInputText = true)
+            viewModel.infoToUser(clearUserInputText = true)
         }
 
         val userInputStateObserver = Observer<UserInputState> { state ->
@@ -95,6 +103,25 @@ class QuizActivity : AppActivity(screenAlive = true) {
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
+
+        val playlistStateObserver = Observer<PlaylistState> { state ->
+            val text = when(state){
+                PlaylistState.READY -> {
+                    getString(R.string.init_ready)
+                }
+                PlaylistState.LOADING -> {
+                    getString(R.string.init_loading)
+                }
+                PlaylistState.ERROR -> {
+                    getString(R.string.init_error)
+                }
+                else -> {
+                    getString(R.string.init_error)
+                }
+            }
+            binding.content.tvQuizCounter.text = text
+        }
+        viewModel.playlistState.observe(this, playlistStateObserver)
 
         val numListeningObserver = Observer<Int> { numListening ->
             binding.content.tvQuizCounter.text = numListening.toString()

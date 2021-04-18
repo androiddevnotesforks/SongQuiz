@@ -13,6 +13,7 @@
     <dimen name="title_margin">6dp</dimen>
 
     <dimen name="subtitle_text_size">16sp</dimen>
+    <dimen name="input_text_size">16sp</dimen>
     <dimen name="paragraph_text_size">12sp</dimen>
     <dimen name="paragraph_padding">4dp</dimen>
     <dimen name="paragraph_margin">4dp</dimen>

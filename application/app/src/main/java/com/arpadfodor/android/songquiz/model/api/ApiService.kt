@@ -1,6 +1,10 @@
 package com.arpadfodor.android.songquiz.model.api
 
+import android.content.Context
+import android.util.Base64
+import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiPlaylist
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,26 +15,25 @@ import javax.inject.Singleton
  * Injected everywhere as a singleton
  */
 @Singleton
-class ApiService @Inject constructor() {
+class ApiService @Inject constructor(
+        @ApplicationContext val context: Context
+) {
 
-    val httpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(
-        EncoderInterceptor()
-    ).build()
+    val spotifyClient: OkHttpClient = OkHttpClient.Builder().build()
 
-    val playlistAPI = Retrofit.Builder()
-        .baseUrl(SpotifyPlaylistAPI.API_URL)
+    val spotifyAPI = Retrofit.Builder()
+        .baseUrl(SpotifyAPI.API_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .client(httpClient)
+        .client(spotifyClient)
         .build()
-        .create(SpotifyPlaylistAPI::class.java)
+        .create(SpotifyAPI::class.java)
 
-    fun getPlaylistById(id: Int) : ApiPlaylist{
-
-        var response = ApiPlaylist(0)
-
+    private fun getToken() : String{
+        val sec = context.getString(R.string.client_info)
+        var response = ""
         try {
-            val dataCall = playlistAPI.getPlaylistData(id)
-            response = dataCall.execute().body() ?: ApiPlaylist(0)
+            val dataCall = spotifyAPI.requestToken(base64Content = tokenRequestParamEncoder(sec), grantType = "client_credentials")
+            response = dataCall.execute().body()?.access_token ?: ""
         }
         catch (e: Exception) {
             e.printStackTrace()
@@ -38,7 +41,31 @@ class ApiService @Inject constructor() {
         finally {
             return response
         }
+    }
 
+    fun getPlaylistById(id: String) : ApiPlaylist{
+        var response = ApiPlaylist(name = "", id = "")
+        try {
+            val token = getToken()
+            val dataCall = spotifyAPI.getPlaylistData(id, bearerTokenEncoder(token))
+            response = dataCall.execute().body() ?: ApiPlaylist(name = "", id = "")
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        finally {
+            return response
+        }
+    }
+
+    private fun bearerTokenEncoder(token: String) : String{
+        return "Bearer $token"
+    }
+
+    private fun tokenRequestParamEncoder(toEncode: String) : String{
+        var encoded = Base64.encodeToString(toEncode.toByteArray(charset = Charsets.UTF_8), Base64.NO_WRAP)
+        encoded = "Basic $encoded"
+        return encoded
     }
 
 }
