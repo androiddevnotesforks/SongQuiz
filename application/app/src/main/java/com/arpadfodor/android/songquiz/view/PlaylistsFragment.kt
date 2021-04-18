@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
+import com.arpadfodor.android.songquiz.view.utils.AppInputDialog
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
 
 class PlaylistsFragment : AppFragment() {
@@ -29,8 +32,16 @@ class PlaylistsFragment : AppFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val playlistKey = "37i9dQZF1DX4UtSsGT1Sbe"
+
         binding.btnStartQuiz.setOnClickListener {
-            startActivity(Intent(this.requireContext(), QuizActivity::class.java))
+            val intent = Intent(this.requireContext(), QuizActivity::class.java)
+            intent.putExtra(QuizActivity.PLAYLIST_KEY, playlistKey)
+            startActivity(intent)
+        }
+
+        binding.fabAddPlaylist.setOnClickListener {
+            getInput()
         }
 
         viewModel.text.observe(viewLifecycleOwner, {
@@ -39,8 +50,36 @@ class PlaylistsFragment : AppFragment() {
 
     }
 
-    override fun subscribeViewModel() {}
+    override fun subscribeViewModel() {
+
+        val loadingObserver = Observer<Boolean> { loadingState ->
+            val text = when(loadingState){
+                true -> {
+                    getString(R.string.new_playlist_loading)
+                }
+                false -> {
+                    ""
+                }
+                else -> {
+                    ""
+                }
+            }
+            binding.textPlaylist.text = text
+        }
+        viewModel.loadingState.observe(this, loadingObserver)
+
+    }
+
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
+
+    private fun getInput() {
+        val inputDialog = AppInputDialog(this.requireContext(), getString(R.string.add_new_playlist),
+            getString(R.string.add_new_playlist_description))
+        inputDialog.setPositiveButton {
+            viewModel.addPlaylistById(it)
+        }
+        inputDialog.show()
+    }
 
 }

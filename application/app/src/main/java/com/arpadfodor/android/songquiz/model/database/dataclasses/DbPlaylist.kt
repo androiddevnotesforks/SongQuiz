@@ -9,5 +9,10 @@ import com.arpadfodor.android.songquiz.model.database.ApplicationDB
 data class DbPlaylist(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    var id: Int = 0
+    var id: String = "",
+    var name: String = "",
+    var description: String = "",
+    var previewImageUri: String = "",
+    val type: String = "",
+    val uri: String = ""
 )
