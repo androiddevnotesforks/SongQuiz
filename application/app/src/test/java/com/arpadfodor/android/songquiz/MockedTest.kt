@@ -7,40 +7,59 @@ import com.arpadfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.runners.MockitoJUnitRunner
-
-private const val FAKE_ID = "1"
-private val FAKE_RESPONSE = ApiPlaylist(id="1", name="Best playlist")
-private val FAKE_DB_CONTENT = DbPlaylist(id="1", name="Best playlist")
+import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class ApiTest {
+class MockedTest {
+
+    private val FAKE_ID = "1"
+    private val FAKE_RESPONSE = ApiPlaylist(id = "1", name = "Best playlist")
+    private val FAKE_DB_CONTENT = DbPlaylist(id = "1", name = "Best playlist")
 
     @Mock
     private lateinit var mockApi: ApiService
-
     @Mock
     private lateinit var mockDAO: PlaylistDAO
 
+    @Before
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        mockApi = mock(ApiService::class.java)
+        mockDAO = mock(PlaylistDAO::class.java)
+    }
+
     @Test
-    fun readStringFromContext_LocalizedString() {
-
-        // Given a mocked API injected into the object under test...
+    fun getGamePlaylistTest() {
+        // Given
         `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_RESPONSE)
-        `when`(mockDAO.getById(FAKE_ID)).thenReturn(listOf(FAKE_DB_CONTENT))
+        val repo = PlaylistsRepository(mockDAO, mockApi)
 
+        // When
+        val result: Playlist = repo.getGamePlaylistById(FAKE_ID)
 
-        val myObjectUnderTest = PlaylistsRepository(mockDAO, mockApi)
-
-        // ...when the string is returned from the object under test...
-        val result: Playlist = myObjectUnderTest.getGamePlaylistById(FAKE_ID)
-
-        // ...then the result should be the expected one.
+        // Then
         assertThat(result.id, `is`(FAKE_ID))
     }
+
+    @Test
+    fun getDbPlaylistTest() {
+        // Given
+        `when`(mockDAO.getAll()).thenReturn(listOf(FAKE_DB_CONTENT))
+        val repo = PlaylistsRepository(mockDAO, mockApi)
+
+        // When
+        val results: List<Playlist> = repo.getPlaylists()
+
+        // Then
+        assertThat(results, `is`(not(emptyList())))
+    }
+
 }
