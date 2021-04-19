@@ -15,7 +15,7 @@ import javax.inject.Singleton
  * Injected everywhere as a singleton
  */
 @Singleton
-class ApiService @Inject constructor(
+open class ApiService @Inject constructor(
         @ApplicationContext val context: Context
 ) {
 
@@ -43,7 +43,7 @@ class ApiService @Inject constructor(
         }
     }
 
-    fun getPlaylistById(id: String) : ApiPlaylist{
+    open fun getPlaylistById(id: String) : ApiPlaylist{
         var response = ApiPlaylist(name = "", id = "")
         try {
             val token = getToken()
