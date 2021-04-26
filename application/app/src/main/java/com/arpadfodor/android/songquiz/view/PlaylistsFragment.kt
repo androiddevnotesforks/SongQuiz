@@ -9,9 +9,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
+import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
 import com.arpadfodor.android.songquiz.view.utils.AppInputDialog
+import com.arpadfodor.android.songquiz.viewmodel.PlaylistsAdapter
+import com.arpadfodor.android.songquiz.viewmodel.PlaylistsState
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class PlaylistsFragment : AppFragment() {
 
@@ -32,54 +37,85 @@ class PlaylistsFragment : AppFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val playlistKey = "37i9dQZF1DX4UtSsGT1Sbe"
+        val startLambda: (Playlist) -> Unit = { playlist -> startPlaylistById(playlist.id) }
+        val deleteLambda: (Playlist) -> Unit = { playlist -> deletePlaylistById(playlist.id, playlist.name) }
 
-        binding.btnStartQuiz.setOnClickListener {
-            val intent = Intent(this.requireContext(), QuizActivity::class.java)
-            intent.putExtra(QuizActivity.PLAYLIST_KEY, playlistKey)
-            startActivity(intent)
-        }
+        val playlistsAdapter = PlaylistsAdapter(startLambda, deleteLambda)
+        binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
         binding.fabAddPlaylist.setOnClickListener {
-            getInput()
+            getNewPlaylistId()
         }
-
-        viewModel.text.observe(viewLifecycleOwner, {
-            binding.textPlaylist.text = it
-        })
-
     }
 
     override fun subscribeViewModel() {
 
-        val loadingObserver = Observer<Boolean> { loadingState ->
-            val text = when(loadingState){
-                true -> {
-                    getString(R.string.new_playlist_loading)
+        val playlistsObserver = Observer<List<Playlist>> { playlists ->
+            (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(playlists)
+        }
+        viewModel.playlists.observe(this, playlistsObserver)
+
+        val playlistsStateObserver = Observer<PlaylistsState> { playlistsState ->
+            when(playlistsState){
+                PlaylistsState.LOADING -> {
+                    binding.progressBar.visibility = View.VISIBLE
                 }
-                false -> {
-                    ""
+                PlaylistsState.READY -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+                PlaylistsState.ERROR_PLAYLIST_ADD -> {
+                    binding.progressBar.visibility = View.GONE
+                    showError(PlaylistsState.ERROR_PLAYLIST_ADD)
                 }
                 else -> {
-                    ""
+                    binding.progressBar.visibility = View.GONE
                 }
             }
-            binding.textPlaylist.text = text
         }
-        viewModel.loadingState.observe(this, loadingObserver)
+        viewModel.playlistsState.observe(this, playlistsStateObserver)
 
     }
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    private fun getInput() {
-        val inputDialog = AppInputDialog(this.requireContext(), getString(R.string.add_new_playlist),
-            getString(R.string.add_new_playlist_description))
+    private fun getNewPlaylistId() {
+        val inputDialog = AppInputDialog(this.requireContext(), getString(R.string.add_playlist),
+            getString(R.string.add_playlist_description))
         inputDialog.setPositiveButton {
             viewModel.addPlaylistById(it)
         }
         inputDialog.show()
+    }
+
+    private fun deletePlaylistById(id: String, name: String) {
+        val inputDialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
+                getString(R.string.delete_playlist_description, name), R.drawable.icon_warning)
+        inputDialog.setPositiveButton {
+            viewModel.deletePlaylistById(id)
+        }
+        inputDialog.show()
+    }
+
+    private fun startPlaylistById(id: String){
+        val intent = Intent(this.requireContext(), QuizActivity::class.java)
+        intent.putExtra(QuizActivity.PLAYLIST_KEY, id)
+        startActivity(intent)
+    }
+
+    private fun showError(errorType: PlaylistsState){
+
+        val errorMessage = when(errorType){
+            PlaylistsState.ERROR_PLAYLIST_ADD -> {
+                getString(R.string.error_playlist_add)
+            }
+            else -> {
+                ""
+            }
+        }
+        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+        viewModel.playlistsState.postValue(PlaylistsState.READY)
+
     }
 
 }

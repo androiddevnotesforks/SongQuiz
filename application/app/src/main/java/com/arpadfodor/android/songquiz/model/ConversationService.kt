@@ -12,6 +12,24 @@ enum class InfoType{
 }
 
 /**
+ * type: the type of information
+ * payload: data (text if SPEECH, Sound URI if SOUND)
+ */
+data class InformationItem(
+    val type: InfoType,
+    val payload: String
+)
+
+/**
+ * contents: list of InformationItems
+ * immediateAnswerNeeded: whether immediate answer is required after broadcasting contents to user
+ */
+data class InformationPacket(
+        val contents: List<InformationItem>,
+        val immediateAnswerNeeded: Boolean
+)
+
+/**
  * Injected to bind lifecycle to a ViewModel scope
  */
 @ViewModelScoped
@@ -29,6 +47,7 @@ class ConversationService @Inject constructor(
      * Reset state
      */
     fun reset(){
+        playlistId = ""
         state = 0
     }
 
@@ -46,6 +65,7 @@ class ConversationService @Inject constructor(
 
         playlist = repository.getGamePlaylistById(playlistId)
         if(playlist.id.isNotEmpty()){
+            this.playlistId = playlistId
             return true
         }
         return false
@@ -55,16 +75,14 @@ class ConversationService @Inject constructor(
     /**
      * Returns the current info to the user
      *
-     * @return a Pair<List<Pair<InfoType, String>>, Boolean> where first: list of information
-     * to the user (item first is the type, second is the content),
-     * second: whether immediate answer is required after them
+     * @return an InformationPacket
      */
-    fun getCurrentInfo() : Pair<List<Pair<InfoType, String>>, Boolean> {
+    fun getCurrentInfo() : InformationPacket {
 
         val response = when(state){
             0 -> welcome()
-            1 -> Pair(listOf(Pair(InfoType.SPEECH, lastSaidByUser)), false)
-            else -> Pair(listOf(Pair(InfoType.SPEECH, "Looks like an error occurred.")), false)
+            1 -> InformationPacket(listOf(InformationItem(InfoType.SPEECH, lastSaidByUser)), false)
+            else -> InformationPacket(listOf(InformationItem(InfoType.SPEECH, "Looks like an error occurred.")), false)
         }
 
         // reset the state now for testing
@@ -86,15 +104,15 @@ class ConversationService @Inject constructor(
         return true
     }
 
-    private fun welcome() : Pair<List<Pair<InfoType, String>>, Boolean> {
+    private fun welcome() : InformationPacket {
 
         val randomTrack = playlist.tracks.random()
 
-        return Pair(listOf(
-            Pair(InfoType.SPEECH, "Welcome to song quiz!"),
-            Pair(InfoType.SPEECH, "Your chosen playlist is ${playlist.name}, which contains ${playlist.tracks.size} playable songs."),
-            Pair(InfoType.SPEECH, "One example is ${randomTrack.name} from ${randomTrack.artists[0]}."),
-            Pair(InfoType.SOUND, "How many player wants to play?")
+        return InformationPacket(listOf(
+                InformationItem(InfoType.SPEECH, "Welcome to song quiz!"),
+                InformationItem(InfoType.SPEECH, "Your chosen playlist is ${playlist.name}, which contains ${playlist.tracks.size} playable songs."),
+                InformationItem(InfoType.SPEECH, "One example is ${randomTrack.name} from ${randomTrack.artists[0]}."),
+                InformationItem(InfoType.SOUND, "How many player wants to play?")
         ), true)
 
     }
