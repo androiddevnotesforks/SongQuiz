@@ -1,75 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_dialog">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/app_dialog"
+        android:layout_height="wrap_content"
         android:id="@+id/viewAppInputDialog">
 
-    <TextView
-        style="@style/TitleText"
-        android:id="@+id/tvCustomDialogTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
+        <TextView
+            style="@style/TitleText"
+            android:id="@+id/tvCustomDialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
 
-    <TextView
-        style="@style/ParagraphBody"
-        android:id="@+id/tvAppDialogDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle"
-        app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
+        <TextView
+            style="@style/ParagraphText"
+            android:id="@+id/tvAppDialogDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle"
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        style="@style/Subtitle"
-        android:id="@+id/itInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"
-        app:layout_constraintBottom_toTopOf="@+id/btnPositiveAppDialog"/>
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/InputText"
+            android:id="@+id/itInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"
+            app:layout_constraintBottom_toTopOf="@+id/btnPositiveAppDialog"/>
 
-    <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
-        android:id="@+id/btnPositiveAppDialog"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/ok_button"
-        style="@style/AppButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
+            android:id="@+id/btnPositiveAppDialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ok_button"
+            style="@style/AppButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.arpadfodor.android.songquiz.view.utils.AppButton
-        android:id="@+id/btnNegativeAppDialog"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel_button"
-        style="@style/AppButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        <com.arpadfodor.android.songquiz.view.utils.AppButton
+            android:id="@+id/btnNegativeAppDialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_button"
+            style="@style/AppButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/glVerticalMiddle"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="vertical"/>
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/glVerticalMiddle"
+            app:layout_constraintGuide_percent="0.5"
+            android:orientation="vertical"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/glHorizontalMiddle"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="horizontal"/>
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/glHorizontalMiddle"
+            app:layout_constraintGuide_percent="0.5"
+            android:orientation="horizontal"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

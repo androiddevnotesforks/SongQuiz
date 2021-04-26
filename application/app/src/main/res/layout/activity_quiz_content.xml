@@ -7,8 +7,8 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <TextView
-        style="@style/ParagraphBody"
-        android:id="@+id/tvQuizCounter"
+        style="@style/ParagraphText"
+        android:id="@+id/tvQuizStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
@@ -18,17 +18,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        style="@style/ParagraphBody"
+        style="@style/ParagraphText"
         android:id="@+id/tvInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuizCounter" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus" />
 
     <TextView
-        style="@style/ParagraphBody"
+        style="@style/ParagraphText"
         android:id="@+id/tvRecognition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -13,10 +13,12 @@ package com.arpadfodor.android.songquiz.model.api.dataclasses
 
 /**
  * 
- * @param status 
- * @param message 
+ * @param access_token
+ * @param token_type
+ * @param expires_in
  */
-data class ApiError (
-    val status: kotlin.Int? = null,
-    val message: kotlin.String? = null
+data class TokenDTO (
+    val access_token: kotlin.String,
+    val token_type: kotlin.String? = null,
+    val expires_in: kotlin.Int? = null
 )

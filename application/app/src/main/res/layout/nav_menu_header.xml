@@ -51,7 +51,7 @@
         android:maxLines="1"
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/nav_header_subtitle"
-        android:textAppearance="@style/ParagraphBody"
+        android:textAppearance="@style/ParagraphText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

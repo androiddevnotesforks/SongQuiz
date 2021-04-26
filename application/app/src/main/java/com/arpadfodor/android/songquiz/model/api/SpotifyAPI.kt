@@ -1,7 +1,7 @@
 package com.arpadfodor.android.songquiz.model.api
 
 import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiPlaylist
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiToken
+import com.arpadfodor.android.songquiz.model.api.dataclasses.TokenDTO
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -25,6 +25,6 @@ interface SpotifyAPI {
     fun requestToken(
         @Header("Authorization") base64Content: String,
         @Field("grant_type") grantType : String
-    ): Call<ApiToken>
+    ): Call<TokenDTO>
 
 }

@@ -9,10 +9,8 @@ import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivity
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
-import com.arpadfodor.android.songquiz.viewmodel.PlaylistState
-import com.arpadfodor.android.songquiz.viewmodel.QuizViewModel
-import com.arpadfodor.android.songquiz.viewmodel.TtsState
-import com.arpadfodor.android.songquiz.viewmodel.UserInputState
+import com.arpadfodor.android.songquiz.viewmodel.*
+import com.google.android.material.snackbar.Snackbar
 
 class QuizActivity : AppActivity(screenAlive = true) {
 
@@ -104,29 +102,33 @@ class QuizActivity : AppActivity(screenAlive = true) {
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
 
-        val playlistStateObserver = Observer<PlaylistState> { state ->
-            val text = when(state){
-                PlaylistState.READY -> {
-                    getString(R.string.init_ready)
+        val quizStateObserver = Observer<QuizState> { state ->
+            when(state){
+                QuizState.LOADING -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.init_loading)
                 }
-                PlaylistState.LOADING -> {
-                    getString(R.string.init_loading)
+                QuizState.READY_TO_START -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.ready_to_start)
                 }
-                PlaylistState.ERROR -> {
-                    getString(R.string.init_error)
+                QuizState.PLAY -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.play)
                 }
-                else -> {
-                    getString(R.string.init_error)
+                QuizState.ERROR_PLAYLIST_LOAD -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.error_playlist_load_description)
+                    showError(QuizState.ERROR_PLAYLIST_LOAD)
                 }
+                QuizState.ERROR_PLAY_SONG -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.error_play_song_description)
+                    showError(QuizState.ERROR_PLAY_SONG)
+                }
+                QuizState.ERROR_SPEAK_TO_USER -> {
+                    binding.content.tvQuizStatus.text = getString(R.string.error_speak_to_user)
+                    showError(QuizState.ERROR_SPEAK_TO_USER)
+                }
+                else -> {}
             }
-            binding.content.tvQuizCounter.text = text
         }
-        viewModel.playlistState.observe(this, playlistStateObserver)
-
-        val numListeningObserver = Observer<Int> { numListening ->
-            binding.content.tvQuizCounter.text = numListening.toString()
-        }
-        viewModel.numListening.observe(this, numListeningObserver)
+        viewModel.quizState.observe(this, quizStateObserver)
 
 
         val infoObserver = Observer<String> { info ->
@@ -143,5 +145,27 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
+
+    private fun showError(errorType: QuizState){
+
+        when(errorType){
+            QuizState.ERROR_PLAYLIST_LOAD -> {
+                val errorMessage = getString(R.string.error_playlist_load)
+                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+            }
+            QuizState.ERROR_PLAY_SONG -> {
+                val errorMessage = getString(R.string.error_play_song)
+                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                viewModel.quizState.postValue(QuizState.PLAY)
+            }
+            QuizState.ERROR_SPEAK_TO_USER -> {
+                val errorMessage = getString(R.string.error_speak_to_user)
+                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                viewModel.quizState.postValue(QuizState.PLAY)
+            }
+            else -> {}
+        }
+
+    }
 
 }
