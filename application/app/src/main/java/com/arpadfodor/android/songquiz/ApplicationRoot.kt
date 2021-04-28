@@ -1,6 +1,8 @@
 package com.arpadfodor.android.songquiz
 
 import android.app.Application
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -11,6 +13,7 @@ class ApplicationRoot : Application() {
      **/
     override fun onCreate() {
         super.onCreate()
+        MobileAds.initialize(this)
     }
 
 }

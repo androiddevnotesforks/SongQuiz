@@ -36,6 +36,14 @@
         <item name="android:minHeight">@dimen/img_button_size</item>
     </style>
 
+    <style name="MainImage" parent="Theme.SongQuiz">
+        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
+        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
+        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
+        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
     <style name="ParagraphText">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textSize">@dimen/paragraph_text_size</item>
@@ -49,6 +57,14 @@
         <item name="android:paddingStart">@dimen/paragraph_padding</item>
         <item name="android:paddingEnd">@dimen/paragraph_padding</item>
         <item name="android:paddingBottom">@dimen/paragraph_padding</item>
+    </style>
+
+    <style name="SparseParagraphText" parent="ParagraphText">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/paragraph_sparse_margin</item>
+        <item name="android:layout_marginStart">@dimen/paragraph_sparse_margin</item>
+        <item name="android:layout_marginEnd">@dimen/paragraph_sparse_margin</item>
+        <item name="android:layout_marginBottom">@dimen/paragraph_sparse_margin</item>
     </style>
 
     <style name="TitleText">

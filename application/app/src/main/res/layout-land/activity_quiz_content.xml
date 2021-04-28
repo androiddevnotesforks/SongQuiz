@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -23,38 +23,38 @@
         android:layout_height="0dp"
         android:src="@drawable/song_quiz"
         app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus"
-        app:layout_constraintBottom_toTopOf="@+id/tvInfo"/>
+        app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adQuiz"/>
 
     <TextView
         style="@style/SparseParagraphText"
         android:id="@+id/tvInfo"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text=""
         android:scrollbars="vertical"
-        android:lines="8"
         android:background="@drawable/messagebox_output"
         android:paddingStart="@dimen/messagebox_inner_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ttsSpeechButton"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus"
         app:layout_constraintBottom_toTopOf="@+id/tvRecognition" />
 
     <TextView
         style="@style/SparseParagraphText"
         android:id="@+id/tvRecognition"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text=""
         android:scrollbars="vertical"
-        android:lines="6"
         android:background="@drawable/messagebox_input"
         android:paddingEnd="@dimen/messagebox_inner_padding"
         app:layout_constraintEnd_toStartOf="@+id/userSpeechButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/adQuiz"/>
+        app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
+        app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -62,6 +62,13 @@
         android:id="@+id/glVerticalMiddle"
         app:layout_constraintGuide_percent="0.5"
         android:orientation="vertical"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/glHorizontalMiddle"
+        app:layout_constraintGuide_percent="0.6"
+        android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ImageButton"
@@ -71,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         app:layout_constraintTop_toTopOf="@+id/tvInfo"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ImageButton"
@@ -89,8 +96,8 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
         ads:adSize="BANNER"
         ads:adUnitId="@string/quiz_ad_id"
         />
