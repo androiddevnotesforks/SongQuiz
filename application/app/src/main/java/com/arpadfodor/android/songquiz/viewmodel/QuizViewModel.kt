@@ -1,8 +1,5 @@
 package com.arpadfodor.android.songquiz.viewmodel
 
-import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -84,7 +81,7 @@ class QuizViewModel @Inject constructor(
         clearQuizState()
     }
 
-    fun clearQuizState(){
+    fun stopActions(){
         info.postValue("")
         recognition.postValue("")
         playlistImageUri.postValue("")
@@ -93,8 +90,13 @@ class QuizViewModel @Inject constructor(
         // discard job emitting remaining information to user
         infoToUserJob?.cancel()
         // reset services
+        mediaPlayerService.stop()
         textToSpeechService.stop()
         speechRecognizerService.stopListening()
+    }
+
+    fun clearQuizState(){
+        stopActions()
         // reset quiz state
         quizService.reset()
     }

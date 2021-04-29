@@ -1,9 +1,7 @@
 package com.arpadfodor.android.songquiz.model
 
-import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,9 +9,7 @@ import javax.inject.Singleton
  * Injected everywhere as a singleton
  */
 @Singleton
-class MediaPlayerService  @Inject constructor(
-    @ApplicationContext val context: Context
-) {
+class MediaPlayerService  @Inject constructor() {
 
     var mediaPlayer: MediaPlayer? = null
 
@@ -29,12 +25,10 @@ class MediaPlayerService  @Inject constructor(
             )
 
             setOnCompletionListener { player ->
-                player.stop()
                 player.release()
                 finished()
             }
             setOnErrorListener { player, what, extra ->
-                player.stop()
                 player.release()
                 error()
                 true
@@ -46,6 +40,12 @@ class MediaPlayerService  @Inject constructor(
 
         }
 
+    }
+
+    fun stop(){
+        mediaPlayer?.apply {
+            release()
+        }
     }
 
 }

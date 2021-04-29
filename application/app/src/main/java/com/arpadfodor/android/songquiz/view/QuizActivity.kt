@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arpadfodor.android.songquiz.R
@@ -118,23 +119,31 @@ class QuizActivity : AppActivity(screenAlive = true) {
         val quizStateObserver = Observer<QuizUiState> { state ->
             when(state){
                 QuizUiState.LOADING -> {
-                    binding.content.tvQuizStatus.text = getString(R.string.init_loading)
+                    binding.content.progressBar.visibility = View.VISIBLE
+                    binding.content.tvQuizStatus.text = ""
                 }
                 QuizUiState.READY_TO_START -> {
+                    binding.content.progressBar.visibility = View.GONE
                     binding.content.tvQuizStatus.text = getString(R.string.ready_to_start)
                 }
                 QuizUiState.PLAY -> {
-                    binding.content.tvQuizStatus.text = getString(R.string.play)
+                    binding.content.progressBar.visibility = View.GONE
+                    binding.content.tvQuizStatus.text = ""
                 }
                 QuizUiState.ERROR_PLAYLIST_LOAD -> {
+                    binding.content.progressBar.visibility = View.GONE
                     binding.content.tvQuizStatus.text =
                         getString(R.string.error_playlist_load_description)
                     showError(QuizUiState.ERROR_PLAYLIST_LOAD)
                 }
                 QuizUiState.ERROR_PLAY_SONG -> {
+                    binding.content.progressBar.visibility = View.GONE
+                    binding.content.tvQuizStatus.text = ""
                     showError(QuizUiState.ERROR_PLAY_SONG)
                 }
                 QuizUiState.ERROR_SPEAK_TO_USER -> {
+                    binding.content.progressBar.visibility = View.GONE
+                    binding.content.tvQuizStatus.text = ""
                     showError(QuizUiState.ERROR_SPEAK_TO_USER)
                 }
                 else -> {}
@@ -144,13 +153,13 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
-                binding.content.ivPlaylist.setImageResource(R.drawable.song_quiz)
+                binding.content.ivPlaylist.setImageResource(R.drawable.error)
             }
             else{
                 val options = RequestOptions()
                     .centerCrop()
-                    .placeholder(R.drawable.song_quiz)
-                    .error(R.drawable.song_quiz)
+                    .placeholder(R.drawable.error)
+                    .error(R.drawable.error)
                 Glide.with(this).load(uri).apply(options).into(binding.content.ivPlaylist)
             }
         }
