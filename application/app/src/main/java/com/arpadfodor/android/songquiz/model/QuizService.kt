@@ -72,6 +72,7 @@ class QuizService @Inject constructor(
     var lastSongAlbum = ""
     var lastSongTitle = ""
     var lastSongArtist = ""
+    var lastSongPopularity = 0
     var lastSongAlbumHit = false
     var lastSongTitleHit = false
     var lastSongArtistHit = false
@@ -191,12 +192,57 @@ class QuizService @Inject constructor(
             QuizState.PLAY_SONG
         }
 
+        var isRepeatAllowed = ""
+        if(!quizType.repeatAllowed){
+            isRepeatAllowed = " ${context.getString(R.string.c_not)}"
+        }
+
+        var infoString = ""
+        infoString += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
+        infoString += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
+        infoString += "${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}, "
+        infoString += "${context.getString(R.string.c_and)} ${quizType.pointForSpeed} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_speed)}. "
+        infoString += context.getString(R.string.c_repeat_info, isRepeatAllowed)
+
+
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name)),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString, quizType.name)),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
                 quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
             InformationItem(InfoType.SOUND, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
+    }
+
+    private fun lastGuessStringBuilder() : String{
+        var resultString = ""
+        if(lastPlayerPoints > 0){
+            var pointsString = ""
+            pointsString += "$lastPlayerPoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} "
+
+            var forWhatString = ""
+            if(lastSongTitleHit){
+                forWhatString += context.getString(R.string.c_title)
+            }
+            if(lastSongArtistHit){
+                if(forWhatString.isNotEmpty()){
+                    forWhatString += " ${context.getString(R.string.c_and)} "
+                }
+                forWhatString += context.getString(R.string.c_artist)
+            }
+            if(lastSongAlbumHit){
+                if(forWhatString.isNotEmpty()){
+                    forWhatString += " ${context.getString(R.string.c_and)} ${context.getString(R.string.c_few_extra)} ${context.getString(R.string.c_for)} "
+                }
+                forWhatString += context.getString(R.string.c_album)
+            }
+            resultString = context.getString(R.string.c_player_good_guess, "$pointsString $forWhatString")
+        }
+        else{
+            resultString = context.getString(R.string.c_player_failed_guess)
+        }
+
+        val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum, lastSongPopularity.toString(), lastPlayerAllPoints.toString())
+        return "$resultString $songWasString"
     }
 
     private fun playSong() : InformationPacket {
@@ -207,26 +253,10 @@ class QuizService @Inject constructor(
             QuizState.PLAY_SONG
         }
 
-        val lastPlayerPointsInfo = if(lastPlayerPoints > 0){
-            var pointsForWhatString = ""
-            pointsForWhatString += "$lastPlayerPoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} "
-            if(lastSongTitleHit){
-                pointsForWhatString += "${context.getString(R.string.c_title)} and "
-            }
-            if(lastSongArtistHit){
-                pointsForWhatString += "${context.getString(R.string.c_artist)} and "
-            }
-            if(lastSongAlbumHit){
-                pointsForWhatString += "${context.getString(R.string.c_album)} and "
-            }
-            context.getString(R.string.c_player_good_guess, pointsForWhatString, lastSongTitle, lastSongArtist, lastSongAlbum, lastPlayerAllPoints.toString())
-        }
-        else{
-            context.getString(R.string.c_player_failed_guess, lastSongTitle, lastSongArtist, lastSongAlbum, lastPlayerAllPoints.toString())
-        }
+        val previousGuessString = lastGuessStringBuilder()
 
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, lastPlayerPointsInfo),
+            InformationItem(InfoType.SPEECH, previousGuessString),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
                 quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
             InformationItem(InfoType.SOUND, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
@@ -277,26 +307,10 @@ class QuizService @Inject constructor(
     private fun endGameAfterLastSong() : InformationPacket {
         state = QuizState.END
 
-        val lastPlayerPointsInfo = if(lastPlayerPoints > 0){
-            var pointsForWhatString = ""
-            pointsForWhatString += "$lastPlayerPoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} "
-            if(lastSongTitleHit){
-                pointsForWhatString += "${context.getString(R.string.c_title)} and "
-            }
-            if(lastSongArtistHit){
-                pointsForWhatString += "${context.getString(R.string.c_artist)} and "
-            }
-            if(lastSongAlbumHit){
-                pointsForWhatString += "${context.getString(R.string.c_album)} and "
-            }
-            context.getString(R.string.c_player_good_guess, pointsForWhatString, lastSongTitle, lastSongArtist, lastSongAlbum, lastPlayerAllPoints.toString())
-        }
-        else{
-            context.getString(R.string.c_player_failed_guess, lastSongTitle, lastSongArtist, lastSongAlbum, lastPlayerAllPoints.toString())
-        }
+        val previousGuessString = lastGuessStringBuilder()
 
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, lastPlayerPointsInfo),
+            InformationItem(InfoType.SPEECH, previousGuessString),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
             InformationItem(InfoType.SPEECH, endResultStringBuilder()),
         ), false)
@@ -360,13 +374,6 @@ class QuizService @Inject constructor(
         return wordsFound.distinct()
     }
 
-    private fun isRepeatAsked(probableSpeeches : ArrayList<String>) : Boolean{
-        val possibleWords = mapOf(
-            "repeat" to listOf("repeat", "again")
-        )
-        return searchForWordOccurrences(probableSpeeches, possibleWords, true).isNotEmpty()
-    }
-
     private fun parseNumPlayers(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
             "1" to listOf("one", "1"),
@@ -410,7 +417,7 @@ class QuizService @Inject constructor(
                     numRounds = 1
                     pointForArtist = 10
                     pointForTrack = 10
-                    pointForAlbum = 1
+                    pointForAlbum = 2
                     pointForSpeed = 0
                     repeatAllowed = true
                 }
@@ -419,25 +426,25 @@ class QuizService @Inject constructor(
                     numRounds = 3
                     pointForArtist = 10
                     pointForTrack = 10
-                    pointForAlbum = 1
+                    pointForAlbum = 2
                     pointForSpeed = 0
                     repeatAllowed = true
                 }
                 "medium" -> {
                     name = "medium"
-                    numRounds = 7
+                    numRounds = 5
                     pointForArtist = 10
                     pointForTrack = 10
-                    pointForAlbum = 1
+                    pointForAlbum = 2
                     pointForSpeed = 0
                     repeatAllowed = true
                 }
                 "long" -> {
                     name = "long"
-                    numRounds = 10
+                    numRounds = 7
                     pointForArtist = 10
                     pointForTrack = 10
-                    pointForAlbum = 1
+                    pointForAlbum = 2
                     pointForSpeed = 0
                     repeatAllowed = true
                 }
@@ -467,19 +474,23 @@ class QuizService @Inject constructor(
             artistParts.addAll(artist.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY))
         }
 
-        if(quizType.repeatAllowed){
-            if(isRepeatAsked(probableSpeeches)){
-                state = QuizState.REPEAT_SONG
-                return true
-            }
-        }
-
         val possibleHitWords = mutableMapOf<String, List<String>>()
         possibleHitWords["album"] = albumParts
         possibleHitWords["title"] = titleParts
         possibleHitWords["artist"] = artistParts
+        // repeat command
+        possibleHitWords["repeat"] = listOf("repeat", "again")
 
         val playerHits = searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
+
+        // if repeat allowe
+        if(quizType.repeatAllowed){
+            // if only the repeat command has been identified, repeat
+            if(playerHits.size == 1 && playerHits.contains("repeat")){
+                state = QuizState.REPEAT_SONG
+                return true
+            }
+        }
 
         var points = 0
         if(playerHits.contains("album")){
@@ -509,6 +520,7 @@ class QuizService @Inject constructor(
         lastSongAlbum = currentTrack.album
         lastSongTitle = currentTrack.name
         lastSongArtist = currentTrack.artists.toString().replace("[", "").replace("]", "")
+        lastSongPopularity = currentTrack.popularity
 
         lastPlayerPoints = points
         lastPlayerAllPoints = quizStanding.getCurrentPlayerPoints() + points

@@ -36,7 +36,7 @@
     <string name="menu_playlists">Playlists</string>
     <string name="menu_about">About</string>
 
-    <string name="about_text">Images by naobim &amp; Gordon Johnson from Pixabay.</string>
+    <string name="about_text">Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay.</string>
 
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
@@ -45,8 +45,7 @@
     <string name="exit_quiz_dialog">Are you sure you want to exit this quiz?</string>
 
     <string name="init_loading">Loading playlist…</string>
-    <string name="ready_to_start">Ready to play! Press the speaker button to start</string>
-    <string name="play">Quiz is going on</string>
+    <string name="ready_to_start">Playlist is ready! Press the speaker button to start.</string>
     <string name="error_playlist_load">Cannot load playlist</string>
     <string name="error_playlist_load_description">Cannot load playlist. Please check your internet connection and make sure that the playlist still exists on Spotify.</string>
     <string name="error_play_song">Cannot play the current song</string>
