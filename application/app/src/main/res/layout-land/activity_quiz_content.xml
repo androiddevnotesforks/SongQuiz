@@ -21,7 +21,7 @@
         android:id="@+id/ivPlaylist"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/error"
+        android:src="@drawable/icon_album"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"

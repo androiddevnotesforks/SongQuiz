@@ -13,7 +13,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 enum class InfoType{
-    SPEECH, SOUND
+    SPEECH, SOUND_URL, SOUND_LOCAL_ID
 }
 
 /**
@@ -57,6 +57,9 @@ class QuizService @Inject constructor(
 
     companion object{
         const val MIN_NUM_TRACKS = 4
+        const val SAD_SOUND_NAME = "sad.wav"
+        const val HAPPY_SOUND_NAME = "happy.wav"
+        const val END_SOUND_NAME = "end.wav"
         val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", "?", "!", ".", "(", ")").toTypedArray()
     }
 
@@ -209,7 +212,7 @@ class QuizService @Inject constructor(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString, quizType.name)),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
                 quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
-            InformationItem(InfoType.SOUND, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
+            InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
     }
 
@@ -217,7 +220,7 @@ class QuizService @Inject constructor(
         var resultString = ""
         if(lastPlayerPoints > 0){
             var pointsString = ""
-            pointsString += "$lastPlayerPoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} "
+            pointsString += "$lastPlayerPoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)}"
 
             var forWhatString = ""
             if(lastSongTitleHit){
@@ -241,7 +244,8 @@ class QuizService @Inject constructor(
             resultString = context.getString(R.string.c_player_failed_guess)
         }
 
-        val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum, lastSongPopularity.toString(), lastPlayerAllPoints.toString())
+        val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum,
+                lastSongPopularity.toString(), lastPlayerAllPoints.toString())
         return "$resultString $songWasString"
     }
 
@@ -255,11 +259,19 @@ class QuizService @Inject constructor(
 
         val previousGuessString = lastGuessStringBuilder()
 
+        val localSoundName = if(lastPlayerPoints <= 0){
+            SAD_SOUND_NAME
+        }
+        else{
+            HAPPY_SOUND_NAME
+        }
+
         return InformationPacket(listOf(
+            InformationItem(InfoType.SOUND_LOCAL_ID, localSoundName),
             InformationItem(InfoType.SPEECH, previousGuessString),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
                 quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
-            InformationItem(InfoType.SOUND, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
+            InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
     }
 
@@ -273,7 +285,7 @@ class QuizService @Inject constructor(
 
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_repeating_song)),
-            InformationItem(InfoType.SOUND, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
+            InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
     }
 
@@ -309,10 +321,19 @@ class QuizService @Inject constructor(
 
         val previousGuessString = lastGuessStringBuilder()
 
+        val localSoundName = if(lastPlayerPoints <= 0){
+            SAD_SOUND_NAME
+        }
+        else{
+            HAPPY_SOUND_NAME
+        }
+
         return InformationPacket(listOf(
+            InformationItem(InfoType.SOUND_LOCAL_ID, localSoundName),
             InformationItem(InfoType.SPEECH, previousGuessString),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
             InformationItem(InfoType.SPEECH, endResultStringBuilder()),
+            InformationItem(InfoType.SOUND_LOCAL_ID, END_SOUND_NAME),
         ), false)
     }
 
@@ -321,6 +342,8 @@ class QuizService @Inject constructor(
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
             InformationItem(InfoType.SPEECH, endResultStringBuilder()),
+            InformationItem(InfoType.SOUND_LOCAL_ID, END_SOUND_NAME),
+
         ), false)
     }
 

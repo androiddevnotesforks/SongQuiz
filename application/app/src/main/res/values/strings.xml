@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.1">
-    <!ENTITY appDate "20/03/2021">
+    <!ENTITY appVersion "v0.2">
+    <!ENTITY appDate "29/04/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY clientId "51aee5a292494583852e135803681e05">
     <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
@@ -36,7 +36,16 @@
     <string name="menu_playlists">Playlists</string>
     <string name="menu_about">About</string>
 
-    <string name="about_text">Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay.</string>
+    <string name="about_text">
+         &appName; \n\n
+         &appVersion; \n\n
+         &appDate; \n\n
+         Created by: &appCreator; \n\n
+         This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing. \n\n
+         Legal information \n\n\n
+         Copyright © &appDate; &appCreator; \n\n
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. \n\n
+         Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay. </string>
 
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
@@ -70,12 +79,19 @@
     <string name="AppImageDescription">App image</string>
     <string name="appDialogImageDescription">app dialog image</string>
     <string name="fabAddPlaylistDescription">Add playlist</string>
+    <string name="fabSpeakDescription">Speak</string>
     <string name="nav_menu_open">Open main menu</string>
     <string name="nav_menu_close">Close main menu</string>
     <string name="nav_header_desc">Main menu header</string>
 
     <string name="PlaylistImageDescription">Playlist image</string>
 
+    <string name="unicode_start">❯</string>
+    <string name="unicode_cross">❌</string>
+
+    <string name="more_from_developer">More from the developer</string>
+    <string name="review_app">Review app</string>
+    <string name="report_bug">Report a problem</string>
 
 
 </resources>

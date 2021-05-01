@@ -1,5 +1,7 @@
 package com.arpadfodor.android.songquiz.viewmodel
 
+import android.os.CountDownTimer
+import android.os.Vibrator
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -158,8 +160,11 @@ class QuizViewModel @Inject constructor(
                     InfoType.SPEECH -> {
                         speakToUser(information.payload)
                     }
-                    InfoType.SOUND -> {
-                        playSound(information.payload)
+                    InfoType.SOUND_URL -> {
+                        playUrlSound(information.payload)
+                    }
+                    InfoType.SOUND_LOCAL_ID -> {
+                        playLocalSound(information.payload)
                     }
                 }
 
@@ -200,7 +205,7 @@ class QuizViewModel @Inject constructor(
 
     }
 
-    private suspend fun playSound(soundUri: String){
+    private suspend fun playUrlSound(soundUri: String){
 
         suspendCoroutine<Boolean?> { cont ->
 
@@ -212,7 +217,24 @@ class QuizViewModel @Inject constructor(
                 cont.resume(true)
             }
 
-            mediaPlayerService.play(soundUri, finished, error)
+            mediaPlayerService.playUrlSound(soundUri, finished, error)
+
+        }
+
+    }
+
+    private suspend fun playLocalSound(soundName: String){
+
+        suspendCoroutine<Boolean?> { cont ->
+
+            val finished = {
+                cont.resume(true)
+            }
+            val error = {
+                cont.resume(true)
+            }
+
+            mediaPlayerService.playLocalSound(soundName, finished, error)
 
         }
 
