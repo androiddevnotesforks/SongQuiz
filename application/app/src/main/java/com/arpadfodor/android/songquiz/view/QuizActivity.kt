@@ -27,7 +27,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
     private lateinit var viewModel: QuizViewModel
 
     override var requiredPermissions = listOf(
-        Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET
+        Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.VIBRATE
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,12 +153,12 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
-                binding.content.ivPlaylist.setImageResource(R.drawable.error)
+                binding.content.ivPlaylist.setImageResource(R.drawable.icon_album)
             }
             else{
                 val options = RequestOptions()
                     .centerCrop()
-                    .placeholder(R.drawable.error)
+                    .placeholder(R.drawable.icon_album)
                     .error(R.drawable.error)
                 Glide.with(this).load(uri).apply(options).into(binding.content.ivPlaylist)
             }

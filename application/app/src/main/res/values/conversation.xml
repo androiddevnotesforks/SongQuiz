@@ -17,20 +17,20 @@
     <string name="c_for">for</string>
     <string name="c_and">and</string>
     <string name="c_not">not</string>
-    <string name="c_few_extra">few extra</string>
+    <string name="c_few_extra">a few extra</string>
     <string name="c_title">title</string>
     <string name="c_artist">artist</string>
     <string name="c_album">album</string>
     <string name="c_speed">speed</string>
-    <string name="c_repeat_info">Repeat request is%1$s allowed in this mode</string>
+    <string name="c_repeat_info">Repeating a song is%1$s allowed in this mode</string>
     <string name="c_player_good_guess">Good! You got %1$s.</string>
     <string name="c_player_failed_guess">Oh no!</string>
-    <string name="c_what_song_was">The song was %1$s from %2$s. It is on the following album: %3$s. This song\'s popularity is %4$s\%% on Spotify. Your score is %5$s.</string>
+    <string name="c_what_song_was">The song was %1$s from %2$s. It is on the following album: %3$s. This song has %4$s\%% popularity on Spotify. Your score is %5$s.</string>
 
-    <string name="c_end_game">That is the end of the game. Congratulations!</string>
+    <string name="c_end_game">That\'s the end of the game.</string>
     <string name="c_player_scored">Player %1$s scored %2$s points.</string>
-    <string name="c_winner_player">Player %1$s won!</string>
-    <string name="c_winner_tie">It\' a tie!</string>
+    <string name="c_winner_player">Player %1$s is the winner. Congratulations!</string>
+    <string name="c_winner_tie">It\'s a tie. Congratulations!</string>
 
     <string name="c_not_enough_tracks">Unfortunately, this is not enough to play a quiz, because at least %1$s songs needed. Please exit this quiz and select another playlist.</string>
     <string name="c_error">Looks like an error occurred.</string>

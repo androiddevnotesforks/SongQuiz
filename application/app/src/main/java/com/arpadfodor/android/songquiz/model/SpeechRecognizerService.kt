@@ -2,7 +2,10 @@ package com.arpadfodor.android.songquiz.model
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -18,6 +21,10 @@ import javax.inject.Singleton
 class SpeechRecognizerService @Inject constructor(
     @ApplicationContext val context: Context
 ) : RecognitionListener{
+
+    companion object{
+        const val VIBRATION_DURATION = 50L
+    }
 
     var speechRecognizer: SpeechRecognizer? = null
 
@@ -37,6 +44,15 @@ class SpeechRecognizerService @Inject constructor(
     fun startListening(started: () -> Unit, partialResult: (ArrayList<String>) -> Unit,
                        result: (ArrayList<String>) -> Unit, error: (String) -> Unit){
         Log.i(this.javaClass.name,"startListening")
+
+        // vibrate on start
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_DURATION, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+        else{
+            vibrator.vibrate(VIBRATION_DURATION)
+        }
 
         startedCallback = started
         partialCallback = partialResult

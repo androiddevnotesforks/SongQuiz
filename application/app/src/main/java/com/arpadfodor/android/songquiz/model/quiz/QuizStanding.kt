@@ -28,6 +28,7 @@ class QuizStanding(){
             currentRound++
             if(currentRound >= numRounds){
                 isFinished = true
+                currentRound--
             }
         }
     }

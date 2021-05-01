@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.arpadfodor.android.songquiz.view.utils.AppButton
+import com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
 
 class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDelete: (Playlist) -> Unit) :
         ListAdapter<Playlist, PlaylistsAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
@@ -22,8 +24,8 @@ class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDe
         private val playlistTitle: TextView = itemView.findViewById(R.id.playlist_title)
         private val playlistDescription: TextView = itemView.findViewById(R.id.playlist_description)
         private val playlistImage: ImageView = itemView.findViewById(R.id.playlist_image)
-        private val playlistStartButton: ImageButton = itemView.findViewById(R.id.playlist_start)
-        private val playlistDeleteButton: ImageButton = itemView.findViewById(R.id.playlist_delete)
+        private val playlistStartButton: AppPositiveButton = itemView.findViewById(R.id.playlist_start)
+        private val playlistDeleteButton: AppButton = itemView.findViewById(R.id.playlist_delete)
         private var currentPlaylist: Playlist? = null
 
         init {
