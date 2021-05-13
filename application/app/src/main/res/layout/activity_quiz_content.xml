@@ -25,7 +25,7 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus"
+        app:layout_constraintTop_toBottomOf="@+id/progressBarSongPlayed"
         app:layout_constraintBottom_toTopOf="@+id/tvInfo"/>
 
     <TextView
@@ -38,6 +38,7 @@
         android:lines="8"
         android:background="@drawable/messagebox_output"
         android:paddingStart="@dimen/messagebox_inner_padding"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ttsSpeechButton"
         app:layout_constraintBottom_toTopOf="@+id/tvRecognition" />
@@ -52,6 +53,7 @@
         android:lines="6"
         android:background="@drawable/messagebox_input"
         android:paddingEnd="@dimen/messagebox_inner_padding"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/userSpeechButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/adQuiz"/>
@@ -103,5 +105,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBarSongPlayed"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:visibility="invisible"
+        android:max="1000"
+        android:progress="0"
+        android:progressDrawable="@drawable/progressbar_time"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus"
+        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
+        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

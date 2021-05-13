@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.arpadfodor.android.songquiz.R
@@ -153,7 +154,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
-                binding.content.ivPlaylist.setImageResource(R.drawable.icon_album)
+                binding.content.ivPlaylist.setImageResource(R.drawable.error)
             }
             else{
                 val options = RequestOptions()
@@ -165,16 +166,58 @@ class QuizActivity : AppActivity(screenAlive = true) {
         }
         viewModel.playlistImageUri.observe(this, playlistUriObserver)
 
-
         val infoObserver = Observer<String> { info ->
+
+            val view = binding.content.tvInfo
+
+            if(info.isBlank() && view.text.isNotBlank()){
+                AnimationUtils.loadAnimation(this, R.anim.slide_out_left).also {
+                    view.startAnimation(it)
+                    view.visibility = View.INVISIBLE
+                }
+            }
+            else if(info.isNotBlank()){
+                AnimationUtils.loadAnimation(this, R.anim.slide_in_left).also {
+                    view.startAnimation(it)
+                    view.visibility = View.VISIBLE
+                }
+            }
+
             binding.content.tvInfo.text = info
         }
         viewModel.info.observe(this, infoObserver)
 
         val recognitionObserver = Observer<String> { recognition ->
+
+            val view = binding.content.tvRecognition
+
+            if(recognition.isBlank() && view.text.isNotBlank()){
+                AnimationUtils.loadAnimation(this, R.anim.slide_out_right).also {
+                    view.startAnimation(it)
+                    view.visibility = View.INVISIBLE
+                }
+            }
+            else if(recognition.isNotBlank() && view.text.isBlank()){
+                AnimationUtils.loadAnimation(this, R.anim.slide_in_right).also {
+                    view.startAnimation(it)
+                    view.visibility = View.VISIBLE
+                }
+            }
+
             binding.content.tvRecognition.text = recognition
         }
         viewModel.recognition.observe(this, recognitionObserver)
+
+        val songPlayedProgressObserver = Observer<Int> { progress ->
+            if(progress > 0){
+                binding.content.progressBarSongPlayed.visibility = View.VISIBLE
+                binding.content.progressBarSongPlayed.progress = progress
+            }
+            else{
+                binding.content.progressBarSongPlayed.visibility = View.INVISIBLE
+            }
+        }
+        viewModel.songPlayProgress.observe(this, songPlayedProgressObserver)
 
     }
 

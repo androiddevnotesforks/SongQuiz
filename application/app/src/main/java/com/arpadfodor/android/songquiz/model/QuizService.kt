@@ -36,14 +36,23 @@ data class InformationPacket(
 
 enum class QuizState{
     WELCOME,
-    ASK_NUM_PLAYERS_AGAIN,
-    ASK_GAME_TYPE,
-    ASK_GAME_TYPE_AGAIN,
-    FIRST_PLAY_SONG,
+    NUM_PLAYERS_NOT_UNDERSTOOD,
+    SONG_DURATION_ASK,
+    SONG_DURATION_NOT_UNDERSTOOD,
+    GAME_TYPE_ASK,
+    GAME_TYPE_NOT_UNDERSTOOD,
+    GAME_TYPE_INVALID,
+    GAME_INFO_PLAY_FIRST_SONG,
     PLAY_SONG,
-    REPEAT_SONG,
+    PLAY_SONG_REPEAT,
     END_LAST_SONG,
-    END
+    END,
+    RESTART_GAME,
+    RECONFIGURE_GAME
+}
+
+enum class CauseOfRepeat{
+    NOT_UNDERSTOOD, INVALID_INPUT
 }
 
 /**
@@ -60,7 +69,7 @@ class QuizService @Inject constructor(
         const val SAD_SOUND_NAME = "sad.wav"
         const val HAPPY_SOUND_NAME = "happy.wav"
         const val END_SOUND_NAME = "end.wav"
-        val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", "?", "!", ".", "(", ")").toTypedArray()
+        val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", "?", "!", ".", "(", ")", "/", "_").toTypedArray()
     }
 
     var state = QuizState.WELCOME
@@ -69,6 +78,7 @@ class QuizService @Inject constructor(
     var playlist = Playlist("")
     var quizType = QuizType()
     var quizStanding = QuizStanding()
+    var songDurationSec = 0
 
     var lastPlayerPoints = 0
     var lastPlayerAllPoints = 0
@@ -80,9 +90,6 @@ class QuizService @Inject constructor(
     var lastSongTitleHit = false
     var lastSongArtistHit = false
 
-    /**
-     * Reset state
-     */
     fun reset(){
         state = QuizState.WELCOME
         lastSaidByUser = ""
@@ -92,11 +99,24 @@ class QuizService @Inject constructor(
         quizStanding = QuizStanding()
     }
 
+    private fun reconfigure(){
+        state = QuizState.WELCOME
+        lastSaidByUser = ""
+        playlist.tracks.shuffle()
+        quizType = QuizType()
+        quizStanding = QuizStanding()
+    }
+
+    private fun restart(){
+        lastSaidByUser = ""
+        playlist.tracks.shuffle()
+        quizStanding.resetGame()
+    }
+
     /**
      * Set the playlist by Id
      */
     fun setPlaylistById(playlistId: String) : Boolean{
-
         if(playlistId.isEmpty()){
             return false
         }
@@ -113,7 +133,6 @@ class QuizService @Inject constructor(
             return true
         }
         return false
-
     }
 
     fun getPlaylistUri() : String{
@@ -126,71 +145,101 @@ class QuizService @Inject constructor(
      * @return an InformationPacket
      */
     fun getCurrentInfo() : InformationPacket {
-
         val response = when(state){
             QuizState.WELCOME -> welcome()
-            QuizState.ASK_NUM_PLAYERS_AGAIN -> askNumPlayersAgain()
-            QuizState.ASK_GAME_TYPE -> askGameType()
-            QuizState.ASK_GAME_TYPE_AGAIN -> askGameTypeAgain()
-            QuizState.FIRST_PLAY_SONG -> firstPlaySong()
+            QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> askNumPlayersAgain()
+            QuizState.SONG_DURATION_ASK -> askSongDuration()
+            QuizState.SONG_DURATION_NOT_UNDERSTOOD -> askSongDurationAgain()
+            QuizState.GAME_TYPE_ASK -> askGameType()
+            QuizState.GAME_TYPE_NOT_UNDERSTOOD -> askGameTypeAgain(CauseOfRepeat.NOT_UNDERSTOOD)
+            QuizState.GAME_TYPE_INVALID -> askGameTypeAgain(CauseOfRepeat.INVALID_INPUT)
+            QuizState.GAME_INFO_PLAY_FIRST_SONG -> gameInfoPlayFirstSong()
             QuizState.PLAY_SONG -> playSong()
-            QuizState.REPEAT_SONG -> repeatSong()
+            QuizState.PLAY_SONG_REPEAT -> repeatSong()
             QuizState.END_LAST_SONG -> endGameAfterLastSong()
             QuizState.END -> endGame()
+            QuizState.RESTART_GAME -> restartGame()
+            QuizState.RECONFIGURE_GAME -> reconfigureGame()
             else -> InformationPacket(listOf(InformationItem(InfoType.SPEECH, context.getString(R.string.c_error))), false)
         }
-
         return response
     }
 
     private fun welcome() : InformationPacket {
-
-        if(playlist.tracks.size < MIN_NUM_TRACKS){
-            return InformationPacket(listOf(
+        return if(playlist.tracks.size < MIN_NUM_TRACKS){
+            InformationPacket(listOf(
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome)),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_playlist_info, playlist.name, playlist.tracks.size.toString())),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_not_enough_tracks, MIN_NUM_TRACKS.toString()))
             ), false)
-        }
-
-        state = QuizState.ASK_NUM_PLAYERS_AGAIN
-        return InformationPacket(listOf(
+        } else{
+            InformationPacket(listOf(
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome)),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_playlist_info, playlist.name, playlist.tracks.size.toString())),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_num_players))
-        ), true)
+            ), true)
+        }
     }
 
     private fun askNumPlayersAgain() : InformationPacket {
-        state = QuizState.ASK_NUM_PLAYERS_AGAIN
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_not_understand)),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_num_players))
         ), true)
     }
 
-    private fun askGameType() : InformationPacket {
-        state = QuizState.ASK_GAME_TYPE
+    private fun askSongDuration() : InformationPacket {
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_num_players_selected, quizStanding.numPlayers.toString())),
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_game_type)),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_song_duration))
         ), true)
     }
 
-    private fun askGameTypeAgain() : InformationPacket {
-        state = QuizState.ASK_GAME_TYPE_AGAIN
+    private fun askSongDurationAgain() : InformationPacket {
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_game_type_invalid, quizType.name, playlist.tracks.size.toString(),
-                (quizStanding.numPlayers * quizStanding.numRounds).toString(), quizStanding.numPlayers.toString())),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_not_understand)),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_song_duration))
+        ), true)
+    }
+
+    private fun askGameType() : InformationPacket {
+        return InformationPacket(listOf(
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_song_duration_selected, songDurationSec.toString())),
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_game_type)),
         ), true)
     }
 
-    private fun firstPlaySong() : InformationPacket {
+    private fun askGameTypeAgain(cause: CauseOfRepeat) : InformationPacket {
+        var reasonText = ""
+
+        when(cause){
+            CauseOfRepeat.INVALID_INPUT -> {
+                reasonText = context.getString(R.string.c_ask_game_type_invalid, quizType.name, playlist.tracks.size.toString(),
+                    (quizStanding.numPlayers * quizStanding.numRounds).toString(), quizStanding.numPlayers.toString())
+                state = QuizState.GAME_TYPE_INVALID
+            }
+            CauseOfRepeat.NOT_UNDERSTOOD -> {
+                reasonText = context.getString(R.string.c_not_understand)
+                state = QuizState.GAME_TYPE_NOT_UNDERSTOOD
+            }
+        }
+
+        return InformationPacket(listOf(
+            InformationItem(InfoType.SPEECH, reasonText),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_game_type)),
+        ), true)
+    }
+
+    private fun firstTurnStringBuilder() : String{
+        return context.getString(R.string.c_starting_game, quizType.name) + " " + context.getString(R.string.c_player_turn,
+            quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())
+    }
+
+    private fun gameInfoPlayFirstSong() : InformationPacket {
         quizStanding.resetGame()
 
         state = if(quizType.repeatAllowed){
-            QuizState.REPEAT_SONG
+            QuizState.PLAY_SONG_REPEAT
         } else{
             QuizState.PLAY_SONG
         }
@@ -207,11 +256,9 @@ class QuizService @Inject constructor(
         infoString += "${context.getString(R.string.c_and)} ${quizType.pointForSpeed} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_speed)}. "
         infoString += context.getString(R.string.c_repeat_info, isRepeatAllowed)
 
-
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString, quizType.name)),
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
-                quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString)),
+            InformationItem(InfoType.SPEECH, firstTurnStringBuilder()),
             InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
     }
@@ -250,10 +297,10 @@ class QuizService @Inject constructor(
     }
 
     private fun playSong() : InformationPacket {
-
         state = if(quizType.repeatAllowed){
-            QuizState.REPEAT_SONG
-        } else{
+            QuizState.PLAY_SONG_REPEAT
+        }
+        else{
             QuizState.PLAY_SONG
         }
 
@@ -275,11 +322,25 @@ class QuizService @Inject constructor(
         ), true)
     }
 
-    private fun repeatSong() : InformationPacket {
-
+    private fun playFirstSong() : InformationPacket {
         state = if(quizType.repeatAllowed){
-            QuizState.REPEAT_SONG
-        } else{
+            QuizState.PLAY_SONG_REPEAT
+        }
+        else{
+            QuizState.PLAY_SONG
+        }
+
+        return InformationPacket(listOf(
+            InformationItem(InfoType.SPEECH, firstTurnStringBuilder()),
+            InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
+        ), true)
+    }
+
+    private fun repeatSong() : InformationPacket {
+        state = if(quizType.repeatAllowed){
+            QuizState.PLAY_SONG_REPEAT
+        }
+        else{
             QuizState.PLAY_SONG
         }
 
@@ -307,13 +368,28 @@ class QuizService @Inject constructor(
             }
         }
 
-        resultString += if(winnerIndex >= 0){
-            context.getString(R.string.c_winner_player, (winnerIndex+1).toString())
-        } else{
-            context.getString(R.string.c_winner_tie)
+        resultString += when {
+            maxValue <= 0 -> {
+                context.getString(R.string.c_next_time)
+            }
+            winnerIndex >= 0 -> {
+                context.getString(R.string.c_winner_player, (winnerIndex+1).toString())
+            }
+            else -> {
+                context.getString(R.string.c_winner_tie)
+            }
         }
 
         return resultString
+    }
+
+    private fun endGameInformationBuilder() : List<InformationItem>{
+        return listOf(
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
+            InformationItem(InfoType.SPEECH, endResultStringBuilder()),
+            InformationItem(InfoType.SOUND_LOCAL_ID, END_SOUND_NAME),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_play_again_possible))
+            )
     }
 
     private fun endGameAfterLastSong() : InformationPacket {
@@ -328,23 +404,27 @@ class QuizService @Inject constructor(
             HAPPY_SOUND_NAME
         }
 
-        return InformationPacket(listOf(
+        val informationItems = mutableListOf(
             InformationItem(InfoType.SOUND_LOCAL_ID, localSoundName),
-            InformationItem(InfoType.SPEECH, previousGuessString),
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
-            InformationItem(InfoType.SPEECH, endResultStringBuilder()),
-            InformationItem(InfoType.SOUND_LOCAL_ID, END_SOUND_NAME),
-        ), false)
+            InformationItem(InfoType.SPEECH, previousGuessString),)
+        informationItems.addAll(endGameInformationBuilder())
+
+        return InformationPacket(informationItems, true)
     }
 
     private fun endGame() : InformationPacket {
         state = QuizState.END
-        return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_end_game)),
-            InformationItem(InfoType.SPEECH, endResultStringBuilder()),
-            InformationItem(InfoType.SOUND_LOCAL_ID, END_SOUND_NAME),
+        return InformationPacket(endGameInformationBuilder(), true)
+    }
 
-        ), false)
+    private fun restartGame() : InformationPacket {
+        restart()
+        return playFirstSong()
+    }
+
+    private fun reconfigureGame() : InformationPacket {
+        reconfigure()
+        return welcome()
     }
 
     /**
@@ -356,12 +436,17 @@ class QuizService @Inject constructor(
     fun userInput(probableSpeeches : ArrayList<String>) : Boolean{
         // process what the user said
         val speakToUserNeeded = when(state){
-            QuizState.ASK_NUM_PLAYERS_AGAIN -> parseNumPlayers(probableSpeeches)
-            QuizState.ASK_GAME_TYPE -> parseGameType(probableSpeeches)
-            QuizState.ASK_GAME_TYPE_AGAIN -> parseGameType(probableSpeeches)
-            QuizState.FIRST_PLAY_SONG -> parseArtistTitle(probableSpeeches)
-            QuizState.PLAY_SONG -> parseArtistTitle(probableSpeeches)
-            QuizState.REPEAT_SONG -> parseArtistTitle(probableSpeeches)
+            QuizState.WELCOME -> parseNumPlayers(probableSpeeches)
+            QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> parseNumPlayers(probableSpeeches)
+            QuizState.SONG_DURATION_ASK -> parseSongDuration(probableSpeeches)
+            QuizState.SONG_DURATION_NOT_UNDERSTOOD -> parseSongDuration(probableSpeeches)
+            QuizState.GAME_TYPE_ASK -> parseGameType(probableSpeeches)
+            QuizState.GAME_TYPE_NOT_UNDERSTOOD -> parseGameType(probableSpeeches)
+            QuizState.GAME_TYPE_INVALID -> parseGameType(probableSpeeches)
+            QuizState.GAME_INFO_PLAY_FIRST_SONG -> parseArtistTitleAlbum(probableSpeeches)
+            QuizState.PLAY_SONG -> parseArtistTitleAlbum(probableSpeeches)
+            QuizState.PLAY_SONG_REPEAT -> parseArtistTitleAlbum(probableSpeeches)
+            QuizState.END -> parseRepeatGame(probableSpeeches)
             else -> false
         }
         return speakToUserNeeded
@@ -406,12 +491,40 @@ class QuizService @Inject constructor(
         )
 
         val playersNumber = searchForWordOccurrences(probableSpeeches, possibleWords, true)
-        if(playersNumber.isNotEmpty()){
+
+        if(playersNumber.isEmpty()){
+            state = QuizState.NUM_PLAYERS_NOT_UNDERSTOOD
+        }
+        else{
             quizStanding.numPlayers = playersNumber[0].toInt()
-            state = QuizState.ASK_GAME_TYPE
+            state = QuizState.SONG_DURATION_ASK
+        }
+
+        return true
+    }
+
+    private fun parseSongDuration(probableSpeeches : ArrayList<String>) : Boolean{
+        val possibleWords = mapOf(
+            "short" to listOf("short"),
+            "medium" to listOf("med", "medium"),
+            "long" to listOf("long", "log")
+        )
+
+        val songDuration = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+
+        if(songDuration.isEmpty()){
+            // Song duration not caught
+            state = QuizState.SONG_DURATION_NOT_UNDERSTOOD
             return true
         }
 
+        when(songDuration[0]){
+            "short" -> songDurationSec = 10
+            "medium" -> songDurationSec = 20
+            "long" -> songDurationSec = 30
+        }
+
+        state = QuizState.GAME_TYPE_ASK
         return true
     }
 
@@ -474,43 +587,49 @@ class QuizService @Inject constructor(
                 else -> {}
             }
         }
+        else{
+            // Game type not caught
+            state = QuizState.GAME_TYPE_NOT_UNDERSTOOD
+            return true
+        }
+
         quizType = QuizType(name, numRounds, pointForArtist, pointForTrack, pointForAlbum, pointForSpeed, repeatAllowed)
         quizStanding.numRounds = numRounds
 
         state = if(quizType.numRounds * quizStanding.numPlayers > playlist.tracks.size){
-            QuizState.ASK_GAME_TYPE_AGAIN
+            QuizState.GAME_TYPE_INVALID
         }
         else{
-            QuizState.FIRST_PLAY_SONG
+            QuizState.GAME_INFO_PLAY_FIRST_SONG
         }
+
         return true
     }
 
-    private fun parseArtistTitle(probableSpeeches : ArrayList<String>) : Boolean{
-
+    private fun parseArtistTitleAlbum(probableSpeeches : ArrayList<String>) : Boolean{
         val currentTrack = playlist.tracks[quizStanding.currentTrackIndex]
 
-        val albumParts = currentTrack.album.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
-        val titleParts = currentTrack.name.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
         val artistParts = mutableListOf<String>()
         for(artist in currentTrack.artists){
             artistParts.addAll(artist.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY))
         }
+        val titleParts = currentTrack.name.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
+        val albumParts = currentTrack.album.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
 
         val possibleHitWords = mutableMapOf<String, List<String>>()
-        possibleHitWords["album"] = albumParts
-        possibleHitWords["title"] = titleParts
         possibleHitWords["artist"] = artistParts
+        possibleHitWords["title"] = titleParts
+        possibleHitWords["album"] = albumParts
         // repeat command
         possibleHitWords["repeat"] = listOf("repeat", "again")
 
         val playerHits = searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
-        // if repeat allowe
+        // if repeat allowed
         if(quizType.repeatAllowed){
             // if only the repeat command has been identified, repeat
             if(playerHits.size == 1 && playerHits.contains("repeat")){
-                state = QuizState.REPEAT_SONG
+                state = QuizState.PLAY_SONG_REPEAT
                 return true
             }
         }
@@ -552,9 +671,31 @@ class QuizService @Inject constructor(
 
         state = if(quizStanding.isFinished){
             QuizState.END_LAST_SONG
-        } else{
+        }
+        else{
             QuizState.PLAY_SONG
         }
+
+        return true
+    }
+
+    private fun parseRepeatGame(probableSpeeches : ArrayList<String>) : Boolean{
+        val possibleWords = mapOf(
+            "restart" to listOf("restart", "repeat", "again"),
+            "configure" to listOf("configure", "config", "conf"),
+        )
+
+        val whatAsked = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+
+        if(whatAsked.isEmpty()){
+            return false
+        }
+
+        when(whatAsked[0]){
+            "restart" -> state = QuizState.RESTART_GAME
+            "configure" -> state = QuizState.RECONFIGURE_GAME
+        }
+
         return true
     }
 

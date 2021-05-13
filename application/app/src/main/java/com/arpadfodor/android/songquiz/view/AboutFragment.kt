@@ -14,6 +14,7 @@ import com.arpadfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
 import com.arpadfodor.android.songquiz.viewmodel.AboutViewModel
 import com.arpadfodor.android.songquiz.viewmodel.TtsAboutState
+import java.lang.RuntimeException
 
 class AboutFragment : AppFragment() {
 
@@ -52,9 +53,7 @@ class AboutFragment : AppFragment() {
 
         binding.fabBugReport.setOnClickListener {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
-
                 val appName = getString(R.string.app_name)
-
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, getString(R.string.maintenance_contact))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.maintenance_message_title, appName))

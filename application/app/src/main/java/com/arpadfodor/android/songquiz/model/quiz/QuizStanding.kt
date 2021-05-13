@@ -1,6 +1,6 @@
 package com.arpadfodor.android.songquiz.model.quiz
 
-class QuizStanding(){
+class QuizStanding {
     var numPlayers: Int = 0
     var numRounds: Int = 0
     var currentPlayer: Int = 0
