@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.2">
-    <!ENTITY appDate "29/04/2021">
+    <!ENTITY appVersion "v0.3">
+    <!ENTITY appDate "13/05/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY clientId "51aee5a292494583852e135803681e05">
     <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
@@ -87,7 +87,7 @@
     <string name="PlaylistImageDescription">Playlist image</string>
 
     <string name="unicode_start">❯</string>
-    <string name="unicode_cross">❌</string>
+    <string name="unicode_cross">✖</string>
 
     <string name="more_from_developer">More from the developer</string>
     <string name="review_app">Review app</string>

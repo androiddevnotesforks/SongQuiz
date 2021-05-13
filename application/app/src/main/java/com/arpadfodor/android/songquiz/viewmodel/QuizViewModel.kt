@@ -1,7 +1,6 @@
 package com.arpadfodor.android.songquiz.viewmodel
 
 import android.os.CountDownTimer
-import android.os.Vibrator
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -72,6 +71,13 @@ class QuizViewModel @Inject constructor(
      */
     val playlistImageUri: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
+    }
+
+    /**
+     * Song played percentage
+     */
+    val songPlayProgress: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
     }
 
     /**
@@ -209,15 +215,28 @@ class QuizViewModel @Inject constructor(
 
         suspendCoroutine<Boolean?> { cont ->
 
-            val finished = {
-                cont.resume(true)
-            }
+            val finished = {}
             val error = {
                 quizUiState.postValue(QuizUiState.ERROR_PLAY_SONG)
-                cont.resume(true)
             }
 
             mediaPlayerService.playUrlSound(soundUri, finished, error)
+
+            val playDurationMs = quizService.songDurationSec * 1000L
+            val timeStepMs = 10L
+
+            object : CountDownTimer(playDurationMs, timeStepMs) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * 1000).toInt()
+                    songPlayProgress.postValue(songDurationPercentage)
+                }
+
+                override fun onFinish() {
+                    mediaPlayerService.stop()
+                    cont.resume(true)
+                    songPlayProgress.postValue(0)
+                }
+            }.start()
 
         }
 

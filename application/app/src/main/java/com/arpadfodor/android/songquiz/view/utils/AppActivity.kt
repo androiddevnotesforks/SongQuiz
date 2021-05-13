@@ -82,7 +82,7 @@ abstract class AppActivity(screenAlive: Boolean) : AppCompatActivity() {
             )
             requestSettingsDialog.setPositiveButton{
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
                 intent.data = Uri.parse("package:$packageName")
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

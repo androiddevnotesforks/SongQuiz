@@ -17,6 +17,6 @@ package com.arpadfodor.android.songquiz.model.api.dataclasses
  * @param message 
  */
 data class ErrorDTO (
-    val status: kotlin.Int? = null,
-    val message: kotlin.String? = null
+    val status: Int? = null,
+    val message: String? = null
 )

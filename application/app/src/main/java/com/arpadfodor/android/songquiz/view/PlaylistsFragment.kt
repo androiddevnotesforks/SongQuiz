@@ -17,6 +17,10 @@ import com.arpadfodor.android.songquiz.viewmodel.PlaylistsAdapter
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsState
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 
 class PlaylistsFragment : AppFragment() {
 
@@ -98,6 +102,11 @@ class PlaylistsFragment : AppFragment() {
     }
 
     private fun startPlaylistById(id: String){
+        // Log start game event
+        Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
+            param(FirebaseAnalytics.Param.ITEM_ID, id)
+        }
+
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
         intent.putExtra(QuizActivity.PLAYLIST_KEY, id)
         startActivity(intent)

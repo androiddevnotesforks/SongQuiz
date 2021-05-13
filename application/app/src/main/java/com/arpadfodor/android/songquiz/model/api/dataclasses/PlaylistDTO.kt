@@ -50,7 +50,7 @@ data class ApiPlaylist (
  * @param spotify
  */
 data class PlaylistExternalUrls (
-    val spotify: kotlin.String? = null
+    val spotify: String? = null
 )
 
 /**
@@ -59,8 +59,8 @@ data class PlaylistExternalUrls (
  * @param total
  */
 data class PlaylistFollowers (
-    val href: kotlin.Any? = null,
-    val total: kotlin.Int? = null
+    val href: Any? = null,
+    val total: Int? = null
 )
 
 /**
@@ -68,7 +68,7 @@ data class PlaylistFollowers (
  * @param url
  */
 data class PlaylistImages (
-    val url: kotlin.String? = null
+    val url: String? = null
 )
 
 /**
@@ -81,10 +81,10 @@ data class PlaylistImages (
  */
 data class PlaylistOwner (
     val external_urls: PlaylistExternalUrls? = null,
-    val href: kotlin.String? = null,
-    val id: kotlin.String? = null,
-    val type: kotlin.String? = null,
-    val uri: kotlin.String? = null
+    val href: String? = null,
+    val id: String? = null,
+    val type: String? = null,
+    val uri: String? = null
 )
 
 /**
@@ -98,13 +98,13 @@ data class PlaylistOwner (
  * @param total
  */
 data class PlaylistTracks (
-    val href: kotlin.String? = null,
-    val items: kotlin.Array<PlaylistTracksItems>? = null,
-    val limit: kotlin.Int? = null,
-    val next: kotlin.String? = null,
-    val offset: kotlin.Int? = null,
-    val previous: kotlin.Any? = null,
-    val total: kotlin.Int? = null
+    val href: String? = null,
+    val items: Array<PlaylistTracksItems>? = null,
+    val limit: Int? = null,
+    val next: String? = null,
+    val offset: Int? = null,
+    val previous: Any? = null,
+    val total: Int? = null
 )
 
 /**
@@ -115,8 +115,8 @@ data class PlaylistTracks (
  * @param track
  */
 data class PlaylistTracksItems (
-    val added_at: kotlin.String? = null,
+    val added_at: String? = null,
     val added_by: PlaylistOwner? = null,
-    val is_local: kotlin.Boolean? = null,
+    val is_local: Boolean? = null,
     val track: ApiTrack
 )
