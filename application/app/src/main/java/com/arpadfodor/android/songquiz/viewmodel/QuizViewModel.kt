@@ -20,7 +20,7 @@ enum class TtsState{
 }
 
 enum class QuizUiState{
-    ERROR_PLAYLIST_LOAD, LOADING, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER
+    LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER
 }
 
 @HiltViewModel
@@ -79,6 +79,11 @@ class QuizViewModel @Inject constructor(
     val songPlayProgress: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
+
+    /**
+     * Play song progressbar maximum value
+     */
+    var numProgressSteps = 0
 
     /**
      * The possibly long-running task to notify the user
@@ -152,6 +157,7 @@ class QuizViewModel @Inject constructor(
             val response = quizService.getCurrentInfo()
             val infoList = response.contents
             val immediateAnswerNeeded = response.immediateAnswerNeeded
+            var isSuccessful = true
 
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.SPEAKING)
@@ -162,7 +168,7 @@ class QuizViewModel @Inject constructor(
                     return@launch
                 }
 
-                when (information.type) {
+                val isCurrentSuccessful = when (information.type) {
                     InfoType.SPEECH -> {
                         speakToUser(information.payload)
                     }
@@ -174,13 +180,17 @@ class QuizViewModel @Inject constructor(
                     }
                 }
 
+                if(!isCurrentSuccessful){
+                    isSuccessful = false
+                }
+
             }
 
             userInputState.value = UserInputState.ENABLED
             ttsState.value = TtsState.ENABLED
 
             // immediate user response is expected
-            if (immediateAnswerNeeded) {
+            if (immediateAnswerNeeded && isSuccessful) {
                 getUserInput()
             }
 
@@ -188,75 +198,91 @@ class QuizViewModel @Inject constructor(
 
     }
 
-    private suspend fun speakToUser(text: String){
+    private suspend fun speakToUser(text: String) : Boolean{
+        var isSuccess = false
 
         suspendCoroutine<Boolean?> { cont ->
 
             val started = {
                 info.postValue(text)
             }
-
             val finished = {
+                isSuccess = true
                 cont.resume(true)
             }
-
             val error = {
                 quizUiState.postValue(QuizUiState.ERROR_SPEAK_TO_USER)
+                isSuccess = false
                 cont.resume(true)
             }
 
-            textToSpeechService.speak(text, started, finished, error)
-
+            textToSpeechService.setCallbacks(started, finished, error)
+            textToSpeechService.speak(text)
         }
 
+        return isSuccess
     }
 
-    private suspend fun playUrlSound(soundUri: String){
+    private suspend fun playUrlSound(soundUri: String) : Boolean{
+        var isSuccess = false
 
         suspendCoroutine<Boolean?> { cont ->
 
-            val finished = {}
-            val error = {
-                quizUiState.postValue(QuizUiState.ERROR_PLAY_SONG)
-            }
+            val timeStepMs = 20L
+            val msInSec = 1000L
+            val playDurationMs = quizService.songDurationSec * msInSec
 
-            mediaPlayerService.playUrlSound(soundUri, finished, error)
-
-            val playDurationMs = quizService.songDurationSec * 1000L
-            val timeStepMs = 10L
-
-            object : CountDownTimer(playDurationMs, timeStepMs) {
+            val timer = object : CountDownTimer(playDurationMs, timeStepMs) {
                 override fun onTick(millisUntilFinished: Long) {
-                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * 1000).toInt()
+                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * numProgressSteps).toInt()
                     songPlayProgress.postValue(songDurationPercentage)
                 }
 
                 override fun onFinish() {
                     mediaPlayerService.stop()
-                    cont.resume(true)
                     songPlayProgress.postValue(0)
+                    isSuccess = true
+                    cont.resume(true)
                 }
-            }.start()
+            }
 
+            val finished = {
+                isSuccess = true
+            }
+            val error = {
+                quizUiState.postValue(QuizUiState.ERROR_PLAY_SONG)
+                timer.cancel()
+                timer.onFinish()
+                isSuccess = false
+            }
+
+            val playStarted = mediaPlayerService.playUrlSound(soundUri, finished, error)
+            if(playStarted){
+                timer.start()
+            }
         }
 
+        return isSuccess
     }
 
-    private suspend fun playLocalSound(soundName: String){
+    private suspend fun playLocalSound(soundName: String) : Boolean{
+        var isSuccess = false
 
         suspendCoroutine<Boolean?> { cont ->
 
             val finished = {
+                isSuccess = true
                 cont.resume(true)
             }
             val error = {
+                isSuccess = false
                 cont.resume(true)
             }
 
             mediaPlayerService.playLocalSound(soundName, finished, error)
-
         }
 
+        return isSuccess
     }
 
     fun getUserInput(){
@@ -273,7 +299,6 @@ class QuizViewModel @Inject constructor(
         val partial = { textList: ArrayList<String> ->
             recognition.postValue(textList[0])
         }
-
         val result = { textList: ArrayList<String> ->
             recognition.postValue(textList[0])
             userInputState.postValue(UserInputState.ENABLED)

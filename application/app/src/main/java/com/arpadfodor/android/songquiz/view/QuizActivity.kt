@@ -50,6 +50,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
         viewModel.setPlaylistById(playlistId)
+        viewModel.numProgressSteps = resources.getInteger(R.integer.progressbar_max_value)
     }
 
     override fun onBackPressed() {
@@ -120,31 +121,23 @@ class QuizActivity : AppActivity(screenAlive = true) {
         val quizStateObserver = Observer<QuizUiState> { state ->
             when(state){
                 QuizUiState.LOADING -> {
-                    binding.content.progressBar.visibility = View.VISIBLE
-                    binding.content.tvQuizStatus.text = ""
+                    binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 QuizUiState.READY_TO_START -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = getString(R.string.ready_to_start)
-                }
-                QuizUiState.PLAY -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
+                    binding.content.loadIndicatorProgressBar.visibility = View.GONE
+                    viewModel.info.value = getString(R.string.ready_to_start)
                 }
                 QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text =
-                        getString(R.string.error_playlist_load_description)
+                    binding.content.loadIndicatorProgressBar.visibility = View.GONE
+                    viewModel.info.value = getString(R.string.error_playlist_load_description)
                     showError(QuizUiState.ERROR_PLAYLIST_LOAD)
                 }
                 QuizUiState.ERROR_PLAY_SONG -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
+                    viewModel.info.value = getString(R.string.error_play_song_description)
                     showError(QuizUiState.ERROR_PLAY_SONG)
                 }
                 QuizUiState.ERROR_SPEAK_TO_USER -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
+                    viewModel.info.value = getString(R.string.error_speak_to_user_description)
                     showError(QuizUiState.ERROR_SPEAK_TO_USER)
                 }
                 else -> {}
@@ -154,20 +147,19 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
-                binding.content.ivPlaylist.setImageResource(R.drawable.error)
+                binding.content.ivPlaylist.setImageResource(R.drawable.icon_album)
             }
             else{
                 val options = RequestOptions()
                     .centerCrop()
                     .placeholder(R.drawable.icon_album)
-                    .error(R.drawable.error)
+                    .error(R.drawable.icon_album)
                 Glide.with(this).load(uri).apply(options).into(binding.content.ivPlaylist)
             }
         }
         viewModel.playlistImageUri.observe(this, playlistUriObserver)
 
         val infoObserver = Observer<String> { info ->
-
             val view = binding.content.tvInfo
 
             if(info.isBlank() && view.text.isNotBlank()){
@@ -188,7 +180,6 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel.info.observe(this, infoObserver)
 
         val recognitionObserver = Observer<String> { recognition ->
-
             val view = binding.content.tvRecognition
 
             if(recognition.isBlank() && view.text.isNotBlank()){
@@ -210,11 +201,11 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         val songPlayedProgressObserver = Observer<Int> { progress ->
             if(progress > 0){
-                binding.content.progressBarSongPlayed.visibility = View.VISIBLE
-                binding.content.progressBarSongPlayed.progress = progress
+                binding.content.songPlayProgressBar.visibility = View.VISIBLE
+                binding.content.songPlayProgressBar.progress = progress
             }
             else{
-                binding.content.progressBarSongPlayed.visibility = View.INVISIBLE
+                binding.content.songPlayProgressBar.visibility = View.INVISIBLE
             }
         }
         viewModel.songPlayProgress.observe(this, songPlayedProgressObserver)

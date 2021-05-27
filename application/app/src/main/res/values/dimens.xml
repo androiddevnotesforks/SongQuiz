@@ -29,6 +29,7 @@
 
     <dimen name="img_button_size">50dp</dimen>
 
+    <dimen name="playlist_scrollview_bottom_padding">80dp</dimen>
     <dimen name="playlist_item_image_size">50dp</dimen>
     <dimen name="playlist_item_margin">16dp</dimen>
 
@@ -39,5 +40,7 @@
     <dimen name="dialog_corner_radius">10dp</dimen>
     <dimen name="card_horizontal_padding">40dp</dimen>
     <dimen name="card_vertical_padding">20dp</dimen>
+
+    <integer name="progressbar_max_value">1000</integer>
 
 </resources>

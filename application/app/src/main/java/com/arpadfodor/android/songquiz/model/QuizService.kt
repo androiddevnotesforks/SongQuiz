@@ -4,11 +4,11 @@ import android.content.Context
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.model.quiz.QuizStanding
 import com.arpadfodor.android.songquiz.model.quiz.QuizType
+import com.arpadfodor.android.songquiz.model.quiz.TextTransformer
 import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -69,7 +69,6 @@ class QuizService @Inject constructor(
         const val SAD_SOUND_NAME = "sad.wav"
         const val HAPPY_SOUND_NAME = "happy.wav"
         const val END_SOUND_NAME = "end.wav"
-        val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", "?", "!", ".", "(", ")", "/", "_").toTypedArray()
     }
 
     var state = QuizState.WELCOME
@@ -78,6 +77,7 @@ class QuizService @Inject constructor(
     var playlist = Playlist("")
     var quizType = QuizType()
     var quizStanding = QuizStanding()
+    var textTransformer = TextTransformer()
     var songDurationSec = 0
 
     var lastPlayerPoints = 0
@@ -252,8 +252,7 @@ class QuizService @Inject constructor(
         var infoString = ""
         infoString += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
         infoString += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
-        infoString += "${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}, "
-        infoString += "${context.getString(R.string.c_and)} ${quizType.pointForSpeed} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_speed)}. "
+        infoString += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}. "
         infoString += context.getString(R.string.c_repeat_info, isRepeatAllowed)
 
         return InformationPacket(listOf(
@@ -465,7 +464,7 @@ class QuizService @Inject constructor(
                                          onlyOneNeeded: Boolean) : List<String>{
         val wordsFound = mutableListOf<String>()
         for(speech in probableSpeeches) {
-            val speechWords = speech.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
+            val speechWords = textTransformer.normalizeText(speech)
             for(speechWord in speechWords){
                 for(searchedWord in searchedWords){
                     for(acceptedWordForm in searchedWord.value){
@@ -543,7 +542,6 @@ class QuizService @Inject constructor(
         var pointForArtist = 0
         var pointForTrack = 0
         var pointForAlbum = 0
-        var pointForSpeed = 0
         var repeatAllowed = false
 
         if(gameType.isNotEmpty()){
@@ -554,7 +552,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    pointForSpeed = 0
                     repeatAllowed = true
                 }
                 "short" -> {
@@ -563,7 +560,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    pointForSpeed = 0
                     repeatAllowed = true
                 }
                 "medium" -> {
@@ -572,7 +568,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    pointForSpeed = 0
                     repeatAllowed = true
                 }
                 "long" -> {
@@ -581,7 +576,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    pointForSpeed = 0
                     repeatAllowed = true
                 }
                 else -> {}
@@ -593,7 +587,7 @@ class QuizService @Inject constructor(
             return true
         }
 
-        quizType = QuizType(name, numRounds, pointForArtist, pointForTrack, pointForAlbum, pointForSpeed, repeatAllowed)
+        quizType = QuizType(name, numRounds, pointForArtist, pointForTrack, pointForAlbum, repeatAllowed)
         quizStanding.numRounds = numRounds
 
         state = if(quizType.numRounds * quizStanding.numPlayers > playlist.tracks.size){
@@ -611,10 +605,10 @@ class QuizService @Inject constructor(
 
         val artistParts = mutableListOf<String>()
         for(artist in currentTrack.artists){
-            artistParts.addAll(artist.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY))
+            artistParts.addAll(textTransformer.normalizeText(artist))
         }
-        val titleParts = currentTrack.name.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
-        val albumParts = currentTrack.album.toLowerCase(Locale.ROOT).split(*CHARS_TO_SEPARATE_BY)
+        val titleParts = textTransformer.normalizeText(currentTrack.name)
+        val albumParts = textTransformer.normalizeText(currentTrack.album)
 
         val possibleHitWords = mutableMapOf<String, List<String>>()
         possibleHitWords["artist"] = artistParts
@@ -661,7 +655,7 @@ class QuizService @Inject constructor(
 
         lastSongAlbum = currentTrack.album
         lastSongTitle = currentTrack.name
-        lastSongArtist = currentTrack.artists.toString().replace("[", "").replace("]", "")
+        lastSongArtist = textTransformer.stringListToString(currentTrack.artists)
         lastSongPopularity = currentTrack.popularity
 
         lastPlayerPoints = points

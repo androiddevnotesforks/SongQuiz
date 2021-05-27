@@ -3,15 +3,17 @@ package com.arpadfodor.android.songquiz.model.quiz
 class QuizStanding {
     var numPlayers: Int = 0
     var numRounds: Int = 0
+    // gameplay specific, should be reset to start new game
     var currentPlayer: Int = 0
     var currentRound: Int = 0
-    var scores: MutableList<Int> = mutableListOf()
     var currentTrackIndex: Int = 0
+    var scores: MutableList<Int> = mutableListOf()
     var isFinished = false
 
     fun resetGame(){
         currentPlayer = 0
         currentRound = 0
+        currentTrackIndex = 0
         scores = mutableListOf()
         for(i in 0 until numPlayers){
             scores.add(0)

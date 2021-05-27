@@ -53,7 +53,6 @@ class PlaylistsFragment : AppFragment() {
     }
 
     override fun subscribeViewModel() {
-
         val playlistsObserver = Observer<List<Playlist>> { playlists ->
             (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(playlists)
         }
@@ -62,22 +61,21 @@ class PlaylistsFragment : AppFragment() {
         val playlistsStateObserver = Observer<PlaylistsState> { playlistsState ->
             when(playlistsState){
                 PlaylistsState.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 PlaylistsState.READY -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.loadIndicatorProgressBar.visibility = View.GONE
                 }
                 PlaylistsState.ERROR_PLAYLIST_ADD -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.loadIndicatorProgressBar.visibility = View.GONE
                     showError(PlaylistsState.ERROR_PLAYLIST_ADD)
                 }
                 else -> {
-                    binding.progressBar.visibility = View.GONE
+                    binding.loadIndicatorProgressBar.visibility = View.GONE
                 }
             }
         }
         viewModel.playlistsState.observe(this, playlistsStateObserver)
-
     }
 
     override fun appearingAnimations() {}

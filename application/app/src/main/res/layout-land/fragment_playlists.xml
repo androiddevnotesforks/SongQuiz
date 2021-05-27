@@ -15,11 +15,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fabAddPlaylist"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/playlist_scrollview_bottom_padding"
+        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loadIndicatorProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

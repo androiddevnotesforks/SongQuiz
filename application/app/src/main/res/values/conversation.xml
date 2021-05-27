@@ -26,7 +26,6 @@
     <string name="c_title">title</string>
     <string name="c_artist">artist</string>
     <string name="c_album">album</string>
-    <string name="c_speed">speed</string>
     <string name="c_repeat_info">Repeating a song is%1$s allowed in this mode</string>
     <string name="c_player_good_guess">Good! You got %1$s.</string>
     <string name="c_player_failed_guess">Oh no!</string>

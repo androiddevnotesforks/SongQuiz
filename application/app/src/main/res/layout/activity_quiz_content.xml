@@ -6,15 +6,13 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        style="@style/SparseParagraphText"
-        android:id="@+id/tvQuizStatus"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        style="@style/SongPlayProgressBar"
+        android:id="@+id/songPlayProgressBar"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
+        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist" />
 
     <ImageView
         style="@style/MainImage"
@@ -25,7 +23,7 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarSongPlayed"
+        app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
         app:layout_constraintBottom_toTopOf="@+id/tvInfo"/>
 
     <TextView
@@ -97,7 +95,7 @@
         ads:adUnitId="@string/quiz_ad_id" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loadIndicatorProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -105,18 +103,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:id="@+id/progressBarSongPlayed"
-        android:layout_width="0dp"
-        android:layout_height="5dp"
-        android:visibility="invisible"
-        android:max="1000"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar_time"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuizStatus"
-        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
-        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,9 +3,9 @@ package com.arpadfodor.android.songquiz.viewmodel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +13,8 @@ import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.arpadfodor.android.songquiz.view.utils.AppButton
 import com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 
 class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDelete: (Playlist) -> Unit) :
         ListAdapter<Playlist, PlaylistsAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
@@ -21,6 +23,7 @@ class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDe
     class PlaylistViewHolder(itemView: View, val onStart: (Playlist) -> Unit, val onDelete: (Playlist) -> Unit) :
             RecyclerView.ViewHolder(itemView){
 
+        private val playlistLayout: ConstraintLayout = itemView.findViewById(R.id.playlist_item_layout)
         private val playlistTitle: TextView = itemView.findViewById(R.id.playlist_title)
         private val playlistDescription: TextView = itemView.findViewById(R.id.playlist_description)
         private val playlistImage: ImageView = itemView.findViewById(R.id.playlist_image)
@@ -29,6 +32,11 @@ class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDe
         private var currentPlaylist: Playlist? = null
 
         init {
+            playlistLayout.setOnClickListener {
+                currentPlaylist?.let {
+                    onStart(it)
+                }
+            }
 
             playlistStartButton.setOnClickListener {
                 currentPlaylist?.let {
@@ -41,7 +49,6 @@ class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDe
                     onDelete(it)
                 }
             }
-
         }
 
         fun bind(playlist: Playlist){
@@ -49,8 +56,13 @@ class PlaylistsAdapter(private val onStart: (Playlist) -> Unit, private val onDe
 
             playlistTitle.text = playlist.name
             playlistDescription.text = playlist.description
-        }
 
+            val options = RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.icon_album)
+                .error(R.drawable.icon_album)
+            Glide.with(playlistImage).load(playlist.previewImageUri).apply(options).into(playlistImage)
+        }
     }
 
     /* Creates and inflates view and return PlaylistViewHolder. */

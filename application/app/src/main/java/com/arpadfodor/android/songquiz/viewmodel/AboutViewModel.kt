@@ -26,39 +26,39 @@ class AboutViewModel  @Inject constructor(
         MutableLiveData<TtsAboutState>()
     }
 
-    private suspend fun speakToUser(text: String){
-
-        suspendCoroutine<Boolean?> { cont ->
-
-            val started = {
-                ttsState.postValue(TtsAboutState.SPEAKING)
-            }
-
-            val finished = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-                cont.resume(true)
-            }
-
-            val error = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-                cont.resume(true)
-            }
-
-            textToSpeechService.speak(text, started, finished, error)
-
+    init {
+        if(textToSpeechService.isSpeaking()){
+            ttsState.value = TtsAboutState.SPEAKING
+        }
+        else{
+            ttsState.value = TtsAboutState.ENABLED
         }
 
+        subscribeTextToSpeechListeners()
+    }
+
+    private fun subscribeTextToSpeechListeners(){
+        textToSpeechService.setCallbacks(
+            started = {
+                ttsState.postValue(TtsAboutState.SPEAKING)
+            },
+            finished = {
+                ttsState.postValue(TtsAboutState.ENABLED)
+            },
+            error = {
+                ttsState.postValue(TtsAboutState.ENABLED)
+            }
+        )
     }
 
     fun speak(text: String){
         viewModelScope.launch {
-            speakToUser(text)
+            textToSpeechService.speak(text)
         }
     }
 
     fun stopSpeaking(){
         textToSpeechService.stop()
-        ttsState.postValue(TtsAboutState.ENABLED)
     }
 
 }

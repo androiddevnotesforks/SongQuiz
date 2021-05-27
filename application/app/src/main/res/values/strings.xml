@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.3">
-    <!ENTITY appDate "13/05/2021">
+    <!ENTITY appVersion "v0.4">
+    <!ENTITY appDate "28/05/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY clientId "51aee5a292494583852e135803681e05">
     <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
@@ -41,10 +41,10 @@
          &appVersion; \n\n
          &appDate; \n\n
          Created by: &appCreator; \n\n
-         This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing. \n\n
-         Legal information \n\n\n
-         Copyright © &appDate; &appCreator; \n\n
-         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. \n\n
+         This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing. \n\n\n
+         Legal information \n\n
+         © &appDate; &appCreator; \n\n
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. \n\n\n
          Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay. </string>
 
     <string name="ok_button">OK</string>
@@ -57,9 +57,10 @@
     <string name="ready_to_start">Playlist is ready! Press the speaker button to start.</string>
     <string name="error_playlist_load">Cannot load playlist</string>
     <string name="error_playlist_load_description">Cannot load playlist. Please check your internet connection and make sure that the playlist still exists on Spotify.</string>
-    <string name="error_play_song">Cannot play the current song</string>
-    <string name="error_play_song_description">Cannot play the next song. Please check your internet connection.</string>
+    <string name="error_play_song">Cannot play current song</string>
+    <string name="error_play_song_description">Cannot play current song. Please check your internet connection.</string>
     <string name="error_speak_to_user">Cannot speak to user</string>
+    <string name="error_speak_to_user_description">Cannot speak to user. Please make sure your device supports text-to-speech.</string>
 
     <string name="add_playlist">Add new playlist</string>
     <string name="add_playlist_description">Type the Spotify Id of the playlist. You can find it in the playlist\'s URL.</string>

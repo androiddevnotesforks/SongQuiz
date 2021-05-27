@@ -59,6 +59,16 @@
         <item name="android:paddingBottom">@dimen/paragraph_padding</item>
     </style>
 
+    <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:max">@integer/progressbar_max_value</item>
+        <item name="android:progress">0</item>
+        <item name="android:progressDrawable">@drawable/progressbar_time</item>
+        <item name="android:layout_marginTop">@dimen/paragraph_sparse_margin</item>
+        <item name="android:layout_marginBottom">@dimen/paragraph_sparse_margin</item>
+    </style>
+
     <style name="SparseParagraphText" parent="ParagraphText">
         <item name="android:gravity">center</item>
         <item name="android:layout_marginTop">@dimen/paragraph_sparse_margin</item>
