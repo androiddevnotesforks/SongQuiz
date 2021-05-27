@@ -48,7 +48,7 @@ fun ApiPlaylist.toPlaylist() : Playlist {
             id = this.id,
             name = this.name,
             description = this.description ?: "",
-            previewImageUri = this.images?.get(0)?.url ?: "",
+            previewImageUri = this.images?.random()?.url ?: "",
             followers = this.followers?.total ?: 0,
             type = this.type ?: "",
             uri = this.uri ?: "",
