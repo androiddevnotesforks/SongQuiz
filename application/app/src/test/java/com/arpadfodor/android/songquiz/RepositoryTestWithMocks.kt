@@ -49,7 +49,7 @@ class PlaylistRepositoryTest{
         // Given
         `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_API_RESPONSE)
         // When
-        val result: Playlist = repo.getGamePlaylistById(FAKE_ID)
+        val result: Playlist = repo.downloadPlaylistById(FAKE_ID)
         // Then
         assertThat(result.id, `is`(FAKE_ID))
     }

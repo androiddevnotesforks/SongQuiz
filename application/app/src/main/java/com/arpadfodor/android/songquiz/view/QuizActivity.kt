@@ -143,7 +143,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
                 else -> {}
             }
         }
-        viewModel.quizUiState.observe(this, quizStateObserver)
+        viewModel.uiState.observe(this, quizStateObserver)
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
@@ -225,12 +225,12 @@ class QuizActivity : AppActivity(screenAlive = true) {
             QuizUiState.ERROR_PLAY_SONG -> {
                 val errorMessage = getString(R.string.error_play_song)
                 Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
-                viewModel.quizUiState.postValue(QuizUiState.PLAY)
+                viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             QuizUiState.ERROR_SPEAK_TO_USER -> {
                 val errorMessage = getString(R.string.error_speak_to_user)
                 Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
-                viewModel.quizUiState.postValue(QuizUiState.PLAY)
+                viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             else -> {}
         }

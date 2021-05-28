@@ -35,11 +35,16 @@ class PlaylistsRepository @Inject constructor(
         return true
     }
 
+    fun updatePlaylist(playlist: Playlist) : Boolean{
+        dao.insert(playlist.toDbPlaylist())
+        return true
+    }
+
     fun deletePlaylistById(id: String){
         dao.delete(id)
     }
 
-    fun getGamePlaylistById(id: String) : Playlist{
+    fun downloadPlaylistById(id: String) : Playlist{
         val apiPlaylist = apiService.getPlaylistById(id)
         return apiPlaylist.toPlaylist()
     }

@@ -3,7 +3,7 @@ package com.arpadfodor.android.songquiz.model.quiz
 import java.text.Normalizer
 import java.util.*
 
-class TextTransformer {
+class TextConverter {
 
     companion object{
         val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", ";", "?", "!", ".", "(", ")", "/", "_", "+", "=", "&", "@", ":").toTypedArray()

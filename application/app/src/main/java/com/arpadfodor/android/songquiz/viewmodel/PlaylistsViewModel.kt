@@ -30,7 +30,7 @@ class PlaylistsViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             playlistsState.postValue(PlaylistsState.LOADING)
-            playlists.postValue(repository.getPlaylists())
+            playlists.postValue(repository.getPlaylists().reversed())
             playlistsState.postValue(PlaylistsState.READY)
         }
     }

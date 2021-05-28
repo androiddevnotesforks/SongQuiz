@@ -3,9 +3,9 @@
 <resources>
     <string name="c_welcome">Welcome to song quiz!</string>
     <string name="c_playlist_info">Your chosen playlist is %1$s, which contains %2$s playable songs.</string>
+    <string name="c_reconfigure">Configure your game. The current playlist is %1$s, which contains %2$s playable songs.</string>
 
     <string name="c_ask_num_players">How many players want to play? Say a number between 1 and 4.</string>
-    <string name="c_not_understand">Sorry, I could not catch it.</string>
     <string name="c_num_players_selected">%1$s-player game selected.</string>
 
     <string name="c_ask_song_duration">How long should a song be? Choose from short, medium, or long.</string>
@@ -14,10 +14,14 @@
     <string name="c_ask_game_type">What type of game do you want to play? Choose from one-shot, short, medium or long.</string>
     <string name="c_ask_game_type_invalid">Cannot start %1$s game: there are %2$s playable tracks, but %3$s is required with %4$s players. Please choose another game type.</string>
     <string name="c_game_type_selected">A %1$s game is selected. In this type, the number of rounds is %2$s. You get %3$s.</string>
+
     <string name="c_starting_game">Starting your %1$s game.</string>
 
     <string name="c_player_turn">Player %1$s, question %2$s, name the song title and artist:</string>
     <string name="c_repeating_song">Repeating the previous song.</string>
+
+    <string name="c_not_understand">Sorry, I could not catch it.</string>
+
     <string name="c_points">points</string>
     <string name="c_for">for</string>
     <string name="c_and">and</string>
@@ -37,7 +41,7 @@
     <string name="c_winner_player">Player %1$s is the winner. Congratulations!</string>
     <string name="c_winner_tie">It\'s a tie. Congratulations!</string>
     <string name="c_next_time">Better luck next time!</string>
-    <string name="c_play_again_possible">If you want to restart this game, say restart. If you want to configure a new game with this playlist, say configure.</string>
+    <string name="c_play_again_possible">If you want to restart this game, say restart. If you want to configure the game, say configure.</string>
 
     <string name="c_not_enough_tracks">Unfortunately, this is not enough to play a quiz, because at least %1$s songs needed. Please exit this quiz and select another playlist.</string>
     <string name="c_error">Looks like an error occurred.</string>
