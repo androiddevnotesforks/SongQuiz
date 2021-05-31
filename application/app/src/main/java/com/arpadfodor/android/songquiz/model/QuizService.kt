@@ -88,22 +88,25 @@ class QuizService @Inject constructor(
     var lastSongArtistHit = false
 
     fun clear(){
-        state = QuizState.WELCOME
         lastSaidByUser = ""
         playlist = Playlist("")
         quizType = QuizType()
         quizStanding = QuizStanding()
-    }
-
-    fun setStartState(){
         state = QuizState.WELCOME
-        restartQuiz()
     }
 
-    private fun restartQuiz(){
+    fun setStartQuizState(){
         lastSaidByUser = ""
         playlist.tracks.shuffle()
         quizStanding.clearState()
+        state = QuizState.START_GAME
+    }
+
+    fun setConfigureQuizState(){
+        lastSaidByUser = ""
+        playlist.tracks.shuffle()
+        quizStanding.clearState()
+        state = QuizState.WELCOME
     }
 
     /**
@@ -415,12 +418,12 @@ class QuizService @Inject constructor(
     }
 
     private fun restartGame() : InformationPacket {
-        restartQuiz()
+        setStartQuizState()
         return playFirstSong()
     }
 
     private fun configureGame() : InformationPacket {
-        restartQuiz()
+        setConfigureQuizState()
         return welcome(true, RepeatCause.RECONFIGURE_GAME)
     }
 

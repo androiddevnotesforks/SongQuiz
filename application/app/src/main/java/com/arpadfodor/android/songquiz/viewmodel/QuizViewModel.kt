@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.arpadfodor.android.songquiz.model.*
 import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -127,7 +126,7 @@ class QuizViewModel @Inject constructor(
                     return@launch
                 }
 
-                quizService.setStartState()
+                quizService.setStartQuizState()
                 // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)

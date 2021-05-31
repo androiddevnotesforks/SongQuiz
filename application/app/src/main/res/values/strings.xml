@@ -70,12 +70,14 @@
 
     <string name="add_playlist">Add playlist</string>
     <string name="add_playlist_description">Type the name or the Spotify Id of the playlist.</string>
-    <string name="error_playlist_add">Cannot add playlist.</string>
-    <string name="success_playlist_add">Playlist added.</string>
-    <string name="playlist_already_added">Playlist already added.</string>
+    <string name="empty_list">Click the add button to add playlists.</string>
+    <string name="cannot_find_playlist">Not found or internet is not available</string>
+    <string name="error_playlist_add">Cannot add this playlist</string>
+    <string name="success_playlist_add">Successfully added</string>
+    <string name="playlist_already_added">Already added</string>
 
     <string name="delete_playlist">Delete playlist</string>
-    <string name="delete_playlist_description">Are you sure you want to delete %1$s? It will not affect any playlists on Spotify, and you can add it back later.</string>
+    <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add them again later.</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>
@@ -99,9 +101,6 @@
     <string name="unicode_back">❮</string>
     <string name="unicode_cross">✖</string>
     <string name="unicode_add">＋</string>
-
-    <string name="empty_list">Click the add button to add playlists.</string>
-    <string name="cannot_find_playlist">Not found. Check your search expression and internet connection.</string>
 
     <string name="more_from_developer">More from the developer</string>
     <string name="review_app">Review app</string>
