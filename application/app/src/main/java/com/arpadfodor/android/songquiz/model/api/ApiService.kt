@@ -3,7 +3,8 @@ package com.arpadfodor.android.songquiz.model.api
 import android.content.Context
 import android.util.Base64
 import com.arpadfodor.android.songquiz.R
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiPlaylist
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -19,7 +20,9 @@ open class ApiService @Inject constructor(
         @ApplicationContext val context: Context
 ) {
 
-    val spotifyClient: OkHttpClient = OkHttpClient.Builder().build()
+    val spotifyClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(
+        EncoderInterceptor()
+    ).build()
 
     val spotifyAPI = Retrofit.Builder()
         .baseUrl(SpotifyAPI.API_URL)
@@ -43,12 +46,53 @@ open class ApiService @Inject constructor(
         }
     }
 
-    open fun getPlaylistById(id: String) : ApiPlaylist{
-        var response = ApiPlaylist(name = "", id = "")
+    fun getPlaylistById(id: String) : PlaylistDTO {
+        var response = PlaylistDTO(name = "", id = "")
+
         try {
             val token = getToken()
-            val dataCall = spotifyAPI.getPlaylistData(id, bearerTokenEncoder(token))
-            response = dataCall.execute().body() ?: ApiPlaylist(name = "", id = "")
+            val dataCall = spotifyAPI.getPlaylistById(id, bearerTokenEncoder(token))
+            response = dataCall.execute().body() ?: PlaylistDTO(name = "", id = "")
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        finally {
+            return response
+        }
+    }
+
+    fun getPlaylistsByName(name: String, offset: Int) : PlaylistsDTO {
+        var response = PlaylistsDTO(items = arrayOf())
+
+        try {
+            val token = getToken()
+            val dataCall = spotifyAPI.getPlaylistsByName(name=name, authHeader=bearerTokenEncoder(token), offset=offset)
+            dataCall.execute().body()?.let {
+                response = it.playlists
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        finally {
+            return response
+        }
+    }
+
+    fun getPlaylistsByIdOrName(searchExpression : String, offset: Int) : PlaylistsDTO{
+        var response = PlaylistsDTO(items = arrayOf())
+
+        try {
+            // id search
+            val foundItem = getPlaylistById(searchExpression)
+            if(foundItem.id == searchExpression){
+                response = PlaylistsDTO(items = arrayOf(foundItem))
+            }
+            // name search
+            if(response.items.isEmpty()){
+                response = getPlaylistsByName(searchExpression, offset)
+            }
         }
         catch (e: Exception) {
             e.printStackTrace()

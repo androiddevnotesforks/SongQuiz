@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class PlaylistsState{
-    ERROR_PLAYLIST_ADD, LOADING, READY
+enum class PlaylistsUiState{
+    LOADING, READY, SHOW_ADD_SCREEN, CANNOT_FIND_PLAYLIST
 }
 
 @HiltViewModel
@@ -23,30 +23,34 @@ class PlaylistsViewModel @Inject constructor(
         MutableLiveData<List<Playlist>>()
     }
 
-    val playlistsState: MutableLiveData<PlaylistsState> by lazy {
-        MutableLiveData<PlaylistsState>()
+    val playlistsState: MutableLiveData<PlaylistsUiState> by lazy {
+        MutableLiveData<PlaylistsUiState>()
     }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsState.postValue(PlaylistsState.LOADING)
-            playlists.postValue(repository.getPlaylists().reversed())
-            playlistsState.postValue(PlaylistsState.READY)
+            playlistsState.postValue(PlaylistsUiState.LOADING)
+            playlists.postValue(repository.getPlaylists())
+            playlistsState.postValue(PlaylistsUiState.READY)
         }
     }
 
-    fun addPlaylistById(id: String){
+    fun searchPlaylistsByIdOrName(searchExpression: String){
         viewModelScope.launch(Dispatchers.IO) {
 
-            playlistsState.postValue(PlaylistsState.LOADING)
-            val success = repository.addPlaylistById(id)
+            playlistsState.postValue(PlaylistsUiState.LOADING)
+            val playlistsFound = repository.searchPlaylistsByIdOrName(searchExpression)
+            val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
 
-            if(success){
-                playlists.postValue(repository.getPlaylists())
-                playlistsState.postValue(PlaylistsState.READY)
+            if(playlistsFound.isNotEmpty()){
+                // pass playlists found and playlist ids already added to add view model in a companion
+                PlaylistsAddViewModel.transferPlaylistsToShow = playlistsFound
+                PlaylistsAddViewModel.transferPlaylistIdsAdded = playlistIdsAlreadyAdded
+                // show playlist add view
+                playlistsState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
             }
             else{
-                playlistsState.postValue(PlaylistsState.ERROR_PLAYLIST_ADD)
+                playlistsState.postValue(PlaylistsUiState.CANNOT_FIND_PLAYLIST)
             }
 
         }
@@ -54,10 +58,10 @@ class PlaylistsViewModel @Inject constructor(
 
     fun deletePlaylistById(id: String){
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsState.postValue(PlaylistsState.LOADING)
+            playlistsState.postValue(PlaylistsUiState.LOADING)
             repository.deletePlaylistById(id)
             playlists.postValue(repository.getPlaylists())
-            playlistsState.postValue(PlaylistsState.READY)
+            playlistsState.postValue(PlaylistsUiState.READY)
         }
     }
 

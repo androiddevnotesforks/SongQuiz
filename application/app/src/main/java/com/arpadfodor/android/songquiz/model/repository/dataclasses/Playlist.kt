@@ -4,6 +4,7 @@ data class Playlist (
         val id: String,
         val name: String = "",
         val description: String = "",
+        val owner: String = "",
         val previewImageUri: String = "",
         val followers: Int = 0,
         val type: String = "",

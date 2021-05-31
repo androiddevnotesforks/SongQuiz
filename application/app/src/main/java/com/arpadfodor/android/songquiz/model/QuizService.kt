@@ -4,7 +4,7 @@ import android.content.Context
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.model.quiz.QuizStanding
 import com.arpadfodor.android.songquiz.model.quiz.QuizType
-import com.arpadfodor.android.songquiz.model.quiz.TextConverter
+import com.arpadfodor.android.songquiz.model.quiz.TextParser
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -74,7 +74,7 @@ class QuizService @Inject constructor(
     var playlist = Playlist("")
     var quizType = QuizType()
     var quizStanding = QuizStanding()
-    var textConverter = TextConverter()
+    var textParser = TextParser()
     var songDurationSec = 0
 
     var lastPlayerPoints = 0
@@ -87,7 +87,7 @@ class QuizService @Inject constructor(
     var lastSongTitleHit = false
     var lastSongArtistHit = false
 
-    fun clearState(){
+    fun clear(){
         state = QuizState.WELCOME
         lastSaidByUser = ""
         playlist = Playlist("")
@@ -95,18 +95,15 @@ class QuizService @Inject constructor(
         quizStanding = QuizStanding()
     }
 
-    private fun reset(){
+    fun setStartState(){
         state = QuizState.WELCOME
-        lastSaidByUser = ""
-        playlist.tracks.shuffle()
-        quizType = QuizType()
-        quizStanding = QuizStanding()
+        restartQuiz()
     }
 
-    private fun restart(){
+    private fun restartQuiz(){
         lastSaidByUser = ""
         playlist.tracks.shuffle()
-        quizStanding.resetGame()
+        quizStanding.clearState()
     }
 
     /**
@@ -240,7 +237,7 @@ class QuizService @Inject constructor(
     }
 
     private fun startGame() : InformationPacket {
-        quizStanding.resetGame()
+        quizStanding.clearState()
 
         state = if(quizType.repeatAllowed){
             QuizState.REPEAT_SONG
@@ -418,12 +415,12 @@ class QuizService @Inject constructor(
     }
 
     private fun restartGame() : InformationPacket {
-        restart()
+        restartQuiz()
         return playFirstSong()
     }
 
     private fun configureGame() : InformationPacket {
-        reset()
+        restartQuiz()
         return welcome(true, RepeatCause.RECONFIGURE_GAME)
     }
 
@@ -452,36 +449,6 @@ class QuizService @Inject constructor(
         return speakToUserNeeded
     }
 
-    /**
-     * Search for word occurrences
-     *
-     * @param probableSpeeches      ArrayList<String> of probable user inputs
-     * @param searchedWords         Map<String, List<String>> of the searched word and the accepted variants
-     * @param onlyOneNeeded         Whether only one match needed
-     * @return List<String> containing the found words from the searched ones
-     */
-    private fun searchForWordOccurrences(probableSpeeches : ArrayList<String>,
-                                         searchedWords: Map<String, List<String>>,
-                                         onlyOneNeeded: Boolean) : List<String>{
-        val wordsFound = mutableListOf<String>()
-        for(speech in probableSpeeches) {
-            val speechWords = textConverter.normalizeText(speech)
-            for(speechWord in speechWords){
-                for(searchedWord in searchedWords){
-                    for(acceptedWordForm in searchedWord.value){
-                        if(acceptedWordForm == speechWord){
-                            wordsFound.add(searchedWord.key)
-                            if(onlyOneNeeded){
-                                return wordsFound
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return wordsFound.distinct()
-    }
-
     private fun parseNumPlayers(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
             "1" to listOf("one", "1", "van"),
@@ -490,13 +457,13 @@ class QuizService @Inject constructor(
             "4" to listOf("four", "4", "for")
         )
 
-        val playersNumber = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+        val numPlayers = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
 
-        if(playersNumber.isEmpty()){
+        if(numPlayers.isEmpty()){
             state = QuizState.NUM_PLAYERS_NOT_UNDERSTOOD
         }
         else{
-            quizStanding.numPlayers = playersNumber[0].toInt()
+            quizStanding.numPlayers = numPlayers[0].toInt()
             state = QuizState.SONG_DURATION_ASK
         }
 
@@ -510,7 +477,7 @@ class QuizService @Inject constructor(
             "long" to listOf("long", "log")
         )
 
-        val songDuration = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+        val songDuration = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
 
         if(songDuration.isEmpty()){
             // Song duration not caught
@@ -536,7 +503,7 @@ class QuizService @Inject constructor(
             "long" to listOf("long", "log")
         )
 
-        val gameType = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+        val gameType = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
 
         var name = ""
         var numRounds = 0
@@ -606,10 +573,10 @@ class QuizService @Inject constructor(
 
         val artistParts = mutableListOf<String>()
         for(artist in currentTrack.artists){
-            artistParts.addAll(textConverter.normalizeText(artist))
+            artistParts.addAll(textParser.normalizeText(artist))
         }
-        val titleParts = textConverter.normalizeText(currentTrack.name)
-        val albumParts = textConverter.normalizeText(currentTrack.album)
+        val titleParts = textParser.normalizeText(currentTrack.name)
+        val albumParts = textParser.normalizeText(currentTrack.album)
 
         val possibleHitWords = mutableMapOf<String, List<String>>()
         possibleHitWords["artist"] = artistParts
@@ -618,7 +585,7 @@ class QuizService @Inject constructor(
         // repeat command
         possibleHitWords["repeat"] = listOf("repeat", "again")
 
-        val playerHits = searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
+        val playerHits = textParser.searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
         // if repeat allowed
         if(quizType.repeatAllowed){
@@ -656,7 +623,7 @@ class QuizService @Inject constructor(
 
         lastSongAlbum = currentTrack.album
         lastSongTitle = currentTrack.name
-        lastSongArtist = textConverter.stringListToString(currentTrack.artists)
+        lastSongArtist = textParser.stringListToString(currentTrack.artists)
         lastSongPopularity = currentTrack.popularity
 
         lastPlayerPoints = points
@@ -680,7 +647,7 @@ class QuizService @Inject constructor(
             "configure" to listOf("configure", "config", "conf", "con"),
         )
 
-        val whatAsked = searchForWordOccurrences(probableSpeeches, possibleWords, true)
+        val whatAsked = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
 
         if(whatAsked.isEmpty()){
             return false

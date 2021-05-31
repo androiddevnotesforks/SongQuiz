@@ -12,6 +12,34 @@
 package com.arpadfodor.android.songquiz.model.api.dataclasses
 
 /**
+ *
+ * @param playlists
+ */
+data class PlaylistsResponseDTO (
+    val playlists: PlaylistsDTO
+)
+
+/**
+ *
+ * @param href
+ * @param items
+ * @param next
+ * @param previous
+ * @param limit
+ * @param offset
+ * @param total
+ */
+data class PlaylistsDTO (
+    val href: Any? = null,
+    val items: Array<PlaylistDTO> = emptyArray(),
+    val next: String = "",
+    val previous: String = "",
+    val limit: Int = 0,
+    val offset: Int = 0,
+    val total: Int = 0
+)
+
+/**
  * 
  * @param collaborative 
  * @param description 
@@ -28,17 +56,17 @@ package com.arpadfodor.android.songquiz.model.api.dataclasses
  * @param primary_color
  * @param id
  */
-data class ApiPlaylist (
+data class PlaylistDTO (
     val collaborative: Boolean? = null,
     val description: String? = null,
-    val external_urls: PlaylistExternalUrls? = null,
-    val followers: PlaylistFollowers? = null,
-    val images: Array<PlaylistImages>? = null,
+    val external_urls: PlaylistExternalUrlsDTO? = null,
+    val followers: PlaylistFollowersDTO? = null,
+    val images: Array<PlaylistImagesDTO>? = null,
     val name: String,
-    val owner: PlaylistOwner? = null,
+    val owner: PlaylistOwnerDTO? = null,
     val `public`: Any? = null,
     val snapshot_id: String? = null,
-    val tracks: PlaylistTracks? = null,
+    val tracks: PlaylistTracksDTO? = null,
     val type: String? = null,
     val uri: String? = null,
     val primary_color: String? = null,
@@ -49,7 +77,7 @@ data class ApiPlaylist (
  *
  * @param spotify
  */
-data class PlaylistExternalUrls (
+data class PlaylistExternalUrlsDTO (
     val spotify: String? = null
 )
 
@@ -58,7 +86,7 @@ data class PlaylistExternalUrls (
  * @param href
  * @param total
  */
-data class PlaylistFollowers (
+data class PlaylistFollowersDTO (
     val href: Any? = null,
     val total: Int? = null
 )
@@ -67,20 +95,22 @@ data class PlaylistFollowers (
  *
  * @param url
  */
-data class PlaylistImages (
+data class PlaylistImagesDTO (
     val url: String? = null
 )
 
 /**
  *
+ * @param display_name
  * @param external_urls
  * @param href
  * @param id
  * @param type
  * @param uri
  */
-data class PlaylistOwner (
-    val external_urls: PlaylistExternalUrls? = null,
+data class PlaylistOwnerDTO (
+    val display_name: String? = null,
+    val external_urls: PlaylistExternalUrlsDTO? = null,
     val href: String? = null,
     val id: String? = null,
     val type: String? = null,
@@ -97,9 +127,9 @@ data class PlaylistOwner (
  * @param previous
  * @param total
  */
-data class PlaylistTracks (
+data class PlaylistTracksDTO (
     val href: String? = null,
-    val items: Array<PlaylistTracksItems>? = null,
+    val items: Array<PlaylistTracksItemsDTO>? = null,
     val limit: Int? = null,
     val next: String? = null,
     val offset: Int? = null,
@@ -114,9 +144,9 @@ data class PlaylistTracks (
  * @param is_local
  * @param track
  */
-data class PlaylistTracksItems (
+data class PlaylistTracksItemsDTO (
     val added_at: String? = null,
-    val added_by: PlaylistOwner? = null,
+    val added_by: PlaylistOwnerDTO? = null,
     val is_local: Boolean? = null,
-    val track: ApiTrack
+    val track: TrackDTO
 )

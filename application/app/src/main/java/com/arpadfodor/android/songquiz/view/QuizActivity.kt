@@ -61,7 +61,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         closeDialog.setPositiveButton {
             startActivity(Intent(this, MainActivity::class.java))
-            viewModel.clearQuizState()
+            viewModel.clearState()
         }
         closeDialog.show()
     }
@@ -119,26 +119,29 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel.ttsState.observe(this, ttsStateObserver)
 
         val quizStateObserver = Observer<QuizUiState> { state ->
+
+            if(state != QuizUiState.LOADING){
+                binding.content.loadIndicatorProgressBar.visibility = View.GONE
+            }
+
             when(state){
                 QuizUiState.LOADING -> {
                     binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 QuizUiState.READY_TO_START -> {
-                    binding.content.loadIndicatorProgressBar.visibility = View.GONE
                     viewModel.info.value = getString(R.string.ready_to_start)
                 }
                 QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                    binding.content.loadIndicatorProgressBar.visibility = View.GONE
                     viewModel.info.value = getString(R.string.error_playlist_load_description)
-                    showError(QuizUiState.ERROR_PLAYLIST_LOAD)
+                    showInfo(QuizUiState.ERROR_PLAYLIST_LOAD)
                 }
                 QuizUiState.ERROR_PLAY_SONG -> {
                     viewModel.info.value = getString(R.string.error_play_song_description)
-                    showError(QuizUiState.ERROR_PLAY_SONG)
+                    showInfo(QuizUiState.ERROR_PLAY_SONG)
                 }
                 QuizUiState.ERROR_SPEAK_TO_USER -> {
                     viewModel.info.value = getString(R.string.error_speak_to_user_description)
-                    showError(QuizUiState.ERROR_SPEAK_TO_USER)
+                    showInfo(QuizUiState.ERROR_SPEAK_TO_USER)
                 }
                 else -> {}
             }
@@ -215,21 +218,22 @@ class QuizActivity : AppActivity(screenAlive = true) {
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    private fun showError(errorType: QuizUiState){
+    private fun showInfo(infoType: QuizUiState){
 
-        when(errorType){
+        when(infoType){
             QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                val errorMessage = getString(R.string.error_playlist_load)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                val message = getString(R.string.error_playlist_load)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                viewModel.uiState.postValue(QuizUiState.EMPTY)
             }
             QuizUiState.ERROR_PLAY_SONG -> {
-                val errorMessage = getString(R.string.error_play_song)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                val message = getString(R.string.error_play_song)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                 viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             QuizUiState.ERROR_SPEAK_TO_USER -> {
-                val errorMessage = getString(R.string.error_speak_to_user)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                val message = getString(R.string.error_speak_to_user)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                 viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             else -> {}

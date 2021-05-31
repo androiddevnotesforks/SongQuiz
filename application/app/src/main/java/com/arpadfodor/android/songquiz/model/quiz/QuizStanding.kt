@@ -10,7 +10,7 @@ class QuizStanding {
     var scores: MutableList<Int> = mutableListOf()
     var isFinished = false
 
-    fun resetGame(){
+    fun clearState(){
         currentPlayer = 0
         currentRound = 0
         currentTrackIndex = 0

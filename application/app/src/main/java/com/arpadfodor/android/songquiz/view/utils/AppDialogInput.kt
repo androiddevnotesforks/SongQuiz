@@ -5,31 +5,26 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
 import com.arpadfodor.android.songquiz.R
-import com.arpadfodor.android.songquiz.databinding.AppDialogBinding
+import com.arpadfodor.android.songquiz.databinding.AppDialogInputBinding
 
 /**
- * Dialog class of the app
+ * Dialog input class of the app
  *
  * @param    context            Context of the parent where the dialog is shown
  * @param    title              Title of the dialog
  * @param    description        Description of the dialog
- * @param    imageResourceCode  Image resource code shown on the dialog
  */
-class AppDialog(context: Context, title: String, description: String, imageResourceCode: Int) : AlertDialog(context) {
+class AppDialogInput(context: Context, title: String, description: String) : AlertDialog(context) {
 
-    private val binding: AppDialogBinding
+    private val binding: AppDialogInputBinding
 
     init {
         this.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         this.window?.attributes?.windowAnimations = R.style.DialogAnimation
 
-        binding = AppDialogBinding.inflate(LayoutInflater.from(context))
+        binding = AppDialogInputBinding.inflate(LayoutInflater.from(context))
         setView(binding.root)
-
-        val image = ContextCompat.getDrawable(context, imageResourceCode)
-        binding.ivAppDialog.setImageDrawable(image)
 
         binding.tvCustomDialogTitle.text = title
         binding.tvAppDialogDescription.text = description
@@ -47,10 +42,10 @@ class AppDialog(context: Context, title: String, description: String, imageResou
      *
      * @param    func        Lambda to execute when the positive Button is pressed
      */
-    fun setPositiveButton(func: () -> Unit){
+    fun setPositiveButton(func: (text: String) -> Unit){
         binding.btnPositiveAppDialog.setOnClickListener {
             this.dismiss()
-            func()
+            func(binding.itInput.text.toString())
         }
     }
 

@@ -11,8 +11,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class PlaylistsRepository @Inject constructor(
-    val dao: PlaylistDAO,
-    val apiService: ApiService
+    private val dao: PlaylistDAO,
+    private val apiService: ApiService
 ) {
 
     fun getPlaylists() : List<Playlist>{
@@ -21,7 +21,7 @@ class PlaylistsRepository @Inject constructor(
         for(item in dbPlaylists){
             playlists.add(item.toPlaylist())
         }
-        return playlists
+        return playlists.reversed()
     }
 
     fun addPlaylistById(id: String) : Boolean{
@@ -30,6 +30,12 @@ class PlaylistsRepository @Inject constructor(
             return false
         }
         val playlist = result.toPlaylist()
+        val toInsert = playlist.toDbPlaylist()
+        dao.insert(toInsert)
+        return true
+    }
+
+    fun addPlaylist(playlist: Playlist) : Boolean{
         val toInsert = playlist.toDbPlaylist()
         dao.insert(toInsert)
         return true
@@ -47,6 +53,20 @@ class PlaylistsRepository @Inject constructor(
     fun downloadPlaylistById(id: String) : Playlist{
         val apiPlaylist = apiService.getPlaylistById(id)
         return apiPlaylist.toPlaylist()
+    }
+
+    fun searchPlaylistsByIdOrName(searchExpression: String, offset: Int = 0) : List<Playlist>{
+        val playlists = mutableListOf<Playlist>()
+
+        if(searchExpression.isBlank()){
+            return playlists
+        }
+
+        val apiPlaylists = apiService.getPlaylistsByIdOrName(searchExpression, offset).items
+        for(apiPlaylist in apiPlaylists){
+            playlists.add(apiPlaylist.toPlaylist())
+        }
+        return playlists
     }
 
 }
