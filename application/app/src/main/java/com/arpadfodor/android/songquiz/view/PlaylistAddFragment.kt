@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
@@ -26,7 +27,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         viewModel = ViewModelProvider(this).get(PlaylistsAddViewModel::class.java)
 
         val addLambda: (Playlist) -> Unit = { playlist -> addPlaylist(playlist.id) }
-        val lastItemLambda: () -> Unit = { searchGetNextResult() }
+        val lastItemLambda: () -> Unit = { searchGetNextBatch() }
 
         val playlistsAdapter = PlaylistAddAdapter(this.requireContext(), addLambda, lastItemLambda)
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
@@ -99,8 +100,8 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         inputDialog.show()
     }
 
-    private fun searchGetNextResult(){
-        viewModel.searchGetNextResult()
+    private fun searchGetNextBatch(){
+        viewModel.searchGetNextBatch()
     }
 
     private fun addPlaylist(id: String){

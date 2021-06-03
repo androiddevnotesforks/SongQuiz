@@ -59,12 +59,12 @@ class PlaylistsAddViewModel @Inject constructor(
 
     }
 
-    fun searchGetNextResult(){
+    fun searchGetNextBatch(){
         val currentResult = searchResult.value ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
             playlistsAddState.postValue(PlaylistsAddUiState.LOADING)
-            searchResult.postValue(repository.searchGetNextResult(currentResult))
+            searchResult.postValue(repository.searchGetNextBatch(currentResult))
             playlistsAddState.postValue(PlaylistsAddUiState.READY)
         }
     }

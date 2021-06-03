@@ -61,7 +61,7 @@ class PlaylistsRepository @Inject constructor(
         return rawResults.toSearchResult(searchExpression)
     }
 
-    fun searchGetNextResult(currentResult: SearchResult) : SearchResult{
+    fun searchGetNextBatch(currentResult: SearchResult) : SearchResult{
         val offset = currentResult.offset + currentResult.limit
         if(offset > currentResult.total){
             return currentResult
