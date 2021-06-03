@@ -11,11 +11,9 @@ import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
-import com.arpadfodor.android.songquiz.view.utils.AppDialogInput
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -38,7 +36,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
         binding.fabAddPlaylist.setOnClickListener {
-            getSearchExpression()
+            viewModel.showAddPlaylistScreen()
         }
     }
 
@@ -74,10 +72,14 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
                 PlaylistsUiState.SHOW_ADD_SCREEN -> {
                     showAddPlaylistsScreen()
                 }
-                PlaylistsUiState.CANNOT_FIND_PLAYLIST -> {
-                    showInfo(PlaylistsUiState.CANNOT_FIND_PLAYLIST)
-                }
                 else -> {}
+            }
+
+            if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
+                binding.tvEmpty.visibility = View.VISIBLE
+            }
+            else{
+                binding.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.playlistsState.observe(this, playlistsStateObserver)
@@ -85,15 +87,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
-
-    private fun getSearchExpression() {
-        val inputDialog = AppDialogInput(this.requireContext(), getString(R.string.add_playlist),
-            getString(R.string.add_playlist_description))
-        inputDialog.setPositiveButton {
-            viewModel.searchPlaylistsByIdOrName(it)
-        }
-        inputDialog.show()
-    }
 
     private fun deletePlaylistById(id: String, name: String) {
         val inputDialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
@@ -121,17 +114,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
         if (navHostFragment.currentDestination?.id != R.id.nav_playlist_add) {
             navHostFragment.navigate(R.id.action_nav_playlists_to_nav_playlist_add, null)
             viewModel.playlistsState.postValue(PlaylistsUiState.READY)
-        }
-    }
-
-    private fun showInfo(infoType: PlaylistsUiState){
-        when(infoType){
-            PlaylistsUiState.CANNOT_FIND_PLAYLIST -> {
-                val message = getString(R.string.cannot_find_playlist)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.playlistsState.postValue(PlaylistsUiState.READY)
-            }
-            else -> {}
         }
     }
 

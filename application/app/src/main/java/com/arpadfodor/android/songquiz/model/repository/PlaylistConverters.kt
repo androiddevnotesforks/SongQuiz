@@ -1,9 +1,11 @@
 package com.arpadfodor.android.songquiz.model.repository
 
 import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
 import com.arpadfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.arpadfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.arpadfodor.android.songquiz.model.repository.dataclasses.SearchResult
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Track
 
 fun Playlist.toDbPlaylist() : DbPlaylist {
@@ -77,5 +79,20 @@ fun TrackDTO.toTrack() : Track{
         popularity = this.popularity ?: 0,
         previewUri = this.preview_url ?: "",
         type = this.type ?: ""
+    )
+}
+
+fun PlaylistsDTO.toSearchResult(searchExpression: String) : SearchResult{
+    val playlists = mutableListOf<Playlist>()
+    for(item in this.items){
+        playlists.add(item.toPlaylist())
+    }
+
+    return SearchResult(
+        items = playlists,
+        searchExpression = searchExpression,
+        limit = this.limit,
+        offset = this.offset,
+        total = this.total
     )
 }

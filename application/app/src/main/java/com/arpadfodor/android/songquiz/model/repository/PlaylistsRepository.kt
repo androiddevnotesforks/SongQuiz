@@ -3,6 +3,7 @@ package com.arpadfodor.android.songquiz.model.repository
 import com.arpadfodor.android.songquiz.model.api.ApiService
 import com.arpadfodor.android.songquiz.model.database.PlaylistDAO
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.arpadfodor.android.songquiz.model.repository.dataclasses.SearchResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,18 +56,26 @@ class PlaylistsRepository @Inject constructor(
         return apiPlaylist.toPlaylist()
     }
 
-    fun searchPlaylistsByIdOrName(searchExpression: String, offset: Int = 0) : List<Playlist>{
-        val playlists = mutableListOf<Playlist>()
+    fun searchPlaylistByIdOrName(searchExpression: String, offset: Int = 0) : SearchResult{
+        val rawResults = apiService.getPlaylistsByIdOrName(searchExpression, offset)
+        return rawResults.toSearchResult(searchExpression)
+    }
 
-        if(searchExpression.isBlank()){
-            return playlists
+    fun searchGetNextResult(currentResult: SearchResult) : SearchResult{
+        val offset = currentResult.offset + currentResult.limit
+        if(offset > currentResult.total){
+            return currentResult
         }
 
-        val apiPlaylists = apiService.getPlaylistsByIdOrName(searchExpression, offset).items
-        for(apiPlaylist in apiPlaylists){
-            playlists.add(apiPlaylist.toPlaylist())
-        }
-        return playlists
+        val nextResults = apiService.getPlaylistsByIdOrName(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
+        return SearchResult(
+            items = currentResult.items + nextResults.items,
+            searchExpression = nextResults.searchExpression,
+            // maxOf needed, as Spotify API retrieves 0s after the 1000th offset
+            limit = maxOf(nextResults.limit, currentResult.limit),
+            offset = maxOf(nextResults.offset, currentResult.offset),
+            total = maxOf(nextResults.total, currentResult.total)
+        )
     }
 
 }

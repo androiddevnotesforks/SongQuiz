@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsUiState{
-    LOADING, READY, SHOW_ADD_SCREEN, CANNOT_FIND_PLAYLIST
+    LOADING, READY, SHOW_ADD_SCREEN
 }
 
 @HiltViewModel
@@ -35,25 +35,10 @@ class PlaylistsViewModel @Inject constructor(
         }
     }
 
-    fun searchPlaylistsByIdOrName(searchExpression: String){
-        viewModelScope.launch(Dispatchers.IO) {
-
-            playlistsState.postValue(PlaylistsUiState.LOADING)
-            val playlistsFound = repository.searchPlaylistsByIdOrName(searchExpression)
-            val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
-
-            if(playlistsFound.isNotEmpty()){
-                // pass playlists found and playlist ids already added to add view model in a companion
-                PlaylistsAddViewModel.transferPlaylistsToShow = playlistsFound
-                PlaylistsAddViewModel.transferPlaylistIdsAdded = playlistIdsAlreadyAdded
-                // show playlist add view
-                playlistsState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
-            }
-            else{
-                playlistsState.postValue(PlaylistsUiState.CANNOT_FIND_PLAYLIST)
-            }
-
-        }
+    fun showAddPlaylistScreen(){
+        val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
+        PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
+        playlistsState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
     }
 
     fun deletePlaylistById(id: String){

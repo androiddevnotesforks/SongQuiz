@@ -23,9 +23,9 @@
         android:id="@+id/tvEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_margin="@dimen/playlist_item_margin"
-        android:text="@string/cannot_find_playlist"
+        android:text="@string/empty_search_list"
         android:theme="@style/ParagraphText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,15 +44,15 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
-        android:id="@+id/fabBack"
+        android:id="@+id/fabSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/fabAddPlaylistDescription"
         app:backgroundTint="@color/colorButtonPositive"
-        android:src="@drawable/icon_back"
+        android:src="@drawable/icon_search"
         app:tint="@color/colorIcon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

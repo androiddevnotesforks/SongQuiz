@@ -13,12 +13,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 
-class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playlist) -> Unit) :
+class PlaylistAddAdapter(private val context: Context,
+                         private val onAdd: (Playlist) -> Unit, private val onLastItemReached: () -> Unit) :
         ListAdapter<Playlist, PlaylistAddAdapter.PlaylistAddViewHolder>(PlaylistAddDiffCallback) {
 
     /* ViewHolder for Playlist, takes the view binding, the onClick behavior, and the context. */
-    class PlaylistAddViewHolder(val itemBinding: PlaylistAddItemBinding,
-                                private val context: Context, val onAdd: (Playlist) -> Unit) :
+    class PlaylistAddViewHolder(val itemBinding: PlaylistAddItemBinding, private val context: Context,
+                                val onAdd: (Playlist) -> Unit) :
         RecyclerView.ViewHolder(itemBinding.root){
 
         val imageSize = context.resources.getDimension(R.dimen.playlist_item_image_size).toInt()
@@ -62,6 +63,11 @@ class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playl
 
     /* Gets current playlist and uses it to bind view. */
     override fun onBindViewHolder(holder: PlaylistAddViewHolder, position: Int){
+        // last item reached, invoke callback
+        if(position == itemCount-1){
+            onLastItemReached()
+        }
+
         val playlist = getItem(position)
         holder.bind(playlist)
     }

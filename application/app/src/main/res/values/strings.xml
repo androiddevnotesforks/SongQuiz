@@ -68,9 +68,10 @@
 
     <string name="owner_text">by %1$s</string>
 
-    <string name="add_playlist">Add playlist</string>
-    <string name="add_playlist_description">Type the name or the Spotify Id of the playlist.</string>
+    <string name="search_playlist">Search playlist</string>
+    <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>
     <string name="empty_list">Click the add button to add playlists.</string>
+    <string name="empty_search_list">Click the search button to browse playlists.</string>
     <string name="cannot_find_playlist">Not found or internet is not available</string>
     <string name="error_playlist_add">Cannot add this playlist</string>
     <string name="success_playlist_add">Successfully added</string>
