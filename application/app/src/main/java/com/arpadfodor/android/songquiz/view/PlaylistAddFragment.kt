@@ -1,12 +1,11 @@
 package com.arpadfodor.android.songquiz.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -15,24 +14,15 @@ import com.arpadfodor.android.songquiz.viewmodel.PlaylistsAddUiState
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsAddViewModel
 import com.google.android.material.snackbar.Snackbar
 
-class PlaylistAddFragment : AppFragment() {
+class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
 
-    private var _binding: FragmentPlaylistAddBinding? = null
-    // This property is only valid between onCreateView and onDestroyView
-    private val binding get() = _binding!!
+    private val binding: FragmentPlaylistAddBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsAddViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentPlaylistAddBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(PlaylistsAddViewModel::class.java)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(PlaylistsAddViewModel::class.java)
 
         val addLambda: (Playlist) -> Unit = { playlist -> addPlaylist(playlist.id) }
 
@@ -83,7 +73,6 @@ class PlaylistAddFragment : AppFragment() {
     }
 
     private fun showInfo(errorType: PlaylistsAddUiState){
-
         val message = when(errorType){
             PlaylistsAddUiState.ERROR_ADD_PLAYLIST -> {
                 getString(R.string.error_playlist_add)
@@ -100,7 +89,6 @@ class PlaylistAddFragment : AppFragment() {
         }
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         viewModel.playlistsAddState.postValue(PlaylistsAddUiState.READY)
-
     }
 
 }

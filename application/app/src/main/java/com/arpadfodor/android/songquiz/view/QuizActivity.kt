@@ -14,6 +14,7 @@ import com.arpadfodor.android.songquiz.view.utils.AppActivity
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
@@ -155,9 +156,15 @@ class QuizActivity : AppActivity(screenAlive = true) {
             else{
                 val options = RequestOptions()
                     .centerCrop()
+                    // better image quality: 4 bytes per pixel
+                    .format(DecodeFormat.PREFER_ARGB_8888)
                     .placeholder(R.drawable.icon_album)
                     .error(R.drawable.icon_album)
-                Glide.with(this).load(uri).apply(options).into(binding.content.ivPlaylist)
+
+                Glide.with(this)
+                    .load(uri)
+                    .apply(options)
+                    .into(binding.content.ivPlaylist)
             }
         }
         viewModel.playlistImageUri.observe(this, playlistUriObserver)

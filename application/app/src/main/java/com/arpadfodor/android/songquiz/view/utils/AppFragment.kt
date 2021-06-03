@@ -7,7 +7,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * The base fragment class of the app - can be inherited from
  */
 @AndroidEntryPoint
-abstract class AppFragment : Fragment() {
+abstract class AppFragment(layoutId: Int) : Fragment(layoutId) {
 
     override fun onResume() {
         super.onResume()

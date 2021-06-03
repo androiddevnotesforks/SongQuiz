@@ -3,37 +3,25 @@ package com.arpadfodor.android.songquiz.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
 import com.arpadfodor.android.songquiz.viewmodel.AboutViewModel
 import com.arpadfodor.android.songquiz.viewmodel.TtsAboutState
-import java.lang.RuntimeException
 
-class AboutFragment : AppFragment() {
+class AboutFragment : AppFragment(R.layout.fragment_about) {
 
-    private var _binding: FragmentAboutBinding? = null
-    // This property is only valid between onCreateView and onDestroyView
-    private val binding get() = _binding!!
+    private val binding: FragmentAboutBinding by viewBinding()
 
     private lateinit var viewModel: AboutViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentAboutBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
 
         binding.fabSpeak.setOnClickListener {
             viewModel.speak(getString(R.string.about_text))

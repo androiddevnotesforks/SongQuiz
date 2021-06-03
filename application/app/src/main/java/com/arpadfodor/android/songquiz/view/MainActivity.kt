@@ -12,6 +12,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityMainBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivityMenu
+import com.bumptech.glide.Glide
+import com.bumptech.glide.MemoryCategory
 
 class MainActivity : AppActivityMenu(screenAlive = false) {
 
@@ -47,5 +49,17 @@ class MainActivity : AppActivityMenu(screenAlive = false) {
     override fun subscribeViewModel() {}
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
+
+    override fun onResume() {
+        super.onResume()
+        // prevent Glide using much memory
+        Glide.get(this).setMemoryCategory(MemoryCategory.LOW)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // reset Glide's original memory cache strategy
+        Glide.get(this).setMemoryCategory(MemoryCategory.NORMAL)
+    }
     
 }

@@ -10,15 +10,18 @@ import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.PlaylistAddItemBinding
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 
 class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playlist) -> Unit) :
         ListAdapter<Playlist, PlaylistAddAdapter.PlaylistAddViewHolder>(PlaylistAddDiffCallback) {
 
     /* ViewHolder for Playlist, takes the view binding, the onClick behavior, and the context. */
-    class PlaylistAddViewHolder(private val itemBinding: PlaylistAddItemBinding, private val context: Context,
-                             val onAdd: (Playlist) -> Unit) :
-            RecyclerView.ViewHolder(itemBinding.root){
+    class PlaylistAddViewHolder(val itemBinding: PlaylistAddItemBinding,
+                                private val context: Context, val onAdd: (Playlist) -> Unit) :
+        RecyclerView.ViewHolder(itemBinding.root){
+
+        val imageSize = context.resources.getDimension(R.dimen.playlist_item_image_size).toInt()
 
         fun bind(playlist: Playlist){
             itemBinding.playlistItemLayout.setOnClickListener {
@@ -36,9 +39,17 @@ class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playl
 
             val options = RequestOptions()
                 .centerCrop()
+                // smaller image: only 2 bytes per pixel
+                .format(DecodeFormat.PREFER_RGB_565)
+                // specific, small image needed as thumbnail
+                .override(imageSize, imageSize)
                 .placeholder(R.drawable.icon_album)
                 .error(R.drawable.icon_album)
-            Glide.with(itemBinding.playlistImage).load(playlist.previewImageUri).apply(options).into(itemBinding.playlistImage)
+
+            Glide.with(itemBinding.playlistImage)
+                .load(playlist.previewImageUri)
+                .apply(options)
+                .into(itemBinding.playlistImage)
         }
 
     }
@@ -53,6 +64,11 @@ class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playl
     override fun onBindViewHolder(holder: PlaylistAddViewHolder, position: Int){
         val playlist = getItem(position)
         holder.bind(playlist)
+    }
+
+    override fun onViewRecycled(holder: PlaylistAddViewHolder) {
+        super.onViewRecycled(holder)
+        Glide.with(holder.itemBinding.playlistImage).clear(holder.itemBinding.playlistImage)
     }
 
 }

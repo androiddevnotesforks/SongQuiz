@@ -2,12 +2,11 @@ package com.arpadfodor.android.songquiz.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -22,24 +21,15 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment() {
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
 
-    private var _binding: FragmentPlaylistsBinding? = null
-    // This property is only valid between onCreateView and onDestroyView
-    private val binding get() = _binding!!
+    private val binding: FragmentPlaylistsBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
         val startLambda: (Playlist) -> Unit = { playlist -> startPlaylistById(playlist.id) }
         val deleteLambda: (Playlist) -> Unit = { playlist -> deletePlaylistById(playlist.id, playlist.name) }
@@ -135,7 +125,6 @@ class PlaylistsFragment : AppFragment() {
     }
 
     private fun showInfo(infoType: PlaylistsUiState){
-
         when(infoType){
             PlaylistsUiState.CANNOT_FIND_PLAYLIST -> {
                 val message = getString(R.string.cannot_find_playlist)
@@ -144,7 +133,6 @@ class PlaylistsFragment : AppFragment() {
             }
             else -> {}
         }
-
     }
 
 }
