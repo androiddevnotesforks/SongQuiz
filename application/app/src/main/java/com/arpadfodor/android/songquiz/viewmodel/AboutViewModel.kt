@@ -7,8 +7,6 @@ import com.arpadfodor.android.songquiz.model.TextToSpeechService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 enum class TtsAboutState{
     ENABLED, SPEAKING
@@ -34,10 +32,10 @@ class AboutViewModel  @Inject constructor(
             ttsState.value = TtsAboutState.ENABLED
         }
 
-        subscribeTextToSpeechListeners()
+        subscribeTtsListeners()
     }
 
-    private fun subscribeTextToSpeechListeners(){
+    fun subscribeTtsListeners(){
         textToSpeechService.setCallbacks(
             started = {
                 ttsState.postValue(TtsAboutState.SPEAKING)
@@ -48,6 +46,14 @@ class AboutViewModel  @Inject constructor(
             error = {
                 ttsState.postValue(TtsAboutState.ENABLED)
             }
+        )
+    }
+
+    fun unsubscribeTtsListeners(){
+        textToSpeechService.setCallbacks(
+            started = {},
+            finished = {},
+            error = {}
         )
     }
 

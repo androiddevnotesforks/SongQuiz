@@ -53,6 +53,8 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     }
 
     override fun subscribeViewModel() {
+        viewModel.subscribeTtsListeners()
+
         val ttsStateObserver = Observer<TtsAboutState> { state ->
             when(state){
                 TtsAboutState.ENABLED -> {
@@ -73,6 +75,8 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     }
 
     override fun appearingAnimations() {}
-    override fun unsubscribeViewModel() {}
+    override fun unsubscribeViewModel() {
+        viewModel.unsubscribeTtsListeners()
+    }
 
 }
