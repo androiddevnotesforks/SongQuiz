@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-<item android:right="200dp">
-    <rotate
-        android:fromDegrees="-45"
-        android:pivotX="0%"
-        android:pivotY="0%" >
-        <shape android:shape="rectangle">
-            <solid android:color="@color/colorInputMessageBox" />
-        </shape>
-    </rotate>
-</item>
-<item android:left="@dimen/messagebox_inner_padding">
+<item>
     <shape
         android:shape="rectangle">
-        <solid android:color="@color/colorInputMessageBox"/>
+        <solid android:color="@color/colorMessageBox"/>
         <corners
             android:bottomLeftRadius="@dimen/messagebox_corner_radius"
             android:bottomRightRadius="@dimen/messagebox_corner_radius"

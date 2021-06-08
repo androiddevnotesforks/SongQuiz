@@ -3,7 +3,6 @@ package com.arpadfodor.android.songquiz.view
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
@@ -38,10 +37,6 @@ class QuizActivity : AppActivity(screenAlive = true) {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        // to make text views scrollable
-        binding.content.tvInfo.movementMethod = ScrollingMovementMethod()
-        binding.content.tvRecognition.movementMethod = ScrollingMovementMethod()
 
         // load ad
         val adRequest = AdRequest.Builder().build()
@@ -185,7 +180,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
                 }
             }
 
-            binding.content.tvInfo.text = info
+            view.text = info
         }
         viewModel.info.observe(this, infoObserver)
 
@@ -205,7 +200,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
                 }
             }
 
-            binding.content.tvRecognition.text = recognition
+            view.text = recognition
         }
         viewModel.recognition.observe(this, recognitionObserver)
 

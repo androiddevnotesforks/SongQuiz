@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.5">
-    <!ENTITY appDate "31/05/2021">
+    <!ENTITY appVersion "v0.6">
+    <!ENTITY appDate "09/06/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY clientId "51aee5a292494583852e135803681e05">
     <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
@@ -38,16 +38,23 @@
     <string name="menu_about">About</string>
 
     <string name="about_text">
-         &appName; \n\n
-         &appVersion; \n\n
-         &appDate; \n\n
-         Created by &appCreator; \n\n
-         This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing. \n\n\n
-         Legal information \n\n
-         © &appDate; &appCreator; \n\n
-         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. \n\n\n
-         Acknowledgments \n\n
-         Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay. </string>
+        Created by &appCreator;\n\n
+        &appDate;\n\n
+        &appVersion;\n\n
+        This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing.\n\n
+    </string>
+
+    <string name="legal_title">Legal information</string>
+    <string name="legal_text">
+        © &appDate; &appCreator;\n\n
+        The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+        \n\n
+    </string>
+
+    <string name="acknowledgments_title">Acknowledgments</string>
+    <string name="acknowledgments_text">
+         Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay.\n\n
+    </string>
 
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
@@ -70,8 +77,8 @@
 
     <string name="search_playlist">Search playlist</string>
     <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>
-    <string name="empty_list">Click the add button to add playlists.</string>
-    <string name="empty_search_list">Click the search button to browse playlists.</string>
+    <string name="empty_list">Click the add button to add playlists</string>
+    <string name="empty_search_list">Click the search button to browse playlists</string>
     <string name="cannot_find_playlist">Not found or internet is not available</string>
     <string name="error_playlist_add">Cannot add this playlist</string>
     <string name="success_playlist_add">Successfully added</string>

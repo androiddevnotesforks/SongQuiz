@@ -27,14 +27,12 @@
         app:layout_constraintBottom_toTopOf="@+id/adQuiz"/>
 
     <TextView
-        style="@style/SparseParagraphText"
+        style="@style/MessageBox"
         android:id="@+id/tvInfo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text=""
-        android:scrollbars="vertical"
-        android:background="@drawable/messagebox_output"
-        android:paddingStart="@dimen/messagebox_inner_padding"
+        android:maxLines="8"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ttsSpeechButton"
@@ -42,14 +40,12 @@
         app:layout_constraintBottom_toTopOf="@+id/tvRecognition" />
 
     <TextView
-        style="@style/SparseParagraphText"
+        style="@style/MessageBox"
         android:id="@+id/tvRecognition"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text=""
-        android:scrollbars="vertical"
-        android:background="@drawable/messagebox_input"
-        android:paddingEnd="@dimen/messagebox_inner_padding"
+        android:maxLines="6"
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/userSpeechButton"
         app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"

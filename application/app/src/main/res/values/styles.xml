@@ -44,10 +44,19 @@
         <item name="android:scaleType">fitCenter</item>
     </style>
 
+    <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:max">@integer/progressbar_max_value</item>
+        <item name="android:progress">0</item>
+        <item name="android:progressDrawable">@drawable/progressbar_time</item>
+        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
+    </style>
+
     <style name="ParagraphText">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textSize">@dimen/paragraph_text_size</item>
-        <item name="android:fontFamily">@font/paragraph</item>
+        <item name="android:fontFamily">@font/font_paragraph</item>
         <item name="android:gravity">start</item>
         <item name="android:layout_marginTop">@dimen/paragraph_margin</item>
         <item name="android:layout_marginStart">@dimen/paragraph_margin</item>
@@ -59,35 +68,25 @@
         <item name="android:paddingBottom">@dimen/paragraph_padding</item>
     </style>
 
-    <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">5dp</item>
-        <item name="android:max">@integer/progressbar_max_value</item>
-        <item name="android:progress">0</item>
-        <item name="android:progressDrawable">@drawable/progressbar_time</item>
-        <item name="android:layout_marginTop">@dimen/paragraph_sparse_margin</item>
-    </style>
-
-    <style name="SparseParagraphText" parent="ParagraphText">
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginTop">@dimen/paragraph_sparse_margin</item>
-        <item name="android:layout_marginStart">@dimen/paragraph_sparse_margin</item>
-        <item name="android:layout_marginEnd">@dimen/paragraph_sparse_margin</item>
-        <item name="android:layout_marginBottom">@dimen/paragraph_sparse_margin</item>
+    <style name="SubtitleText" parent="ParagraphText">
+        <item name="android:textColor">@color/colorTextSubtitle</item>
+        <item name="android:textSize">@dimen/subtitle_text_size</item>
+        <item name="android:fontFamily">@font/font_subtitle</item>
     </style>
 
     <style name="TitleText">
         <item name="android:textColor">@color/colorTextTitle</item>
         <item name="android:textSize">@dimen/title_text_size</item>
-        <item name="android:fontFamily">@font/subtitle</item>
+        <item name="android:fontFamily">@font/font_title</item>
         <item name="android:padding">@dimen/title_padding</item>
         <item name="android:layout_margin">@dimen/title_margin</item>
         <item name="android:textAlignment">center</item>
+        <item name="textAllCaps">true</item>
     </style>
 
-    <style name="SubtitleText" parent="ParagraphText">
-        <item name="android:textColor">@color/colorTextSubtitle</item>
-        <item name="android:textSize">@dimen/subtitle_text_size</item>
+    <style name="FancyText" parent="TitleText">
+        <item name="android:fontFamily">@font/font_fancy</item>
+        <item name="textAllCaps">true</item>
     </style>
 
     <style name="InputText" parent="ParagraphText">
@@ -100,6 +99,16 @@
     <style name="ButtonLabel" parent="ParagraphText">
         <item name="android:textAlignment">textStart</item>
         <item name="android:gravity">start</item>
+    </style>
+
+    <style name="MessageBox" parent="ParagraphText">
+        <item name="android:gravity">center</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:background">@drawable/message_box</item>
+        <item name="android:layout_marginTop">@dimen/messagebox_margin</item>
+        <item name="android:layout_marginBottom">@dimen/messagebox_margin</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
     </style>
 
 </resources>

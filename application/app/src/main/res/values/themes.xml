@@ -19,6 +19,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.SongQuiz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.SongQuiz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:fontFamily">@font/font_title</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
     <style name="Theme.SongQuiz.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -3,6 +3,7 @@ package com.arpadfodor.android.songquiz.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,23 +24,19 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
 
-        binding.fabSpeak.setOnClickListener {
-            viewModel.speak(getString(R.string.about_text))
-        }
-
-        binding.fabMoreFromDeveloper.setOnClickListener {
+        binding.content.fabMoreFromDeveloper.setOnClickListener {
             val developerPageUri = Uri.parse(getString(R.string.developer_page))
             val browserIntent = Intent(Intent.ACTION_VIEW, developerPageUri)
             startActivity(browserIntent)
         }
 
-        binding.fabReview.setOnClickListener {
+        binding.content.fabReview.setOnClickListener {
             val storePageUri = Uri.parse(getString(R.string.store_page, context?.packageName ?: ""))
             val storeIntent = Intent(Intent.ACTION_VIEW, storePageUri)
             startActivity(storeIntent)
         }
 
-        binding.fabBugReport.setOnClickListener {
+        binding.content.fabBugReport.setOnClickListener {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 val appName = getString(R.string.app_name)
                 data = Uri.parse("mailto:")
@@ -60,7 +57,10 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                 TtsAboutState.ENABLED -> {
                     binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
                     binding.fabSpeak.setOnClickListener {
-                        viewModel.speak(getString(R.string.about_text))
+                        val text = getString(R.string.app_name) + ". " + getString(R.string.about_text) +
+                                " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text) +
+                                " " + getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text)
+                        viewModel.speak(text)
                     }
                 }
                 TtsAboutState.SPEAKING -> {

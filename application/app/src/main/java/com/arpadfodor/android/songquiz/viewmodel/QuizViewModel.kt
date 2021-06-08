@@ -174,6 +174,8 @@ class QuizViewModel @Inject constructor(
             }
             val error = {
                 uiState.postValue(QuizUiState.ERROR_SPEAK_TO_USER)
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
                 isSuccess = false
                 cont.resume(true)
             }
@@ -212,10 +214,12 @@ class QuizViewModel @Inject constructor(
                 isSuccess = true
             }
             val error = {
-                uiState.postValue(QuizUiState.ERROR_PLAY_SONG)
                 timer.cancel()
                 timer.onFinish()
                 isSuccess = false
+                uiState.postValue(QuizUiState.ERROR_PLAY_SONG)
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
             }
 
             val playStarted = mediaPlayerService.playUrlSound(soundUri, finished, error)
@@ -237,6 +241,8 @@ class QuizViewModel @Inject constructor(
                 cont.resume(true)
             }
             val error = {
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
                 isSuccess = false
                 cont.resume(true)
             }

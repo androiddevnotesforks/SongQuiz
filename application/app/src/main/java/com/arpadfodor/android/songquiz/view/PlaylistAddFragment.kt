@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
@@ -33,6 +32,9 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
         binding.fabSearch.setOnClickListener{
+            showSearchExpressionDialog()
+        }
+        binding.tvEmpty.setOnClickListener {
             showSearchExpressionDialog()
         }
     }

@@ -12,8 +12,7 @@
     <color name="colorTextSubtitle">#DFFFFF</color>
     <color name="colorTextInput">#DFFFFF</color>
 
-    <color name="colorInputMessageBox">#303030</color>
-    <color name="colorOutputMessageBox">#303030</color>
+    <color name="colorMessageBox">#393E46</color>
 
     <color name="colorIcon">#DFFFFF</color>
     <color name="colorActive">#FF0000</color>

@@ -28,6 +28,10 @@ class PlaylistsViewModel @Inject constructor(
     }
 
     init {
+        loadData()
+    }
+
+    fun loadData(){
         viewModelScope.launch(Dispatchers.IO) {
             playlistsState.postValue(PlaylistsUiState.LOADING)
             playlists.postValue(repository.getPlaylists())

@@ -38,6 +38,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
         binding.fabAddPlaylist.setOnClickListener {
             viewModel.showAddPlaylistScreen()
         }
+        binding.tvEmpty.setOnClickListener {
+            viewModel.showAddPlaylistScreen()
+        }
     }
 
     override fun subscribeViewModel() {
@@ -109,12 +112,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
     }
 
     private fun showAddPlaylistsScreen(){
-        // this check is needed to prevent illegal navigation state exception
         val navHostFragment = NavHostFragment.findNavController(this)
-        if (navHostFragment.currentDestination?.id != R.id.nav_playlist_add) {
-            navHostFragment.navigate(R.id.action_nav_playlists_to_nav_playlist_add, null)
-            viewModel.playlistsState.postValue(PlaylistsUiState.READY)
-        }
+        navHostFragment.navigate(R.id.to_nav_playlist_add, null)
+        viewModel.playlistsState.postValue(PlaylistsUiState.READY)
     }
 
 }
