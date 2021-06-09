@@ -75,9 +75,7 @@
         android:id="@+id/fabMoreFromDeveloper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorButtonPositive"
         app:srcCompat="@drawable/icon_more_apps"
-        app:tint="@color/colorIcon"
         app:layout_constraintTop_toBottomOf="@+id/acknowledgements_text"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/more_from_developer" />
@@ -96,9 +94,7 @@
         android:id="@+id/fabReview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorButtonPositive"
         app:srcCompat="@drawable/icon_review"
-        app:tint="@color/colorIcon"
         app:layout_constraintTop_toBottomOf="@+id/fabMoreFromDeveloper"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/review_app" />
@@ -117,9 +113,7 @@
         android:id="@+id/fabReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorButtonPositive"
         app:srcCompat="@drawable/icon_bug"
-        app:tint="@color/colorIcon"
         app:layout_constraintTop_toBottomOf="@+id/fabReview"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/report" />

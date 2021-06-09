@@ -65,12 +65,10 @@
     <string name="request_settings_title">Enable permission in app settings</string>
     <string name="request_settings_description">In order to work properly, the following permission is needed: %1$s. Proceed to app settings to enable it.</string>
 
-    <string name="AppImageDescription">App image</string>
-    <string name="PlaylistImageDescription">Playlist image</string>
+    <string name="MainImageDescription">Main image</string>
+    <string name="ListImageDescription">List image</string>
+    <string name="fabDescription">Floating action button</string>
     <string name="appDialogImageDescription">app dialog image</string>
-    <string name="fabAddPlaylistDescription">Add playlist</string>
-    <string name="fabBackDescription">Back</string>
-    <string name="fabSpeakDescription">Speak</string>
     <string name="nav_menu_open">Open main menu</string>
     <string name="nav_menu_close">Close main menu</string>
     <string name="nav_header_desc">Main menu header</string>

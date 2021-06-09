@@ -16,13 +16,18 @@
         <item name="android:paddingStart">@dimen/button_padding_small</item>
         <item name="android:paddingEnd">@dimen/button_padding_small</item>
         <item name="android:textStyle">bold</item>
+        <item name="tint">@color/colorLightOnDarkBackground</item>
+        <item name="textAllCaps">true</item>
     </style>
 
     <style name="FAB" parent="Theme.SongQuiz">
+        <item name="backgroundTint">@color/colorButton</item>
+        <item name="tint">@color/colorLightOnDarkBackground</item>
         <item name="android:layout_marginStart">@dimen/button_margin_big</item>
         <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
         <item name="android:layout_marginTop">@dimen/button_margin_big</item>
         <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
+        <item name="android:contentDescription">@string/fabDescription</item>
     </style>
 
     <style name="ImageButton" parent="Theme.SongQuiz">
@@ -42,6 +47,12 @@
         <item name="android:layout_marginTop">@dimen/button_margin_big</item>
         <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
         <item name="android:scaleType">fitCenter</item>
+        <item name="android:contentDescription">@string/MainImageDescription</item>
+    </style>
+
+    <style name="ListImage" parent="MainImage">
+        <item name="android:layout_margin">@dimen/list_item_small_margin</item>
+        <item name="android:contentDescription">@string/ListImageDescription</item>
     </style>
 
     <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
@@ -90,7 +101,7 @@
     </style>
 
     <style name="InputText" parent="ParagraphText">
-        <item name="android:textColor">@color/colorTextInput</item>
+        <item name="android:textColor">@color/colorText</item>
         <item name="android:textSize">@dimen/input_text_size</item>
         <item name="android:maxLines">3</item>
         <item name="android:gravity">center</item>
@@ -109,6 +120,7 @@
         <item name="android:layout_marginBottom">@dimen/messagebox_margin</item>
         <item name="android:layout_marginStart">0dp</item>
         <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
 
 </resources>

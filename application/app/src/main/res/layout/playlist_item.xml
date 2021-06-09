@@ -5,24 +5,23 @@
     android:id="@+id/playlist_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/playlist_item_small_margin">
+    android:layout_margin="@dimen/list_item_small_margin">
 
     <ImageView
         android:id="@+id/playlist_image"
-        android:layout_width="@dimen/playlist_item_image_size"
-        android:layout_height="@dimen/playlist_item_image_size"
-        android:layout_margin="@dimen/playlist_item_small_margin"
-        android:contentDescription="@string/PlaylistImageDescription"
-        android:src="@drawable/icon_album"
+        style="@style/ListImage"
+        android:layout_width="@dimen/list_item_image_size"
+        android:layout_height="@dimen/list_item_image_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/icon_album"/>
 
     <TextView
         android:id="@+id/playlist_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/playlist_item_small_margin"
+        android:layout_margin="@dimen/list_item_small_margin"
         android:padding="@dimen/playlist_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
@@ -36,7 +35,7 @@
         android:id="@+id/playlist_owner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/playlist_item_small_margin"
+        android:layout_margin="@dimen/list_item_small_margin"
         android:padding="@dimen/playlist_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
@@ -50,7 +49,7 @@
         android:id="@+id/playlist_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/playlist_item_small_margin"
+        android:layout_margin="@dimen/list_item_small_margin"
         android:padding="@dimen/playlist_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
@@ -61,10 +60,10 @@
 
     <com.arpadfodor.android.songquiz.view.utils.AppButton
         android:id="@+id/playlist_delete"
+        style="@style/AppButton"
         android:layout_width="@dimen/playlist_item_button_size"
         android:layout_height="@dimen/playlist_item_button_size"
         android:layout_margin="@dimen/playlist_item_margin"
-        android:contentDescription="@string/PlaylistImageDescription"
         android:text="@string/unicode_cross"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/playlist_start"
@@ -72,10 +71,10 @@
 
     <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/playlist_start"
+        style="@style/AppButton"
         android:layout_width="@dimen/playlist_item_button_size"
         android:layout_height="@dimen/playlist_item_button_size"
         android:layout_margin="@dimen/playlist_item_margin"
-        android:contentDescription="@string/PlaylistImageDescription"
         android:text="@string/unicode_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
