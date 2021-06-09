@@ -114,7 +114,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
-        android:id="@+id/fabBugReport"
+        android:id="@+id/fabReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/colorButtonPositive"
@@ -122,15 +122,15 @@
         app:tint="@color/colorIcon"
         app:layout_constraintTop_toBottomOf="@+id/fabReview"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/report_bug" />
+        android:contentDescription="@string/report" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabBugReport"
-        app:layout_constraintTop_toTopOf="@+id/fabBugReport"
-        app:layout_constraintBottom_toBottomOf="@+id/fabBugReport"
+        app:layout_constraintStart_toEndOf="@+id/fabReport"
+        app:layout_constraintTop_toTopOf="@+id/fabReport"
+        app:layout_constraintBottom_toBottomOf="@+id/fabReport"
         style="@style/ButtonLabel"
-        android:text="@string/report_bug"/>
+        android:text="@string/report"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

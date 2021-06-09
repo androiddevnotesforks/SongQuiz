@@ -51,6 +51,10 @@ class PlaylistsRepository @Inject constructor(
         dao.delete(id)
     }
 
+    fun deletePlaylists(){
+        dao.deleteAll()
+    }
+
     fun downloadPlaylistById(id: String) : Playlist{
         val apiPlaylist = apiService.getPlaylistById(id)
         return apiPlaylist.toPlaylist()

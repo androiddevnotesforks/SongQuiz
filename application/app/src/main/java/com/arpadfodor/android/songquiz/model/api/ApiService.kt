@@ -46,7 +46,8 @@ open class ApiService @Inject constructor(
         }
     }
 
-    fun getPlaylistById(id: String) : PlaylistDTO {
+    // must be open for mock testing
+    open fun getPlaylistById(id: String) : PlaylistDTO {
         var response = PlaylistDTO(name = "", id = "")
 
         try {

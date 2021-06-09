@@ -116,7 +116,7 @@ class QuizViewModel @Inject constructor(
         quizService.clear()
     }
 
-    fun setPlaylistById(playlistId: String){
+    fun setPlaylistByIdAndSettings(playlistId: String, repeatAllowed: Boolean, songDuration: Int){
 
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -143,7 +143,7 @@ class QuizViewModel @Inject constructor(
 
                 // successfully downloaded
                 if(playlist.id == playlistId){
-                    quizService.setQuizPlaylist(playlist)
+                    quizService.setQuizPlaylistAndSettings(playlist, repeatAllowed, songDuration)
                     // ready to start
                     userInputState.postValue(UserInputState.DISABLED)
                     ttsState.postValue(TtsState.ENABLED)

@@ -3,7 +3,6 @@ package com.arpadfodor.android.songquiz.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -36,12 +35,12 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             startActivity(storeIntent)
         }
 
-        binding.content.fabBugReport.setOnClickListener {
+        binding.content.fabReport.setOnClickListener {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 val appName = getString(R.string.app_name)
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, getString(R.string.maintenance_contact))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.maintenance_message_title, appName))
+                putExtra(Intent.EXTRA_EMAIL, getString(R.string.report_contact))
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_message_title, appName))
 
             }
             startActivity(reportIntent)
@@ -57,9 +56,10 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                 TtsAboutState.ENABLED -> {
                     binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
                     binding.fabSpeak.setOnClickListener {
-                        val text = getString(R.string.app_name) + ". " + getString(R.string.about_text) +
+                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text) +
                                 " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text) +
                                 " " + getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text)
+                        text = text.replace("\n\n", ".\n\n").replace("..", ".")
                         viewModel.speak(text)
                     }
                 }

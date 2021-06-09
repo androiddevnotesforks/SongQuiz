@@ -44,6 +44,4 @@
     <dimen name="card_horizontal_padding">40dp</dimen>
     <dimen name="card_vertical_padding">20dp</dimen>
 
-    <integer name="progressbar_max_value">1000</integer>
-
 </resources>

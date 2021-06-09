@@ -92,12 +92,12 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
     override fun unsubscribeViewModel() {}
 
     private fun deletePlaylistById(id: String, name: String) {
-        val inputDialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
+        val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
                 getString(R.string.delete_playlist_description, name), R.drawable.icon_warning)
-        inputDialog.setPositiveButton {
+        dialog.setPositiveButton {
             viewModel.deletePlaylistById(id)
         }
-        inputDialog.show()
+        dialog.show()
     }
 
     private fun startPlaylistById(id: String){

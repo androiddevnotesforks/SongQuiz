@@ -18,8 +18,6 @@ enum class InfoType{
 enum class QuizState{
     WELCOME,
     NUM_PLAYERS_NOT_UNDERSTOOD,
-    SONG_DURATION_ASK,
-    SONG_DURATION_NOT_UNDERSTOOD,
     GAME_TYPE_ASK,
     GAME_TYPE_NOT_UNDERSTOOD,
     GAME_TYPE_INVALID,
@@ -75,6 +73,8 @@ class QuizService @Inject constructor(
     var quizType = QuizType()
     var quizStanding = QuizStanding()
     var textParser = TextParser()
+
+    var repeatSongAllowed = false
     var songDurationSec = 0
 
     var lastPlayerPoints = 0
@@ -110,11 +110,13 @@ class QuizService @Inject constructor(
     }
 
     /**
-     * Set the quiz playlist
+     * Set the quiz playlist & settings
      */
-    fun setQuizPlaylist(playlistToPlay: Playlist){
+    fun setQuizPlaylistAndSettings(playlistToPlay: Playlist, repeatAllowed: Boolean, songDuration: Int){
         playlist = playlistToPlay
         playlist.tracks.shuffle()
+        repeatSongAllowed = repeatAllowed
+        songDurationSec = songDuration
     }
 
     /**
@@ -126,8 +128,6 @@ class QuizService @Inject constructor(
         val response = when(state){
             QuizState.WELCOME -> welcome()
             QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> welcome(true, RepeatCause.NOT_UNDERSTOOD)
-            QuizState.SONG_DURATION_ASK -> askSongDuration()
-            QuizState.SONG_DURATION_NOT_UNDERSTOOD -> askSongDuration(true, RepeatCause.NOT_UNDERSTOOD)
             QuizState.GAME_TYPE_ASK -> askGameType()
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> askGameType(true, RepeatCause.NOT_UNDERSTOOD)
             QuizState.GAME_TYPE_INVALID -> askGameType(true, RepeatCause.INVALID_INPUT)
@@ -180,31 +180,6 @@ class QuizService @Inject constructor(
         }
     }
 
-    private fun askSongDuration(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
-    : InformationPacket {
-        if(isRepeat){
-            var reasonText = ""
-
-            when(cause){
-                RepeatCause.NOT_UNDERSTOOD -> {
-                    reasonText = context.getString(R.string.c_not_understand)
-                }
-                else -> {}
-            }
-
-            return InformationPacket(listOf(
-                InformationItem(InfoType.SPEECH, reasonText),
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_song_duration))
-            ), true)
-        }
-        else{
-            return InformationPacket(listOf(
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_num_players_selected, quizStanding.numPlayers.toString())),
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_song_duration))
-            ), true)
-        }
-    }
-
     private fun askGameType(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
     : InformationPacket {
         if(isRepeat){
@@ -228,7 +203,7 @@ class QuizService @Inject constructor(
         }
         else{
             return InformationPacket(listOf(
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_song_duration_selected, songDurationSec.toString())),
+                InformationItem(InfoType.SPEECH, context.getString(R.string.c_num_players_selected, quizStanding.numPlayers.toString())),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_game_type)),
             ), true)
         }
@@ -257,7 +232,7 @@ class QuizService @Inject constructor(
         infoString += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
         infoString += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
         infoString += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}. "
-        infoString += context.getString(R.string.c_repeat_info, isRepeatAllowed)
+        infoString += context.getString(R.string.c_settings_info, quizType.songDurationSec.toString(), isRepeatAllowed)
 
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString)),
@@ -438,8 +413,6 @@ class QuizService @Inject constructor(
         val speakToUserNeeded = when(state){
             QuizState.WELCOME -> parseNumPlayers(probableSpeeches)
             QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> parseNumPlayers(probableSpeeches)
-            QuizState.SONG_DURATION_ASK -> parseSongDuration(probableSpeeches)
-            QuizState.SONG_DURATION_NOT_UNDERSTOOD -> parseSongDuration(probableSpeeches)
             QuizState.GAME_TYPE_ASK -> parseGameType(probableSpeeches)
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> parseGameType(probableSpeeches)
             QuizState.GAME_TYPE_INVALID -> parseGameType(probableSpeeches)
@@ -467,34 +440,9 @@ class QuizService @Inject constructor(
         }
         else{
             quizStanding.numPlayers = numPlayers[0].toInt()
-            state = QuizState.SONG_DURATION_ASK
+            state = QuizState.GAME_TYPE_ASK
         }
 
-        return true
-    }
-
-    private fun parseSongDuration(probableSpeeches : ArrayList<String>) : Boolean{
-        val possibleWords = mapOf(
-            "short" to listOf("short"),
-            "medium" to listOf("med", "medium"),
-            "long" to listOf("long", "log")
-        )
-
-        val songDuration = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
-
-        if(songDuration.isEmpty()){
-            // Song duration not caught
-            state = QuizState.SONG_DURATION_NOT_UNDERSTOOD
-            return true
-        }
-
-        when(songDuration[0]){
-            "short" -> songDurationSec = 10
-            "medium" -> songDurationSec = 20
-            "long" -> songDurationSec = 30
-        }
-
-        state = QuizState.GAME_TYPE_ASK
         return true
     }
 
@@ -513,7 +461,6 @@ class QuizService @Inject constructor(
         var pointForArtist = 0
         var pointForTrack = 0
         var pointForAlbum = 0
-        var repeatAllowed = false
 
         if(gameType.isNotEmpty()){
             when(gameType[0]){
@@ -523,7 +470,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    repeatAllowed = true
                 }
                 "short" -> {
                     name = "short"
@@ -531,7 +477,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    repeatAllowed = true
                 }
                 "medium" -> {
                     name = "medium"
@@ -539,7 +484,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    repeatAllowed = true
                 }
                 "long" -> {
                     name = "long"
@@ -547,7 +491,6 @@ class QuizService @Inject constructor(
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
-                    repeatAllowed = true
                 }
                 else -> {}
             }
@@ -558,7 +501,7 @@ class QuizService @Inject constructor(
             return true
         }
 
-        quizType = QuizType(name, numRounds, pointForArtist, pointForTrack, pointForAlbum, repeatAllowed)
+        quizType = QuizType(name, numRounds, pointForArtist, pointForTrack, pointForAlbum, repeatSongAllowed, songDurationSec)
         quizStanding.numRounds = numRounds
 
         state = if(quizType.numRounds * quizStanding.numPlayers > playlist.tracks.size){

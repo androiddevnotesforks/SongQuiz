@@ -3,7 +3,7 @@
 
     <color name="colorPrimary">#336699</color>
     <color name="colorSecondary">#336699</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#336699</color>
     <color name="colorBackground">#000000</color>
     <color name="colorTransparent">#00000000</color>
 

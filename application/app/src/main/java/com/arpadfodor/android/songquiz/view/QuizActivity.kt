@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivity
@@ -38,6 +39,11 @@ class QuizActivity : AppActivity(screenAlive = true) {
         val view = binding.root
         setContentView(view)
 
+        // get settings related to the quiz
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), false)
+        val songDuration = sharedPreferences.getInt(getString(R.string.SETTINGS_KEY_SONG_DURATION), 0)
+
         // load ad
         val adRequest = AdRequest.Builder().build()
         binding.content.adQuiz.loadAd(adRequest)
@@ -45,7 +51,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
-        viewModel.setPlaylistById(playlistId)
+        viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration)
         viewModel.numProgressSteps = resources.getInteger(R.integer.progressbar_max_value)
     }
 
