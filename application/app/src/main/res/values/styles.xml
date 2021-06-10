@@ -51,7 +51,10 @@
     </style>
 
     <style name="ListImage" parent="MainImage">
-        <item name="android:layout_margin">@dimen/list_item_small_margin</item>
+        <item name="android:layout_marginStart">@dimen/list_item_margin</item>
+        <item name="android:layout_marginTop">@dimen/list_item_small_margin</item>
+        <item name="android:layout_marginBottom">@dimen/list_item_small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/list_item_small_margin</item>
         <item name="android:contentDescription">@string/ListImageDescription</item>
     </style>
 

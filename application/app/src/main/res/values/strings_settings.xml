@@ -15,7 +15,7 @@
     <string name="settings_title_clear_cache">Clear cache</string>
     <string name="settings_title_delete_playlists">Delete playlists</string>
 
-    <string name="settings_summary_song_duration">Duration of a song in seconds</string>
+    <string name="settings_summary_song_duration">Play one song for that many seconds</string>
     <string name="settings_summary_color_mode">Switching between dark &amp; light modes is handled by your system</string>
     <string name="settings_summary_clear_cache">Reduce memory usage by clearing image cache</string>
     <string name="settings_summary_delete_playlists">Removes all items from your playlists</string>

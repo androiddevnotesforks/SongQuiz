@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_margin="@dimen/playlist_item_margin"
+        android:layout_margin="@dimen/list_item_margin"
         android:text="@string/empty_search_list"
         app:drawableEndCompat="@drawable/icon_search"
         android:theme="@style/ParagraphText"
