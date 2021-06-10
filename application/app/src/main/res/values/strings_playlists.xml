@@ -24,7 +24,7 @@
 
     <string name="unicode_start">❯</string>
     <string name="unicode_back">❮</string>
-    <string name="unicode_cross">✖</string>
+    <string name="unicode_cross">X</string>
     <string name="unicode_add">＋</string>
 
 </resources>

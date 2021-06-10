@@ -263,10 +263,11 @@ class QuizService @Inject constructor(
                 }
                 forWhatString += context.getString(R.string.c_album)
             }
-            resultString = context.getString(R.string.c_player_good_guess, "$pointsString $forWhatString")
+            val goodGuessPrefix = context.resources.getStringArray(R.array.good_guess_prefixes).random()
+            resultString = context.getString(R.string.c_player_good_guess, goodGuessPrefix, "$pointsString $forWhatString")
         }
         else{
-            resultString = context.getString(R.string.c_player_failed_guess)
+            resultString = context.resources.getStringArray(R.array.failed_guess_prefixes).random()
         }
 
         val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum,

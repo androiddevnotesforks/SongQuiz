@@ -14,13 +14,13 @@
     <color name="colorLightOnDarkBackground">#DFFFFF</color>
     <color name="colorNeutralText">#DFFFFF</color>
 
-    <color name="colorMessageBox">#222222</color>
+    <color name="colorMessageBox">#333333</color>
 
     <color name="colorIcon">#DFFFFF</color>
     <color name="colorActive">#FF0000</color>
 
     <color name="colorButton">#336699</color>
-    <color name="colorButtonPressed">#AA6688CC</color>
+    <color name="colorButtonPressed">#BB4DEEEA</color>
 
     <color name="colorDialogBackground">#BB000000</color>
 

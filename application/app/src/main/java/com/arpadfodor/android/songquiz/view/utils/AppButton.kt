@@ -19,10 +19,10 @@ open class AppButton : AppCompatButton {
 
     init {
         this.background = ContextCompat.getDrawable(context, R.drawable.app_button)
-        this.setTextColor(context.getColor(R.color.colorNeutralText))
         this.setPadding(15,25,15,25)
         this.gravity = Gravity.CENTER
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        this.setTextColor(context.getColor(R.color.colorNeutralText))
 
         this.setOnClickListener {
         }

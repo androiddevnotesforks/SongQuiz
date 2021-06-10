@@ -19,6 +19,42 @@
 
     <string name="c_not_understand">Sorry, I could not catch it.</string>
 
+    <string-array
+        name="good_guess_prefixes">
+        <item>Good!</item>
+        <item>Great!</item>
+        <item>Boom!</item>
+        <item>Kaboom!</item>
+        <item>Super!</item>
+        <item>Superb!</item>
+        <item>Wicked!</item>
+        <item>Splendid!</item>
+        <item>Brilliant!</item>
+        <item>Prime!</item>
+        <item>Awesome!</item>
+        <item>Admirable!</item>
+        <item>Smashing!</item>
+        <item>Stunning!</item>
+        <item>Dazzling!</item>
+        <item>Top-notch!</item>
+        <item>Bee\'s knees!</item>
+        <item>In the bag!</item>
+        <item>That\'s a match!</item>
+    </string-array>
+
+    <string-array
+        name="failed_guess_prefixes">
+        <item>Oh no!</item>
+        <item>Next time.</item>
+        <item>Another time.</item>
+        <item>Misfire.</item>
+        <item>Missed.</item>
+        <item>Whoops.</item>
+        <item>Ouch.</item>
+        <item>Sad news.</item>
+        <item>Whoops-a-daisy.</item>
+    </string-array>
+
     <string name="c_points">points</string>
     <string name="c_for">for</string>
     <string name="c_and">and</string>
@@ -28,8 +64,7 @@
     <string name="c_artist">artist</string>
     <string name="c_album">album</string>
     <string name="c_settings_info">Based on your settings, a song lasts for %1$s seconds, and repeating a song is%2$s allowed</string>
-    <string name="c_player_good_guess">Good! You got %1$s.</string>
-    <string name="c_player_failed_guess">Oh no!</string>
+    <string name="c_player_good_guess">%1$s You got %2$s.</string>
     <string name="c_what_song_was">The song was %1$s from %2$s. It is on the following album: %3$s. This song has a popularity score of %4$s on Spotify. Your score is %5$s.</string>
 
     <string name="c_end_game">That\'s the end of the game.</string>
