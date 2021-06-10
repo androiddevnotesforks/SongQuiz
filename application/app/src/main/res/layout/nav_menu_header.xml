@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/glVerticalMiddle"
-        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintGuide_percent="0.55"
         android:orientation="vertical"/>
 
     <ImageView
@@ -31,28 +31,32 @@
         app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/AppImageDescription" />
+        android:contentDescription="@string/MainImageDescription" />
 
     <TextView
         android:id="@+id/navHeaderTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:maxLines="2"
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/nav_header_title"
-        android:textAppearance="@style/TitleText"
+        android:textAppearance="@style/FancyText"
+        android:textColor="@color/colorLightOnDarkBackground"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/AppIcon"
         app:layout_constraintBottom_toTopOf="@+id/navHeaderSubtitle"/>
 
     <TextView
         android:id="@+id/navHeaderSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:maxLines="2"
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/nav_header_subtitle"
         android:textAppearance="@style/ParagraphText"
+        android:textColor="@color/colorLightOnDarkBackground"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,6 @@ data class QuizType(
     val pointForArtist: Int = 0,
     val pointForTitle: Int = 0,
     val pointForAlbum: Int = 0,
-    val pointForSpeed: Int = 0,
     val repeatAllowed: Boolean = false,
+    val songDurationSec: Int = 0
 )

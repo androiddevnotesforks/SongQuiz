@@ -7,8 +7,6 @@ import com.arpadfodor.android.songquiz.model.TextToSpeechService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 enum class TtsAboutState{
     ENABLED, SPEAKING
@@ -26,39 +24,47 @@ class AboutViewModel  @Inject constructor(
         MutableLiveData<TtsAboutState>()
     }
 
-    private suspend fun speakToUser(text: String){
-
-        suspendCoroutine<Boolean?> { cont ->
-
-            val started = {
-                ttsState.postValue(TtsAboutState.SPEAKING)
-            }
-
-            val finished = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-                cont.resume(true)
-            }
-
-            val error = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-                cont.resume(true)
-            }
-
-            textToSpeechService.speak(text, started, finished, error)
-
+    init {
+        if(textToSpeechService.isSpeaking()){
+            ttsState.value = TtsAboutState.SPEAKING
+        }
+        else{
+            ttsState.value = TtsAboutState.ENABLED
         }
 
+        subscribeTtsListeners()
+    }
+
+    fun subscribeTtsListeners(){
+        textToSpeechService.setCallbacks(
+            started = {
+                ttsState.postValue(TtsAboutState.SPEAKING)
+            },
+            finished = {
+                ttsState.postValue(TtsAboutState.ENABLED)
+            },
+            error = {
+                ttsState.postValue(TtsAboutState.ENABLED)
+            }
+        )
+    }
+
+    fun unsubscribeTtsListeners(){
+        textToSpeechService.setCallbacks(
+            started = {},
+            finished = {},
+            error = {}
+        )
     }
 
     fun speak(text: String){
         viewModelScope.launch {
-            speakToUser(text)
+            textToSpeechService.speak(text)
         }
     }
 
     fun stopSpeaking(){
         textToSpeechService.stop()
-        ttsState.postValue(TtsAboutState.ENABLED)
     }
 
 }

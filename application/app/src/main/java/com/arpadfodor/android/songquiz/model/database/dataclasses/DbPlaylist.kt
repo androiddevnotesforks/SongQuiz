@@ -12,6 +12,7 @@ data class DbPlaylist(
     var id: String = "",
     var name: String = "",
     var description: String = "",
+    var owner: String = "",
     var previewImageUri: String = "",
     val type: String = "",
     val uri: String = ""

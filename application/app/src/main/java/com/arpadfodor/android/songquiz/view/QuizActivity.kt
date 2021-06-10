@@ -3,17 +3,18 @@ package com.arpadfodor.android.songquiz.view
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivity
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
@@ -38,9 +39,10 @@ class QuizActivity : AppActivity(screenAlive = true) {
         val view = binding.root
         setContentView(view)
 
-        // to make text views scrollable
-        binding.content.tvInfo.movementMethod = ScrollingMovementMethod()
-        binding.content.tvRecognition.movementMethod = ScrollingMovementMethod()
+        // get settings related to the quiz
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), false)
+        val songDuration = sharedPreferences.getInt(getString(R.string.SETTINGS_KEY_SONG_DURATION), 0)
 
         // load ad
         val adRequest = AdRequest.Builder().build()
@@ -49,7 +51,8 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
-        viewModel.setPlaylistById(playlistId)
+        viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration)
+        viewModel.numProgressSteps = resources.getInteger(R.integer.progressbar_max_value)
     }
 
     override fun onBackPressed() {
@@ -60,7 +63,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
 
         closeDialog.setPositiveButton {
             startActivity(Intent(this, MainActivity::class.java))
-            viewModel.clearQuizState()
+            viewModel.clearState()
         }
         closeDialog.show()
     }
@@ -118,56 +121,56 @@ class QuizActivity : AppActivity(screenAlive = true) {
         viewModel.ttsState.observe(this, ttsStateObserver)
 
         val quizStateObserver = Observer<QuizUiState> { state ->
+
+            if(state != QuizUiState.LOADING){
+                binding.content.loadIndicatorProgressBar.visibility = View.GONE
+            }
+
             when(state){
                 QuizUiState.LOADING -> {
-                    binding.content.progressBar.visibility = View.VISIBLE
-                    binding.content.tvQuizStatus.text = ""
+                    binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 QuizUiState.READY_TO_START -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = getString(R.string.ready_to_start)
-                }
-                QuizUiState.PLAY -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
+                    viewModel.info.value = getString(R.string.ready_to_start)
                 }
                 QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text =
-                        getString(R.string.error_playlist_load_description)
-                    showError(QuizUiState.ERROR_PLAYLIST_LOAD)
+                    viewModel.info.value = getString(R.string.error_playlist_load_description)
+                    showInfo(QuizUiState.ERROR_PLAYLIST_LOAD)
                 }
                 QuizUiState.ERROR_PLAY_SONG -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
-                    showError(QuizUiState.ERROR_PLAY_SONG)
+                    viewModel.info.value = getString(R.string.error_play_song_description)
+                    showInfo(QuizUiState.ERROR_PLAY_SONG)
                 }
                 QuizUiState.ERROR_SPEAK_TO_USER -> {
-                    binding.content.progressBar.visibility = View.GONE
-                    binding.content.tvQuizStatus.text = ""
-                    showError(QuizUiState.ERROR_SPEAK_TO_USER)
+                    viewModel.info.value = getString(R.string.error_speak_to_user_description)
+                    showInfo(QuizUiState.ERROR_SPEAK_TO_USER)
                 }
                 else -> {}
             }
         }
-        viewModel.quizUiState.observe(this, quizStateObserver)
+        viewModel.uiState.observe(this, quizStateObserver)
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
-                binding.content.ivPlaylist.setImageResource(R.drawable.error)
+                binding.content.ivPlaylist.setImageResource(R.drawable.icon_album)
             }
             else{
                 val options = RequestOptions()
                     .centerCrop()
+                    // better image quality: 4 bytes per pixel
+                    .format(DecodeFormat.PREFER_ARGB_8888)
                     .placeholder(R.drawable.icon_album)
-                    .error(R.drawable.error)
-                Glide.with(this).load(uri).apply(options).into(binding.content.ivPlaylist)
+                    .error(R.drawable.icon_album)
+
+                Glide.with(this)
+                    .load(uri)
+                    .apply(options)
+                    .into(binding.content.ivPlaylist)
             }
         }
         viewModel.playlistImageUri.observe(this, playlistUriObserver)
 
         val infoObserver = Observer<String> { info ->
-
             val view = binding.content.tvInfo
 
             if(info.isBlank() && view.text.isNotBlank()){
@@ -183,12 +186,11 @@ class QuizActivity : AppActivity(screenAlive = true) {
                 }
             }
 
-            binding.content.tvInfo.text = info
+            view.text = info
         }
         viewModel.info.observe(this, infoObserver)
 
         val recognitionObserver = Observer<String> { recognition ->
-
             val view = binding.content.tvRecognition
 
             if(recognition.isBlank() && view.text.isNotBlank()){
@@ -204,17 +206,17 @@ class QuizActivity : AppActivity(screenAlive = true) {
                 }
             }
 
-            binding.content.tvRecognition.text = recognition
+            view.text = recognition
         }
         viewModel.recognition.observe(this, recognitionObserver)
 
         val songPlayedProgressObserver = Observer<Int> { progress ->
             if(progress > 0){
-                binding.content.progressBarSongPlayed.visibility = View.VISIBLE
-                binding.content.progressBarSongPlayed.progress = progress
+                binding.content.songPlayProgressBar.visibility = View.VISIBLE
+                binding.content.songPlayProgressBar.progress = progress
             }
             else{
-                binding.content.progressBarSongPlayed.visibility = View.INVISIBLE
+                binding.content.songPlayProgressBar.visibility = View.INVISIBLE
             }
         }
         viewModel.songPlayProgress.observe(this, songPlayedProgressObserver)
@@ -224,22 +226,23 @@ class QuizActivity : AppActivity(screenAlive = true) {
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    private fun showError(errorType: QuizUiState){
+    private fun showInfo(infoType: QuizUiState){
 
-        when(errorType){
+        when(infoType){
             QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                val errorMessage = getString(R.string.error_playlist_load)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                val message = getString(R.string.error_playlist_load)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                viewModel.uiState.postValue(QuizUiState.EMPTY)
             }
             QuizUiState.ERROR_PLAY_SONG -> {
-                val errorMessage = getString(R.string.error_play_song)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
-                viewModel.quizUiState.postValue(QuizUiState.PLAY)
+                val message = getString(R.string.error_play_song)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             QuizUiState.ERROR_SPEAK_TO_USER -> {
-                val errorMessage = getString(R.string.error_speak_to_user)
-                Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
-                viewModel.quizUiState.postValue(QuizUiState.PLAY)
+                val message = getString(R.string.error_speak_to_user)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                viewModel.uiState.postValue(QuizUiState.PLAY)
             }
             else -> {}
         }

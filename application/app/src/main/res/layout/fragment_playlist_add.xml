@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.PlaylistsFragment">
+    tools:context=".view.PlaylistAddFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerViewPlaylists"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fabAddPlaylist"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/playlist_scrollview_bottom_padding"
+        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_margin="@dimen/playlist_item_margin"
+        android:text="@string/empty_search_list"
+        app:drawableEndCompat="@drawable/icon_search"
+        android:theme="@style/ParagraphText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loadIndicatorProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -30,14 +45,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
-        android:id="@+id/fabAddPlaylist"
+        android:id="@+id/fabSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:contentDescription="@string/fabAddPlaylistDescription"
-        app:backgroundTint="@color/colorButtonPositive"
-        android:src="@drawable/icon_add_playlist"
-        app:tint="@color/colorIcon"
+        android:src="@drawable/icon_search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -30,31 +30,31 @@ package com.arpadfodor.android.songquiz.model.api.dataclasses
  * @param type 
  * @param uri 
  */
-data class ApiTrack (
-    val album: ApiAlbum? = null,
-    val artists: kotlin.Array<ApiArtist>,
-    val available_markets: kotlin.Array<kotlin.String>? = null,
-    val disc_number: kotlin.Int? = null,
-    val duration_ms: kotlin.Int,
-    val explicit: kotlin.Boolean? = null,
-    val external_ids: ApiTrackExternalIds? = null,
-    val external_urls: PlaylistExternalUrls? = null,
-    val href: kotlin.String? = null,
-    val id: kotlin.String,
-    val name: kotlin.String,
-    val popularity: kotlin.Int? = null,
-    val preview_url: kotlin.String? = null,
-    val track_number: kotlin.Int? = null,
-    val type: kotlin.String? = null,
-    val uri: kotlin.String? = null
+data class TrackDTO (
+    val album: AlbumDTO? = null,
+    val artists: Array<ArtistDTO>,
+    val available_markets: Array<String>? = null,
+    val disc_number: Int? = null,
+    val duration_ms: Int,
+    val explicit: Boolean? = null,
+    val external_ids: TrackExternalIdsDTO? = null,
+    val external_urls: PlaylistExternalUrlsDTO? = null,
+    val href: String? = null,
+    val id: String,
+    val name: String,
+    val popularity: Int? = null,
+    val preview_url: String? = null,
+    val track_number: Int? = null,
+    val type: String? = null,
+    val uri: String? = null
 )
 
 /**
  *
  * @param isrc
  */
-data class ApiTrackExternalIds (
-    val isrc: kotlin.String? = null
+data class TrackExternalIdsDTO (
+    val isrc: String? = null
 )
 
 /**
@@ -69,16 +69,16 @@ data class ApiTrackExternalIds (
  * @param type
  * @param uri
  */
-data class ApiAlbum (
-    val album_type: kotlin.String? = null,
-    val available_markets: kotlin.Array<kotlin.String>? = null,
-    val external_urls: PlaylistExternalUrls? = null,
-    val href: kotlin.String? = null,
-    val id: kotlin.String,
-    val images: kotlin.Array<ApiAlbumImages>? = null,
-    val name: kotlin.String,
-    val type: kotlin.String? = null,
-    val uri: kotlin.String? = null
+data class AlbumDTO (
+    val album_type: String? = null,
+    val available_markets: Array<String>? = null,
+    val external_urls: PlaylistExternalUrlsDTO? = null,
+    val href: String? = null,
+    val id: String,
+    val images: Array<AlbumImagesDTO>? = null,
+    val name: String,
+    val type: String? = null,
+    val uri: String? = null
 )
 
 /**
@@ -87,10 +87,10 @@ data class ApiAlbum (
  * @param url
  * @param width
  */
-data class ApiAlbumImages (
-    val height: kotlin.Int,
-    val url: kotlin.String,
-    val width: kotlin.Int
+data class AlbumImagesDTO (
+    val height: Int,
+    val url: String,
+    val width: Int
 )
 
 /**
@@ -102,11 +102,11 @@ data class ApiAlbumImages (
  * @param type
  * @param uri
  */
-data class ApiArtist (
-    val external_urls: PlaylistExternalUrls? = null,
-    val href: kotlin.String? = null,
-    val id: kotlin.String,
-    val name: kotlin.String,
-    val type: kotlin.String? = null,
-    val uri: kotlin.String? = null
+data class ArtistDTO (
+    val external_urls: PlaylistExternalUrlsDTO? = null,
+    val href: String? = null,
+    val id: String,
+    val name: String,
+    val type: String? = null,
+    val uri: String? = null
 )

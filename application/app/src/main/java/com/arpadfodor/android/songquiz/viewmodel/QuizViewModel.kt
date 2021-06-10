@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arpadfodor.android.songquiz.model.*
+import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -20,7 +21,7 @@ enum class TtsState{
 }
 
 enum class QuizUiState{
-    ERROR_PLAYLIST_LOAD, LOADING, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER
+    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER
 }
 
 @HiltViewModel
@@ -28,7 +29,8 @@ class QuizViewModel @Inject constructor(
     var quizService: QuizService,
     var textToSpeechService: TextToSpeechService,
     var speechRecognizerService: SpeechRecognizerService,
-    var mediaPlayerService: MediaPlayerService
+    var mediaPlayerService: MediaPlayerService,
+    var repository: PlaylistsRepository
 ) : ViewModel() {
 
     /**
@@ -48,7 +50,7 @@ class QuizViewModel @Inject constructor(
     /**
      * Quiz state
      */
-    val quizUiState: MutableLiveData<QuizUiState> by lazy {
+    val uiState: MutableLiveData<QuizUiState> by lazy {
         MutableLiveData<QuizUiState>()
     }
 
@@ -81,20 +83,26 @@ class QuizViewModel @Inject constructor(
     }
 
     /**
+     * Play song progressbar maximum value
+     */
+    var numProgressSteps = 0
+
+    /**
      * The possibly long-running task to notify the user
      */
     var infoToUserJob: Job? = null
 
     init {
-        clearQuizState()
+        clearState()
     }
 
-    fun stopActions(){
+    private fun stopActions(){
         info.postValue("")
         recognition.postValue("")
         playlistImageUri.postValue("")
         userInputState.postValue(UserInputState.DISABLED)
         ttsState.postValue(TtsState.ENABLED)
+        uiState.postValue(QuizUiState.EMPTY)
         // discard job emitting remaining information to user
         infoToUserJob?.cancel()
         // reset services
@@ -103,45 +111,156 @@ class QuizViewModel @Inject constructor(
         speechRecognizerService.stopListening()
     }
 
-    fun clearQuizState(){
+    fun clearState(){
         stopActions()
-        // reset quiz state
-        quizService.reset()
+        quizService.clear()
     }
 
-    fun setPlaylistById(playlistId: String){
-        if(quizService.playlistId == playlistId){
-            return
-        }
+    fun setPlaylistByIdAndSettings(playlistId: String, repeatAllowed: Boolean, songDuration: Int){
 
         viewModelScope.launch(Dispatchers.IO) {
-            quizUiState.postValue(QuizUiState.LOADING)
-            userInputState.postValue(UserInputState.DISABLED)
-            ttsState.postValue(TtsState.DISABLED)
 
-            val success = quizService.setPlaylistById(playlistId)
+            if(quizService.playlist.id == playlistId){
+                // prevent activity to reset view model state every time when onCreate is called
+                if(uiState.value != QuizUiState.EMPTY){
+                    return@launch
+                }
 
-            if(success){
+                quizService.setStartQuizState()
+                // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
-                quizUiState.postValue(QuizUiState.READY_TO_START)
-                playlistImageUri.postValue(quizService.getPlaylistUri())
+                uiState.postValue(QuizUiState.READY_TO_START)
             }
             else{
-                quizUiState.postValue(QuizUiState.ERROR_PLAYLIST_LOAD)
+
+                // loading state
+                uiState.postValue(QuizUiState.LOADING)
+                userInputState.postValue(UserInputState.DISABLED)
+                ttsState.postValue(TtsState.DISABLED)
+
+            val playlist = repository.downloadPlaylistById(playlistId)
+
+                // successfully downloaded
+                if(playlist.id == playlistId){
+                    quizService.setQuizPlaylistAndSettings(playlist, repeatAllowed, songDuration)
+                    // ready to start
+                    userInputState.postValue(UserInputState.DISABLED)
+                    ttsState.postValue(TtsState.ENABLED)
+                    uiState.postValue(QuizUiState.READY_TO_START)
+                    playlistImageUri.postValue(playlist.previewImageUri)
+                    // update playlist in the repository
+                    repository.updatePlaylist(playlist)
+                }
+                else{
+                    uiState.postValue(QuizUiState.ERROR_PLAYLIST_LOAD)
+                }
+
             }
         }
+    }
+
+    private suspend fun speakToUser(text: String) : Boolean{
+        var isSuccess = false
+
+        suspendCoroutine<Boolean?> { cont ->
+
+            val started = {
+                info.postValue(text)
+            }
+            val finished = {
+                isSuccess = true
+                cont.resume(true)
+            }
+            val error = {
+                uiState.postValue(QuizUiState.ERROR_SPEAK_TO_USER)
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
+                isSuccess = false
+                cont.resume(true)
+            }
+
+            textToSpeechService.setCallbacks(started, finished, error)
+            textToSpeechService.speak(text)
+        }
+
+        return isSuccess
+    }
+
+    private suspend fun playUrlSound(soundUri: String) : Boolean{
+        var isSuccess = false
+
+        suspendCoroutine<Boolean?> { cont ->
+
+            val timeStepMs = 20L
+            val msInSec = 1000L
+            val playDurationMs = quizService.songDurationSec * msInSec
+
+            val timer = object : CountDownTimer(playDurationMs, timeStepMs) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * numProgressSteps).toInt()
+                    songPlayProgress.postValue(songDurationPercentage)
+                }
+
+                override fun onFinish() {
+                    mediaPlayerService.stop()
+                    songPlayProgress.postValue(0)
+                    isSuccess = true
+                    cont.resume(true)
+                }
+            }
+
+            val finished = {
+                isSuccess = true
+            }
+            val error = {
+                timer.cancel()
+                timer.onFinish()
+                isSuccess = false
+                uiState.postValue(QuizUiState.ERROR_PLAY_SONG)
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
+            }
+
+            val playStarted = mediaPlayerService.playUrlSound(soundUri, finished, error)
+            if(playStarted){
+                timer.start()
+            }
+        }
+
+        return isSuccess
+    }
+
+    private suspend fun playLocalSound(soundName: String) : Boolean{
+        var isSuccess = false
+
+        suspendCoroutine<Boolean?> { cont ->
+
+            val finished = {
+                isSuccess = true
+                cont.resume(true)
+            }
+            val error = {
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
+                isSuccess = false
+                cont.resume(true)
+            }
+
+            mediaPlayerService.playLocalSound(soundName, finished, error)
+        }
+
+        return isSuccess
     }
 
     fun infoToUser(clearUserInputText: Boolean = false){
 
         infoToUserJob = viewModelScope.launch {
 
-            if(quizUiState.value == QuizUiState.READY_TO_START){
-                quizUiState.postValue(QuizUiState.PLAY)
+            if(uiState.value == QuizUiState.READY_TO_START){
+                uiState.postValue(QuizUiState.PLAY)
             }
-
-            if (userInputState.value == UserInputState.RECORDING) {
+            if (userInputState.value == UserInputState.RECORDING || uiState.value == QuizUiState.EMPTY) {
                 return@launch
             }
 
@@ -152,6 +271,7 @@ class QuizViewModel @Inject constructor(
             val response = quizService.getCurrentInfo()
             val infoList = response.contents
             val immediateAnswerNeeded = response.immediateAnswerNeeded
+            var isSuccessful = true
 
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.SPEAKING)
@@ -162,7 +282,7 @@ class QuizViewModel @Inject constructor(
                     return@launch
                 }
 
-                when (information.type) {
+                val isCurrentSuccessful = when (information.type) {
                     InfoType.SPEECH -> {
                         speakToUser(information.payload)
                     }
@@ -174,13 +294,17 @@ class QuizViewModel @Inject constructor(
                     }
                 }
 
+                if(!isCurrentSuccessful){
+                    isSuccessful = false
+                }
+
             }
 
             userInputState.value = UserInputState.ENABLED
             ttsState.value = TtsState.ENABLED
 
             // immediate user response is expected
-            if (immediateAnswerNeeded) {
+            if (immediateAnswerNeeded && isSuccessful) {
                 getUserInput()
             }
 
@@ -188,80 +312,9 @@ class QuizViewModel @Inject constructor(
 
     }
 
-    private suspend fun speakToUser(text: String){
-
-        suspendCoroutine<Boolean?> { cont ->
-
-            val started = {
-                info.postValue(text)
-            }
-
-            val finished = {
-                cont.resume(true)
-            }
-
-            val error = {
-                quizUiState.postValue(QuizUiState.ERROR_SPEAK_TO_USER)
-                cont.resume(true)
-            }
-
-            textToSpeechService.speak(text, started, finished, error)
-
-        }
-
-    }
-
-    private suspend fun playUrlSound(soundUri: String){
-
-        suspendCoroutine<Boolean?> { cont ->
-
-            val finished = {}
-            val error = {
-                quizUiState.postValue(QuizUiState.ERROR_PLAY_SONG)
-            }
-
-            mediaPlayerService.playUrlSound(soundUri, finished, error)
-
-            val playDurationMs = quizService.songDurationSec * 1000L
-            val timeStepMs = 10L
-
-            object : CountDownTimer(playDurationMs, timeStepMs) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * 1000).toInt()
-                    songPlayProgress.postValue(songDurationPercentage)
-                }
-
-                override fun onFinish() {
-                    mediaPlayerService.stop()
-                    cont.resume(true)
-                    songPlayProgress.postValue(0)
-                }
-            }.start()
-
-        }
-
-    }
-
-    private suspend fun playLocalSound(soundName: String){
-
-        suspendCoroutine<Boolean?> { cont ->
-
-            val finished = {
-                cont.resume(true)
-            }
-            val error = {
-                cont.resume(true)
-            }
-
-            mediaPlayerService.playLocalSound(soundName, finished, error)
-
-        }
-
-    }
-
     fun getUserInput(){
 
-        if (ttsState.value == TtsState.SPEAKING) {
+        if (ttsState.value == TtsState.SPEAKING || uiState.value == QuizUiState.EMPTY) {
             return
         }
 
@@ -273,7 +326,6 @@ class QuizViewModel @Inject constructor(
         val partial = { textList: ArrayList<String> ->
             recognition.postValue(textList[0])
         }
-
         val result = { textList: ArrayList<String> ->
             recognition.postValue(textList[0])
             userInputState.postValue(UserInputState.ENABLED)

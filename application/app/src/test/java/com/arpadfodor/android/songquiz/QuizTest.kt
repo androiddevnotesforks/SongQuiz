@@ -27,7 +27,7 @@ class QuizStandingTest{
         quizStanding = QuizStanding()
         quizStanding.numPlayers = numPlayers
         quizStanding.numRounds = numRounds
-        quizStanding.resetGame()
+        quizStanding.clearState()
         // When
         for(i in 0 until (numPlayers*numRounds)){
             quizStanding.recordResult(0)
@@ -46,7 +46,7 @@ class QuizStandingTest{
         quizStanding = QuizStanding()
         quizStanding.numPlayers = numPlayers
         quizStanding.numRounds = numRounds
-        quizStanding.resetGame()
+        quizStanding.clearState()
         // When
         for(i in 0 until (numPlayers*(numRounds-1))){
             quizStanding.recordResult(0)
@@ -65,7 +65,7 @@ class QuizStandingTest{
         quizStanding = QuizStanding()
         quizStanding.numPlayers = numPlayers
         quizStanding.numRounds = numRounds
-        quizStanding.resetGame()
+        quizStanding.clearState()
         // When
         for(i in 0 until (numPlayers*numRounds)){
             if(quizStanding.currentPlayer % 2 == 0){

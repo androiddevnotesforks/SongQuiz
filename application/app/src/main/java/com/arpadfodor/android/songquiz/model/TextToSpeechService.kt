@@ -4,6 +4,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import com.arpadfodor.android.songquiz.viewmodel.TtsAboutState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 import javax.inject.Inject
@@ -38,18 +39,21 @@ class TextToSpeechService  @Inject constructor(
         }
     }
 
+    fun setCallbacks(started: () -> Unit, finished: () -> Unit, error: () -> Unit){
+        startedCallback = started
+        finishedCallback = finished
+        errorCallback = error
+    }
+
     /**
      * Start speaking
      *
      * @param textToSpeech
      **/
-    fun speak(textToSpeech: String, started: () -> Unit, finished: () -> Unit, error: () -> Unit){
+    fun speak(textToSpeech: String){
         Log.i(this.javaClass.name, "speak")
         requestCounter++
 
-        startedCallback = started
-        finishedCallback = finished
-        errorCallback = error
         this.textToSpeech?.setOnUtteranceProgressListener(this)
 
         this.textToSpeech?.speak(

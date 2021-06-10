@@ -1,9 +1,9 @@
 package com.arpadfodor.android.songquiz
 
 import com.arpadfodor.android.songquiz.model.api.ApiService
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiArtist
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiPlaylist
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiTrack
+import com.arpadfodor.android.songquiz.model.api.dataclasses.ArtistDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.arpadfodor.android.songquiz.model.database.PlaylistDAO
 import com.arpadfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
@@ -26,7 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class PlaylistRepositoryTest{
 
     private val FAKE_ID = "1"
-    private val FAKE_API_RESPONSE = ApiPlaylist(id = "1", name = "Best playlist")
+    private val FAKE_API_RESPONSE = PlaylistDTO(id = "1", name = "Best playlist")
     private val FAKE_DB_CONTENT = DbPlaylist(id = "1", name = "Best playlist")
 
     @Mock
@@ -49,7 +49,7 @@ class PlaylistRepositoryTest{
         // Given
         `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_API_RESPONSE)
         // When
-        val result: Playlist = repo.getGamePlaylistById(FAKE_ID)
+        val result: Playlist = repo.downloadPlaylistById(FAKE_ID)
         // Then
         assertThat(result.id, `is`(FAKE_ID))
     }
@@ -91,8 +91,8 @@ class PlaylistConverterTest{
 
     private val FAKE_ID = "1"
     private val FAKE_CONTENT = "Best playlist"
-    private val API_TRACK = ApiTrack(artists = arrayOf(ApiArtist(id="2", name="Elton John")), duration_ms = 100, id = "20", name="I'm still standing")
-    private val API_PLAYLIST = ApiPlaylist(id = FAKE_ID, name = FAKE_CONTENT)
+    private val API_TRACK = TrackDTO(artists = arrayOf(ArtistDTO(id="2", name="Elton John")), duration_ms = 100, id = "20", name="I'm still standing")
+    private val API_PLAYLIST = PlaylistDTO(id = FAKE_ID, name = FAKE_CONTENT)
     private val DB_PLAYLIST = DbPlaylist(id = FAKE_ID, name = FAKE_CONTENT)
     private val PLAYLIST = Playlist(id = FAKE_ID, name = FAKE_CONTENT)
 

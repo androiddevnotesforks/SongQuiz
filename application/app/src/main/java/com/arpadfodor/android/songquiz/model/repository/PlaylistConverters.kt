@@ -1,35 +1,39 @@
 package com.arpadfodor.android.songquiz.model.repository
 
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiPlaylist
-import com.arpadfodor.android.songquiz.model.api.dataclasses.ApiTrack
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
+import com.arpadfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.arpadfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.arpadfodor.android.songquiz.model.repository.dataclasses.SearchResult
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Track
 
 fun Playlist.toDbPlaylist() : DbPlaylist {
     return DbPlaylist(
-            id = this.id,
-            name = this.name,
-            description = this.description,
-            previewImageUri = this.previewImageUri,
-            type = this.type,
-            uri = this.uri
+        id = this.id,
+        name = this.name,
+        description = this.description,
+        owner = this.owner,
+        previewImageUri = this.previewImageUri,
+        type = this.type,
+        uri = this.uri
     )
 }
 
 fun DbPlaylist.toPlaylist() : Playlist {
     return Playlist(
-            id = this.id,
-            name = this.name,
-            description = this.description,
-            previewImageUri = this.previewImageUri,
-            type = this.type,
-            uri = this.uri,
-            tracks = arrayListOf()
+        id = this.id,
+        name = this.name,
+        description = this.description,
+        owner = this.owner,
+        previewImageUri = this.previewImageUri,
+        type = this.type,
+        uri = this.uri,
+        tracks = arrayListOf()
     )
 }
 
-fun ApiPlaylist.toPlaylist() : Playlist {
+fun PlaylistDTO.toPlaylist() : Playlist {
 
     val tracks = mutableListOf<Track>()
     if(this.tracks != null){
@@ -45,36 +49,50 @@ fun ApiPlaylist.toPlaylist() : Playlist {
     }
 
     return Playlist(
-            id = this.id,
-            name = this.name,
-            description = this.description ?: "",
-            previewImageUri = this.images?.get(0)?.url ?: "",
-            followers = this.followers?.total ?: 0,
-            type = this.type ?: "",
-            uri = this.uri ?: "",
-            primary_color = this.primary_color ?: "",
-            tracks = tracks
+        id = this.id,
+        name = this.name,
+        description = this.description ?: "",
+        owner = this.owner?.display_name ?: "",
+        previewImageUri = this.images?.random()?.url ?: "",
+        followers = this.followers?.total ?: 0,
+        type = this.type ?: "",
+        uri = this.uri ?: "",
+        primary_color = this.primary_color ?: "",
+        tracks = tracks
     )
 
 }
 
-fun ApiTrack.toTrack() : Track{
-
+fun TrackDTO.toTrack() : Track{
     val artists = mutableListOf<String>()
     for(artist in this.artists){
         artists.add(artist.name)
     }
 
     return Track(
-            id = this.id,
-            name = this.name,
-            artists = artists,
-            album = this.album?.name?: "",
-            durationMs = this.duration_ms,
-            uri = this.uri ?: "",
-            popularity = this.popularity ?: 0,
-            previewUri = this.preview_url ?: "",
-            type = this.type ?: ""
+        id = this.id,
+        name = this.name,
+        artists = artists,
+        album = this.album?.name?: "",
+        durationMs = this.duration_ms,
+        uri = this.uri ?: "",
+        popularity = this.popularity ?: 0,
+        previewUri = this.preview_url ?: "",
+        type = this.type ?: ""
     )
+}
 
+fun PlaylistsDTO.toSearchResult(searchExpression: String) : SearchResult{
+    val playlists = mutableListOf<Playlist>()
+    for(item in this.items){
+        playlists.add(item.toPlaylist())
+    }
+
+    return SearchResult(
+        items = playlists,
+        searchExpression = searchExpression,
+        limit = this.limit,
+        offset = this.offset,
+        total = this.total
+    )
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string name="SETTINGS_KEY_REPEAT">repeat</string>
+    <string name="SETTINGS_KEY_SONG_DURATION">song_duration</string>
+    <string name="SETTINGS_KEY_SEASONAL_THEMES">seasonal_themes</string>
+    <string name="SETTINGS_KEY_CLEAR_CACHE">clear_cache</string>
+    <string name="SETTINGS_KEY_DELETE_PLAYLISTS">delete_playlists</string>
+
+    <string name="settings_title_repeat">Repeating a song</string>
+    <string name="settings_title_song_duration">Song duration</string>
+    <string name="settings_title_seasonal_themes">Adapt to the periods of the year</string>
+    <string name="settings_title_color_mode">Color modes</string>
+    <string name="settings_title_clear_cache">Clear cache</string>
+    <string name="settings_title_delete_playlists">Delete playlists</string>
+
+    <string name="settings_summary_song_duration">Duration of a song in seconds</string>
+    <string name="settings_summary_color_mode">Switching between dark &amp; light modes is handled by your system</string>
+    <string name="settings_summary_clear_cache">Reduce memory usage by clearing image cache</string>
+    <string name="settings_summary_delete_playlists">Removes all items from your playlists</string>
+
+    <string name="settings_category_title_gameplay">Gameplay</string>
+    <string name="settings_category_title_visuals">Visuals</string>
+    <string name="settings_category_title_storage"><![CDATA[Memory & storage]]></string>
+
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+
+</resources>

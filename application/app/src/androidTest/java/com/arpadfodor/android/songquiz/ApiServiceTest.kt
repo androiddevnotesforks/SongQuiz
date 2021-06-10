@@ -35,7 +35,7 @@ class ApiServiceTest{
     @Test
     fun getPlaylistByIdInvalidTest() {
         // given
-        val invalidId = "aaaaa"
+        val invalidId = "aaaaaxsxsxsxsxsesesse"
         // when
         val result = api.getPlaylistById(invalidId)
         // then

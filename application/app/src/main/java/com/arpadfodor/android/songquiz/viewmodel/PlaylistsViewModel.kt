@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class PlaylistsState{
-    ERROR_PLAYLIST_ADD, LOADING, READY
+enum class PlaylistsUiState{
+    LOADING, READY, SHOW_ADD_SCREEN
 }
 
 @HiltViewModel
@@ -23,41 +23,34 @@ class PlaylistsViewModel @Inject constructor(
         MutableLiveData<List<Playlist>>()
     }
 
-    val playlistsState: MutableLiveData<PlaylistsState> by lazy {
-        MutableLiveData<PlaylistsState>()
+    val playlistsState: MutableLiveData<PlaylistsUiState> by lazy {
+        MutableLiveData<PlaylistsUiState>()
     }
 
     init {
+        loadData()
+    }
+
+    fun loadData(){
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsState.postValue(PlaylistsState.LOADING)
+            playlistsState.postValue(PlaylistsUiState.LOADING)
             playlists.postValue(repository.getPlaylists())
-            playlistsState.postValue(PlaylistsState.READY)
+            playlistsState.postValue(PlaylistsUiState.READY)
         }
     }
 
-    fun addPlaylistById(id: String){
-        viewModelScope.launch(Dispatchers.IO) {
-
-            playlistsState.postValue(PlaylistsState.LOADING)
-            val success = repository.addPlaylistById(id)
-
-            if(success){
-                playlists.postValue(repository.getPlaylists())
-                playlistsState.postValue(PlaylistsState.READY)
-            }
-            else{
-                playlistsState.postValue(PlaylistsState.ERROR_PLAYLIST_ADD)
-            }
-
-        }
+    fun showAddPlaylistScreen(){
+        val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
+        PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
+        playlistsState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
     }
 
     fun deletePlaylistById(id: String){
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsState.postValue(PlaylistsState.LOADING)
+            playlistsState.postValue(PlaylistsUiState.LOADING)
             repository.deletePlaylistById(id)
             playlists.postValue(repository.getPlaylists())
-            playlistsState.postValue(PlaylistsState.READY)
+            playlistsState.postValue(PlaylistsUiState.READY)
         }
     }
 

@@ -1,0 +1,57 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/Theme.SongQuiz">
+
+    <PreferenceCategory
+        app:title="@string/settings_category_title_gameplay">
+
+        <SwitchPreferenceCompat
+            app:key="@string/SETTINGS_KEY_REPEAT"
+            app:title="@string/settings_title_repeat"
+            app:summaryOn="@string/enabled"
+            app:summaryOff="@string/disabled"/>
+
+        <SeekBarPreference
+            app:key="@string/SETTINGS_KEY_SONG_DURATION"
+            app:title="@string/settings_title_song_duration"
+            app:summary="@string/settings_summary_song_duration"
+            app:enabled="true"
+            app:selectable="true"
+            app:showSeekBarValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_category_title_visuals">
+
+        <SwitchPreferenceCompat
+            app:key="@string/SETTINGS_KEY_SEASONAL_THEMES"
+            app:title="@string/settings_title_seasonal_themes"
+            app:summaryOn="@string/enabled"
+            app:summaryOff="@string/disabled"/>
+
+        <Preference
+            app:title="@string/settings_title_color_mode"
+            app:summary="@string/settings_summary_color_mode" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_category_title_storage">
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_CLEAR_CACHE"
+            app:title="@string/settings_title_clear_cache"
+            app:summary="@string/settings_summary_clear_cache"
+            app:selectable="true"/>
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_DELETE_PLAYLISTS"
+            app:title="@string/settings_title_delete_playlists"
+            app:summary="@string/settings_summary_delete_playlists"
+            app:selectable="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

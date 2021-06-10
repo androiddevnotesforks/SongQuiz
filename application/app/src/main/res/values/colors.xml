@@ -3,25 +3,25 @@
 
     <color name="colorPrimary">#336699</color>
     <color name="colorSecondary">#336699</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="colorBackground">#000000</color>
+    <color name="colorAccent">#336699</color>
+    <color name="colorBackground">#FFFFFF</color>
     <color name="colorTransparent">#00000000</color>
 
-    <color name="colorText">#DFFFFF</color>
-    <color name="colorTextTitle">#DFFFFF</color>
-    <color name="colorTextSubtitle">#DFFFFF</color>
-    <color name="colorTextInput">#DFFFFF</color>
+    <color name="colorText">#000000</color>
+    <color name="colorTextTitle">#000000</color>
+    <color name="colorTextSubtitle">#000000</color>
 
-    <color name="colorInputMessageBox">#303030</color>
-    <color name="colorOutputMessageBox">#303030</color>
+    <color name="colorLightOnDarkBackground">#DFFFFF</color>
+    <color name="colorNeutralText">#336699</color>
 
-    <color name="colorIcon">#DFFFFF</color>
+    <color name="colorMessageBox">#DDDDDD</color>
+
+    <color name="colorIcon">#336699</color>
     <color name="colorActive">#FF0000</color>
 
-    <color name="colorButtonPositive">#336699</color>
-    <color name="colorButtonNeutral">#DFFFFF</color>
-    <color name="colorButtonPressed">#AAFFFFFF</color>
+    <color name="colorButton">#336699</color>
+    <color name="colorButtonPressed">#BB4DEEEA</color>
 
-    <color name="colorDialogBackground">#B3000000</color>
+    <color name="colorDialogBackground">#DDFFFFFF</color>
 
 </resources>

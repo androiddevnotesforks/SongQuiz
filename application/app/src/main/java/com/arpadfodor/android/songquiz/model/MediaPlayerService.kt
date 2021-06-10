@@ -3,10 +3,11 @@ package com.arpadfodor.android.songquiz.model
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.os.CountDownTimer
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.coroutineContext
 
 /**
  * Injected everywhere as a singleton
@@ -18,61 +19,79 @@ class MediaPlayerService  @Inject constructor(
 
     var mediaPlayer: MediaPlayer? = null
 
-    fun playUrlSound(soundUrl: String, finished: () -> Unit, error: () -> Unit){
+    fun playUrlSound(soundUrl: String, finished: () -> Unit, error: () -> Unit) : Boolean{
 
         mediaPlayer = MediaPlayer().apply {
 
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
+            try{
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
 
-            setOnCompletionListener { player ->
-                player.release()
-                finished()
+                setOnCompletionListener { player ->
+                    player.release()
+                    finished()
+                }
+                setOnErrorListener { player, what, extra ->
+                    player.release()
+                    error()
+                    true
+                }
+                setOnPreparedListener {
+                    start()
+                }
+
+                setDataSource(soundUrl)
+                prepare()
             }
-            setOnErrorListener { player, what, extra ->
-                player.release()
+            catch (e: Exception){
                 error()
-                true
+                return false
             }
-
-            setDataSource(soundUrl)
-            prepare()
-            start()
 
         }
 
+        return true
     }
 
-    fun playLocalSound(soundName: String, finished: () -> Unit, error: () -> Unit){
+    fun playLocalSound(soundName: String, finished: () -> Unit, error: () -> Unit) : Boolean{
 
         val assetFileDescriptor = context.assets.openFd(soundName)
 
         mediaPlayer = MediaPlayer().apply {
 
-            setOnCompletionListener { player ->
-                player.release()
-                finished()
-            }
-            setOnErrorListener { player, what, extra ->
-                player.release()
-                error()
-                true
-            }
+            try{
+                setOnCompletionListener { player ->
+                    player.release()
+                    finished()
+                }
+                setOnErrorListener { player, what, extra ->
+                    player.release()
+                    error()
+                    true
+                }
+                setOnPreparedListener {
+                    start()
+                }
 
-            setDataSource(
-                assetFileDescriptor.fileDescriptor,
-                assetFileDescriptor.startOffset,
-                assetFileDescriptor.length
-            )
-            prepare()
-            start()
+                setDataSource(
+                    assetFileDescriptor.fileDescriptor,
+                    assetFileDescriptor.startOffset,
+                    assetFileDescriptor.length
+                )
+                prepare()
+            }
+            catch (e: Exception){
+                error()
+                return false
+            }
 
         }
 
+        return true
     }
 
     fun stop(){

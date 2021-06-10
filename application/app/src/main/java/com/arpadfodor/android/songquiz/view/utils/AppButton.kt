@@ -18,17 +18,14 @@ open class AppButton : AppCompatButton {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-
         this.background = ContextCompat.getDrawable(context, R.drawable.app_button)
-        this.setTextColor(context.getColor(R.color.colorText))
         this.setPadding(15,25,15,25)
         this.gravity = Gravity.CENTER
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        this.isAllCaps = true
+        this.setTextColor(context.getColor(R.color.colorNeutralText))
 
         this.setOnClickListener {
         }
-
     }
 
     /**

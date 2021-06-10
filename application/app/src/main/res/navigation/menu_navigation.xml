@@ -13,6 +13,19 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_playlist_add"
+        android:name="com.arpadfodor.android.songquiz.view.PlaylistAddFragment"
+        android:label="@string/menu_playlist_add"
+        tools:layout="@layout/fragment_playlist_add" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.arpadfodor.android.songquiz.view.SettingsFragment"
+        android:label="@string/menu_settings">
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_about"
         android:name="com.arpadfodor.android.songquiz.view.AboutFragment"
         android:label="@string/menu_about"
@@ -22,6 +35,14 @@
     <action
         android:id="@+id/to_nav_playlists"
         app:destination="@id/nav_playlists" />
+
+    <action
+        android:id="@+id/to_nav_playlist_add"
+        app:destination="@id/nav_playlist_add" />
+
+    <action
+        android:id="@+id/to_nav_settings"
+        app:destination="@id/nav_settings" />
 
     <action
         android:id="@+id/to_nav_about"

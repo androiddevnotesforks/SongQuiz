@@ -3,6 +3,8 @@ package com.arpadfodor.android.songquiz.view.utils
 import android.app.ActivityOptions
 import android.content.Intent
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController

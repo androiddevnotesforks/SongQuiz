@@ -2,103 +2,102 @@ package com.arpadfodor.android.songquiz.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arpadfodor.android.songquiz.R
 import com.arpadfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.arpadfodor.android.songquiz.view.utils.AppDialog
 import com.arpadfodor.android.songquiz.view.utils.AppFragment
-import com.arpadfodor.android.songquiz.view.utils.AppInputDialog
-import com.arpadfodor.android.songquiz.viewmodel.PlaylistsAdapter
-import com.arpadfodor.android.songquiz.viewmodel.PlaylistsState
+import com.arpadfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.arpadfodor.android.songquiz.viewmodel.PlaylistsViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment() {
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
 
-    private var _binding: FragmentPlaylistsBinding? = null
-    // This property is only valid between onCreateView and onDestroyView
-    private val binding get() = _binding!!
+    private val binding: FragmentPlaylistsBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
-
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
         val startLambda: (Playlist) -> Unit = { playlist -> startPlaylistById(playlist.id) }
         val deleteLambda: (Playlist) -> Unit = { playlist -> deletePlaylistById(playlist.id, playlist.name) }
 
-        val playlistsAdapter = PlaylistsAdapter(startLambda, deleteLambda)
+        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), startLambda, deleteLambda)
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
         binding.fabAddPlaylist.setOnClickListener {
-            getNewPlaylistId()
+            viewModel.showAddPlaylistScreen()
+        }
+        binding.tvEmpty.setOnClickListener {
+            viewModel.showAddPlaylistScreen()
         }
     }
 
     override fun subscribeViewModel() {
-
         val playlistsObserver = Observer<List<Playlist>> { playlists ->
             (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(playlists)
+
+            if(playlists.isEmpty() && (viewModel.playlistsState.value == PlaylistsUiState.READY)){
+                binding.tvEmpty.visibility = View.VISIBLE
+            }
+            else{
+                binding.tvEmpty.visibility = View.GONE
+            }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
-        val playlistsStateObserver = Observer<PlaylistsState> { playlistsState ->
-            when(playlistsState){
-                PlaylistsState.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
+        val playlistsStateObserver = Observer<PlaylistsUiState> { state ->
+
+            if(state != PlaylistsUiState.READY){
+                binding.tvEmpty.visibility = View.GONE
+            }
+            if(state != PlaylistsUiState.LOADING){
+                binding.loadIndicatorProgressBar.visibility = View.GONE
+            }
+
+            when(state){
+                PlaylistsUiState.LOADING -> {
+                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                PlaylistsState.READY -> {
-                    binding.progressBar.visibility = View.GONE
+                PlaylistsUiState.READY -> {
+
                 }
-                PlaylistsState.ERROR_PLAYLIST_ADD -> {
-                    binding.progressBar.visibility = View.GONE
-                    showError(PlaylistsState.ERROR_PLAYLIST_ADD)
+                PlaylistsUiState.SHOW_ADD_SCREEN -> {
+                    showAddPlaylistsScreen()
                 }
-                else -> {
-                    binding.progressBar.visibility = View.GONE
-                }
+                else -> {}
+            }
+
+            if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
+                binding.tvEmpty.visibility = View.VISIBLE
+            }
+            else{
+                binding.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.playlistsState.observe(this, playlistsStateObserver)
-
     }
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    private fun getNewPlaylistId() {
-        val inputDialog = AppInputDialog(this.requireContext(), getString(R.string.add_playlist),
-            getString(R.string.add_playlist_description))
-        inputDialog.setPositiveButton {
-            viewModel.addPlaylistById(it)
-        }
-        inputDialog.show()
-    }
-
     private fun deletePlaylistById(id: String, name: String) {
-        val inputDialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
+        val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
                 getString(R.string.delete_playlist_description, name), R.drawable.icon_warning)
-        inputDialog.setPositiveButton {
+        dialog.setPositiveButton {
             viewModel.deletePlaylistById(id)
         }
-        inputDialog.show()
+        dialog.show()
     }
 
     private fun startPlaylistById(id: String){
@@ -112,19 +111,10 @@ class PlaylistsFragment : AppFragment() {
         startActivity(intent)
     }
 
-    private fun showError(errorType: PlaylistsState){
-
-        val errorMessage = when(errorType){
-            PlaylistsState.ERROR_PLAYLIST_ADD -> {
-                getString(R.string.error_playlist_add)
-            }
-            else -> {
-                ""
-            }
-        }
-        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
-        viewModel.playlistsState.postValue(PlaylistsState.READY)
-
+    private fun showAddPlaylistsScreen(){
+        val navHostFragment = NavHostFragment.findNavController(this)
+        navHostFragment.navigate(R.id.to_nav_playlist_add, null)
+        viewModel.playlistsState.postValue(PlaylistsUiState.READY)
     }
 
 }

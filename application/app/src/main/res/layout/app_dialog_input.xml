@@ -15,50 +15,53 @@
         <TextView
             style="@style/TitleText"
             android:id="@+id/tvCustomDialogTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tvAppDialogDescription"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
 
         <TextView
             style="@style/ParagraphText"
             android:id="@+id/tvAppDialogDescription"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalMiddle" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle"
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
 
         <com.google.android.material.textfield.TextInputEditText
             style="@style/InputText"
             android:id="@+id/itInput"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAppDialogDescription"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"/>
 
         <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
             android:id="@+id/btnPositiveAppDialog"
+            style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/ok_button"
-            style="@style/AppButton"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalMiddle"/>
+            app:layout_constraintTop_toBottomOf="@+id/itInput" />
 
         <com.arpadfodor.android.songquiz.view.utils.AppButton
             android:id="@+id/btnNegativeAppDialog"
+            style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/cancel_button"
-            style="@style/AppButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalMiddle"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itInput" />
 
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
