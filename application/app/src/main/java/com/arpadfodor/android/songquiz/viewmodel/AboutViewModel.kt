@@ -25,36 +25,42 @@ class AboutViewModel  @Inject constructor(
     }
 
     init {
-        if(textToSpeechService.isSpeaking()){
-            ttsState.value = TtsAboutState.SPEAKING
-        }
-        else{
-            ttsState.value = TtsAboutState.ENABLED
-        }
+        viewModelScope.launch {
+            if(textToSpeechService.isSpeaking()){
+                ttsState.value = TtsAboutState.SPEAKING
+            }
+            else{
+                ttsState.value = TtsAboutState.ENABLED
+            }
 
-        subscribeTtsListeners()
+            subscribeTtsListeners()
+        }
     }
 
     fun subscribeTtsListeners(){
-        textToSpeechService.setCallbacks(
-            started = {
-                ttsState.postValue(TtsAboutState.SPEAKING)
-            },
-            finished = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-            },
-            error = {
-                ttsState.postValue(TtsAboutState.ENABLED)
-            }
-        )
+        viewModelScope.launch {
+            textToSpeechService.setCallbacks(
+                started = {
+                    ttsState.postValue(TtsAboutState.SPEAKING)
+                },
+                finished = {
+                    ttsState.postValue(TtsAboutState.ENABLED)
+                },
+                error = {
+                    ttsState.postValue(TtsAboutState.ENABLED)
+                }
+            )
+        }
     }
 
     fun unsubscribeTtsListeners(){
-        textToSpeechService.setCallbacks(
-            started = {},
-            finished = {},
-            error = {}
-        )
+        viewModelScope.launch {
+            textToSpeechService.setCallbacks(
+                started = {},
+                finished = {},
+                error = {}
+            )
+        }
     }
 
     fun speak(text: String){
@@ -64,7 +70,9 @@ class AboutViewModel  @Inject constructor(
     }
 
     fun stopSpeaking(){
-        textToSpeechService.stop()
+        viewModelScope.launch {
+            textToSpeechService.stop()
+        }
     }
 
 }

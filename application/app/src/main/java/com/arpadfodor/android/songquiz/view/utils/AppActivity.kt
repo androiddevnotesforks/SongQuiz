@@ -18,13 +18,12 @@ import kotlinx.coroutines.launch
  * The base activity class of the app - can be inherited from
  */
 @AndroidEntryPoint
-abstract class AppActivity(screenAlive: Boolean) : AppCompatActivity() {
+abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActivity() {
 
     companion object{
         var systemPermissionDialogShowed = false
     }
 
-    var keepScreenAlive: Boolean = screenAlive
     abstract var requiredPermissions: List<String>
     var permissionDialogShowed = false
 

@@ -25,11 +25,13 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
 
     private lateinit var viewModel: PlaylistsViewModel
 
+    var selectedPlaylistId = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
-        val startLambda: (Playlist) -> Unit = { playlist -> startPlaylistById(playlist.id) }
+        val startLambda: (Playlist) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
         val deleteLambda: (Playlist) -> Unit = { playlist -> deletePlaylistById(playlist.id, playlist.name) }
 
         val playlistsAdapter = PlaylistsAdapter(this.requireContext(), startLambda, deleteLambda)
@@ -47,7 +49,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
         val playlistsObserver = Observer<List<Playlist>> { playlists ->
             (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(playlists)
 
-            if(playlists.isEmpty() && (viewModel.playlistsState.value == PlaylistsUiState.READY)){
+            if(playlists.isEmpty() && (viewModel.uiState.value == PlaylistsUiState.READY)){
                 binding.tvEmpty.visibility = View.VISIBLE
             }
             else{
@@ -56,7 +58,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
-        val playlistsStateObserver = Observer<PlaylistsUiState> { state ->
+        val uiStateObserver = Observer<PlaylistsUiState> { state ->
 
             if(state != PlaylistsUiState.READY){
                 binding.tvEmpty.visibility = View.GONE
@@ -69,8 +71,13 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
                 PlaylistsUiState.LOADING -> {
                     binding.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                PlaylistsUiState.READY -> {
-
+                PlaylistsUiState.READY -> {}
+                PlaylistsUiState.AUTH_NEEDED -> {
+                    authenticate()
+                    viewModel.uiState.postValue(PlaylistsUiState.READY)
+                }
+                PlaylistsUiState.START_QUIZ -> {
+                    showQuizScreen()
                 }
                 PlaylistsUiState.SHOW_ADD_SCREEN -> {
                     showAddPlaylistsScreen()
@@ -85,7 +92,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
                 binding.tvEmpty.visibility = View.GONE
             }
         }
-        viewModel.playlistsState.observe(this, playlistsStateObserver)
+        viewModel.uiState.observe(this, uiStateObserver)
     }
 
     override fun appearingAnimations() {}
@@ -93,28 +100,36 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
 
     private fun deletePlaylistById(id: String, name: String) {
         val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
-                getString(R.string.delete_playlist_description, name), R.drawable.icon_warning)
+                getString(R.string.delete_playlist_description, name), R.drawable.icon_delete)
         dialog.setPositiveButton {
             viewModel.deletePlaylistById(id)
         }
         dialog.show()
     }
 
-    private fun startPlaylistById(id: String){
+    private fun playlistByIdSelected(id: String){
+        // record the selected playlist
+        selectedPlaylistId = id
+        viewModel.showStartQuizScreen()
+    }
+
+    private fun showQuizScreen(){
+        viewModel.uiState.postValue(PlaylistsUiState.READY)
+
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
-            param(FirebaseAnalytics.Param.ITEM_ID, id)
+            param(FirebaseAnalytics.Param.ITEM_ID, selectedPlaylistId)
         }
 
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
-        intent.putExtra(QuizActivity.PLAYLIST_KEY, id)
+        intent.putExtra(QuizActivity.PLAYLIST_KEY, selectedPlaylistId)
         startActivity(intent)
     }
 
     private fun showAddPlaylistsScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
         navHostFragment.navigate(R.id.to_nav_playlist_add, null)
-        viewModel.playlistsState.postValue(PlaylistsUiState.READY)
+        viewModel.uiState.postValue(PlaylistsUiState.READY)
     }
 
 }

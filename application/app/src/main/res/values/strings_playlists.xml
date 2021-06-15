@@ -22,7 +22,7 @@
     <string name="success_playlist_add">Successfully added</string>
     <string name="playlist_already_added">Already added</string>
 
-    <string name="unicode_start">❯</string>
+    <string name="unicode_start">►</string>
     <string name="unicode_back">❮</string>
     <string name="unicode_cross">X</string>
     <string name="unicode_add">＋</string>

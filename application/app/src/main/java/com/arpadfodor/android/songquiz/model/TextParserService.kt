@@ -1,9 +1,15 @@
-package com.arpadfodor.android.songquiz.model.quiz
+package com.arpadfodor.android.songquiz.model
 
 import java.text.Normalizer
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TextParser {
+/**
+ * Injected everywhere as a singleton
+ */
+@Singleton
+class TextParserService @Inject constructor() {
 
     companion object{
         val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", ";", "?", "!", ".", "(", ")", "/", "_", "+", "=", "&", "@", ":").toTypedArray()
@@ -23,7 +29,7 @@ class TextParser {
      * @return List<String> normalized text blocks
      */
     fun normalizeText(input: String) : List<String>{
-        val normalizedText = input.toLowerCase(Locale.ROOT).removeAccents()
+        val normalizedText = input.lowercase(Locale.ROOT).removeAccents()
         return normalizedText.split(*CHARS_TO_SEPARATE_BY)
     }
 

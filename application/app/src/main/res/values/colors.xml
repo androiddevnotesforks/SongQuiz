@@ -12,6 +12,7 @@
     <color name="colorTextSubtitle">#000000</color>
 
     <color name="colorLightOnDarkBackground">#DFFFFF</color>
+    <color name="colorDarkOnLightBackground">#000000</color>
     <color name="colorNeutralText">#336699</color>
 
     <color name="colorMessageBox">#DDDDDD</color>

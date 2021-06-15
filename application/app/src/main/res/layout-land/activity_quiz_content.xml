@@ -49,7 +49,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/userSpeechButton"
         app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
-        app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"
+        app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -62,7 +62,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/glHorizontalMiddle"
+        android:id="@+id/glHorizontalLow"
         app:layout_constraintGuide_percent="0.6"
         android:orientation="horizontal"/>
 

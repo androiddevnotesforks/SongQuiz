@@ -19,7 +19,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 
-class QuizActivity : AppActivity(screenAlive = true) {
+class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     companion object{
         const val PLAYLIST_KEY = "playlist key"
@@ -62,7 +62,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
         )
 
         closeDialog.setPositiveButton {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MenuActivity::class.java))
             viewModel.clearState()
         }
         closeDialog.show()
@@ -89,7 +89,7 @@ class QuizActivity : AppActivity(screenAlive = true) {
                     binding.content.userSpeechButton.isEnabled = false
                 }
                 UserInputState.RECORDING -> {
-                    binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_rec)
+                    binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform)
                     binding.content.userSpeechButton.isEnabled = true
                 }
                 else -> {
@@ -98,6 +98,38 @@ class QuizActivity : AppActivity(screenAlive = true) {
             }
         }
         viewModel.userInputState.observe(this, userInputStateObserver)
+
+        val userInputdBStateObserver = Observer<RmsState> { state ->
+            if(viewModel.userInputState.value == UserInputState.RECORDING){
+                when(state){
+                    RmsState.LEVEL7 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_7)
+                    }
+                    RmsState.LEVEL6 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_6)
+                    }
+                    RmsState.LEVEL5 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_5)
+                    }
+                    RmsState.LEVEL4 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_4)
+                    }
+                    RmsState.LEVEL3 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_3)
+                    }
+                    RmsState.LEVEL2 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_2)
+                    }
+                    RmsState.LEVEL1 -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform_1)
+                    }
+                    else -> {
+                        binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform)
+                    }
+                }
+            }
+        }
+        viewModel.rmsState.observe(this, userInputdBStateObserver)
 
         val ttsStateObserver = Observer<TtsState> { state ->
             when(state){

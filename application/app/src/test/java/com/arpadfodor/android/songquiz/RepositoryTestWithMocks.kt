@@ -69,7 +69,7 @@ class PlaylistRepositoryTest{
         // Given
         `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_API_RESPONSE)
         // When
-        repo.addPlaylistById(FAKE_ID)
+        repo.insertPlaylistById(FAKE_ID)
         // Then
         verify(mockApi, times(1)).getPlaylistById(FAKE_ID)
         verify(mockDAO, times(1)).insert(FAKE_DB_CONTENT)

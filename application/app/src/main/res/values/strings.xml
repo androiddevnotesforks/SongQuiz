@@ -3,11 +3,11 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.7">
-    <!ENTITY appDate "10/06/2021">
+    <!ENTITY appVersion "v0.8">
+    <!ENTITY appDate "16/06/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY clientId "51aee5a292494583852e135803681e05">
-    <!ENTITY clientSec "3b379ad7236341589e890fe61d834644">
+    <!ENTITY clientSec "just for testing">
     <!ENTITY adMobAppId "ca-app-pub-3940256099942544~3347511713">
     <!ENTITY adMobQuizAdId "ca-app-pub-3940256099942544/6300978111">
     ]>
@@ -25,7 +25,10 @@
     <string name="report_contact">arpadfodor01@gmail.com</string>
     <string name="report_message_title">[%1$s][report]</string>
     <string name="store_page">http://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="client_id">&clientId;</string>
     <string name="client_info">&clientId;:&clientSec;</string>
+
+    <string name="com_spotify_sdk_redirect_uri">com.arpadfodor.android.songquiz://token</string>
 
     <string name="app_ads_id">&adMobAppId;</string>
     <string name="quiz_ad_id">&adMobQuizAdId;</string>
@@ -37,7 +40,7 @@
         Created by &appCreator;\n\n
         &appDate;\n\n
         &appVersion;\n\n
-        This app uses Spotify playlists to play with. We recommend that you have an English text-to-speech engine, as the information comes in English. Internet connection is needed while playing.\n\n
+        This app uses Spotify playlists to play with. We recommend that you use an English text-to-speech engine, as the information comes in English. Non-English words (titles, artists) can be difficult to recognize with text recognition. Internet connection is needed while playing.\n\n
     </string>
 
     <string name="legal_title">Legal information</string>
@@ -48,7 +51,7 @@
 
     <string name="acknowledgments_title">Acknowledgments</string>
     <string name="acknowledgments_text">
-         Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay.\n\n
+         Images by naobim, Gordon Johnson and OpenClipart-Vectors from Pixabay and by www.wishforge.games from freeicons.io.\n\n
     </string>
 
     <string name="more_from_developer">More from the developer</string>

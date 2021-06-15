@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/dialog_margin"
             app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalMiddle"
+            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/appDialogImageDescription" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalMiddle" />
+            app:layout_constraintTop_toTopOf="@+id/glHorizontalLow" />
 
         <TextView
             style="@style/ParagraphText"
@@ -52,7 +52,7 @@
             android:text="@string/ok_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalMiddle"/>
+            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow"/>
 
         <com.arpadfodor.android.songquiz.view.utils.AppButton
             android:id="@+id/btnNegativeAppDialog"
@@ -62,7 +62,7 @@
             android:text="@string/cancel_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalMiddle"/>
+            app:layout_constraintTop_toTopOf="@+id/glHorizontalLow"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/glHorizontalMiddle"
+            android:id="@+id/glHorizontalLow"
             app:layout_constraintGuide_percent="0.5"
             android:orientation="horizontal"/>
 
