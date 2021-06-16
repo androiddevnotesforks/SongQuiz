@@ -7,27 +7,27 @@
 
     <fragment
         android:id="@+id/nav_playlists"
-        android:name="com.arpadfodor.android.songquiz.view.PlaylistsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
         android:label="@string/menu_playlists"
         tools:layout="@layout/fragment_playlists" >
     </fragment>
 
     <fragment
         android:id="@+id/nav_playlist_add"
-        android:name="com.arpadfodor.android.songquiz.view.PlaylistAddFragment"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistAddFragment"
         android:label="@string/menu_playlist_add"
         tools:layout="@layout/fragment_playlist_add" >
     </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.arpadfodor.android.songquiz.view.SettingsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.SettingsFragment"
         android:label="@string/menu_settings">
     </fragment>
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.arpadfodor.android.songquiz.view.AboutFragment"
+        android:name="com.aaronfodor.android.songquiz.view.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" >
     </fragment>

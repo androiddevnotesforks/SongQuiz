@@ -1,0 +1,4 @@
+<resources>
+    <bool name="repeat_default">true</bool>
+    <bool name="seasonal_themes_default">true</bool>
+</resources>

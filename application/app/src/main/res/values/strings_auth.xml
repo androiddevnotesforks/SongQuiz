@@ -10,7 +10,7 @@
     <string name="PREF_KEY_TOKEN">token</string>
     <string name="PREF_KEY_TOKEN_EXPIRE_TIME">token_expire_time</string>
 
-    <string name="error_login_internet">Please check your internet connection</string>
+    <string name="error_login_internet">Please check your internet connection or try a different log in method</string>
     <string name="error_login_denied">Please log in to continue</string>
     <string name="error_login">An error occurred - please try again</string>
 
