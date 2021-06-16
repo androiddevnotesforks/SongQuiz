@@ -29,7 +29,7 @@ class AccountService @Inject constructor(
     private val clientId = context.getString(R.string.client_id)
     private val spotifyRedirectURI = context.getString(R.string.com_spotify_sdk_redirect_uri)
 
-    val tokenRequireBeforeExpiresSec = 3595 //10
+    val tokenRequireBeforeExpiresSec = 10 //3590
 
     val accountState: MutableLiveData<AccountState> by lazy {
         MutableLiveData<AccountState>()
