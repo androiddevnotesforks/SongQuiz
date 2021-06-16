@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toStartOf="@+id/playlist_add"
         app:layout_constraintBottom_toBottomOf="@+id/playlist_image"/>
 
-    <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
+    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/playlist_add"
         style="@style/AppButton"
         android:layout_width="@dimen/list_item_button_size"

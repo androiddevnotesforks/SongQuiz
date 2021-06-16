@@ -10,7 +10,8 @@
             app:key="@string/SETTINGS_KEY_REPEAT"
             app:title="@string/settings_title_repeat"
             app:summaryOn="@string/enabled"
-            app:summaryOff="@string/disabled"/>
+            app:summaryOff="@string/disabled"
+            android:defaultValue="@bool/repeat_default"/>
 
         <SeekBarPreference
             app:key="@string/SETTINGS_KEY_SONG_DURATION"
@@ -18,7 +19,8 @@
             app:summary="@string/settings_summary_song_duration"
             app:enabled="true"
             app:selectable="true"
-            app:showSeekBarValue="true"/>
+            app:showSeekBarValue="true"
+            android:defaultValue="@integer/song_duration_sec_default"/>
 
     </PreferenceCategory>
 
@@ -29,7 +31,8 @@
             app:key="@string/SETTINGS_KEY_SEASONAL_THEMES"
             app:title="@string/settings_title_seasonal_themes"
             app:summaryOn="@string/enabled"
-            app:summaryOff="@string/disabled"/>
+            app:summaryOff="@string/disabled"
+            android:defaultValue="@bool/seasonal_themes_default"/>
 
         <Preference
             app:title="@string/settings_title_color_mode"
@@ -58,7 +61,10 @@
         app:title="@string/settings_category_title_account">
 
         <Preference
-            app:key="@string/SETTINGS_KEY_LOGOUT"
+            app:key="@string/SETTINGS_KEY_ACCOUNT"/>
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_LOGINOUT"
             app:selectable="true"/>
 
     </PreferenceCategory>

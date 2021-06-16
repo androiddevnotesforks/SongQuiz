@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toStartOf="@+id/glVertical"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
+    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnLogin"
         style="@style/AuthButton"
         android:layout_width="0dp"
@@ -58,7 +58,7 @@
         app:layout_constraintStart_toStartOf="@+id/glVertical"
         app:layout_constraintTop_toBottomOf="@+id/glHorizontal"/>
 
-    <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
+    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnSkip"
         style="@style/AuthButton"
         android:layout_width="0dp"

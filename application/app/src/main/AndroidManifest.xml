@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arpadfodor.android.songquiz">
+    package="com.aaronfodor.android.songquiz">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -14,7 +14,7 @@
     </queries>
 
     <application
-        android:name=".ApplicationRoot"
+        android:name="com.aaronfodor.android.songquiz.ApplicationRoot"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,19 +23,19 @@
         android:theme="@style/Theme.SongQuiz">
 
         <activity
-            android:name=".view.QuizActivity"
+            android:name="com.aaronfodor.android.songquiz.view.QuizActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
-            android:name=".view.MenuActivity"
+            android:name="com.aaronfodor.android.songquiz.view.MenuActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
-            android:name=".view.AuthActivity"
+            android:name="com.aaronfodor.android.songquiz.view.AuthActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
             <intent-filter>
@@ -45,7 +45,7 @@
         </activity>
 
         <activity
-            android:name=".view.LoginSpotifyActivity"
+            android:name="com.aaronfodor.android.songquiz.view.LoginSpotifyActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
