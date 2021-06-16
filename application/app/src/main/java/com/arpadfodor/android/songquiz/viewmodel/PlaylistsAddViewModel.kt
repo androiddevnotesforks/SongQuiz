@@ -3,6 +3,8 @@ package com.arpadfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arpadfodor.android.songquiz.model.AccountService
+import com.arpadfodor.android.songquiz.model.AccountState
 import com.arpadfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,12 +13,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsAddUiState{
-    LOADING, READY, NOT_FOUND, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED
+    LOADING, READY, NOT_FOUND, AUTH_NEEDED, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED
 }
 
 @HiltViewModel
 class PlaylistsAddViewModel @Inject constructor(
-    var repository: PlaylistsRepository
+    val repository: PlaylistsRepository,
+    val accountService: AccountService
 ) : ViewModel() {
 
     companion object{
@@ -27,65 +30,71 @@ class PlaylistsAddViewModel @Inject constructor(
         MutableLiveData<SearchResult>()
     }
 
-    val playlistsAddState: MutableLiveData<PlaylistsAddUiState> by lazy {
+    val uiState: MutableLiveData<PlaylistsAddUiState> by lazy {
         MutableLiveData<PlaylistsAddUiState>()
     }
 
     var playlistIdsAlreadyAdded = mutableListOf<String>()
 
     init {
-        playlistsAddState.value = PlaylistsAddUiState.READY
+        viewModelScope.launch {
+            uiState.value = PlaylistsAddUiState.READY
+        }
     }
 
     fun setPlaylistIdsAlreadyAdded(){
-        playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
+        viewModelScope.launch {
+            playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
+        }
     }
 
     fun searchPlaylistByIdOrName(searchExpression: String){
-
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsAddState.postValue(PlaylistsAddUiState.LOADING)
+            if(accountService.accountState.value != AccountState.LOGGED_IN){
+                uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
+                return@launch
+            }
+
+            uiState.postValue(PlaylistsAddUiState.LOADING)
 
             val result = repository.searchPlaylistByIdOrName(searchExpression)
-            searchResult.postValue(repository.searchPlaylistByIdOrName(searchExpression))
+            searchResult.postValue(result)
 
             if(result.items.isEmpty()){
-                playlistsAddState.postValue(PlaylistsAddUiState.NOT_FOUND)
+                uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
             }
             else{
-                playlistsAddState.postValue(PlaylistsAddUiState.READY)
+                uiState.postValue(PlaylistsAddUiState.READY)
             }
         }
-
     }
 
     fun searchGetNextBatch(){
-        val currentResult = searchResult.value ?: return
-
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsAddState.postValue(PlaylistsAddUiState.LOADING)
+            val currentResult = searchResult.value ?: return@launch
+
+            uiState.postValue(PlaylistsAddUiState.LOADING)
             searchResult.postValue(repository.searchGetNextBatch(currentResult))
-            playlistsAddState.postValue(PlaylistsAddUiState.READY)
+            uiState.postValue(PlaylistsAddUiState.READY)
         }
     }
 
     fun addPlaylistById(id: String){
-
-        if(playlistIdsAlreadyAdded.contains(id)){
-            playlistsAddState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
-            return
-        }
-
         viewModelScope.launch(Dispatchers.IO) {
-            playlistsAddState.postValue(PlaylistsAddUiState.LOADING)
-            val success = searchResult.value?.items?.let { repository.addPlaylist(it.first{ item -> item.id == id }) } ?: false
+            if(playlistIdsAlreadyAdded.contains(id)){
+                uiState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
+                return@launch
+            }
+
+            uiState.postValue(PlaylistsAddUiState.LOADING)
+            val success = searchResult.value?.items?.let { repository.insertPlaylist(it.first{ item -> item.id == id }) } ?: false
 
             if(success){
-                playlistsAddState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
+                uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
                 playlistIdsAlreadyAdded.add(id)
             }
             else{
-                playlistsAddState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
+                uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
             }
         }
 

@@ -1,10 +1,8 @@
-package com.arpadfodor.android.songquiz.model
+package com.arpadfodor.android.songquiz.model.quiz
 
 import android.content.Context
 import com.arpadfodor.android.songquiz.R
-import com.arpadfodor.android.songquiz.model.quiz.QuizStanding
-import com.arpadfodor.android.songquiz.model.quiz.QuizType
-import com.arpadfodor.android.songquiz.model.quiz.TextParser
+import com.arpadfodor.android.songquiz.model.TextParserService
 import com.arpadfodor.android.songquiz.model.repository.dataclasses.Playlist
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -58,6 +56,7 @@ data class InformationPacket(
 @ViewModelScoped
 class QuizService @Inject constructor(
     @ApplicationContext val context: Context,
+    textParserService: TextParserService
 ){
 
     companion object{
@@ -72,7 +71,7 @@ class QuizService @Inject constructor(
     var playlist = Playlist("")
     var quizType = QuizType()
     var quizStanding = QuizStanding()
-    var textParser = TextParser()
+    private val textParser = textParserService
 
     var repeatSongAllowed = false
     var songDurationSec = 0

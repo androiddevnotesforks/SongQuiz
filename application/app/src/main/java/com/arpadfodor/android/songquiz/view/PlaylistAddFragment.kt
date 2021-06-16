@@ -45,7 +45,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         val playlistsFoundObserver = Observer<SearchResult> { result ->
             (binding.RecyclerViewPlaylists.adapter as PlaylistAddAdapter).submitList(result.items)
 
-            if(result.items.isEmpty() && (viewModel.playlistsAddState.value == PlaylistsAddUiState.READY)){
+            if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
                 binding.tvEmpty.visibility = View.VISIBLE
             }
             else{
@@ -54,7 +54,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         }
         viewModel.searchResult.observe(this, playlistsFoundObserver)
 
-        val playlistsAddStateObserver = Observer<PlaylistsAddUiState> { state ->
+        val uiStateObserver = Observer<PlaylistsAddUiState> { state ->
 
             if(state != PlaylistsAddUiState.LOADING){
                 binding.loadIndicatorProgressBar.visibility = View.GONE
@@ -67,6 +67,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
                 PlaylistsAddUiState.READY -> {}
                 PlaylistsAddUiState.NOT_FOUND -> {
                     showInfo(PlaylistsAddUiState.NOT_FOUND)
+                }
+                PlaylistsAddUiState.AUTH_NEEDED -> {
+                    authenticate()
+                    viewModel.uiState.postValue(PlaylistsAddUiState.READY)
                 }
                 PlaylistsAddUiState.ERROR_ADD_PLAYLIST -> {
                     showInfo(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
@@ -87,7 +91,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
                 binding.tvEmpty.visibility = View.GONE
             }
         }
-        viewModel.playlistsAddState.observe(this, playlistsAddStateObserver)
+        viewModel.uiState.observe(this, uiStateObserver)
     }
 
     override fun appearingAnimations() {}
@@ -129,7 +133,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
             }
         }
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-        viewModel.playlistsAddState.postValue(PlaylistsAddUiState.READY)
+        viewModel.uiState.postValue(PlaylistsAddUiState.READY)
     }
 
 }

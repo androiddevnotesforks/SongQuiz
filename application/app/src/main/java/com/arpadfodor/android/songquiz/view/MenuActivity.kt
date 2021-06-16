@@ -10,14 +10,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.arpadfodor.android.songquiz.R
-import com.arpadfodor.android.songquiz.databinding.ActivityMainBinding
+import com.arpadfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.arpadfodor.android.songquiz.view.utils.AppActivityMenu
 import com.bumptech.glide.Glide
 import com.bumptech.glide.MemoryCategory
 
-class MainActivity : AppActivityMenu(screenAlive = false) {
+class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMenuBinding
     override lateinit var activityDrawerLayout: DrawerLayout
     override lateinit var appBarConfiguration: AppBarConfiguration
     override lateinit var navController: NavController
@@ -29,7 +29,7 @@ class MainActivity : AppActivityMenu(screenAlive = false) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMenuBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
         setSupportActionBar(binding.mainToolbar)
@@ -53,7 +53,7 @@ class MainActivity : AppActivityMenu(screenAlive = false) {
 
     override fun onResume() {
         super.onResume()
-        // prevent Glide using much memory
+        // prevent Glide using too much memory
         Glide.get(this).setMemoryCategory(MemoryCategory.LOW)
     }
 

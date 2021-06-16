@@ -48,12 +48,17 @@ fun PlaylistDTO.toPlaylist() : Playlist {
         }
     }
 
+    var previewUri = ""
+    if(!this.images.isNullOrEmpty()){
+        previewUri = this.images.random().url ?: ""
+    }
+
     return Playlist(
         id = this.id,
         name = this.name,
         description = this.description ?: "",
         owner = this.owner?.display_name ?: "",
-        previewImageUri = this.images?.random()?.url ?: "",
+        previewImageUri = previewUri,
         followers = this.followers?.total ?: 0,
         type = this.type ?: "",
         uri = this.uri ?: "",

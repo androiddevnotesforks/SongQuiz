@@ -8,6 +8,9 @@
     <string name="exit_quiz">Leaving this quiz</string>
     <string name="exit_quiz_dialog">Are you sure you want to exit this quiz?</string>
 
+    <string name="logout">Log out</string>
+    <string name="logout_description">Are you sure you want to log out? You need to be logged in with Spotify to play or search for playlists.</string>
+
     <string name="delete_playlist">Delete playlist</string>
     <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add them again later.</string>
 
@@ -15,7 +18,7 @@
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>
 
     <string name="delete_playlists">Delete all playlists</string>
-    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
+    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later. In order to play or search playlists, you need to be logged in with Spotify.</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>

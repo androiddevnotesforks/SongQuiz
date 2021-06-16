@@ -29,6 +29,7 @@ class SpeechRecognizerService @Inject constructor(
     var speechRecognizer: SpeechRecognizer? = null
 
     var startedCallback: () -> Unit = {}
+    var dBResultChangedCallback: (Float) -> Unit = {}
     var partialCallback: (ArrayList<String>) -> Unit = {}
     var resultCallback: (ArrayList<String>) -> Unit = {}
     var errorCallback: (String) -> Unit = {}
@@ -41,7 +42,8 @@ class SpeechRecognizerService @Inject constructor(
         speechRecognizer?.setRecognitionListener(this)
     }
 
-    fun startListening(started: () -> Unit, partialResult: (ArrayList<String>) -> Unit,
+    fun startListening(started: () -> Unit, dBResultChanged: (Float) -> Unit,
+                       partialResult: (ArrayList<String>) -> Unit,
                        result: (ArrayList<String>) -> Unit, error: (String) -> Unit){
         Log.i(this.javaClass.name,"startListening")
 
@@ -55,6 +57,7 @@ class SpeechRecognizerService @Inject constructor(
         }
 
         startedCallback = started
+        dBResultChangedCallback = dBResultChanged
         partialCallback = partialResult
         resultCallback = result
         errorCallback = error
@@ -97,6 +100,7 @@ class SpeechRecognizerService @Inject constructor(
      */
     override fun onRmsChanged(rmsdB: Float) {
         Log.i(this.javaClass.name,"onRmsChanged: $rmsdB")
+        dBResultChangedCallback(rmsdB)
     }
 
     /**

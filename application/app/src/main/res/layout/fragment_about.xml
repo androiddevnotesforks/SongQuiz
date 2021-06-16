@@ -35,7 +35,7 @@
 
             <include
                 android:id="@+id/content"
-                layout="@layout/about_info"
+                layout="@layout/fragment_about_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/ivLogo"

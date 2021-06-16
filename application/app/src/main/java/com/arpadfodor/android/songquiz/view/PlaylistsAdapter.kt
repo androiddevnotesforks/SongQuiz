@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 
-class PlaylistsAdapter(private val context: Context,
-                       private val onStart: (Playlist) -> Unit, private val onDelete: (Playlist) -> Unit) :
+class PlaylistsAdapter(private val context: Context, private val onStart: (Playlist) -> Unit,
+                       private val onDelete: (Playlist) -> Unit) :
         ListAdapter<Playlist, PlaylistsAdapter.PlaylistViewHolder>(PlaylistDiffCallback) {
 
     /* ViewHolder for Playlist, takes the view binding, the onClick behavior, and the context. */

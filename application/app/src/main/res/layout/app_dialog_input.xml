@@ -20,7 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalLow" />
 
         <TextView
             style="@style/ParagraphText"
@@ -30,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle"
-            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle" />
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalLow" />
 
         <com.google.android.material.textfield.TextInputEditText
             style="@style/InputText"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/glHorizontalMiddle"/>
+            app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow"/>
 
         <com.arpadfodor.android.songquiz.view.utils.AppPositiveButton
             android:id="@+id/btnPositiveAppDialog"
@@ -73,7 +73,7 @@
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/glHorizontalMiddle"
+            android:id="@+id/glHorizontalLow"
             app:layout_constraintGuide_percent="0.5"
             android:orientation="horizontal"/>
 

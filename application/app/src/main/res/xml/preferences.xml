@@ -47,9 +47,18 @@
             app:selectable="true"/>
 
         <Preference
-            app:key="@string/SETTINGS_KEY_DELETE_PLAYLISTS"
-            app:title="@string/settings_title_delete_playlists"
-            app:summary="@string/settings_summary_delete_playlists"
+            app:key="@string/SETTINGS_KEY_DELETE_ALL_PLAYLISTS"
+            app:title="@string/settings_title_delete_all_playlists"
+            app:summary="@string/settings_summary_delete_all_playlists"
+            app:selectable="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_category_title_account">
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_LOGOUT"
             app:selectable="true"/>
 
     </PreferenceCategory>

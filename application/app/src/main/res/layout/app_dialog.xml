@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/dialog_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/glHorizontalMiddle"
+            app:layout_constraintBottom_toTopOf="@+id/glHorizontalLow"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/appDialogImageDescription" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalMiddle" />
+            app:layout_constraintTop_toTopOf="@+id/glHorizontalLow" />
 
         <TextView
             style="@style/ParagraphText"
@@ -76,7 +76,7 @@
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/glHorizontalMiddle"
+            android:id="@+id/glHorizontalLow"
             app:layout_constraintGuide_percent="0.5"
             android:orientation="horizontal"/>
 

@@ -3,8 +3,6 @@ package com.arpadfodor.android.songquiz.view.utils
 import android.app.ActivityOptions
 import android.content.Intent
 import android.view.MenuItem
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -16,7 +14,7 @@ import com.google.android.material.navigation.NavigationView
 /**
  * The app activity class having a drawer menu
  */
-abstract class AppActivityMenu(screenAlive: Boolean) : AppActivity(screenAlive), NavigationView.OnNavigationItemSelectedListener {
+abstract class AppActivityMenu(keepScreenAlive: Boolean) : AppActivity(keepScreenAlive), NavigationView.OnNavigationItemSelectedListener {
 
     abstract var activityDrawerLayout: DrawerLayout
     abstract var appBarConfiguration: AppBarConfiguration

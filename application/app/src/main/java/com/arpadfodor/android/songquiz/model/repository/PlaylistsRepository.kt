@@ -25,7 +25,7 @@ class PlaylistsRepository @Inject constructor(
         return playlists.reversed()
     }
 
-    fun addPlaylistById(id: String) : Boolean{
+    fun insertPlaylistById(id: String) : Boolean{
         val result = apiService.getPlaylistById(id)
         if(result.id == ""){
             return false
@@ -36,14 +36,9 @@ class PlaylistsRepository @Inject constructor(
         return true
     }
 
-    fun addPlaylist(playlist: Playlist) : Boolean{
+    fun insertPlaylist(playlist: Playlist) : Boolean{
         val toInsert = playlist.toDbPlaylist()
         dao.insert(toInsert)
-        return true
-    }
-
-    fun updatePlaylist(playlist: Playlist) : Boolean{
-        dao.insert(playlist.toDbPlaylist())
         return true
     }
 
@@ -51,7 +46,7 @@ class PlaylistsRepository @Inject constructor(
         dao.delete(id)
     }
 
-    fun deletePlaylists(){
+    fun deleteAllPlaylists(){
         dao.deleteAll()
     }
 

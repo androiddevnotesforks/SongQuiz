@@ -4,10 +4,8 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.coroutineContext
 
 /**
  * Injected everywhere as a singleton
@@ -17,7 +15,7 @@ class MediaPlayerService  @Inject constructor(
     @ApplicationContext val context: Context
 ) {
 
-    var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
 
     fun playUrlSound(soundUrl: String, finished: () -> Unit, error: () -> Unit) : Boolean{
 
