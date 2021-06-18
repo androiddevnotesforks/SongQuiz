@@ -12,7 +12,7 @@
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
-        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist" />
+        app:layout_constraintEnd_toEndOf="@+id/svInfo" />
 
     <ImageView
         style="@style/MainImage"
@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
         app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
-        app:layout_constraintBottom_toTopOf="@+id/adQuiz"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/svInfo"
@@ -89,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/glHorizontalLow"
-        app:layout_constraintGuide_percent="0.55"
+        app:layout_constraintGuide_percent="0.5"
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -108,7 +108,7 @@
         android:src="@drawable/icon_mic_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adQuiz"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.gms.ads.AdView
@@ -117,8 +117,8 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
+        app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
+        app:layout_constraintEnd_toEndOf="parent"
         ads:adSize="BANNER"
         ads:adUnitId="@string/quiz_ad_id" />
 

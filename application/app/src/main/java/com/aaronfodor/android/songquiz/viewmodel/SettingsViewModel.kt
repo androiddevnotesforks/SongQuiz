@@ -46,24 +46,26 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun getUserNameAndEmail() : Pair<String, String>{
-        val name = accountService.getUserName()
-        val email = accountService.getUserEmail()
-        return Pair(name, email)
+        return accountService.getUserNameAndEmail()
     }
 
-    fun deletePlaylists(){
-        viewModelScope.launch(Dispatchers.IO) {
-            playlistsRepository.deleteAllPlaylists()
-            uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
-        }
+    fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        playlistsRepository.deleteAllPlaylists()
+        uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
     }
 
-    fun logout(){
-        viewModelScope.launch(Dispatchers.IO) {
-            accountRepository.deleteAccount()
-            accountService.logout()
-            uiState.postValue(SettingsUiState.ACCOUNT_LOGGED_OUT)
-        }
+    fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        accountRepository.deleteAccount()
+        accountService.logout()
+        uiState.postValue(SettingsUiState.ACCOUNT_LOGGED_OUT)
+    }
+
+    fun ready() = viewModelScope.launch {
+        uiState.value = SettingsUiState.READY
+    }
+
+    fun cacheCleared() = viewModelScope.launch {
+        uiState.value = SettingsUiState.CACHE_CLEARED
     }
 
 }

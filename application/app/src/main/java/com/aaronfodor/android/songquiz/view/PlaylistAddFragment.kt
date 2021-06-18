@@ -11,15 +11,19 @@ import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.SearchResult
 import com.aaronfodor.android.songquiz.view.utils.AppDialogInput
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddViewModel
 import com.google.android.material.snackbar.Snackbar
 
-class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
+class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthRequestModule {
 
     private val binding: FragmentPlaylistAddBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsAddViewModel
+
+    private var lastSearchExpression = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,8 +73,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
                     showInfo(PlaylistsAddUiState.NOT_FOUND)
                 }
                 PlaylistsAddUiState.AUTH_NEEDED -> {
-                    authenticate()
-                    viewModel.uiState.postValue(PlaylistsAddUiState.READY)
+                    startAuthentication()
                 }
                 PlaylistsAddUiState.ERROR_ADD_PLAYLIST -> {
                     showInfo(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
@@ -101,6 +104,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         val inputDialog = AppDialogInput(this.requireContext(), getString(R.string.search_playlist),
             getString(R.string.search_playlist_description))
         inputDialog.setPositiveButton {
+            lastSearchExpression = it
             viewModel.searchPlaylistByIdOrName(it)
         }
         inputDialog.show()
@@ -133,7 +137,18 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
             }
         }
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-        viewModel.uiState.postValue(PlaylistsAddUiState.READY)
+        viewModel.ready()
+    }
+
+    override var authLauncherStarted = false
+    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
+        if(isAuthSuccess){
+            viewModel.searchPlaylistByIdOrName(lastSearchExpression)
+        }
+        else{
+            viewModel.ready()
+        }
+        authLauncherStarted = false
     }
 
 }

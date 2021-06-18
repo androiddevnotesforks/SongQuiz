@@ -54,7 +54,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
         viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration)
-        viewModel.numProgressSteps = resources.getInteger(R.integer.progressbar_max_value)
+        viewModel.numProgressBarSteps = resources.getInteger(R.integer.progressbar_max_value)
     }
 
     override fun onBackPressed() {
@@ -270,17 +270,17 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             QuizUiState.ERROR_PLAYLIST_LOAD -> {
                 val message = getString(R.string.error_playlist_load)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(QuizUiState.EMPTY)
+                viewModel.empty()
             }
             QuizUiState.ERROR_PLAY_SONG -> {
                 val message = getString(R.string.error_play_song)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(QuizUiState.PLAY)
+                viewModel.play()
             }
             QuizUiState.ERROR_SPEAK_TO_USER -> {
                 val message = getString(R.string.error_speak_to_user)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(QuizUiState.PLAY)
+                viewModel.play()
             }
             else -> {}
         }

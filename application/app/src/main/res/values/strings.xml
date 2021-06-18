@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.9">
-    <!ENTITY appDate "16/06/2021">
+    <!ENTITY appVersion "v0.11">
+    <!ENTITY appDate "18/06/2021">
     <!ENTITY appCreator "Aaron Fodor">
     <!ENTITY spotifyClientId "51aee5a292494583852e135803681e05">
     <!ENTITY spotifyClientSec "just for testing">
@@ -28,7 +28,7 @@
     <string name="client_id">&spotifyClientId;</string>
     <string name="spotify_token_request_param">&spotifyClientId;:&spotifyClientSec;</string>
 
-    <string name="com_spotify_sdk_redirect_uri">com.arpadfodor.android.songquiz://token</string>
+    <string name="com_spotify_sdk_redirect_uri">com.aaronfodor.android.songquiz://token</string>
 
     <string name="app_ads_id">&adMobAppId;</string>
     <string name="quiz_ad_id">&adMobQuizAdId;</string>
@@ -40,7 +40,7 @@
         Created by &appCreator;\n\n
         &appDate;\n\n
         &appVersion;\n\n
-        This app uses Spotify playlists for the game, so the app requires Spotify authentication. We recommend that you use an English text-to-speech engine, as the information comes in English. Note: non-English words can be difficult to recognize with text recognition. Internet connection is needed while playing.\n\n
+        This app uses Spotify playlists to play with. To access them, authentication is required. Note: not all songs in a playlist have song preview - this is decided by Spotify. Therefore, a game can usually be played with fewer songs than there are actually on the selected playlist. We recommend that you use an English text-to-speech engine, as the information comes in English. Words in different languages can be difficult to recognize. Internet connection is needed while playing.\n\n
     </string>
 
     <string name="legal_title">Legal information</string>

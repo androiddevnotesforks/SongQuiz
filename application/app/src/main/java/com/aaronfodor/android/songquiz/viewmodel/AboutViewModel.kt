@@ -24,55 +24,45 @@ class AboutViewModel  @Inject constructor(
         MutableLiveData<TtsAboutState>()
     }
 
-    init {
-        viewModelScope.launch {
-            if(textToSpeechService.isSpeaking()){
-                ttsState.value = TtsAboutState.SPEAKING
+    init { viewModelScope.launch {
+        if(textToSpeechService.isSpeaking()){
+            ttsState.value = TtsAboutState.SPEAKING
+        }
+        else{
+            ttsState.value = TtsAboutState.ENABLED
+        }
+
+        subscribeTtsListeners()
+    } }
+
+    fun subscribeTtsListeners() = viewModelScope.launch {
+        textToSpeechService.setCallbacks(
+            started = {
+                ttsState.postValue(TtsAboutState.SPEAKING)
+            },
+            finished = {
+                ttsState.postValue(TtsAboutState.ENABLED)
+            },
+            error = {
+                ttsState.postValue(TtsAboutState.ENABLED)
             }
-            else{
-                ttsState.value = TtsAboutState.ENABLED
-            }
-
-            subscribeTtsListeners()
-        }
+        )
     }
 
-    fun subscribeTtsListeners(){
-        viewModelScope.launch {
-            textToSpeechService.setCallbacks(
-                started = {
-                    ttsState.postValue(TtsAboutState.SPEAKING)
-                },
-                finished = {
-                    ttsState.postValue(TtsAboutState.ENABLED)
-                },
-                error = {
-                    ttsState.postValue(TtsAboutState.ENABLED)
-                }
-            )
-        }
+    fun unsubscribeTtsListeners() = viewModelScope.launch {
+        textToSpeechService.setCallbacks(
+            started = {},
+            finished = {},
+            error = {}
+        )
     }
 
-    fun unsubscribeTtsListeners(){
-        viewModelScope.launch {
-            textToSpeechService.setCallbacks(
-                started = {},
-                finished = {},
-                error = {}
-            )
-        }
+    fun speak(text: String) = viewModelScope.launch {
+        textToSpeechService.speak(text)
     }
 
-    fun speak(text: String){
-        viewModelScope.launch {
-            textToSpeechService.speak(text)
-        }
-    }
-
-    fun stopSpeaking(){
-        viewModelScope.launch {
-            textToSpeechService.stop()
-        }
+    fun stopSpeaking() = viewModelScope.launch {
+        textToSpeechService.stop()
     }
 
 }

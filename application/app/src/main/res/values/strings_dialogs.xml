@@ -9,7 +9,7 @@
     <string name="exit_quiz_dialog">Are you sure you want to exit this quiz?</string>
 
     <string name="logout">Log out</string>
-    <string name="logout_description">Are you sure you want to log out? You need to be logged in with Spotify to play or search for playlists.</string>
+    <string name="logout_description">Are you sure you want to log out? You need to be logged in to play or search for playlists.</string>
 
     <string name="delete_playlist">Delete playlist</string>
     <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add them again later.</string>

@@ -17,10 +17,8 @@ class MediaPlayerService  @Inject constructor(
 
     private var mediaPlayer: MediaPlayer? = null
 
-    fun playUrlSound(soundUrl: String, finished: () -> Unit, error: () -> Unit) : Boolean{
-
+    fun playUrlSound(soundUrl: String, started: () -> Unit, finished: () -> Unit, error: () -> Unit){
         mediaPlayer = MediaPlayer().apply {
-
             try{
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -28,18 +26,22 @@ class MediaPlayerService  @Inject constructor(
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-
+                setOnPreparedListener {
+                    start()
+                    started()
+                }
                 setOnCompletionListener { player ->
+                    player.reset()
                     player.release()
+                    mediaPlayer = null
                     finished()
                 }
                 setOnErrorListener { player, what, extra ->
+                    player.reset()
                     player.release()
+                    mediaPlayer = null
                     error()
                     true
-                }
-                setOnPreparedListener {
-                    start()
                 }
 
                 setDataSource(soundUrl)
@@ -47,27 +49,27 @@ class MediaPlayerService  @Inject constructor(
             }
             catch (e: Exception){
                 error()
-                return false
             }
-
         }
-
-        return true
     }
 
     fun playLocalSound(soundName: String, finished: () -> Unit, error: () -> Unit) : Boolean{
-
         val assetFileDescriptor = context.assets.openFd(soundName)
+        var isSuccess = true
 
         mediaPlayer = MediaPlayer().apply {
 
             try{
                 setOnCompletionListener { player ->
+                    player.reset()
                     player.release()
+                    mediaPlayer = null
                     finished()
                 }
                 setOnErrorListener { player, what, extra ->
+                    player.reset()
                     player.release()
+                    mediaPlayer = null
                     error()
                     true
                 }
@@ -84,18 +86,20 @@ class MediaPlayerService  @Inject constructor(
             }
             catch (e: Exception){
                 error()
-                return false
+                isSuccess = false
             }
 
         }
 
-        return true
+        return isSuccess
     }
 
     fun stop(){
         mediaPlayer?.apply {
+            reset()
             release()
         }
+        mediaPlayer = null
     }
 
 }
