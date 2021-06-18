@@ -36,68 +36,61 @@ class PlaylistsAddViewModel @Inject constructor(
 
     var playlistIdsAlreadyAdded = mutableListOf<String>()
 
-    init {
-        viewModelScope.launch {
-            uiState.value = PlaylistsAddUiState.READY
-        }
+    init { viewModelScope.launch {
+        uiState.value = PlaylistsAddUiState.READY
+    } }
+
+    fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch {
+        playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
     }
 
-    fun setPlaylistIdsAlreadyAdded(){
-        viewModelScope.launch {
-            playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
+    fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
+        if(accountService.accountState.value != AccountState.LOGGED_IN){
+            uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
+            return@launch
         }
-    }
 
-    fun searchPlaylistByIdOrName(searchExpression: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            if(accountService.accountState.value != AccountState.LOGGED_IN){
-                uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
-                return@launch
-            }
+        uiState.postValue(PlaylistsAddUiState.LOADING)
 
-            uiState.postValue(PlaylistsAddUiState.LOADING)
+        val result = repository.searchPlaylistByIdOrName(searchExpression)
+        searchResult.postValue(result)
 
-            val result = repository.searchPlaylistByIdOrName(searchExpression)
-            searchResult.postValue(result)
-
-            if(result.items.isEmpty()){
-                uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
-            }
-            else{
-                uiState.postValue(PlaylistsAddUiState.READY)
-            }
+        if(result.items.isEmpty()){
+            uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
         }
-    }
-
-    fun searchGetNextBatch(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentResult = searchResult.value ?: return@launch
-
-            uiState.postValue(PlaylistsAddUiState.LOADING)
-            searchResult.postValue(repository.searchGetNextBatch(currentResult))
+        else{
             uiState.postValue(PlaylistsAddUiState.READY)
         }
     }
 
-    fun addPlaylistById(id: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            if(playlistIdsAlreadyAdded.contains(id)){
-                uiState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
-                return@launch
-            }
+    fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
+        val currentResult = searchResult.value ?: return@launch
 
-            uiState.postValue(PlaylistsAddUiState.LOADING)
-            val success = searchResult.value?.items?.let { repository.insertPlaylist(it.first{ item -> item.id == id }) } ?: false
+        uiState.postValue(PlaylistsAddUiState.LOADING)
+        searchResult.postValue(repository.searchGetNextBatch(currentResult))
+        uiState.postValue(PlaylistsAddUiState.READY)
+    }
 
-            if(success){
-                uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
-                playlistIdsAlreadyAdded.add(id)
-            }
-            else{
-                uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
-            }
+    fun addPlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        if(playlistIdsAlreadyAdded.contains(id)){
+            uiState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
+            return@launch
         }
 
+        uiState.postValue(PlaylistsAddUiState.LOADING)
+        val success = searchResult.value?.items?.let { repository.insertPlaylist(it.first{ item -> item.id == id }) } ?: false
+
+        if(success){
+            uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
+            playlistIdsAlreadyAdded.add(id)
+        }
+        else{
+            uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
+        }
+    }
+
+    fun ready() = viewModelScope.launch {
+        uiState.value = PlaylistsAddUiState.READY
     }
 
 }

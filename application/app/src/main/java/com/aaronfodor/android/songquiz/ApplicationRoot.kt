@@ -13,7 +13,7 @@ class ApplicationRoot : Application() {
     override fun onCreate() {
         super.onCreate()
         // Initialize Ads
-        MobileAds.initialize(this)
+        MobileAds.initialize(applicationContext)
     }
 
 }

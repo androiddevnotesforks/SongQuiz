@@ -1,6 +1,5 @@
 package com.aaronfodor.android.songquiz.view
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -8,10 +7,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.viewmodel.SettingsAccountState
 import com.aaronfodor.android.songquiz.viewmodel.SettingsUiState
 import com.aaronfodor.android.songquiz.viewmodel.SettingsViewModel
@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, AuthRequestModule {
 
     private lateinit var viewModel: SettingsViewModel
 
@@ -103,18 +103,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         }
         viewModel.accountState.observe(this, accountStateObserver)
+
+        // to start, show current account state
+        val currentAccountState = viewModel.accountState.value ?: SettingsAccountState.LOGGED_OUT
+        if(currentAccountState == SettingsAccountState.LOGGED_OUT){
+            showLoggedOut()
+        }
+        else{
+            showLoggedIn(viewModel.getUserNameAndEmail())
+        }
     }
 
     override fun onPause() {
         super.onPause()
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    private fun authenticate(){
-        val intent = Intent(this.requireContext(), AuthActivity::class.java)
-        // After auth finished, return to the caller screen by removing the auth screen
-        intent.putExtra(AuthActivity.DESTROY_SELF_WHEN_READY_KEY, true)
-        startActivity(intent)
     }
 
     private fun showLogoutDialog() {
@@ -137,7 +139,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             it.summary = getString(R.string.settings_summary_log_in)
 
             it.setOnPreferenceClickListener {
-                authenticate()
+                startAuthentication()
                 true
             }
         }
@@ -165,7 +167,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             getString(R.string.clear_cache_description), R.drawable.icon_warning)
         dialog.setPositiveButton {
             Glide.get(requireContext()).clearMemory()
-            viewModel.uiState.postValue(SettingsUiState.CACHE_CLEARED)
+            viewModel.cacheCleared()
         }
         dialog.show()
     }
@@ -237,7 +239,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         }
         Snackbar.make(this.requireView(), message, Snackbar.LENGTH_LONG).show()
-        viewModel.uiState.postValue(SettingsUiState.READY)
+        viewModel.ready()
+    }
+
+    override var authLauncherStarted = false
+    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
+        authLauncherStarted = false
     }
 
 }

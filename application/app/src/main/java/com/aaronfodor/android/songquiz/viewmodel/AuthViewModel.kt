@@ -47,52 +47,52 @@ class AuthViewModel  @Inject constructor(
         }
     }
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            // initialize the account service
-            accountService.setAccount(repository.getAccount())
-        }
-    }
+    init { viewModelScope.launch(Dispatchers.IO) {
+        // initialize the account service
+        accountService.setAccount(repository.getAccount())
+    } }
 
     fun getLoginRequest() : AuthorizationRequest {
         return accountService.getAuthRequest()
     }
 
-    fun processLoginResult(resultCode: Int, data: Intent){
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = accountService.getResponse(resultCode, data)
+    fun processLoginResult(resultCode: Int, data: Intent) = viewModelScope.launch(Dispatchers.IO) {
+        val response = accountService.getResponse(resultCode, data)
 
-            val token = response.accessToken
-            val tokenExpireTime = System.currentTimeMillis() + ((response.expiresIn - accountService.tokenRequireBeforeExpiresSec) * 1000)
+        val token = response.accessToken
+        val tokenExpireTime = System.currentTimeMillis() + ((response.expiresIn - accountService.tokenRequireBeforeExpiresSec) * 1000)
 
-            when (response.type) {
-                // success
-                AuthorizationResponse.Type.TOKEN -> {
-                    val account = repository.searchSelfAccount(token)
-                    val accountToSet = Account(
-                        id = account.id,
-                        name = account.name,
-                        email = account.email,
-                        uri = account.uri,
-                        country = account.country,
-                        token = token,
-                        tokenExpireTime = tokenExpireTime
-                    )
-                    repository.updateAccount(accountToSet)
-                    accountService.setAccount(accountToSet)
-                    uiState.postValue(AuthUiState.SUCCESS)
-                }
-                AuthorizationResponse.Type.ERROR -> {
-                    uiState.postValue(AuthUiState.ERROR_INTERNET)
-                }
-                AuthorizationResponse.Type.EMPTY -> {
-                    uiState.postValue(AuthUiState.ERROR_DENIED)
-                }
-                else -> {
-                    uiState.postValue(AuthUiState.ERROR)
-                }
+        when (response.type) {
+            // success
+            AuthorizationResponse.Type.TOKEN -> {
+                val account = repository.searchSelfAccount(token)
+                val accountToSet = Account(
+                    id = account.id,
+                    name = account.name,
+                    email = account.email,
+                    uri = account.uri,
+                    country = account.country,
+                    token = token,
+                    tokenExpireTime = tokenExpireTime
+                )
+                repository.updateAccount(accountToSet)
+                accountService.setAccount(accountToSet)
+                uiState.postValue(AuthUiState.SUCCESS)
+            }
+            AuthorizationResponse.Type.ERROR -> {
+                uiState.postValue(AuthUiState.ERROR_INTERNET)
+            }
+            AuthorizationResponse.Type.EMPTY -> {
+                uiState.postValue(AuthUiState.ERROR_DENIED)
+            }
+            else -> {
+                uiState.postValue(AuthUiState.ERROR)
             }
         }
+    }
+
+    fun empty() = viewModelScope.launch {
+        uiState.value = AuthUiState.EMPTY
     }
 
 }

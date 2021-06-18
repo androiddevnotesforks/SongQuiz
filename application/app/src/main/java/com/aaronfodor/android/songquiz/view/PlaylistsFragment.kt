@@ -12,6 +12,8 @@ import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -19,13 +21,13 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule {
 
     private val binding: FragmentPlaylistsBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsViewModel
 
-    var selectedPlaylistId = ""
+    private var selectedPlaylistId = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,8 +75,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
                 }
                 PlaylistsUiState.READY -> {}
                 PlaylistsUiState.AUTH_NEEDED -> {
-                    authenticate()
-                    viewModel.uiState.postValue(PlaylistsUiState.READY)
+                    startAuthentication()
                 }
                 PlaylistsUiState.START_QUIZ -> {
                     showQuizScreen()
@@ -110,11 +111,11 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
     private fun playlistByIdSelected(id: String){
         // record the selected playlist
         selectedPlaylistId = id
-        viewModel.showStartQuizScreen()
+        viewModel.startQuiz()
     }
 
     private fun showQuizScreen(){
-        viewModel.uiState.postValue(PlaylistsUiState.READY)
+        viewModel.ready()
 
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
@@ -129,7 +130,18 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists) {
     private fun showAddPlaylistsScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
         navHostFragment.navigate(R.id.to_nav_playlist_add, null)
-        viewModel.uiState.postValue(PlaylistsUiState.READY)
+        viewModel.ready()
+    }
+
+    override var authLauncherStarted = false
+    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
+        if(isAuthSuccess){
+            viewModel.startQuiz()
+        }
+        else{
+            viewModel.ready()
+        }
+        authLauncherStarted = false
     }
 
 }

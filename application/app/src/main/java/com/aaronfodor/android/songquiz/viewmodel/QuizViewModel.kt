@@ -1,6 +1,8 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -105,7 +107,7 @@ class QuizViewModel @Inject constructor(
     /**
      * Play song progressbar maximum value
      */
-    var numProgressSteps = 0
+    var numProgressBarSteps = 0
 
     /**
      * The possibly long-running task to notify the user
@@ -117,77 +119,70 @@ class QuizViewModel @Inject constructor(
      */
     private var getUserInputJob: Job? = null
 
-    init {
-        viewModelScope.launch {
-            clearState()
-        }
+    init { viewModelScope.launch {
+        clearState()
+    } }
+
+    private fun stopActions() = viewModelScope.launch {
+        info.value = ""
+        recognition.value = ""
+        playlistImageUri.value = ""
+        userInputState.value = UserInputState.DISABLED
+        ttsState.value = TtsState.ENABLED
+        uiState.value = QuizUiState.EMPTY
+        // discard possible long running remaining jobs (emitting/getting information to/from user)
+        infoToUserJob?.cancel()
+        getUserInputJob?.cancel()
+        // reset services
+        mediaPlayerService.stop()
+        textToSpeechService.stop()
+        speechRecognizerService.stopListening()
     }
 
-    private fun stopActions(){
-        viewModelScope.launch {
-            info.postValue("")
-            recognition.postValue("")
-            playlistImageUri.postValue("")
+    fun clearState() = viewModelScope.launch {
+        stopActions()
+        quizService.clear()
+    }
+
+    fun setPlaylistByIdAndSettings(playlistId: String, repeatAllowed: Boolean, songDuration: Int)
+    = viewModelScope.launch(Dispatchers.IO) {
+
+        if(quizService.playlist.id == playlistId){
+            // prevent activity to reset view model state every time when onCreate is called
+            if(uiState.value != QuizUiState.EMPTY){
+                return@launch
+            }
+
+            quizService.setStartQuizState()
+            // ready to start
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.ENABLED)
-            uiState.postValue(QuizUiState.EMPTY)
-            // discard possible long running remaining jobs (emitting/getting information to/from user)
-            infoToUserJob?.cancel()
-            getUserInputJob?.cancel()
-            // reset services
-            mediaPlayerService.stop()
-            textToSpeechService.stop()
-            speechRecognizerService.stopListening()
+            uiState.postValue(QuizUiState.READY_TO_START)
         }
-    }
+        else{
+            // loading state
+            uiState.postValue(QuizUiState.LOADING)
+            userInputState.postValue(UserInputState.DISABLED)
+            ttsState.postValue(TtsState.DISABLED)
 
-    fun clearState(){
-        viewModelScope.launch {
-            stopActions()
-            quizService.clear()
-        }
-    }
+            val playlist = repository.downloadPlaylistById(playlistId)
 
-    fun setPlaylistByIdAndSettings(playlistId: String, repeatAllowed: Boolean, songDuration: Int){
-        viewModelScope.launch(Dispatchers.IO) {
-
-            if(quizService.playlist.id == playlistId){
-                // prevent activity to reset view model state every time when onCreate is called
-                if(uiState.value != QuizUiState.EMPTY){
-                    return@launch
-                }
-
-                quizService.setStartQuizState()
+            // successfully downloaded
+            if(playlist.id == playlistId){
+                quizService.setQuizPlaylistAndSettings(playlist, repeatAllowed, songDuration)
                 // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
                 uiState.postValue(QuizUiState.READY_TO_START)
+                playlistImageUri.postValue(playlist.previewImageUri)
+                // update playlist in the repository
+                repository.insertPlaylist(playlist)
             }
             else{
-                // loading state
-                uiState.postValue(QuizUiState.LOADING)
-                userInputState.postValue(UserInputState.DISABLED)
-                ttsState.postValue(TtsState.DISABLED)
-
-                val playlist = repository.downloadPlaylistById(playlistId)
-
-                // successfully downloaded
-                if(playlist.id == playlistId){
-                    quizService.setQuizPlaylistAndSettings(playlist, repeatAllowed, songDuration)
-                    // ready to start
-                    userInputState.postValue(UserInputState.DISABLED)
-                    ttsState.postValue(TtsState.ENABLED)
-                    uiState.postValue(QuizUiState.READY_TO_START)
-                    playlistImageUri.postValue(playlist.previewImageUri)
-                    // update playlist in the repository
-                    repository.insertPlaylist(playlist)
-                }
-                else{
-                    uiState.postValue(QuizUiState.ERROR_PLAYLIST_LOAD)
-                }
+                uiState.postValue(QuizUiState.ERROR_PLAYLIST_LOAD)
             }
-
         }
+
     }
 
     private suspend fun speakToUser(text: String) : Boolean{
@@ -220,42 +215,52 @@ class QuizViewModel @Inject constructor(
     private suspend fun playUrlSound(soundUri: String) : Boolean{
         var isSuccess = false
 
+        var timer: CountDownTimer? = null
+
         suspendCoroutine<Boolean> { cont ->
 
-            val timeStepMs = 20L
-            val msInSec = 1000L
-            val playDurationMs = quizService.songDurationSec * msInSec
+            // countdown timer must run on the UI thread
+            Handler(Looper.getMainLooper()).post {
+                val timeStepMs = 20L
+                val msInSec = 1000L
+                val playDurationMs = quizService.songDurationSec * msInSec
 
-            val timer = object : CountDownTimer(playDurationMs, timeStepMs) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val songDurationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * numProgressSteps).toInt()
-                    songPlayProgress.postValue(songDurationPercentage)
-                }
+                timer = object : CountDownTimer(playDurationMs, timeStepMs) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        val durationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * numProgressBarSteps).toInt()
+                        songPlayProgress.postValue(durationPercentage)
+                    }
 
-                override fun onFinish() {
-                    mediaPlayerService.stop()
-                    songPlayProgress.postValue(0)
-                    isSuccess = true
-                    cont.resume(true)
+                    override fun onFinish() {
+                        mediaPlayerService.stop()
+                        songPlayProgress.postValue(0)
+                        isSuccess = true
+                        cont.resume(true)
+                    }
                 }
             }
 
+            val started = {
+                timer?.start()
+                isSuccess = false
+            }
             val finished = {
+                timer?.cancel()
+                timer?.onFinish()
+                timer = null
                 isSuccess = true
             }
             val error = {
-                timer.cancel()
-                timer.onFinish()
+                timer?.cancel()
+                timer?.onFinish()
+                timer = null
                 isSuccess = false
                 uiState.postValue(QuizUiState.ERROR_PLAY_SONG)
                 userInputState.postValue(UserInputState.ENABLED)
                 ttsState.postValue(TtsState.ENABLED)
             }
 
-            val playStarted = mediaPlayerService.playUrlSound(soundUri, finished, error)
-            if(playStarted){
-                timer.start()
-            }
+            mediaPlayerService.playUrlSound(soundUri, started, finished, error)
         }
 
         return isSuccess
@@ -283,8 +288,11 @@ class QuizViewModel @Inject constructor(
         return isSuccess
     }
 
-    fun infoToUser(clearUserInputText: Boolean = false){
-        infoToUserJob = viewModelScope.launch {
+    fun infoToUser(clearUserInputText: Boolean = false) : Job = viewModelScope.launch(Dispatchers.Main) {
+        var immediateAnswerNeeded = false
+        var isSuccessful = false
+
+        infoToUserJob = viewModelScope.launch(Dispatchers.IO) {
 
             if(uiState.value == QuizUiState.READY_TO_START){
                 uiState.postValue(QuizUiState.PLAY)
@@ -299,8 +307,8 @@ class QuizViewModel @Inject constructor(
 
             val response = quizService.getCurrentInfo()
             val infoList = response.contents
-            val immediateAnswerNeeded = response.immediateAnswerNeeded
-            var isSuccessful = true
+            immediateAnswerNeeded = response.immediateAnswerNeeded
+            isSuccessful = true
 
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.SPEAKING)
@@ -329,125 +337,127 @@ class QuizViewModel @Inject constructor(
 
             }
 
-            userInputState.value = UserInputState.ENABLED
-            ttsState.value = TtsState.ENABLED
+            userInputState.postValue(UserInputState.ENABLED)
+            ttsState.postValue(TtsState.ENABLED)
+        }
+        infoToUserJob?.join()
 
-            // immediate user response is expected
-            if (immediateAnswerNeeded && isSuccessful) {
-                getUserInput()
-            }
-
+        // immediate user response is expected
+        if (immediateAnswerNeeded && isSuccessful) {
+            getUserInput()
         }
     }
 
     fun getUserInput(){
-        if (ttsState.value == TtsState.SPEAKING || uiState.value == QuizUiState.EMPTY) {
-            return
-        }
+        getUserInputJob = viewModelScope.launch(Dispatchers.Main) {
+            if (ttsState.value == TtsState.SPEAKING || uiState.value == QuizUiState.EMPTY) {
+                return@launch
+            }
 
-        ttsState.postValue(TtsState.DISABLED)
-        userInputState.postValue(UserInputState.RECORDING)
-        rmsState.postValue(RmsState.LEVEL1)
+            ttsState.postValue(TtsState.DISABLED)
+            userInputState.postValue(UserInputState.RECORDING)
+            rmsState.postValue(RmsState.LEVEL1)
 
-        val started = {}
+            val started = {}
+            val rmsValue = { rms: Float ->
+                val currentTime = System.currentTimeMillis()
+                val nextUpdateNeededAt = lastRMSIconUpdate + rmsIconUpdateMs
 
-        val rmsValue = { rms: Float ->
-            val currentTime = System.currentTimeMillis()
-            val nextUpdateNeededAt = lastRMSIconUpdate + rmsIconUpdateMs
+                if(nextUpdateNeededAt < currentTime){
+                    lastRMSIconUpdate = currentTime
 
-            if(nextUpdateNeededAt < currentTime){
-                lastRMSIconUpdate = currentTime
+                    val avgRMS = sumRMS / numRMSItems
+                    Log.d(this.javaClass.name, "Avg RMS: $avgRMS")
 
-                val avgRMS = sumRMS / numRMSItems
-                Log.d(this.javaClass.name, "Avg RMS: $avgRMS")
+                    sumRMS = 0f
+                    numRMSItems = 0
 
-                sumRMS = 0f
-                numRMSItems = 0
-
-                when (rmsState.value) {
-                    RmsState.LEVEL1 -> {
-                        if(avgRMS >= 2){
-                            rmsState.postValue(RmsState.LEVEL2)
+                    when (rmsState.value) {
+                        RmsState.LEVEL1 -> {
+                            if(avgRMS >= 2){
+                                rmsState.postValue(RmsState.LEVEL2)
+                            }
                         }
-                    }
-                    RmsState.LEVEL2 -> {
-                        if(avgRMS >= 2.5){
-                            rmsState.postValue(RmsState.LEVEL3)
+                        RmsState.LEVEL2 -> {
+                            if(avgRMS >= 2.5){
+                                rmsState.postValue(RmsState.LEVEL3)
+                            }
+                            else if(avgRMS < 1.5){
+                                rmsState.postValue(RmsState.LEVEL1)
+                            }
                         }
-                        else if(avgRMS < 1.5){
-                            rmsState.postValue(RmsState.LEVEL1)
+                        RmsState.LEVEL3 -> {
+                            if(avgRMS >= 3){
+                                rmsState.postValue(RmsState.LEVEL4)
+                            }
+                            else if(avgRMS < 2){
+                                rmsState.postValue(RmsState.LEVEL2)
+                            }
                         }
-                    }
-                    RmsState.LEVEL3 -> {
-                        if(avgRMS >= 3){
-                            rmsState.postValue(RmsState.LEVEL4)
+                        RmsState.LEVEL4 -> {
+                            if(avgRMS >= 3.5){
+                                rmsState.postValue(RmsState.LEVEL5)
+                            }
+                            else if(avgRMS < 2.5){
+                                rmsState.postValue(RmsState.LEVEL3)
+                            }
                         }
-                        else if(avgRMS < 2){
-                            rmsState.postValue(RmsState.LEVEL2)
+                        RmsState.LEVEL5 -> {
+                            if(avgRMS >= 4){
+                                rmsState.postValue(RmsState.LEVEL6)
+                            }
+                            else if(avgRMS < 3){
+                                rmsState.postValue(RmsState.LEVEL4)
+                            }
                         }
-                    }
-                    RmsState.LEVEL4 -> {
-                        if(avgRMS >= 3.5){
-                            rmsState.postValue(RmsState.LEVEL5)
+                        RmsState.LEVEL6 -> {
+                            if(avgRMS >= 4.5){
+                                rmsState.postValue(RmsState.LEVEL7)
+                            }
+                            else if(avgRMS < 3.5){
+                                rmsState.postValue(RmsState.LEVEL5)
+                            }
                         }
-                        else if(avgRMS < 2.5){
-                            rmsState.postValue(RmsState.LEVEL3)
-                        }
-                    }
-                    RmsState.LEVEL5 -> {
-                        if(avgRMS >= 4){
-                            rmsState.postValue(RmsState.LEVEL6)
-                        }
-                        else if(avgRMS < 3){
-                            rmsState.postValue(RmsState.LEVEL4)
-                        }
-                    }
-                    RmsState.LEVEL6 -> {
-                        if(avgRMS >= 4.5){
-                            rmsState.postValue(RmsState.LEVEL7)
-                        }
-                        else if(avgRMS < 3.5){
-                            rmsState.postValue(RmsState.LEVEL5)
-                        }
-                    }
-                    RmsState.LEVEL7 -> {
-                        if(avgRMS < 4){
-                            rmsState.postValue(RmsState.LEVEL6)
+                        RmsState.LEVEL7 -> {
+                            if(avgRMS < 4){
+                                rmsState.postValue(RmsState.LEVEL6)
+                            }
                         }
                     }
                 }
+                else{
+                    sumRMS += rms
+                    numRMSItems += 1
+                }
             }
-            else{
-                sumRMS += rms
-                numRMSItems += 1
+            val partial = { textList: ArrayList<String> ->
+                recognition.postValue(textList[0])
             }
-
-        }
-
-        val partial = { textList: ArrayList<String> ->
-            recognition.postValue(textList[0])
-        }
-        val result = { textList: ArrayList<String> ->
-            recognition.postValue(textList[0])
-            userInputState.postValue(UserInputState.ENABLED)
-            ttsState.postValue(TtsState.ENABLED)
-
-            // update state
-            val speakToUserNeeded = quizService.userInput(textList)
-            if (speakToUserNeeded) {
-                getUserInputJob = viewModelScope.launch(Dispatchers.Main) {
+            val result = { textList: ArrayList<String> ->
+                recognition.postValue(textList[0])
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
+                // update state
+                val speakToUserNeeded = quizService.userInput(textList)
+                if (speakToUserNeeded) {
                     infoToUser()
                 }
             }
+            val error = { errorMessage: String ->
+                recognition.postValue(errorMessage)
+                userInputState.postValue(UserInputState.ENABLED)
+                ttsState.postValue(TtsState.ENABLED)
+            }
+            speechRecognizerService.startListening(started, rmsValue, partial, result, error)
         }
+    }
 
-        val error = { errorMessage: String ->
-            recognition.postValue(errorMessage)
-            userInputState.postValue(UserInputState.ENABLED)
-            ttsState.postValue(TtsState.ENABLED)
-        }
+    fun empty() = viewModelScope.launch {
+        uiState.value = QuizUiState.EMPTY
+    }
 
-        speechRecognizerService.startListening(started, rmsValue, partial, result, error)
+    fun play() = viewModelScope.launch {
+        uiState.value = QuizUiState.PLAY
     }
 
 }

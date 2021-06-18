@@ -30,46 +30,40 @@ class PlaylistsViewModel @Inject constructor(
         MutableLiveData<PlaylistsUiState>()
     }
 
-    init {
-        viewModelScope.launch {
-            loadData()
-        }
+    init { viewModelScope.launch {
+        loadData()
+    } }
+
+    fun loadData() = viewModelScope.launch(Dispatchers.IO) {
+        uiState.postValue(PlaylistsUiState.LOADING)
+        playlists.postValue(repository.getPlaylists())
+        uiState.postValue(PlaylistsUiState.READY)
     }
 
-    fun loadData(){
-        viewModelScope.launch(Dispatchers.IO) {
-            uiState.postValue(PlaylistsUiState.LOADING)
-            playlists.postValue(repository.getPlaylists())
-            uiState.postValue(PlaylistsUiState.READY)
+    fun startQuiz() = viewModelScope.launch {
+        if(accountService.accountState.value != AccountState.LOGGED_IN){
+            uiState.value = PlaylistsUiState.AUTH_NEEDED
+            return@launch
         }
+
+        uiState.value = PlaylistsUiState.START_QUIZ
     }
 
-    fun showStartQuizScreen(){
-        viewModelScope.launch {
-            if(accountService.accountState.value != AccountState.LOGGED_IN){
-                uiState.postValue(PlaylistsUiState.AUTH_NEEDED)
-                return@launch
-            }
-
-            uiState.postValue(PlaylistsUiState.START_QUIZ)
-        }
+    fun showAddPlaylistScreen() = viewModelScope.launch(Dispatchers.Default) {
+        val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
+        PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
+        uiState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
     }
 
-    fun showAddPlaylistScreen(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
-            PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
-            uiState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
-        }
+    fun deletePlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        uiState.postValue(PlaylistsUiState.LOADING)
+        repository.deletePlaylistById(id)
+        playlists.postValue(repository.getPlaylists())
+        uiState.postValue(PlaylistsUiState.READY)
     }
 
-    fun deletePlaylistById(id: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            uiState.postValue(PlaylistsUiState.LOADING)
-            repository.deletePlaylistById(id)
-            playlists.postValue(repository.getPlaylists())
-            uiState.postValue(PlaylistsUiState.READY)
-        }
+    fun ready() = viewModelScope.launch {
+        uiState.value = PlaylistsUiState.READY
     }
 
 }

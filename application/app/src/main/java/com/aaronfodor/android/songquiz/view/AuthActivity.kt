@@ -1,6 +1,7 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityAuthBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
+import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.viewmodel.AuthAccountState
 import com.aaronfodor.android.songquiz.viewmodel.AuthUiState
 import com.aaronfodor.android.songquiz.viewmodel.AuthViewModel
@@ -21,10 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AuthActivity : AppActivity(keepScreenAlive = false) {
 
-    companion object{
-        const val DESTROY_SELF_WHEN_READY_KEY = "destroy self when ready"
-    }
-
     private lateinit var binding: ActivityAuthBinding
     private lateinit var viewModel: AuthViewModel
 
@@ -33,7 +31,8 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     var loginStarted = false
     var showNextScreenCalled = false
 
-    var finishSelfWhenReady = false
+    // whether activity must simply finish self after auth (when true), or needs to explicitly start an another activity
+    var forResultAuthNeeded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +44,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
         // When authentication is ready, does the activity should finish itself
-        finishSelfWhenReady = intent.extras?.getBoolean(DESTROY_SELF_WHEN_READY_KEY) ?: false
+        forResultAuthNeeded = intent.extras?.getBoolean(AuthRequestContract.FOR_RESULT_AUTH_SCREEN_KEY) ?: false
     }
 
     override fun onBackPressed() {
@@ -70,7 +69,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
         binding.btnSkip.setOnClickListener {
             showNextScreenCalled = false
-            showNextScreen()
+            showNextScreen(false)
         }
         
         val uiStateObserver = Observer<AuthUiState> { state ->
@@ -92,7 +91,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
                     login()
                 }
                 AuthUiState.SUCCESS -> {
-                    showNextScreen()
+                    showNextScreen(true)
                 }
                 AuthUiState.ERROR_DENIED -> {
                     showInfo(AuthUiState.ERROR_DENIED)
@@ -110,7 +109,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
         val accountStateObserver = Observer<AuthAccountState> { accountState ->
             if(accountState == AuthAccountState.LOGGED_IN){
-                showNextScreen()
+                showNextScreen(true)
             }
             else{
                 login()
@@ -127,17 +126,17 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
             AuthUiState.ERROR_INTERNET -> {
                 val message = getString(R.string.error_login_internet)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(AuthUiState.EMPTY)
+                viewModel.empty()
             }
             AuthUiState.ERROR_DENIED -> {
                 val message = getString(R.string.error_login_denied)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(AuthUiState.EMPTY)
+                viewModel.empty()
             }
             AuthUiState.ERROR -> {
                 val message = getString(R.string.error_login)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.uiState.postValue(AuthUiState.EMPTY)
+                viewModel.empty()
             }
             else -> {}
         }
@@ -160,15 +159,17 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.processLoginResult(result.resultCode, result.data ?: Intent())
     }
 
-    private fun showNextScreen(){
+    private fun showNextScreen(isAuthenticated: Boolean){
         if(showNextScreenCalled){
             return
         }
         loginStarted = true
         showNextScreenCalled = true
 
-        if(finishSelfWhenReady){
-            // Simply finish this activity
+        if(forResultAuthNeeded){
+            // Simply finish this activity, an another started it for a result
+            val result = Intent().putExtra(AuthRequestContract.IS_AUTH_SUCCESS_KEY, isAuthenticated)
+            setResult(Activity.RESULT_OK, result)
             finish()
         }
         else{
@@ -176,6 +177,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
         }
+
     }
 
 }

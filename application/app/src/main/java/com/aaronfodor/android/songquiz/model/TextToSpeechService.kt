@@ -9,13 +9,14 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 /**
  * Injected everywhere as a singleton
  */
 @Singleton
 class TextToSpeechService  @Inject constructor(
     @ApplicationContext val context: Context
-) : UtteranceProgressListener() {
+) : UtteranceProgressListener(){
 
     var requestCounter = 0
     var textToSpeechRequestId = System.currentTimeMillis() + requestCounter
@@ -33,7 +34,16 @@ class TextToSpeechService  @Inject constructor(
     init {
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
-                textToSpeech?.language = Locale.UK
+                textToSpeech?.let {
+                    val languageAvailable = it.isLanguageAvailable(Locale.ENGLISH)
+                    if(
+                        languageAvailable == TextToSpeech.LANG_COUNTRY_AVAILABLE ||
+                        languageAvailable == TextToSpeech.LANG_AVAILABLE ||
+                        languageAvailable == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE
+                    ){
+                        it.language = Locale.UK
+                    }
+                }
             }
         }
     }
