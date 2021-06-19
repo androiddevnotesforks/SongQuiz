@@ -7,6 +7,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:458739976813:android:c0d0fd016ff63c6e030d64",
+        "android_client_info": {
+          "package_name": "com.aaronfodor.android.songquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458739976813-p40njt8g39nb1gfli7ge5tmgp4t8kedh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aaronfodor.android.songquiz",
+            "certificate_hash": "fad0bdcbe89773354d2f69f1b822e5e3b7d01717"
+          }
+        },
+        {
+          "client_id": "458739976813-et1tvd9qftvcun9bhc3ljvivign7e3mc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKt80hlatTD41fpgtXoYKW2biDuSYaJpc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458739976813-et1tvd9qftvcun9bhc3ljvivign7e3mc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:458739976813:android:0866d25b087964b0030d64",
         "android_client_info": {
           "package_name": "com.arpadfodor.android.songquiz"
