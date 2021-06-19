@@ -14,7 +14,7 @@
     </queries>
 
     <application
-        android:name="com.aaronfodor.android.songquiz.ApplicationRoot"
+        android:name=".ApplicationRoot"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,19 +23,19 @@
         android:theme="@style/Theme.SongQuiz">
 
         <activity
-            android:name="com.aaronfodor.android.songquiz.view.QuizActivity"
+            android:name=".view.QuizActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
-            android:name="com.aaronfodor.android.songquiz.view.MenuActivity"
+            android:name=".view.MenuActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
-            android:name="com.aaronfodor.android.songquiz.view.AuthActivity"
+            android:name=".view.AuthActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
             <intent-filter>
@@ -45,7 +45,7 @@
         </activity>
 
         <activity
-            android:name="com.aaronfodor.android.songquiz.view.LoginSpotifyActivity"
+            android:name=".view.LoginSpotifyActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 

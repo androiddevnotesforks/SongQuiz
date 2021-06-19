@@ -22,7 +22,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvAppDialogDescription"/>
 
         <TextView
-            style="@style/ParagraphText"
+            style="@style/ParagraphCenterText"
             android:id="@+id/tvAppDialogDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

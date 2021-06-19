@@ -94,6 +94,11 @@
         <item name="android:paddingBottom">@dimen/paragraph_padding</item>
     </style>
 
+    <style name="ParagraphCenterText" parent="ParagraphText">
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="SubtitleText" parent="ParagraphText">
         <item name="android:textColor">@color/colorTextSubtitle</item>
         <item name="android:textSize">@dimen/subtitle_text_size</item>

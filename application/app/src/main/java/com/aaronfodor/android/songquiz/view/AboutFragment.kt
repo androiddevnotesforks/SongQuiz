@@ -39,9 +39,9 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 val appName = getString(R.string.app_name)
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, getString(R.string.report_contact))
+                // mailto must be an array of addresses
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.report_contact)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_message_title, appName))
-
             }
             startActivity(reportIntent)
         }

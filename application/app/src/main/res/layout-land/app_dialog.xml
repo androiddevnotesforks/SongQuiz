@@ -36,7 +36,7 @@
             app:layout_constraintTop_toTopOf="@+id/glHorizontalLow" />
 
         <TextView
-            style="@style/ParagraphText"
+            style="@style/ParagraphCenterText"
             android:id="@+id/tvAppDialogDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

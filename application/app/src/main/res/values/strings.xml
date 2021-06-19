@@ -3,8 +3,8 @@
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
     <!ENTITY appId "">
-    <!ENTITY appVersion "v0.11">
-    <!ENTITY appDate "18/06/2021">
+    <!ENTITY appVersion "v0.12">
+    <!ENTITY appDate "19/06/2021">
     <!ENTITY appCreator "Aaron Fodor">
     <!ENTITY spotifyClientId "51aee5a292494583852e135803681e05">
     <!ENTITY spotifyClientSec "just for testing">
@@ -40,7 +40,7 @@
         Created by &appCreator;\n\n
         &appDate;\n\n
         &appVersion;\n\n
-        This app uses Spotify playlists to play with. To access them, authentication is required. Note: not all songs in a playlist have song preview - this is decided by Spotify. Therefore, a game can usually be played with fewer songs than there are actually on the selected playlist. We recommend that you use an English text-to-speech engine, as the information comes in English. Words in different languages can be difficult to recognize. Internet connection is needed while playing.\n\n
+        This app uses Spotify playlists to play with. To access them, authentication is required. Note: not all songs have song preview - this is decided by Spotify. Therefore, a game can usually be played with fewer songs than there are on the selected playlist. We recommend that you use an English text-to-speech engine, as the information comes in English. Words in different languages can be difficult to recognize. Internet connection is needed while playing.\n\n
     </string>
 
     <string name="legal_title">Legal information</string>
