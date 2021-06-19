@@ -15,7 +15,7 @@
         <TextView
             style="@style/TitleText"
             android:id="@+id/tvCustomDialogTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +23,9 @@
             app:layout_constraintBottom_toTopOf="@+id/glHorizontalLow" />
 
         <TextView
-            style="@style/ParagraphText"
+            style="@style/ParagraphCenterText"
             android:id="@+id/tvAppDialogDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
