@@ -83,6 +83,7 @@
         <item>one</item>
         <item>1</item>
         <item>van</item>
+        <item>an</item>
     </string-array>
     <string-array
         name="input_2" tools:ignore="InconsistentArrays">
