@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="SETTINGS_KEY_ACCOUNT">account</string>
+    <string name="SETTINGS_KEY_LOGINOUT">loginout</string>
+    <string name="SETTINGS_KEY_REPEAT">repeat</string>
+    <string name="SETTINGS_KEY_SONG_DURATION">song_duration</string>
+    <string name="SETTINGS_KEY_SEASONAL_THEMES">seasonal_themes</string>
+    <string name="SETTINGS_KEY_CLEAR_CACHE">clear_cache</string>
+    <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS">delete_all_playlists</string>
+
+    <string name="PREF_KEY_ACCOUNT_ID">account_id</string>
+    <string name="PREF_KEY_ACCOUNT_NAME">account_name</string>
+    <string name="PREF_KEY_ACCOUNT_EMAIL">account_email</string>
+    <string name="PREF_KEY_ACCOUNT_URI">account_uri</string>
+    <string name="PREF_KEY_ACCOUNT_COUNTRY">account_country</string>
+    <string name="PREF_KEY_TOKEN">token</string>
+    <string name="PREF_KEY_TOKEN_EXPIRE_TIME">token_expire_time</string>
+</resources>

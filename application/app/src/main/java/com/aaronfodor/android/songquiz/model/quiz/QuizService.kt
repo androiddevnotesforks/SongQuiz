@@ -146,7 +146,7 @@ class QuizService @Inject constructor(
     : InformationPacket {
         if(playlist.tracks.size < MIN_NUM_TRACKS){
             return InformationPacket(listOf(
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome)),
+                InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome, context.getString(R.string.app_name))),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_playlist_info, playlist.name, playlist.tracks.size.toString())),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_not_enough_tracks, MIN_NUM_TRACKS.toString()))
             ), false)
@@ -172,7 +172,7 @@ class QuizService @Inject constructor(
         }
         else{
             return InformationPacket(listOf(
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome)),
+                InformationItem(InfoType.SPEECH, context.getString(R.string.c_welcome, context.getString(R.string.app_name))),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_playlist_info, playlist.name, playlist.tracks.size.toString())),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_ask_num_players))
             ), true)
@@ -224,7 +224,7 @@ class QuizService @Inject constructor(
 
         var isRepeatAllowed = ""
         if(!quizType.repeatAllowed){
-            isRepeatAllowed = " ${context.getString(R.string.c_not)}"
+            isRepeatAllowed = context.getString(R.string.c_not)
         }
 
         var infoString = ""
@@ -232,6 +232,7 @@ class QuizService @Inject constructor(
         infoString += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
         infoString += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}. "
         infoString += context.getString(R.string.c_settings_info, quizType.songDurationSec.toString(), isRepeatAllowed)
+        infoString = infoString.replace("  ", " ")
 
         return InformationPacket(listOf(
             InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString)),
@@ -271,7 +272,7 @@ class QuizService @Inject constructor(
 
         val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum,
                 lastSongPopularity.toString(), lastPlayerAllPoints.toString())
-        return "$resultString $songWasString"
+        return "$resultString $songWasString".replace("  ", " ")
     }
 
     private fun playSong(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
@@ -427,10 +428,10 @@ class QuizService @Inject constructor(
 
     private fun parseNumPlayers(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "1" to listOf("one", "1", "van"),
-            "2" to listOf("two", "2", "do", "to"),
-            "3" to listOf("three", "3", "tree"),
-            "4" to listOf("four", "4", "for")
+            "1" to context.resources.getStringArray(R.array.input_1).toList(),
+            "2" to context.resources.getStringArray(R.array.input_2).toList(),
+            "3" to context.resources.getStringArray(R.array.input_3).toList(),
+            "4" to context.resources.getStringArray(R.array.input_4).toList()
         )
 
         val numPlayers = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -448,10 +449,10 @@ class QuizService @Inject constructor(
 
     private fun parseGameType(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "one-shot" to listOf("one", "1", "shot"),
-            "short" to listOf("short"),
-            "medium" to listOf("med", "medium"),
-            "long" to listOf("long", "log")
+            "one-shot" to context.resources.getStringArray(R.array.input_oneshot).toList(),
+            "short" to context.resources.getStringArray(R.array.input_short).toList(),
+            "medium" to context.resources.getStringArray(R.array.input_medium).toList(),
+            "long" to context.resources.getStringArray(R.array.input_long).toList()
         )
 
         val gameType = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -465,28 +466,28 @@ class QuizService @Inject constructor(
         if(gameType.isNotEmpty()){
             when(gameType[0]){
                 "one-shot" -> {
-                    name = "one-shot"
+                    name = possibleWords["one-shot"]?.get(0) ?: ""
                     numRounds = 1
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
                 "short" -> {
-                    name = "short"
+                    name = possibleWords["short"]?.get(0) ?: ""
                     numRounds = 3
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
                 "medium" -> {
-                    name = "medium"
+                    name = possibleWords["medium"]?.get(0) ?: ""
                     numRounds = 5
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
                 "long" -> {
-                    name = "long"
+                    name = possibleWords["long"]?.get(0) ?: ""
                     numRounds = 7
                     pointForArtist = 10
                     pointForTrack = 10
@@ -529,7 +530,7 @@ class QuizService @Inject constructor(
         possibleHitWords["title"] = titleParts
         possibleHitWords["album"] = albumParts
         // repeat command
-        possibleHitWords["repeat"] = listOf("repeat", "again")
+        possibleHitWords["repeat"] = context.resources.getStringArray(R.array.input_repeat).toList()
 
         val playerHits = textParser.searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
@@ -589,8 +590,8 @@ class QuizService @Inject constructor(
 
     private fun parseRepeatGame(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "restart" to listOf("restart", "repeat", "again"),
-            "configure" to listOf("configure", "config", "conf", "con"),
+            "restart" to context.resources.getStringArray(R.array.input_restart).toList(),
+            "configure" to context.resources.getStringArray(R.array.input_configure).toList(),
         )
 
         val whatAsked = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)

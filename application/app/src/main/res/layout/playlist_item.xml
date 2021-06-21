@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/icon_album"/>
+        android:src="@drawable/icon_album"
+        android:importantForAccessibility="no"/>
 
     <TextView
         android:id="@+id/playlist_title"
@@ -65,6 +66,7 @@
         android:layout_height="@dimen/list_item_button_size"
         android:layout_margin="@dimen/list_item_margin"
         android:text="@string/unicode_cross"
+        android:contentDescription="@string/unicode_cross"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/playlist_start"
         app:layout_constraintTop_toTopOf="parent" />
@@ -76,6 +78,7 @@
         android:layout_height="@dimen/list_item_button_size"
         android:layout_margin="@dimen/list_item_margin"
         android:text="@string/unicode_start"
+        android:contentDescription="@string/unicode_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

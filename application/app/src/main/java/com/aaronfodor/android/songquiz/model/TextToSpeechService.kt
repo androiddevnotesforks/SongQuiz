@@ -9,7 +9,6 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 /**
  * Injected everywhere as a singleton
  */
@@ -27,20 +26,42 @@ class TextToSpeechService  @Inject constructor(
     var finishedCallback: () -> Unit = {}
     var errorCallback: () -> Unit = {}
 
+    init {
+        init()
+    }
+
     /**
      * Initialize text to speech
      * Set text to speech listener
      */
-    init {
+    fun init(){
+        stop()
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 textToSpeech?.let {
-                    val languageAvailable = it.isLanguageAvailable(Locale.ENGLISH)
-                    if(
-                        languageAvailable == TextToSpeech.LANG_COUNTRY_AVAILABLE ||
+                    val currentLanguageISO3 = Locale.getDefault().isO3Language
+
+                    val ttsLanguage = when (currentLanguageISO3.uppercase()) {
+                        "GBR" -> {
+                            Locale("GBR")
+                        }
+                        "HUN" -> {
+                            Locale("HUN")
+                        }
+                        // fallback to British English
+                        else -> {
+                            Locale.UK
+                        }
+                    }
+
+                    val languageAvailable = it.isLanguageAvailable(ttsLanguage)
+                    if(languageAvailable == TextToSpeech.LANG_COUNTRY_AVAILABLE ||
                         languageAvailable == TextToSpeech.LANG_AVAILABLE ||
-                        languageAvailable == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE
-                    ){
+                        languageAvailable == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE){
+                        it.language = ttsLanguage
+                    }
+                    // fallback to British English
+                    else{
                         it.language = Locale.UK
                     }
                 }

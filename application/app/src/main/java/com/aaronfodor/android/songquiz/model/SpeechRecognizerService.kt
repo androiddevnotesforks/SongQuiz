@@ -2,7 +2,6 @@ package com.aaronfodor.android.songquiz.model
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -10,9 +9,12 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import com.aaronfodor.android.songquiz.R
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 /**
  * Injected everywhere as a singleton
@@ -27,6 +29,7 @@ class SpeechRecognizerService @Inject constructor(
     }
 
     var speechRecognizer: SpeechRecognizer? = null
+    var languageBCP47 = ""
 
     var startedCallback: () -> Unit = {}
     var dBResultChangedCallback: (Float) -> Unit = {}
@@ -34,12 +37,32 @@ class SpeechRecognizerService @Inject constructor(
     var resultCallback: (ArrayList<String>) -> Unit = {}
     var errorCallback: (String) -> Unit = {}
 
+    init {
+        init()
+    }
+
     /**
      * Initialize speech recognizer
      */
-    init {
+    fun init(){
+        stopListening()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(this)
+
+        val currentLanguageISO3 = Locale.getDefault().isO3Country
+
+        languageBCP47 = when (currentLanguageISO3.uppercase()) {
+            "GBR" -> {
+                "en-GB"
+            }
+            "HUN" -> {
+                "hu-HU"
+            }
+            // fallback to British English
+            else -> {
+                "en-GB"
+            }
+        }
     }
 
     fun startListening(started: () -> Unit, dBResultChanged: (Float) -> Unit,
@@ -49,12 +72,7 @@ class SpeechRecognizerService @Inject constructor(
 
         // vibrate on start
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_DURATION, VibrationEffect.DEFAULT_AMPLITUDE))
-        }
-        else{
-            vibrator.vibrate(VIBRATION_DURATION)
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_DURATION, VibrationEffect.DEFAULT_AMPLITUDE))
 
         startedCallback = started
         dBResultChangedCallback = dBResultChanged
@@ -63,6 +81,7 @@ class SpeechRecognizerService @Inject constructor(
         errorCallback = error
 
         val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageBCP47)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
@@ -152,16 +171,16 @@ class SpeechRecognizerService @Inject constructor(
 
     private fun getErrorText(errorCode: Int): String{
         return when(errorCode){
-            SpeechRecognizer.ERROR_AUDIO -> "Audio recording error"
-            SpeechRecognizer.ERROR_CLIENT -> "Client side error"
-            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Insufficient permissions"
-            SpeechRecognizer.ERROR_NETWORK -> "Network error"
-            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Network timeout"
-            SpeechRecognizer.ERROR_NO_MATCH -> "No match"
-            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "RecognitionService busy"
-            SpeechRecognizer.ERROR_SERVER -> "Error from server"
-            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "No speech input"
-            else -> "Didn't understand, please try again."
+            SpeechRecognizer.ERROR_AUDIO -> context.getString(R.string.recognition_error_audio)
+            SpeechRecognizer.ERROR_CLIENT -> context.getString(R.string.recognition_error_client)
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> context.getString(R.string.recognition_error_permissions)
+            SpeechRecognizer.ERROR_NETWORK -> context.getString(R.string.recognition_error_network)
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> context.getString(R.string.recognition_error_network_timeout)
+            SpeechRecognizer.ERROR_NO_MATCH -> context.getString(R.string.recognition_error_no_match)
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> context.getString(R.string.recognition_error_busy)
+            SpeechRecognizer.ERROR_SERVER -> context.getString(R.string.recognition_error_server)
+            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> context.getString(R.string.recognition_error_speech_timeout)
+            else -> context.getString(R.string.recognition_not_understand)
         }
     }
 

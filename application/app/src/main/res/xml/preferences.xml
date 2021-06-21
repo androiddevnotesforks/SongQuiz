@@ -25,7 +25,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/settings_category_title_visuals">
+        app:title="@string/settings_category_title_ui">
 
         <SwitchPreferenceCompat
             app:key="@string/SETTINGS_KEY_SEASONAL_THEMES"
@@ -37,6 +37,10 @@
         <Preference
             app:title="@string/settings_title_color_mode"
             app:summary="@string/settings_summary_color_mode" />
+
+        <Preference
+            app:title="@string/settings_title_language"
+            app:summary="@string/settings_summary_language" />
 
     </PreferenceCategory>
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="settings_title_logged_in">Bejelentkezve, mint %1$s</string>
+    <string name="settings_title_logged_out">Kijelentkezve</string>
+    <string name="settings_title_log_in">Bejelentkezés</string>
+    <string name="settings_title_log_out">Kijelentkezés</string>
+    <string name="settings_title_repeat">Dal ismétlése</string>
+    <string name="settings_title_song_duration">Dal hossza</string>
+    <string name="settings_title_seasonal_themes">Szezonális témák</string>
+    <string name="settings_title_color_mode">Színmódok</string>
+    <string name="settings_title_language">Aktuális nyelv: magyar</string>
+    <string name="settings_title_clear_cache">Gyorsítótár törlése</string>
+    <string name="settings_title_delete_all_playlists">Listák törlése</string>
+
+    <string name="settings_summary_log_in">Koppints a Spotify bejelentkezéshez</string>
+    <string name="settings_summary_log_out">Koppints a kijelentkezéshez</string>
+    <string name="settings_summary_song_duration">Egy dal lejátszási hossza másodpercben</string>
+    <string name="settings_summary_color_mode">A sötét és világos módok közti váltást a telefonod kezeli</string>
+    <string name="settings_summary_language">Az alkalmazás nyelve a telefonod alapján kerül beállításra</string>
+    <string name="settings_summary_clear_cache">Memóriahasználat csökkentése a gyorsítótár törlésével</string>
+    <string name="settings_summary_delete_all_playlists">Az összes felvett lista törlése</string>
+
+    <string name="settings_category_title_account">Fiók</string>
+    <string name="settings_category_title_gameplay">Játék</string>
+    <string name="settings_category_title_ui">Felhasználói felület</string>
+    <string name="settings_category_title_storage">Memória és háttértár</string>
+
+    <string name="enabled">Engedélyezve</string>
+    <string name="disabled">Letiltva</string>
+
+    <string name="playlists_deleted">Listák törölve</string>
+    <string name="cache_cleared">Gyorsítótár törölve</string>
+    <string name="account_forgot">Sikeres kijelentkezés</string>
+</resources>

@@ -22,7 +22,7 @@ class PlaylistsAdapter(private val context: Context, private val onStart: (Playl
                              val onStart: (Playlist) -> Unit, val onDelete: (Playlist) -> Unit) :
             RecyclerView.ViewHolder(itemBinding.root){
 
-        val imageSize = context.resources.getDimension(R.dimen.list_item_image_size).toInt()
+        val imageSize = context.resources.getDimension(R.dimen.list_item_image_pixels).toInt()
 
         fun bind(playlist: Playlist){
             itemBinding.playlistItemLayout.setOnClickListener {

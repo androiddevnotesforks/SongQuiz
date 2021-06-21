@@ -7,6 +7,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
@@ -22,6 +23,13 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
+
+        val appCreator = getString(R.string.app_creator)
+        val appDate = getString(R.string.app_date)
+        binding.content.aboutText.text = getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME)
+
+        val appCopyright = getString(R.string.app_copyright)
+        binding.content.legalText.text = getString(R.string.legal_text, appCopyright)
 
         binding.content.fabMoreFromDeveloper.setOnClickListener {
             val developerPageUri = Uri.parse(getString(R.string.developer_page))
@@ -45,7 +53,6 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             }
             startActivity(reportIntent)
         }
-
     }
 
     override fun subscribeViewModel() {
@@ -56,8 +63,12 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                 TtsAboutState.ENABLED -> {
                     binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
                     binding.fabSpeak.setOnClickListener {
-                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text) +
-                                " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text) +
+                        val appDate = getString(R.string.app_date)
+                        val appCreator = getString(R.string.app_creator)
+                        val appCopyright = getString(R.string.app_copyright)
+
+                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME) +
+                                " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text, appCopyright) +
                                 " " + getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text)
                         text = text.replace("\n\n", ".\n\n").replace("..", ".")
                         viewModel.speak(text)

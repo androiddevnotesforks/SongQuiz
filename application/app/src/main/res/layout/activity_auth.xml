@@ -34,7 +34,7 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:visibility="visible"
-        android:contentDescription="@string/MainImageDescription"
+        android:importantForAccessibility="no"
         app:layout_constraintDimensionRatio="1.0"/>
 
     <ProgressBar
@@ -54,9 +54,10 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text="@string/login_button"
+        android:contentDescription="@string/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow" />
+        app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow"/>
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnSkip"
@@ -65,6 +66,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text="@string/skip_button"
+        android:contentDescription="@string/skip_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />

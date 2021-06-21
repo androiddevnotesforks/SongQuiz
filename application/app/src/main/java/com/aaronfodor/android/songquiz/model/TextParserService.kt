@@ -17,7 +17,7 @@ class TextParserService @Inject constructor() {
 
     private val removeAccentRegex = "\\p{InCombiningDiacriticalMarks}+".toRegex()
 
-    private fun String.removeAccents(): String {
+    fun String.removeAccents(): String {
         val tempText = Normalizer.normalize(this, Normalizer.Form.NFD)
         return removeAccentRegex.replace(tempText, "")
     }
@@ -60,7 +60,7 @@ class TextParserService @Inject constructor() {
             for(speechWord in speechWords){
                 for(searchedWord in searchedWords){
                     for(acceptedWordForm in searchedWord.value){
-                        if(acceptedWordForm == speechWord){
+                        if(acceptedWordForm.removeAccents() == speechWord){
                             wordsFound.add(searchedWord.key)
                             if(onlyOneNeeded){
                                 return wordsFound
