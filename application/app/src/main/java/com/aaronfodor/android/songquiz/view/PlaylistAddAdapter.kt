@@ -19,10 +19,9 @@ class PlaylistAddAdapter(private val context: Context, private val onAdd: (Playl
 
     /* ViewHolder for Playlist, takes the view binding, the onClick behavior, and the context. */
     class PlaylistAddViewHolder(val itemBinding: PlaylistAddItemBinding, private val context: Context,
-                                val onAdd: (Playlist) -> Unit) :
-        RecyclerView.ViewHolder(itemBinding.root){
+                                val onAdd: (Playlist) -> Unit) : RecyclerView.ViewHolder(itemBinding.root){
 
-        val imageSize = context.resources.getDimension(R.dimen.list_item_image_size).toInt()
+        val imageSize = context.resources.getDimension(R.dimen.list_item_image_pixels).toInt()
 
         fun bind(playlist: Playlist){
             itemBinding.playlistItemLayout.setOnClickListener {

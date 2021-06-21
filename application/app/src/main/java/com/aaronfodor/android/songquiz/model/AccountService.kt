@@ -38,7 +38,7 @@ class AccountService @Inject constructor(
     /**
      * Require a new token before it expires in that many seconds
      */
-    val tokenRequireBeforeExpiresSec = 10 //3590
+    val tokenRequireBeforeExpiresSec = 30
 
     val accountState: MutableLiveData<AccountState> by lazy {
         MutableLiveData<AccountState>()

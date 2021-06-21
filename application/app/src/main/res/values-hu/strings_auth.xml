@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="error_login_internet">Ellenőrizd az internetkapcsolatod, vagy próbálj máshogy bejelentkezni</string>
+    <string name="error_login_denied">Jelentkezz be a folytatáshoz</string>
+    <string name="error_login">Hiba történt - próbáld újra</string>
+
+    <string name="login_button">BEJELENTKEZÉS</string>
+    <string name="skip_button">MOST NEM</string>
+</resources>

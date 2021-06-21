@@ -28,6 +28,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     private lateinit var binding: ActivityQuizBinding
     private lateinit var viewModel: QuizViewModel
 
+    var imageSize = 0
+
     override var requiredPermissions = listOf(
         Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.VIBRATE
     )
@@ -55,6 +57,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
         viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration)
         viewModel.numProgressBarSteps = resources.getInteger(R.integer.progressbar_max_value)
+        imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
     }
 
     override fun onBackPressed() {
@@ -193,6 +196,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     .centerCrop()
                     // better image quality: 4 bytes per pixel
                     .format(DecodeFormat.PREFER_ARGB_8888)
+                    // specific, small image needed as thumbnail
+                    .override(imageSize, imageSize)
                     .placeholder(R.drawable.icon_album)
                     .error(R.drawable.icon_album)
 

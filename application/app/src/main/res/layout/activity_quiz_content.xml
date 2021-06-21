@@ -20,6 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/icon_album"
+        android:importantForAccessibility="no"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/glHorizontalHigh"
-        app:layout_constraintGuide_percent="0.58"
+        app:layout_constraintGuide_percent="0.56"
         android:orientation="horizontal"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -103,6 +104,7 @@
         style="@style/ImageButton"
         android:id="@+id/ttsSpeechButton"
         android:src="@drawable/icon_sound_off"
+        android:contentDescription="@string/content_description_get_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/glHorizontalHigh"
@@ -112,6 +114,7 @@
         style="@style/ImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
+        android:contentDescription="@string/content_description_user_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/adQuiz"

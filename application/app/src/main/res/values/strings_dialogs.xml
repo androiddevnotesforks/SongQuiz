@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
     <string name="ok_button">OK</string>
     <string name="cancel_button">Cancel</string>
 
@@ -18,9 +17,8 @@
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>
 
     <string name="delete_playlists">Delete all playlists</string>
-    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later. In order to play or search playlists, you need to be logged in with Spotify.</string>
+    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>
-
 </resources>

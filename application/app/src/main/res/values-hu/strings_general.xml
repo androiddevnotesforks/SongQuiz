@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="nav_header_subtitle">Tudod mit hallasz?</string>
+
+    <string name="about_text">
+        Készítette %1$s\n\n
+        %2$s\n\n
+        %3$s\n\n
+        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Nem minden dalnak van zenei előnézete; ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van. A szövegfelismerés angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
+    </string>
+
+    <string name="legal_title">Jogi információk</string>
+    <string name="legal_text">
+        %1$s\n\n
+        A szoftvert bármilyen explicit, hallgatólagos garancia nélkül biztosítjuk. A szerzők vagy a szerzői jogok tulajdonosai semmilyen esetben sem felelősek semmilyen követelésért, kárért vagy egyéb felelősségért, akár szerződéses, akár jogsértési, akár más módon, a szoftverből, vagy annak használatából vagy egyéb ügyletéből eredően.\n\n
+    </string>
+
+    <string name="acknowledgments_title">Köszönetnyilvánítás</string>
+
+    <string name="more_from_developer">Továbbiak a fejlesztőtől</string>
+    <string name="review_app">Alkalmazás értékelése</string>
+    <string name="report">Hibabejelentés/javaslatok új funkciókra</string>
+
+    <string name="menu_playlists">Listák</string>
+    <string name="menu_playlist_add">Hozzáadás</string>
+    <string name="menu_settings">Beállítások</string>
+    <string name="menu_about">Információk</string>
+
+    <string name="request_permission_title">Engedélykérés</string>
+    <string name="request_permission_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s.</string>
+    <string name="request_settings_title">Engedélyezés az alkalmazás beállításainál</string>
+    <string name="request_settings_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s. Engedélyezés az alkalmazás beállításainál.</string>
+
+    <string name="nav_menu_open">Főmenü kinyit</string>
+    <string name="nav_menu_close">Főmenü bezár</string>
+    <string name="nav_header_desc">Főmenü fejléc</string>
+
+    <string name="recognition_error_audio">Szövegbemeneti hiba. Kérlek próbáld újra.</string>
+    <string name="recognition_error_client">Kliensoldali hiba. Kérlek próbáld újra.</string>
+    <string name="recognition_error_permissions">Hiányzó engedély. Kérlek hagyd jóvá a szükséges engedélyeket, illetve beszéd közben bizonyosodj meg róla, hogy az alkalmazás előtérben van.</string>
+    <string name="recognition_error_network">Hálózati hiba.</string>
+    <string name="recognition_error_network_timeout">Hálózati időtullépés.</string>
+    <string name="recognition_error_no_match">Nincs találat.</string>
+    <string name="recognition_error_busy">A felismerő elfoglalt. Kérlek próbáld újra.</string>
+    <string name="recognition_error_server">Szerverhiba történt. Kérlek próbáld újra.</string>
+    <string name="recognition_error_speech_timeout">Nincs szöveges bemenet.</string>
+    <string name="recognition_not_understand">Nem értem, kérlek próbáld újra.</string>
+</resources>

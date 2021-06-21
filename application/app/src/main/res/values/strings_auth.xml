@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
-    <string name="PREF_KEY_ACCOUNT_ID">account_id</string>
-    <string name="PREF_KEY_ACCOUNT_NAME">account_name</string>
-    <string name="PREF_KEY_ACCOUNT_EMAIL">account_email</string>
-    <string name="PREF_KEY_ACCOUNT_URI">account_uri</string>
-    <string name="PREF_KEY_ACCOUNT_COUNTRY">account_country</string>
-    <string name="PREF_KEY_TOKEN">token</string>
-    <string name="PREF_KEY_TOKEN_EXPIRE_TIME">token_expire_time</string>
-
     <string name="error_login_internet">Please check your internet connection or try a different log in method</string>
     <string name="error_login_denied">Please log in to continue</string>
     <string name="error_login">An error occurred - please try again</string>
 
     <string name="login_button">LOG IN</string>
     <string name="skip_button">SKIP</string>
-
 </resources>

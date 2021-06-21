@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
-    <string name="SETTINGS_KEY_ACCOUNT">account</string>
-    <string name="SETTINGS_KEY_LOGINOUT">loginout</string>
-    <string name="SETTINGS_KEY_REPEAT">repeat</string>
-    <string name="SETTINGS_KEY_SONG_DURATION">song_duration</string>
-    <string name="SETTINGS_KEY_SEASONAL_THEMES">seasonal_themes</string>
-    <string name="SETTINGS_KEY_CLEAR_CACHE">clear_cache</string>
-    <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS">delete_all_playlists</string>
-
     <string name="settings_title_logged_in">Logged in as %1$s</string>
     <string name="settings_title_logged_out">Logged out</string>
     <string name="settings_title_log_in">Log in</string>
@@ -18,6 +9,7 @@
     <string name="settings_title_song_duration">Song duration</string>
     <string name="settings_title_seasonal_themes">Seasonal themes</string>
     <string name="settings_title_color_mode">Color modes</string>
+    <string name="settings_title_language">Current language: English</string>
     <string name="settings_title_clear_cache">Clear cache</string>
     <string name="settings_title_delete_all_playlists">Delete all playlists</string>
 
@@ -25,12 +17,13 @@
     <string name="settings_summary_log_out">Tap to log out</string>
     <string name="settings_summary_song_duration">Play one song for that many seconds</string>
     <string name="settings_summary_color_mode">Switching between dark &amp; light modes is handled by your system</string>
+    <string name="settings_summary_language">App language is based on your system</string>
     <string name="settings_summary_clear_cache">Reduce memory usage by clearing image cache</string>
     <string name="settings_summary_delete_all_playlists">Remove all items from your playlists</string>
 
     <string name="settings_category_title_account">Account</string>
     <string name="settings_category_title_gameplay">Gameplay</string>
-    <string name="settings_category_title_visuals">Visuals</string>
+    <string name="settings_category_title_ui">User interface</string>
     <string name="settings_category_title_storage"><![CDATA[Memory & storage]]></string>
 
     <string name="enabled">Enabled</string>
@@ -39,5 +32,4 @@
     <string name="playlists_deleted">Playlists successfully deleted</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="account_forgot">Logged out successfully</string>
-
 </resources>
