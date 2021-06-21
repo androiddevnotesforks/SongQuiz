@@ -63,7 +63,7 @@
     <string name="c_title">title</string>
     <string name="c_artist">artist</string>
     <string name="c_album">album</string>
-    <string name="c_settings_info">Based on your settings, a song lasts for %1$s seconds, and repeating a song is %2$ sallowed</string>
+    <string name="c_settings_info">Based on your settings, a song lasts for %1$s seconds, and repeating a song is %2$s allowed</string>
     <string name="c_player_good_guess">%1$s You got %2$s.</string>
     <string name="c_what_song_was">The song was %1$s from %2$s. It is on the following album: %3$s. This song has a popularity score of %4$s on Spotify. Your score is %5$s.</string>
 
@@ -106,6 +106,7 @@
 
     <string-array
         name="input_oneshot" tools:ignore="InconsistentArrays">
+        <item>one-shot</item>
         <item>one</item>
         <item>1</item>
         <item>shot</item>
