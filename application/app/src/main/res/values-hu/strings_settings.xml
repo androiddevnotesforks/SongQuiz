@@ -17,7 +17,7 @@
     <string name="settings_summary_log_out">Koppints a kijelentkezéshez</string>
     <string name="settings_summary_song_duration">Egy dal lejátszási hossza másodpercben</string>
     <string name="settings_summary_color_mode">A sötét és világos módok közti váltást a telefonod kezeli</string>
-    <string name="settings_summary_language">Az alkalmazás nyelve a telefonod alapján kerül beállításra</string>
+    <string name="settings_summary_language">Az alkalmazás nyelve a telefonod nyelve alapján kerül beállításra</string>
     <string name="settings_summary_clear_cache">Memóriahasználat csökkentése a gyorsítótár törlésével</string>
     <string name="settings_summary_delete_all_playlists">Az összes felvett lista törlése</string>
 
