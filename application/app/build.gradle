@@ -11,8 +11,14 @@ plugins {
 
 android {
     signingConfigs {
+        release {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
         debug {
-            storeFile file('B:\\Dev\\Android\\Keystore\\debug.keystore')
+            storeFile file('B:/Dev/Android/Keystore/Debug/debug.keystore')
         }
     }
     compileSdkVersion 30
@@ -23,7 +29,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "v0.9.0"
+        versionName "v1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,10 +38,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+            resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
+            resValue "string", "spotifyClientSec", "just for testing"
+            resValue "string", "adMobAppId", "ca-app-pub-5281333576177335~3104405139"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/1408180087"
         }
         debug {
             testCoverageEnabled true
             signingConfig signingConfigs.debug
+
+            resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
+            resValue "string", "spotifyClientSec", "just for testing"
+            // test ad values
+            resValue "string", "adMobAppId", "ca-app-pub-3940256099942544~3347511713"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/6300978111"
         }
     }
 

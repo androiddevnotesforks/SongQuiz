@@ -4,7 +4,7 @@
     <string name="loading_playlist">Loading playlist…</string>
     <string name="ready_to_start">Playlist is ready! Press the speaker button to start.</string>
     <string name="error_playlist_load">Cannot load playlist</string>
-    <string name="error_playlist_load_description">Cannot load playlist. Please check your internet connection and make sure that the playlist still exists on Spotify.</string>
+    <string name="error_playlist_load_description">Cannot load playlist. Please check your internet connection and try again, or make sure that the playlist still exists on Spotify.</string>
     <string name="error_play_song">Cannot play current song</string>
     <string name="error_play_song_description">Cannot play current song. Please check your internet connection.</string>
     <string name="error_speak_to_user">Cannot speak to user</string>

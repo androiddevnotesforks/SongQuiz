@@ -3,5 +3,4 @@
     <dimen name="subtitle_text_size">16sp</dimen>
     <dimen name="input_text_size">13sp</dimen>
     <dimen name="paragraph_text_size">13sp</dimen>
-    <dimen name="button_text_size">14sp</dimen>
 </resources>

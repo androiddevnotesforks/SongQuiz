@@ -2,34 +2,23 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "21/06/2021">
-    <!ENTITY appCreator "Aaron Fodor">
-    <!ENTITY spotifyClientId "51aee5a292494583852e135803681e05">
-    <!ENTITY spotifyClientSec "just for testing">
-    <!ENTITY adMobAppId "ca-app-pub-3940256099942544~3347511713">
-    <!ENTITY adMobQuizAdId "ca-app-pub-3940256099942544/6300978111">
+    <!ENTITY appDate "22/06/2021">
+    <!ENTITY appCreator "Arpad Fodor">
     ]>
-    <!--test adMobAppId "ca-app-pub-3940256099942544~3347511713"-->
-    <!--test adMobBannerId "ca-app-pub-3940256099942544/6300978111"-->
 
 <resources>
-    <string name="app_name">&appName;</string>
-    <string name="app_date">&appDate;</string>
-    <string name="app_creator">&appCreator;</string>
-    <string name="app_copyright">© &appDate; &appCreator;</string>
-    <string name="developer_page">https://github.com/aaronfodor</string>
-    <string name="report_contact">arpadfodor01@gmail.com</string>
-    <string name="report_message_title">[%1$s][report]</string>
-    <string name="store_page">http://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="app_name" translatable="false">&appName;</string>
+    <string name="app_date" translatable="false">&appDate;</string>
+    <string name="app_creator" translatable="false">&appCreator;</string>
+    <string name="app_copyright" translatable="false">© &appDate; &appCreator;</string>
+    <string name="developer_page" translatable="false">https://github.com/aaronfodor</string>
+    <string name="report_contact" translatable="false">arpadfodor01@gmail.com</string>
+    <string name="report_message_title" translatable="false">[%1$s][report]</string>
+    <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
 
-    <string name="client_id">&spotifyClientId;</string>
-    <string name="spotify_token_request_param">&spotifyClientId;:&spotifyClientSec;</string>
-    <string name="com_spotify_sdk_redirect_uri">com.aaronfodor.android.songquiz://token</string>
+    <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
 
-    <string name="app_ads_id">&adMobAppId;</string>
-    <string name="quiz_ad_id">&adMobQuizAdId;</string>
-
-    <string name="acknowledgments_text">
+    <string name="acknowledgments_text" translatable="false">
         naobim,\n
         Gordon Johnson,\n
         OpenClipart-Vectors\n
@@ -38,10 +27,10 @@
         (Freeicons.io)\n\n
     </string>
 
-    <string name="unicode_start">►</string>
-    <string name="unicode_back">❮</string>
-    <string name="unicode_cross">X</string>
-    <string name="unicode_add">＋</string>
+    <string name="unicode_start" translatable="false">►</string>
+    <string name="unicode_back" translatable="false">❮</string>
+    <string name="unicode_cross" translatable="false">X</string>
+    <string name="unicode_add" translatable="false">＋</string>
 
-    <string name="nav_header_title">&appName;</string>
+    <string name="nav_header_title" translatable="false">&appName;</string>
 </resources>
