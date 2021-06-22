@@ -123,7 +123,7 @@
         app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
         app:layout_constraintEnd_toEndOf="parent"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/quiz_ad_id" />
+        ads:adUnitId="@string/adMobQuizAdId" />
 
     <ProgressBar
         android:id="@+id/loadIndicatorProgressBar"

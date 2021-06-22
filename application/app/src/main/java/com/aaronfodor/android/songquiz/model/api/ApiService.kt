@@ -23,7 +23,7 @@ open class ApiService @Inject constructor(
         EncoderInterceptor()
     ).build()
 
-    val spotifyAPI = Retrofit.Builder()
+    val spotifyAPI: SpotifyAPI = Retrofit.Builder()
         .baseUrl(SpotifyAPI.API_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(spotifyClient)

@@ -26,14 +26,14 @@ class AccountService @Inject constructor(
 
     private var account= Account("")
 
-    private val clientId = context.getString(R.string.client_id)
+    private val clientId = context.getString(R.string.spotifyClientId)
     private val spotifyRedirectURI = context.getString(R.string.com_spotify_sdk_redirect_uri)
 
     /**
      * Used for fallback token requests on behalf of the app. Works when client secret is available.
      * Only one valid token is existing at the same time with this option. Only use it for testing.
      */
-    val spotifyTokenRequestParam = context.getString(R.string.spotify_token_request_param)
+    val spotifyTokenRequestParam = context.getString(R.string.spotifyClientId) + ":" + context.getString(R.string.spotifyClientSec)
 
     /**
      * Require a new token before it expires in that many seconds

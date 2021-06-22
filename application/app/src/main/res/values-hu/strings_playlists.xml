@@ -4,7 +4,7 @@
     <string name="loading_playlist">Lista töltése…</string>
     <string name="ready_to_start">Játékra fel! Nyomd meg a gombot a kezdéshez.</string>
     <string name="error_playlist_load">Nem sikerült a lista betöltése</string>
-    <string name="error_playlist_load_description">Nem sikerült a lista betöltése. Kérlek ellenőrizd az internetkapcsolatot, és bizonyosodj meg róla, hogy a lista továbbra is létezik Spotify-on.</string>
+    <string name="error_playlist_load_description">Nem sikerült a lista betöltése. Kérlek ellenőrizd az internetkapcsolatot és próbáld újra, illetve bizonyosodj meg róla, hogy a lista továbbra is létezik Spotify-on.</string>
     <string name="error_play_song">Nem sikerült a dal lejátszása</string>
     <string name="error_play_song_description">Nem sikerült a dal lejátszása. Kérlek ellenőrizd az internetkapcsolatot.</string>
     <string name="error_speak_to_user">Nem sikerült a felhasználóhoz beszélni</string>
