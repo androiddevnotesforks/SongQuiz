@@ -65,21 +65,40 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
     // to handle pop behavior specifically
     override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.nav_playlist_add) {
-            navController.navigate(R.id.to_nav_playlists, null)
-        }
-        else{
-            super.onBackPressed()
+        when (navController.currentDestination?.id) {
+            R.id.nav_playlist_add -> {
+                navController.navigate(R.id.to_nav_playlists, null)
+            }
+            R.id.nav_info_from_playlists -> {
+                navController.navigate(R.id.to_nav_playlists, null)
+            }
+            R.id.nav_info_from_add_playlists -> {
+                navController.navigate(R.id.to_nav_playlist_add, null)
+            }
+            else -> {
+                super.onBackPressed()
+            }
         }
     }
 
     // to handle back button specifically
     override fun onSupportNavigateUp(): Boolean {
-        return if (navController.currentDestination?.id == R.id.nav_playlist_add) {
-            navController.navigate(R.id.to_nav_playlists, null)
-            true
-        } else{
-            super.onSupportNavigateUp()
+        return when (navController.currentDestination?.id) {
+            R.id.nav_playlist_add -> {
+                navController.navigate(R.id.to_nav_playlists, null)
+                true
+            }
+            R.id.nav_info_from_playlists -> {
+                navController.navigate(R.id.to_nav_playlists, null)
+                true
+            }
+            R.id.nav_info_from_add_playlists -> {
+                navController.navigate(R.id.to_nav_playlist_add, null)
+                true
+            }
+            else -> {
+                super.onSupportNavigateUp()
+            }
         }
     }
     

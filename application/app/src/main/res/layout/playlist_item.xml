@@ -29,7 +29,7 @@
         android:theme="@style/SubtitleText"
         android:textAppearance="?attr/textAppearanceHeadline5"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
-        app:layout_constraintEnd_toStartOf="@+id/playlist_delete"
+        app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintTop_toTopOf="@+id/playlist_image"/>
 
     <TextView
@@ -42,7 +42,7 @@
         android:ellipsize="end"
         android:theme="@style/ParagraphText"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
-        app:layout_constraintEnd_toStartOf="@+id/playlist_delete"
+        app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintTop_toBottomOf="@+id/playlist_title"
         app:layout_constraintBottom_toTopOf="@+id/playlist_description"/>
 
@@ -56,29 +56,26 @@
         android:ellipsize="end"
         android:theme="@style/ParagraphText"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
-        app:layout_constraintEnd_toStartOf="@+id/playlist_delete"
+        app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintBottom_toBottomOf="@+id/playlist_image"/>
 
-    <com.aaronfodor.android.songquiz.view.utils.AppButton
-        android:id="@+id/playlist_delete"
-        style="@style/AppButton"
-        android:layout_width="@dimen/list_item_button_size"
-        android:layout_height="@dimen/list_item_button_size"
-        android:layout_margin="@dimen/list_item_margin"
-        android:text="@string/unicode_cross"
-        android:contentDescription="@string/unicode_cross"
+    <ImageButton
+        android:id="@+id/secondary_action"
+        style="@style/ListItemImageButton"
+        android:background="@drawable/icon_info"
+        android:contentDescription="@string/content_description_info"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/playlist_start"
+        app:layout_constraintEnd_toStartOf="@+id/primary_action"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
-        android:id="@+id/playlist_start"
+        android:id="@+id/primary_action"
         style="@style/AppButton"
         android:layout_width="@dimen/list_item_button_size"
         android:layout_height="@dimen/list_item_button_size"
         android:layout_margin="@dimen/list_item_margin"
         android:text="@string/unicode_start"
-        android:contentDescription="@string/unicode_start"
+        android:contentDescription="@string/content_description_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -31,19 +31,23 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         val appCopyright = getString(R.string.app_copyright)
         binding.content.legalText.text = getString(R.string.legal_text, appCopyright)
 
-        binding.content.fabMoreFromDeveloper.setOnClickListener {
+        val moreFromDeveloperAction = {
             val developerPageUri = Uri.parse(getString(R.string.developer_page))
             val browserIntent = Intent(Intent.ACTION_VIEW, developerPageUri)
             startActivity(browserIntent)
         }
+        binding.content.fabMoreFromDeveloper.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.tvMoreFromDeveloper.setOnClickListener { moreFromDeveloperAction() }
 
-        binding.content.fabReview.setOnClickListener {
+        val reviewAction = {
             val storePageUri = Uri.parse(getString(R.string.store_page, context?.packageName ?: ""))
             val storeIntent = Intent(Intent.ACTION_VIEW, storePageUri)
             startActivity(storeIntent)
         }
+        binding.content.fabReview.setOnClickListener { reviewAction() }
+        binding.content.tvReview.setOnClickListener { reviewAction() }
 
-        binding.content.fabReport.setOnClickListener {
+        val reportAction = {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
                 val appName = getString(R.string.app_name)
                 data = Uri.parse("mailto:")
@@ -53,11 +57,12 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             }
             startActivity(reportIntent)
         }
+        binding.content.fabReport.setOnClickListener { reportAction() }
+        binding.content.tvReport.setOnClickListener { reportAction() }
     }
 
     override fun subscribeViewModel() {
         viewModel.subscribeTtsListeners()
-
         val ttsStateObserver = Observer<TtsAboutState> { state ->
             when(state){
                 TtsAboutState.ENABLED -> {
@@ -70,7 +75,7 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                         var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME) +
                                 " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text, appCopyright) +
                                 " " + getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text)
-                        text = text.replace("\n\n", ".\n\n").replace("..", ".")
+                        text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                         viewModel.speak(text)
                     }
                 }

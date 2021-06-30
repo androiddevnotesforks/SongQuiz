@@ -12,9 +12,11 @@ import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
+import com.aaronfodor.android.songquiz.view.utils.DrawableCrossFadeFactory
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
@@ -203,6 +205,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                 Glide.with(this)
                     .load(uri)
+                    .transition(DrawableTransitionOptions.with(DrawableCrossFadeFactory()))
                     .apply(options)
                     .into(binding.content.ivPlaylist)
             }
@@ -254,13 +257,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         viewModel.recognition.observe(this, recognitionObserver)
 
         val songPlayedProgressObserver = Observer<Int> { progress ->
-            if(progress > 0){
-                binding.content.songPlayProgressBar.visibility = View.VISIBLE
-                binding.content.songPlayProgressBar.progress = progress
-            }
-            else{
-                binding.content.songPlayProgressBar.visibility = View.INVISIBLE
-            }
+            binding.content.songPlayProgressBar.progress = progress
         }
         viewModel.songPlayProgress.observe(this, songPlayedProgressObserver)
 

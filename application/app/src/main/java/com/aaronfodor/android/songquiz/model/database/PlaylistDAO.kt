@@ -1,9 +1,6 @@
 package com.aaronfodor.android.songquiz.model.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 
 @Dao
@@ -26,5 +23,8 @@ interface PlaylistDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(items: List<DbPlaylist>)
+
+    @Update
+    fun update(vararg item: DbPlaylist)
 
 }

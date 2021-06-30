@@ -11,7 +11,7 @@
     <string name="logout_description">Are you sure you want to log out? You need to be logged in to play or search for playlists.</string>
 
     <string name="delete_playlist">Delete playlist</string>
-    <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add them again later.</string>
+    <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add it again later.</string>
 
     <string name="clear_cache">Clear cache</string>
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>

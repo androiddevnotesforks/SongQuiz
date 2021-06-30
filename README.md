@@ -1,7 +1,7 @@
 # Song Quiz
 [<img src="https://user-images.githubusercontent.com/37120889/122938687-43f8a300-d373-11eb-829d-4522f2e529a8.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
 
-![](https://img.shields.io/github/license/arpadfodor/SongQuiz) [![Build Status](https://travis-ci.com/aaronfodor/SongQuiz.svg?branch=master)](https://travis-ci.com/arpadfodor/SongQuiz)
+![](https://img.shields.io/github/license/aaronfodor/SongQuiz) [![Build Status](https://travis-ci.com/aaronfodor/SongQuiz.svg?branch=master)](https://travis-ci.com/aaronfodor/SongQuiz)
 
 [<img src="https://user-images.githubusercontent.com/37120889/122966033-22a2b180-d389-11eb-8b13-f65fabed4bf7.png" alt="google-play-badge" width="200"/>](https://play.google.com/store/apps/details?id=com.aaronfodor.android.songquiz)
 
@@ -14,14 +14,13 @@ Song Quiz guides you into the world of music. Play with more than 4 billion Spot
 	<img src="https://user-images.githubusercontent.com/37120889/123087349-bb3a3f80-d424-11eb-97ed-3d3d857607c0.PNG" alt="Song Quiz2" width="240"/>
 	<img src="https://user-images.githubusercontent.com/37120889/123087352-bbd2d600-d424-11eb-9387-2d31c0bc06c8.PNG" alt="Song Quiz3" width="240"/>
 </p>
-
 <p float="middle">
 	<img src="https://user-images.githubusercontent.com/37120889/123087354-bbd2d600-d424-11eb-8226-0b1096def3cf.PNG" alt="Song Quiz4" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/123087356-bc6b6c80-d424-11eb-864b-ada63d70d42b.PNG" alt="Song Quiz5" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/123548023-6a4b8380-d763-11eb-9389-9646022e9217.png" alt="Song Quiz5" width="240"/>
 </p>
+
 
 <p float="middle">
 	<img src="https://user-images.githubusercontent.com/37120889/123087363-be353000-d424-11eb-80ce-ad626c86a937.PNG" alt="Song Quiz6" height="240"/>
  	<img src="https://user-images.githubusercontent.com/37120889/123087365-be353000-d424-11eb-8671-ca7bbf86b157.PNG" alt="Song Quiz7" height="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/123087366-be353000-d424-11eb-9640-a7560d0154a6.PNG" alt="Song Quiz8" height="240"/>
 </p>

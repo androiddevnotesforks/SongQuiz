@@ -9,13 +9,11 @@
     <ProgressBar
         style="@style/SongPlayProgressBar"
         android:id="@+id/songPlayProgressBar"
-        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
-        app:layout_constraintEnd_toEndOf="@+id/svInfo" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        style="@style/MainImage"
         android:id="@+id/ivPlaylist"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -23,7 +21,25 @@
         android:importantForAccessibility="no"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/gradient_right"
+        android:importantForAccessibility="no"
+        app:layout_constraintDimensionRatio="0.33"
         app:layout_constraintEnd_toStartOf="@+id/glVerticalMiddle"
+        app:layout_constraintTop_toTopOf="@+id/ivPlaylist"
+        app:layout_constraintBottom_toBottomOf="@+id/ivPlaylist"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:colorBackground"
+        app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -94,18 +110,17 @@
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ImageButton"
+        style="@style/GameActionImageButton"
         android:id="@+id/ttsSpeechButton"
         android:src="@drawable/icon_sound_off"
         android:contentDescription="@string/content_description_get_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         app:layout_constraintTop_toTopOf="@+id/ivPlaylist"
         app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ImageButton"
+        style="@style/GameActionImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
         android:contentDescription="@string/content_description_user_input"

@@ -3,9 +3,12 @@ package com.aaronfodor.android.songquiz.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
@@ -34,9 +37,12 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
 
         val startLambda: (Playlist) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
-        val deleteLambda: (Playlist) -> Unit = { playlist -> deletePlaylistById(playlist.id, playlist.name) }
+        val infoLambda: (Playlist) -> Unit = { playlist -> showInfoScreen(playlist.id) }
 
-        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), startLambda, deleteLambda)
+        val startText = getString(R.string.unicode_start)
+        val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
+
+        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), startLambda, startText, infoLambda, infoDrawable, {})
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
         binding.fabAddPlaylist.setOnClickListener {
@@ -99,13 +105,11 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    private fun deletePlaylistById(id: String, name: String) {
-        val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
-                getString(R.string.delete_playlist_description, name), R.drawable.icon_delete)
-        dialog.setPositiveButton {
-            viewModel.deletePlaylistById(id)
-        }
-        dialog.show()
+    private fun showInfoScreen(id: String){
+        val navHostFragment = NavHostFragment.findNavController(this)
+        val action = PlaylistsFragmentDirections.toNavInfoFromPlaylists(id)
+        navHostFragment.navigate(action)
+        viewModel.ready()
     }
 
     private fun playlistByIdSelected(id: String){

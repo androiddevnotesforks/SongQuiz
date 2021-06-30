@@ -3,7 +3,7 @@ package com.aaronfodor.android.songquiz.model.repository
 import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.SearchResult
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +25,15 @@ class PlaylistsRepository @Inject constructor(
         return playlists.reversed()
     }
 
+    fun getPlaylistById(id: String) : Playlist{
+        val dbPlaylists = dao.getById(id) ?: listOf()
+        return if(dbPlaylists.isNotEmpty()){
+            dbPlaylists[0].toPlaylist()
+        } else{
+            Playlist("")
+        }
+    }
+
     fun insertPlaylistById(id: String) : Boolean{
         val result = apiService.getPlaylistById(id)
         if(result.id == ""){
@@ -42,6 +51,12 @@ class PlaylistsRepository @Inject constructor(
         return true
     }
 
+    fun updatePlaylist(playlist: Playlist) : Boolean{
+        val toInsert = playlist.toDbPlaylist()
+        dao.update(toInsert)
+        return true
+    }
+
     fun deletePlaylistById(id: String){
         dao.delete(id)
     }
@@ -55,19 +70,19 @@ class PlaylistsRepository @Inject constructor(
         return apiPlaylist.toPlaylist()
     }
 
-    fun searchPlaylistByIdOrName(searchExpression: String, offset: Int = 0) : SearchResult{
+    fun searchPlaylistByIdOrName(searchExpression: String, offset: Int = 0) : PlaylistSearchResult{
         val rawResults = apiService.getPlaylistsByIdOrName(searchExpression, offset)
         return rawResults.toSearchResult(searchExpression)
     }
 
-    fun searchGetNextBatch(currentResult: SearchResult) : SearchResult{
+    fun searchGetNextBatch(currentResult: PlaylistSearchResult) : PlaylistSearchResult{
         val offset = currentResult.offset + currentResult.limit
         if(offset > currentResult.total){
             return currentResult
         }
 
         val nextResults = apiService.getPlaylistsByIdOrName(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
-        return SearchResult(
+        return PlaylistSearchResult(
             items = currentResult.items + nextResults.items,
             searchExpression = nextResults.searchExpression,
             // maxOf needed, as Spotify API retrieves 0s after the 1000th offset

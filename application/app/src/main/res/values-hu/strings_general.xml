@@ -7,7 +7,7 @@
         Készítette %1$s\n\n
         %2$s\n\n
         %3$s\n\n
-        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Nem minden dalnak van zenei előnézete; ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van. A szövegfelismerés angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
+        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Privát listák csak az egyedi azonosítójuk alapján kereshetők, név alapján nem kerülnek listázásra. Nem minden dalnak van zenei előnézete. Ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van. A szövegfelismerés angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
     </string>
 
     <string name="legal_title">Jogi információk</string>
@@ -26,6 +26,7 @@
     <string name="menu_playlist_add">Hozzáadás</string>
     <string name="menu_settings">Beállítások</string>
     <string name="menu_about">Információk</string>
+    <string name="menu_info">Lejátszási lista részletei</string>
 
     <string name="request_permission_title">Engedélykérés</string>
     <string name="request_permission_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s.</string>

@@ -1,6 +1,6 @@
 package com.aaronfodor.android.songquiz.model.repository.dataclasses
 
-data class SearchResult(
+data class PlaylistSearchResult(
         val items: List<Playlist> = listOf(),
         val searchExpression: String = "",
         val limit: Int = 0,
