@@ -82,8 +82,8 @@
         <item name="android:max">@integer/progressbar_max_value</item>
         <item name="android:progress">0</item>
         <item name="android:progressDrawable">@drawable/progressbar_time</item>
-        <item name="android:background">@color/colorAccent</item>
-        <item name="android:progressTint">@color/colorActive</item>
+        <item name="android:background">?android:colorBackground</item>
+        <item name="android:progressTint">@color/colorAccent</item>
     </style>
 
     <style name="ParagraphText">
