@@ -29,10 +29,11 @@
         app:layout_constraintTop_toTopOf="@+id/ivLogo"
         app:layout_constraintBottom_toBottomOf="@+id/ivLogo"/>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/svContent"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintStart_toEndOf="@+id/ivLogo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,17 +41,30 @@
         android:paddingBottom="@dimen/playlist_scrollview_bottom_padding"
         android:clipToPadding="false">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/content"
-                layout="@layout/fragment_info_content"/>
+            <!-- To make the layout placed to the bottom of the scroll view -->
+            <Space
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_weight="1"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </ScrollView>
+                <include
+                    android:id="@+id/content"
+                    layout="@layout/fragment_info_content"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
         android:id="@+id/loadIndicatorProgressBar"

@@ -4,6 +4,8 @@
     <!ENTITY appName "Song Quiz">
     <!ENTITY appDate "30/06/2021">
     <!ENTITY appCreator "Arpad Fodor">
+    <!ENTITY developerContact "arpadfodor01@gmail.com">
+    <!ENTITY developerPage "https://github.com/aaronfodor">
     ]>
 
 <resources>
@@ -11,8 +13,10 @@
     <string name="app_date" translatable="false">&appDate;</string>
     <string name="app_creator" translatable="false">&appCreator;</string>
     <string name="app_copyright" translatable="false">© &appDate; &appCreator;</string>
-    <string name="developer_page" translatable="false">https://github.com/aaronfodor</string>
-    <string name="report_contact" translatable="false">arpadfodor01@gmail.com</string>
+    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE</string>
+    <string name="privacy_page" translatable="false">&developerPage;/SongQuiz/blob/master/PRIVACY.md</string>
+    <string name="developer_page" translatable="false">&developerPage;</string>
+    <string name="report_contact" translatable="false">&developerContact;</string>
     <string name="report_message_title" translatable="false">[%1$s][report]</string>
     <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
     <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
@@ -26,6 +30,8 @@
         (Pixabay)\n\n
         wishforge.games\n
         (Freeicons.io)\n\n
+        Freepik\n
+        (Flaticon.com)\n\n
     </string>
 
     <string name="unicode_start" translatable="false">►</string>

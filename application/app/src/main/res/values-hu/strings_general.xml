@@ -11,16 +11,14 @@
     </string>
 
     <string name="legal_title">Jogi információk</string>
-    <string name="legal_text">
-        %1$s\n\n
-        A szoftvert bármilyen explicit, hallgatólagos garancia nélkül biztosítjuk. A szerzők vagy a szerzői jogok tulajdonosai semmilyen esetben sem felelősek semmilyen követelésért, kárért vagy egyéb felelősségért, akár szerződéses, akár jogsértési, akár más módon, a szoftverből, vagy annak használatából vagy egyéb ügyletéből eredően.\n\n
-    </string>
 
     <string name="acknowledgments_title">Köszönetnyilvánítás</string>
 
     <string name="more_from_developer">Továbbiak a fejlesztőtől</string>
     <string name="review_app">Alkalmazás értékelése</string>
     <string name="report">Hibabejelentés/javaslatok új funkciókra</string>
+    <string name="app_license">Licenszfeltételek</string>
+    <string name="app_privacy">Adatkezelési információk</string>
 
     <string name="menu_playlists">Listák</string>
     <string name="menu_playlist_add">Hozzáadás</string>

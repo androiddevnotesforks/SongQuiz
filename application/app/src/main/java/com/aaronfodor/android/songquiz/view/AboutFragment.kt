@@ -27,9 +27,23 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         val appCreator = getString(R.string.app_creator)
         val appDate = getString(R.string.app_date)
         binding.content.aboutText.text = getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME)
+        binding.content.legalText.text = getString(R.string.app_copyright)
 
-        val appCopyright = getString(R.string.app_copyright)
-        binding.content.legalText.text = getString(R.string.legal_text, appCopyright)
+        val licenseOpenAction = {
+            val licensePageUri = Uri.parse(getString(R.string.license_page))
+            val browserIntent = Intent(Intent.ACTION_VIEW, licensePageUri)
+            startActivity(browserIntent)
+        }
+        binding.content.fabLicense.setOnClickListener { licenseOpenAction() }
+        binding.content.tvLicense.setOnClickListener { licenseOpenAction() }
+
+        val privacyOpenAction = {
+            val privacyPageUri = Uri.parse(getString(R.string.privacy_page))
+            val browserIntent = Intent(Intent.ACTION_VIEW, privacyPageUri)
+            startActivity(browserIntent)
+        }
+        binding.content.fabPrivacy.setOnClickListener { privacyOpenAction() }
+        binding.content.tvPrivacy.setOnClickListener { privacyOpenAction() }
 
         val moreFromDeveloperAction = {
             val developerPageUri = Uri.parse(getString(R.string.developer_page))
@@ -72,9 +86,9 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                         val appCreator = getString(R.string.app_creator)
                         val appCopyright = getString(R.string.app_copyright)
 
-                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME) +
-                                " " + getString(R.string.legal_title) + ". " + getString(R.string.legal_text, appCopyright) +
-                                " " + getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text)
+                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME) + " " +
+                                getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text) + " " +
+                                getString(R.string.legal_title) + ". " + appCopyright + ". "
                         text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                         viewModel.speak(text)
                     }
