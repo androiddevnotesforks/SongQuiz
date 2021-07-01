@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.SearchResult
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,8 +26,8 @@ class PlaylistsAddViewModel @Inject constructor(
         var transferPlaylistIdsAlreadyAdded : List<String> = listOf()
     }
 
-    val searchResult : MutableLiveData<SearchResult> by lazy {
-        MutableLiveData<SearchResult>()
+    val searchResult : MutableLiveData<PlaylistSearchResult> by lazy {
+        MutableLiveData<PlaylistSearchResult>()
     }
 
     val uiState: MutableLiveData<PlaylistsAddUiState> by lazy {

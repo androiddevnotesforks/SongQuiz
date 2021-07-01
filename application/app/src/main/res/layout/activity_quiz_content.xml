@@ -9,10 +9,9 @@
     <ProgressBar
         style="@style/SongPlayProgressBar"
         android:id="@+id/songPlayProgressBar"
-        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
-        app:layout_constraintEnd_toEndOf="@+id/userSpeechButton" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         style="@style/MainImage"
@@ -25,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
-        app:layout_constraintBottom_toTopOf="@+id/glHorizontalHigh"/>
+        app:layout_constraintBottom_toBottomOf="@+id/glHorizontalHigh"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/svInfo"
@@ -87,11 +86,11 @@
         android:orientation="vertical"/>
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glHorizontalHigh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/glHorizontalHigh"
-        app:layout_constraintGuide_percent="0.56"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.54" />
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -101,7 +100,7 @@
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ImageButton"
+        style="@style/GameActionImageButton"
         android:id="@+id/ttsSpeechButton"
         android:src="@drawable/icon_sound_off"
         android:contentDescription="@string/content_description_get_information"
@@ -111,7 +110,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ImageButton"
+        style="@style/GameActionImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
         android:contentDescription="@string/content_description_user_input"

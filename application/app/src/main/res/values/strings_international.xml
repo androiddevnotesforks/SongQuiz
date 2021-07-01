@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "22/06/2021">
+    <!ENTITY appDate "30/06/2021">
     <!ENTITY appCreator "Arpad Fodor">
     ]>
 
@@ -15,6 +15,7 @@
     <string name="report_contact" translatable="false">arpadfodor01@gmail.com</string>
     <string name="report_message_title" translatable="false">[%1$s][report]</string>
     <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
 
     <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
 
@@ -28,8 +29,6 @@
     </string>
 
     <string name="unicode_start" translatable="false">►</string>
-    <string name="unicode_back" translatable="false">❮</string>
-    <string name="unicode_cross" translatable="false">X</string>
     <string name="unicode_add" translatable="false">＋</string>
 
     <string name="nav_header_title" translatable="false">&appName;</string>

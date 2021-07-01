@@ -5,7 +5,7 @@ import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.SearchResult
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
 
 fun Playlist.toDbPlaylist() : DbPlaylist {
@@ -87,13 +87,13 @@ fun TrackDTO.toTrack() : Track{
     )
 }
 
-fun PlaylistsDTO.toSearchResult(searchExpression: String) : SearchResult{
+fun PlaylistsDTO.toSearchResult(searchExpression: String) : PlaylistSearchResult{
     val playlists = mutableListOf<Playlist>()
     for(item in this.items){
         playlists.add(item.toPlaylist())
     }
 
-    return SearchResult(
+    return PlaylistSearchResult(
         items = playlists,
         searchExpression = searchExpression,
         limit = this.limit,

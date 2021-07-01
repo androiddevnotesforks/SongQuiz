@@ -39,7 +39,11 @@ class DatabaseInjector {
             appContext,
             ApplicationDB::class.java,
             ApplicationDB.APPLICATION_DB_NAME
-        ).build()
+        )
+            .createFromAsset("database/application_database.db")
+            // enable traditional DB execution (no wal, shm) - use to generate a .db file
+            //.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+            .build()
     }
 
     @Provides

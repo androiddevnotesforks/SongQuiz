@@ -28,8 +28,8 @@ android {
         applicationId "com.aaronfodor.android.songquiz"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 1
-        versionName "v1.0.0"
+        versionCode 5
+        versionName "v1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

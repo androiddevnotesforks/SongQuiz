@@ -2,13 +2,15 @@ package com.aaronfodor.android.songquiz.view
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.SearchResult
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
 import com.aaronfodor.android.songquiz.view.utils.AppDialogInput
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
@@ -30,24 +32,25 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         viewModel = ViewModelProvider(this).get(PlaylistsAddViewModel::class.java)
 
         val addLambda: (Playlist) -> Unit = { playlist -> addPlaylist(playlist.id) }
+        val infoLambda: (Playlist) -> Unit = { playlist -> showInfoScreen(playlist.id) }
+
+        val addText = getString(R.string.unicode_add)
+        val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
+
         val lastItemLambda: () -> Unit = { searchGetNextBatch() }
 
-        val playlistsAdapter = PlaylistAddAdapter(this.requireContext(), addLambda, lastItemLambda)
+        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), addLambda, addText, infoLambda, infoDrawable, lastItemLambda)
         binding.RecyclerViewPlaylists.adapter = playlistsAdapter
 
-        binding.fabSearch.setOnClickListener{
-            showSearchExpressionDialog()
-        }
-        binding.tvEmpty.setOnClickListener {
-            showSearchExpressionDialog()
-        }
+        binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
+        binding.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
     }
 
     override fun subscribeViewModel() {
         viewModel.setPlaylistIdsAlreadyAdded()
 
-        val playlistsFoundObserver = Observer<SearchResult> { result ->
-            (binding.RecyclerViewPlaylists.adapter as PlaylistAddAdapter).submitList(result.items)
+        val playlistsFoundObserver = Observer<PlaylistSearchResult> { result ->
+            (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(result.items)
 
             if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
                 binding.tvEmpty.visibility = View.VISIBLE
@@ -116,6 +119,13 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
 
     private fun addPlaylist(id: String){
         viewModel.addPlaylistById(id)
+    }
+
+    private fun showInfoScreen(id: String){
+        val navHostFragment = NavHostFragment.findNavController(this)
+        val action = PlaylistsFragmentDirections.toNavInfoFromAddPlaylists(id)
+        navHostFragment.navigate(action)
+        viewModel.ready()
     }
 
     private fun showInfo(infoType: PlaylistsAddUiState){

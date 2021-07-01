@@ -1,7 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -79,6 +79,7 @@
         android:contentDescription="@string/more_from_developer" />
 
     <TextView
+        android:id="@+id/tvMoreFromDeveloper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/fabMoreFromDeveloper"
@@ -98,6 +99,7 @@
         android:contentDescription="@string/review_app" />
 
     <TextView
+        android:id="@+id/tvReview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/fabReview"
@@ -117,6 +119,7 @@
         android:contentDescription="@string/report" />
 
     <TextView
+        android:id="@+id/tvReport"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/fabReport"

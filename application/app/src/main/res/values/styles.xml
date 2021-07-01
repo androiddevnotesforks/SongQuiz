@@ -41,7 +41,7 @@
         <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
     </style>
 
-    <style name="ImageButton" parent="Theme.SongQuiz">
+    <style name="GameActionImageButton" parent="Theme.SongQuiz">
         <item name="android:layout_marginStart">@dimen/button_margin_big</item>
         <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
         <item name="android:layout_marginTop">@dimen/button_margin_big</item>
@@ -50,6 +50,14 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:minWidth">@dimen/img_button_size</item>
         <item name="android:minHeight">@dimen/img_button_size</item>
+    </style>
+
+    <style name="ListItemImageButton" parent="AppButton">
+        <item name="android:layout_margin">@dimen/list_item_margin</item>
+        <item name="android:layout_width">@dimen/list_item_button_size</item>
+        <item name="android:layout_height">@dimen/list_item_button_size</item>
+        <item name="android:backgroundTint">@color/colorButton</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
     <style name="MainImage" parent="Theme.SongQuiz">
@@ -74,7 +82,8 @@
         <item name="android:max">@integer/progressbar_max_value</item>
         <item name="android:progress">0</item>
         <item name="android:progressDrawable">@drawable/progressbar_time</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
+        <item name="android:background">?android:colorBackground</item>
+        <item name="android:progressTint">@color/colorAccent</item>
     </style>
 
     <style name="ParagraphText">

@@ -192,7 +192,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
      * This callback will be run on your main thread.
      *
      * *Note: This callback will not be triggered when preferences are cleared
-     * via [Editor.clear], unless targeting [android.os.Build.VERSION_CODES.R]
+     * via Editor.clear, unless targeting [android.os.Build.VERSION_CODES.R]
      * on devices running OS versions [Android R][android.os.Build.VERSION_CODES.R]
      * or later.*
      *
