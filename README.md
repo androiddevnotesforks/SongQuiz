@@ -10,17 +10,20 @@ Do you know what you hear? Challenge yourself on more than 4 billion playlists!
 Song Quiz guides you into the world of music. Play with more than 4 billion Spotify playlists to never make this game boring. Save playlists to your library, set up the game based on your preferences. Would it be too easy? Shorten the length of a song or disable repetition to make it more exciting. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
 
 <p float="middle">
- 	<img src="https://user-images.githubusercontent.com/37120889/123087345-baa1a900-d424-11eb-9202-899272dd5a19.PNG" alt="Song Quiz1" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/123087349-bb3a3f80-d424-11eb-97ed-3d3d857607c0.PNG" alt="Song Quiz2" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/123087352-bbd2d600-d424-11eb-9387-2d31c0bc06c8.PNG" alt="Song Quiz3" width="240"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/124105386-784f1c00-da63-11eb-9bf7-8503180092da.PNG" alt="Song Quiz1" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/124105392-79804900-da63-11eb-95da-a21532134370.PNG" alt="Song Quiz2" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/124105395-79804900-da63-11eb-9446-78bb4297a2d5.PNG" alt="Song Quiz3" width="240"/>
 </p>
 <p float="middle">
-	<img src="https://user-images.githubusercontent.com/37120889/123087354-bbd2d600-d424-11eb-8226-0b1096def3cf.PNG" alt="Song Quiz4" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/123548023-6a4b8380-d763-11eb-9389-9646022e9217.png" alt="Song Quiz5" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/124105398-7a18df80-da63-11eb-9cd3-a810bf9a4cd8.PNG" alt="Song Quiz4" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/124105400-7a18df80-da63-11eb-9c38-827b7ec50b71.PNG" alt="Song Quiz5" width="240"/>
+    <img src="https://user-images.githubusercontent.com/37120889/124105401-7a18df80-da63-11eb-86ee-aa83ca433375.PNG" alt="Song Quiz6" width="240"/>
 </p>
 
 
+
 <p float="middle">
-	<img src="https://user-images.githubusercontent.com/37120889/123087363-be353000-d424-11eb-80ce-ad626c86a937.PNG" alt="Song Quiz6" height="240"/>
- 	<img src="https://user-images.githubusercontent.com/37120889/123087365-be353000-d424-11eb-8671-ca7bbf86b157.PNG" alt="Song Quiz7" height="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/124105411-7be2a300-da63-11eb-91b7-2eb7d88ddba6.PNG" alt="Song Quiz7" height="240"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/124105412-7be2a300-da63-11eb-9d75-cb0d3f81d4b0.PNG" alt="Song Quiz8" height="240"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/124105413-7c7b3980-da63-11eb-9f7c-5a2f8b717da8.PNG" alt="Song Quiz9" height="240"/>
 </p>
