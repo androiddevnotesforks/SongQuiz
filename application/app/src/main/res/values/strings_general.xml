@@ -11,16 +11,14 @@
     </string>
 
     <string name="legal_title">Legal information</string>
-    <string name="legal_text">
-        %1$s\n\n
-        The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.\n\n
-    </string>
 
     <string name="acknowledgments_title">Acknowledgments</string>
 
     <string name="more_from_developer">More from the developer</string>
     <string name="review_app">Review app</string>
     <string name="report">Report a problem or suggest new features</string>
+    <string name="app_license">License</string>
+    <string name="app_privacy">Privacy</string>
 
     <string name="menu_playlists">Playlists</string>
     <string name="menu_playlist_add">Add playlist</string>
