@@ -100,8 +100,15 @@ class QuizViewModel @Inject constructor(
     /**
      * Song played percentage
      */
-    val songPlayProgress: MutableLiveData<Int> by lazy {
+    val songPlayProgressValue: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
+    }
+
+    /**
+     * Song played progress percentage
+     */
+    val songPlayProgressPercentage: MutableLiveData<Float> by lazy {
+        MutableLiveData<Float>()
     }
 
     /**
@@ -227,13 +234,16 @@ class QuizViewModel @Inject constructor(
 
                 timer = object : CountDownTimer(playDurationMs, timeStepMs) {
                     override fun onTick(millisUntilFinished: Long) {
-                        val durationPercentage = (((playDurationMs - millisUntilFinished.toFloat()) / playDurationMs) * numProgressBarSteps).toInt()
-                        songPlayProgress.postValue(durationPercentage)
+                        val progressPercentage = (playDurationMs - millisUntilFinished.toFloat()) / playDurationMs
+                        val progressValue = (progressPercentage * numProgressBarSteps).toInt()
+                        songPlayProgressPercentage.postValue(progressPercentage)
+                        songPlayProgressValue.postValue(progressValue)
+
                     }
 
                     override fun onFinish() {
                         mediaPlayerService.stop()
-                        songPlayProgress.postValue(0)
+                        songPlayProgressValue.postValue(0)
                         isSuccess = true
                         cont.resume(true)
                     }

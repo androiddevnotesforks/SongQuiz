@@ -6,6 +6,8 @@
     <string name="SETTINGS_KEY_REPEAT" translatable="false">repeat</string>
     <string name="SETTINGS_KEY_SONG_DURATION" translatable="false">song_duration</string>
     <string name="SETTINGS_KEY_SEASONAL_THEMES" translatable="false">seasonal_themes</string>
+    <string name="SETTINGS_KEY_LANGUAGE" translatable="false">language</string>
+    <string name="SETTINGS_KEY_SPEECH" translatable="false">speech</string>
     <string name="SETTINGS_KEY_CLEAR_CACHE" translatable="false">clear_cache</string>
     <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS" translatable="false">delete_all_playlists</string>
 

@@ -10,6 +10,31 @@ plugins {
 }
 
 android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.aaronfodor.android.songquiz"
+        minSdkVersion 26
+        targetSdkVersion 30
+        versionCode 7
+        versionName "v1.0.6"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions 'default'
+    productFlavors {
+        Default {
+            dimension 'default'
+            versionNameSuffix "-default"
+        }
+        Experimental {
+            dimension 'default'
+            versionNameSuffix "-experimental"
+        }
+    }
+
     signingConfigs {
         release {
             storeFile file(RELEASE_STORE_FILE)
@@ -21,36 +46,29 @@ android {
             storeFile file('B:/Dev/Android/Keystore/Debug/debug.keystore')
         }
     }
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
-
-    defaultConfig {
-        applicationId "com.aaronfodor.android.songquiz"
-        minSdkVersion 26
-        targetSdkVersion 30
-        versionCode 6
-        versionName "v1.0.5"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
 
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            debuggable false
 
             resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
-            resValue "string", "spotifyClientSec", "just for testing"
+            resValue "string", "spotifyClientSec", ""
+            // production ad values
             resValue "string", "adMobAppId", "ca-app-pub-5281333576177335~3104405139"
             resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/1408180087"
         }
         debug {
+            debuggable true
             testCoverageEnabled true
             signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
 
             resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
-            resValue "string", "spotifyClientSec", "just for testing"
+            resValue "string", "spotifyClientSec", ""
             // test ad values
             resValue "string", "adMobAppId", "ca-app-pub-3940256099942544~3347511713"
             resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/6300978111"
