@@ -2,9 +2,12 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
@@ -256,10 +259,20 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.recognition.observe(this, recognitionObserver)
 
-        val songPlayedProgressObserver = Observer<Int> { progress ->
+        val songPlayedProgressValueObserver = Observer<Int> { progress ->
             binding.content.songPlayProgressBar.progress = progress
         }
-        viewModel.songPlayProgress.observe(this, songPlayedProgressObserver)
+        viewModel.songPlayProgressValue.observe(this, songPlayedProgressValueObserver)
+
+        val songPlayedProgressPercentageObserver = Observer<Float> { percentage ->
+            val currentColorInt = ColorUtils.blendARGB(
+                getColor(R.color.colorAccent),
+                getColor(R.color.colorActive),
+                percentage)
+            val currentColor = String.format("#%06X", 0xFFFFFF and currentColorInt)
+            binding.content.songPlayProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor(currentColor))
+        }
+        viewModel.songPlayProgressPercentage.observe(this, songPlayedProgressPercentageObserver)
 
     }
 

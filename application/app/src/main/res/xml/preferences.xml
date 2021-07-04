@@ -39,8 +39,14 @@
             app:summary="@string/settings_summary_color_mode" />
 
         <Preference
+            app:key="@string/SETTINGS_KEY_LANGUAGE"
             app:title="@string/settings_title_language"
             app:summary="@string/settings_summary_language" />
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_SPEECH"
+            app:title="@string/settings_title_speech"
+            app:summary="@string/settings_summary_speech" />
 
     </PreferenceCategory>
 

@@ -1,7 +1,9 @@
 package com.aaronfodor.android.songquiz.view
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +34,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyRepeat = ""
     private var keySongDuration = ""
     private var keySeasonalThemes = ""
+    private var keyLanguage = ""
+    private var keySpeech = ""
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
 
@@ -44,6 +48,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
         keySongDuration = getString(R.string.SETTINGS_KEY_SONG_DURATION)
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
+        keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
+        keySpeech = getString(R.string.SETTINGS_KEY_SPEECH)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
     }
@@ -74,6 +80,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             it.max = max
             it.min = min
             it.setDefaultValue(default)
+        }
+
+        val languagePref = findPreference<Preference>(keyLanguage)?.setOnPreferenceClickListener {
+            // Open Android Language settings
+            val intent = Intent(Settings.ACTION_LOCALE_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            this.startActivity(intent)
+            true
+        }
+
+        val speechPref = findPreference<Preference>(keySpeech)?.setOnPreferenceClickListener {
+            // Open Android Text-To-Speech settings
+            val intent = Intent().setAction("com.android.settings.TTS_SETTINGS").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            this.startActivity(intent)
+            true
         }
     }
 
