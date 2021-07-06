@@ -62,7 +62,7 @@ data class PlaylistDTO (
     val external_urls: PlaylistExternalUrlsDTO? = null,
     val followers: PlaylistFollowersDTO? = null,
     val images: Array<PlaylistImagesDTO>? = null,
-    val name: String,
+    val name: String = "",
     val owner: PlaylistOwnerDTO? = null,
     val `public`: Any? = null,
     val snapshot_id: String? = null,
@@ -70,7 +70,7 @@ data class PlaylistDTO (
     val type: String? = null,
     val uri: String? = null,
     val primary_color: String? = null,
-    val id: String
+    val id: String = ""
 )
 
 /**
@@ -148,5 +148,5 @@ data class PlaylistTracksItemsDTO (
     val added_at: String? = null,
     val added_by: PlaylistOwnerDTO? = null,
     val is_local: Boolean? = null,
-    val track: TrackDTO
+    val track: TrackDTO? = null
 )

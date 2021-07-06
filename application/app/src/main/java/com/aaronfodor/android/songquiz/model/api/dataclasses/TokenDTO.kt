@@ -18,7 +18,7 @@ package com.aaronfodor.android.songquiz.model.api.dataclasses
  * @param expires_in
  */
 data class TokenDTO (
-    val access_token: String,
+    val access_token: String = "",
     val token_type: String? = null,
     val expires_in: Int? = null
 )

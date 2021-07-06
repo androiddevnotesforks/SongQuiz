@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
-    android:backgroundTint="@color/colorBackground"
+    android:backgroundTint="@color/colorNavBackground"
     app:headerLayout="@layout/nav_menu_header"
     app:itemTextAppearance="@style/SubtitleText"
     app:itemIconTint="@color/colorText"

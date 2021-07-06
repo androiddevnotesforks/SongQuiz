@@ -32,16 +32,16 @@ package com.aaronfodor.android.songquiz.model.api.dataclasses
  */
 data class TrackDTO (
     val album: AlbumDTO? = null,
-    val artists: Array<ArtistDTO>,
+    val artists: Array<ArtistDTO>? = null,
     val available_markets: Array<String>? = null,
     val disc_number: Int? = null,
-    val duration_ms: Int,
+    val duration_ms: Int = 0,
     val explicit: Boolean? = null,
     val external_ids: TrackExternalIdsDTO? = null,
     val external_urls: PlaylistExternalUrlsDTO? = null,
     val href: String? = null,
-    val id: String,
-    val name: String,
+    val id: String = "",
+    val name: String = "",
     val popularity: Int? = null,
     val preview_url: String? = null,
     val track_number: Int? = null,
@@ -74,9 +74,9 @@ data class AlbumDTO (
     val available_markets: Array<String>? = null,
     val external_urls: PlaylistExternalUrlsDTO? = null,
     val href: String? = null,
-    val id: String,
+    val id: String = "",
     val images: Array<AlbumImagesDTO>? = null,
-    val name: String,
+    val name: String = "",
     val type: String? = null,
     val uri: String? = null
 )
@@ -84,13 +84,13 @@ data class AlbumDTO (
 /**
  *
  * @param height
- * @param url
  * @param width
+ * @param url
  */
 data class AlbumImagesDTO (
-    val height: Int,
-    val url: String,
-    val width: Int
+    val height: Int = 0,
+    val width: Int = 0,
+    val url: String = ""
 )
 
 /**
@@ -105,8 +105,8 @@ data class AlbumImagesDTO (
 data class ArtistDTO (
     val external_urls: PlaylistExternalUrlsDTO? = null,
     val href: String? = null,
-    val id: String,
-    val name: String,
+    val id: String = "",
+    val name: String = "",
     val type: String? = null,
     val uri: String? = null
 )

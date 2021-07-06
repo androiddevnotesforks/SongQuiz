@@ -16,7 +16,7 @@ class AppPositiveButton : AppButton {
 
     init {
         this.background = ContextCompat.getDrawable(context, R.drawable.app_positive_button)
-        this.setTextColor(context.getColor(R.color.colorLightOnDarkBackground))
+        this.setTextColor(context.getColor(R.color.colorLight))
     }
 
 }

@@ -4,16 +4,15 @@
     <color name="colorPrimary">#336699</color>
     <color name="colorSecondary">#336699</color>
     <color name="colorAccent">#336699</color>
-    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorBackground">#FAFAFA</color>
+
     <color name="colorTransparent">#00000000</color>
+    <color name="colorLight">#FAFAFA</color>
+    <color name="colorDark">#000000</color>
 
-    <color name="colorText">#000000</color>
-    <color name="colorTextTitle">#000000</color>
-    <color name="colorTextSubtitle">#000000</color>
-
-    <color name="colorLightOnDarkBackground">#DFFFFF</color>
-    <color name="colorDarkOnLightBackground">#000000</color>
-    <color name="colorNeutralText">#336699</color>
+    <color name="colorText">#121212</color>
+    <color name="colorTextTitle">#121212</color>
+    <color name="colorTextSubtitle">#121212</color>
 
     <color name="colorMessageBox">#DDDDDD</color>
 
@@ -22,7 +21,9 @@
 
     <color name="colorButton">#336699</color>
     <color name="colorButtonPressed">#BB4DEEEA</color>
+    <color name="colorButtonText">#121212</color>
 
     <color name="colorDialogBackground">#DDFFFFFF</color>
+    <color name="colorNavBackground">#FFFFFF</color>
 
 </resources>

@@ -7,7 +7,7 @@
 
 Do you know what you hear? Challenge yourself on more than 4 billion playlists!
 
-Song Quiz guides you into the world of music. Play with more than 4 billion Spotify playlists to never make this game boring. Save playlists to your library, set up the game based on your preferences. Would it be too easy? Shorten the length of a song or disable repetition to make it more exciting. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
+Song Quiz guides you into the world of music. Play with more than 4 billion Spotify playlists. Save playlists to your library, set up the game based on your preferences. Would it be too easy? Shorten the length of a song or disable repetition to make it more exciting. Spark your music knowledge against your friends with your own playlists. As it is easy to use, you can play while traveling, taking a shower, and so on. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
 
 <p float="middle">
  	<img src="https://user-images.githubusercontent.com/37120889/124105386-784f1c00-da63-11eb-9bf7-8503180092da.PNG" alt="Song Quiz1" width="240"/>

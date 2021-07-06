@@ -98,6 +98,13 @@ class QuizViewModel @Inject constructor(
     }
 
     /**
+     * Playlist primary color
+     */
+    val playlistPrimaryColor: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    /**
      * Song played percentage
      */
     val songPlayProgressValue: MutableLiveData<Int> by lazy {

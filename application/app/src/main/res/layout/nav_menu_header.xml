@@ -41,7 +41,7 @@
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/nav_header_title"
         android:textAppearance="@style/FancyText"
-        android:textColor="@color/colorLightOnDarkBackground"
+        android:textColor="@color/colorLight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/AppIcon"
         app:layout_constraintBottom_toTopOf="@+id/navHeaderSubtitle"/>
@@ -54,7 +54,7 @@
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/nav_header_subtitle"
         android:textAppearance="@style/ParagraphText"
-        android:textColor="@color/colorLightOnDarkBackground"
+        android:textColor="@color/colorLight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

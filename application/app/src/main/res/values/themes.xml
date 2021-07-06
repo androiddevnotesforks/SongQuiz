@@ -17,6 +17,7 @@
     <style name="Theme.SongQuiz.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
     <style name="Theme.SongQuiz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
