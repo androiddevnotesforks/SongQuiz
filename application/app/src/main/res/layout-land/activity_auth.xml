@@ -16,7 +16,7 @@
         android:padding="@dimen/navigation_menu_vertical_spacing"
         android:text="@string/app_name"
         android:textAppearance="@style/FancyText"
-        android:textColor="@color/colorLightOnDarkBackground"
+        android:textColor="@color/colorLight"
         app:layout_constraintStart_toStartOf="@+id/glVertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

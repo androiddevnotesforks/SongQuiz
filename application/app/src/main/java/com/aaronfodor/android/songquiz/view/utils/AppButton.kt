@@ -22,7 +22,7 @@ open class AppButton : AppCompatButton {
         this.setPadding(15,25,15,25)
         this.gravity = Gravity.CENTER
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        this.setTextColor(context.getColor(R.color.colorNeutralText))
+        this.setTextColor(context.getColor(R.color.colorButtonText))
 
         this.setOnClickListener {
         }

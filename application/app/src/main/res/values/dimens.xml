@@ -19,8 +19,6 @@
     <dimen name="button_padding_small">15dp</dimen>
     <dimen name="button_stroke">4dp</dimen>
 
-    <dimen name="progressbar_margin">8dp</dimen>
-
     <dimen name="img_button_size">50dp</dimen>
 
     <dimen name="playlist_scrollview_bottom_padding">80dp</dimen>

@@ -34,17 +34,16 @@ fun DbPlaylist.toPlaylist() : Playlist {
 }
 
 fun PlaylistDTO.toPlaylist() : Playlist {
-
     val tracks = mutableListOf<Track>()
-    if(this.tracks != null){
-        if(this.tracks.items != null){
 
-            for(apiTrackWrapper in this.tracks.items){
-                if(apiTrackWrapper.track.preview_url?.isNotBlank() == true){
-                    tracks.add(apiTrackWrapper.track.toTrack())
+    this.tracks?.items?.let {
+        for(apiTrackWrapper in it){
+            apiTrackWrapper.track?.preview_url?.let { previewUrl ->
+                if(previewUrl.isNotBlank()){
+                    val currentTrack = apiTrackWrapper.track.toTrack()
+                    tracks.add(currentTrack)
                 }
             }
-
         }
     }
 
@@ -65,13 +64,14 @@ fun PlaylistDTO.toPlaylist() : Playlist {
         primary_color = this.primary_color ?: "",
         tracks = tracks
     )
-
 }
 
 fun TrackDTO.toTrack() : Track{
     val artists = mutableListOf<String>()
-    for(artist in this.artists){
-        artists.add(artist.name)
+    this.artists?.let {
+        for(artist in it){
+            artists.add(artist.name)
+        }
     }
 
     return Track(

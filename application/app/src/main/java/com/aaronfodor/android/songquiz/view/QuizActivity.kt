@@ -4,23 +4,33 @@ import android.Manifest
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.palette.graphics.Palette
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
+import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
 import com.aaronfodor.android.songquiz.view.utils.DrawableCrossFadeFactory
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 
@@ -45,6 +55,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        playlistColorSetter(getColor(R.color.colorAccent))
 
         // get settings related to the quiz
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -72,8 +84,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         )
 
         closeDialog.setPositiveButton {
-            startActivity(Intent(this, MenuActivity::class.java))
             viewModel.clearState()
+            startActivity(Intent(this, MenuActivity::class.java))
         }
         closeDialog.show()
     }
@@ -208,12 +220,46 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                 Glide.with(this)
                     .load(uri)
-                    .transition(DrawableTransitionOptions.with(DrawableCrossFadeFactory()))
                     .apply(options)
+                    .listener(object : RequestListener<Drawable>{
+
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable,
+                            model: Any?,
+                            target: Target<Drawable>,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            resource.let {
+                                val palette = Palette.from(resource.toBitmap()).generate()
+                                val fallbackColor = getColor(R.color.colorAccent)
+                                val playlistColor = palette.getMutedColor(fallbackColor)
+                                viewModel.playlistPrimaryColor.postValue(playlistColor)
+                            }
+                            // explicit transition
+                            target.onResourceReady(resource, CrossFadeTransition())
+                            return true
+                        }
+
+                    })
                     .into(binding.content.ivPlaylist)
             }
+
         }
         viewModel.playlistImageUri.observe(this, playlistUriObserver)
+
+        val playlistPrimaryColorObserver = Observer<Int> { color ->
+            playlistColorSetter(color)
+        }
+        viewModel.playlistPrimaryColor.observe(this, playlistPrimaryColorObserver)
 
         val infoObserver = Observer<String> { info ->
             val view = binding.content.svInfo
@@ -266,7 +312,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
         val songPlayedProgressPercentageObserver = Observer<Float> { percentage ->
             val currentColorInt = ColorUtils.blendARGB(
-                getColor(R.color.colorAccent),
+                getColor(R.color.colorLight),
                 getColor(R.color.colorActive),
                 percentage)
             val currentColor = String.format("#%06X", 0xFFFFFF and currentColorInt)
@@ -300,6 +346,24 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             else -> {}
         }
 
+    }
+
+    private fun playlistColorSetter(colorInt: Int){
+        val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
+        val playlistColor = if(darkness < 0.35){
+            // color is too light, replace with accent
+            getColor(R.color.colorAccent)
+        }
+        else{
+            colorInt
+        }
+
+        val backgroundColor = getColor(R.color.colorBackground)
+        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(playlistColor, backgroundColor))
+        gradientDrawable.cornerRadius = 0F
+        binding.root.background = gradientDrawable
+        this.window.statusBarColor = playlistColor
     }
 
 }
