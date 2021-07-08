@@ -27,21 +27,19 @@ class TextToSpeechService  @Inject constructor(
     var errorCallback: () -> Unit = {}
 
     init {
-        init()
+        init(Locale.getDefault().isO3Language)
     }
 
     /**
      * Initialize text to speech
      * Set text to speech listener
      */
-    fun init(){
+    fun init(languageISO3: String){
         stop()
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 textToSpeech?.let {
-                    val currentLanguageISO3 = Locale.getDefault().isO3Language
-
-                    val ttsLanguage = when (currentLanguageISO3.uppercase()) {
+                    val ttsLanguage = when (languageISO3.uppercase()) {
                         "GBR" -> {
                             Locale("GBR")
                         }

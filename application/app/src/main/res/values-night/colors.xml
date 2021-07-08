@@ -18,6 +18,7 @@
 
     <color name="colorIcon">#FAFAFA</color>
     <color name="colorActive">#FF0000</color>
+    <color name="colorActionGameButtonGlow">#121212</color>
 
     <color name="colorButton">#336699</color>
     <color name="colorButtonPressed">#BB4DEEEA</color>

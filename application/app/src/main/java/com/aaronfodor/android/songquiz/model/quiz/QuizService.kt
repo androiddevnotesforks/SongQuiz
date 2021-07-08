@@ -209,8 +209,9 @@ class QuizService @Inject constructor(
     }
 
     private fun firstTurnStringBuilder() : String{
+        val currentPlayer = quizStanding.getCurrentPlayer()
         return context.getString(R.string.c_starting_game, quizType.name) + " " + context.getString(R.string.c_player_turn,
-            quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())
+            currentPlayer.id.toString(), quizStanding.getCurrentRoundIndex().toString())
     }
 
     private fun startGame() : InformationPacket {
@@ -301,11 +302,12 @@ class QuizService @Inject constructor(
                 HAPPY_SOUND_NAME
             }
 
+            val currentPlayer = quizStanding.getCurrentPlayer()
             return InformationPacket(listOf(
                 InformationItem(InfoType.SOUND_LOCAL_ID, localSoundName),
                 InformationItem(InfoType.SPEECH, previousGuessString),
                 InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
-                    quizStanding.getCurrentPlayerIndex().toString(), quizStanding.getCurrentRoundIndex().toString())),
+                    currentPlayer.id.toString(), quizStanding.getCurrentRoundIndex().toString())),
                 InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
             ), true)
         }
@@ -326,29 +328,29 @@ class QuizService @Inject constructor(
     }
 
     private fun endResultStringBuilder() : String{
-        val results = quizStanding.scores
+        val quizPlayers = quizStanding.players
         var resultString = ""
 
-        var winnerIndex = 0
-        var maxValue = 0
+        var winnerId = 0
+        var winnerPoints = 0
 
-        for((index, result) in results.withIndex()){
-            resultString += context.getString(R.string.c_player_scored, (index + 1).toString(), result.toString()) + " "
-            if(result > maxValue){
-                maxValue = result
-                winnerIndex = index
+        for(player in quizPlayers){
+            resultString += context.getString(R.string.c_player_scored, (player.id).toString(), player.points.toString()) + " "
+            if(player.points > winnerPoints){
+                winnerPoints = player.points
+                winnerId = player.id
             }
-            else if(result == maxValue){
-                winnerIndex = -1
+            else if(player.points == winnerPoints){
+                winnerId = 0
             }
         }
 
         resultString += when {
-            maxValue <= 0 -> {
+            winnerPoints <= 0 -> {
                 context.getString(R.string.c_next_time)
             }
-            winnerIndex >= 0 -> {
-                context.getString(R.string.c_winner_player, (winnerIndex+1).toString())
+            winnerId > 0 -> {
+                context.getString(R.string.c_winner_player, winnerId.toString())
             }
             else -> {
                 context.getString(R.string.c_winner_tie)
@@ -574,7 +576,8 @@ class QuizService @Inject constructor(
         lastSongPopularity = currentTrack.popularity
 
         lastPlayerPoints = points
-        lastPlayerAllPoints = quizStanding.getCurrentPlayerPoints() + points
+        val currentPlayerPoints = quizStanding.getCurrentPlayer().points
+        lastPlayerAllPoints = currentPlayerPoints + points
 
         quizStanding.recordResult(points)
 

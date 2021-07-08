@@ -55,13 +55,6 @@ class PlaylistsViewModel @Inject constructor(
         uiState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
     }
 
-    fun deletePlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        uiState.postValue(PlaylistsUiState.LOADING)
-        repository.deletePlaylistById(id)
-        playlists.postValue(repository.getPlaylists())
-        uiState.postValue(PlaylistsUiState.READY)
-    }
-
     fun ready() = viewModelScope.launch {
         uiState.value = PlaylistsUiState.READY
     }

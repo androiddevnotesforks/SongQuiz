@@ -20,17 +20,14 @@ import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
-import com.aaronfodor.android.songquiz.view.utils.DrawableCrossFadeFactory
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 

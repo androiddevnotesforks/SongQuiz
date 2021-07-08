@@ -38,20 +38,18 @@ class SpeechRecognizerService @Inject constructor(
     var errorCallback: (String) -> Unit = {}
 
     init {
-        init()
+        init(Locale.getDefault().isO3Language)
     }
 
     /**
      * Initialize speech recognizer
      */
-    fun init(){
+    fun init(languageISO3: String){
         stopListening()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(this)
 
-        val currentLanguageISO3 = Locale.getDefault().isO3Country
-
-        languageBCP47 = when (currentLanguageISO3.uppercase()) {
+        languageBCP47 = when (languageISO3.uppercase()) {
             "GBR" -> {
                 "en-GB"
             }
