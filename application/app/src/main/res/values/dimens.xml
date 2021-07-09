@@ -6,20 +6,25 @@
     <dimen name="navigation_menu_height">200dp</dimen>
     <dimen name="navigation_menu_vertical_spacing">8dp</dimen>
 
+    <dimen name="shadow_elevation">3dp</dimen>
+
     <dimen name="title_padding">6dp</dimen>
     <dimen name="title_margin">6dp</dimen>
 
     <dimen name="paragraph_padding">4dp</dimen>
     <dimen name="paragraph_margin">4dp</dimen>
 
+    <dimen name="button_size">50dp</dimen>
     <dimen name="button_corner_radius">5dp</dimen>
     <dimen name="button_margin_big">24dp</dimen>
-    <dimen name="button_margin_small">16dp</dimen>
+    <dimen name="button_margin_medium">16dp</dimen>
     <dimen name="button_padding_big">25dp</dimen>
-    <dimen name="button_padding_small">15dp</dimen>
+    <dimen name="button_padding_medium">15dp</dimen>
     <dimen name="button_stroke">4dp</dimen>
 
-    <dimen name="img_button_size">50dp</dimen>
+    <dimen name="button_action_size">70dp</dimen>
+    <dimen name="button_action_margin">12dp</dimen>
+    <dimen name="button_action_padding">22dp</dimen>
 
     <dimen name="playlist_scrollview_bottom_padding">80dp</dimen>
     <dimen name="list_item_image_size">70dp</dimen>

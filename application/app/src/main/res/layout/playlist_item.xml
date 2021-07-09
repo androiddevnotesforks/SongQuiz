@@ -75,7 +75,7 @@
         android:layout_height="@dimen/list_item_button_size"
         android:layout_margin="@dimen/list_item_margin"
         android:text="@string/unicode_start"
-        android:contentDescription="@string/content_description_start"
+        android:contentDescription="@string/content_description_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

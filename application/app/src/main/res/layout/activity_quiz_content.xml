@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        style="@style/MainImage"
+        style="@style/ElevatedMainImage"
         android:id="@+id/ivPlaylist"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -101,7 +101,7 @@
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/GameActionImageButton"
+        style="@style/ActionGameImageButton"
         android:id="@+id/ttsSpeechButton"
         android:src="@drawable/icon_sound_off"
         android:contentDescription="@string/content_description_get_information"
@@ -112,7 +112,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/GameActionImageButton"
+        style="@style/ActionGameImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
         android:contentDescription="@string/content_description_user_input"

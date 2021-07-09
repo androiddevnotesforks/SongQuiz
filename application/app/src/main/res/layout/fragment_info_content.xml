@@ -44,11 +44,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/description" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/FAB"
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/ActionImageButton"
         android:id="@+id/fabPrimaryAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/numSongsFollowers"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/content_description_info" />
@@ -62,11 +60,9 @@
         app:layout_constraintTop_toTopOf="@+id/fabPrimaryAction"
         app:layout_constraintBottom_toBottomOf="@+id/fabPrimaryAction"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/FAB"
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/ActionImageButton"
         android:id="@+id/fabSecondaryAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/fabPrimaryAction"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/content_description_info" />
@@ -79,5 +75,21 @@
         app:layout_constraintStart_toEndOf="@+id/fabSecondaryAction"
         app:layout_constraintTop_toTopOf="@+id/fabSecondaryAction"
         app:layout_constraintBottom_toBottomOf="@+id/fabSecondaryAction"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/ActionImageButton"
+        android:id="@+id/fabTertiaryAction"
+        app:layout_constraintTop_toBottomOf="@+id/fabSecondaryAction"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/content_description_info" />
+
+    <TextView
+        style="@style/ButtonLabel"
+        android:id="@+id/tvTertiaryAction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/fabTertiaryAction"
+        app:layout_constraintTop_toTopOf="@+id/fabTertiaryAction"
+        app:layout_constraintBottom_toBottomOf="@+id/fabTertiaryAction"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

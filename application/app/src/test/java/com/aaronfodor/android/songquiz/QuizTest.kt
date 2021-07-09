@@ -34,7 +34,7 @@ class QuizStandingTest{
         }
         // Then
         assertThat(quizStanding.isFinished, `is`(true))
-        assertThat(quizStanding.getCurrentPlayerIndex(), `is`(1))
+        assertThat(quizStanding.getCurrentPlayer().id, `is`(1))
         assertThat(quizStanding.getCurrentRoundIndex(), `is`(numRounds))
     }
 
@@ -53,7 +53,7 @@ class QuizStandingTest{
         }
         // Then
         assertThat(quizStanding.isFinished, `is`(false))
-        assertThat(quizStanding.getCurrentPlayerIndex(), `is`(1))
+        assertThat(quizStanding.getCurrentPlayer().id, `is`(1))
         assertThat(quizStanding.getCurrentRoundIndex(), `is`(numRounds))
     }
 
@@ -68,7 +68,7 @@ class QuizStandingTest{
         quizStanding.clearState()
         // When
         for(i in 0 until (numPlayers*numRounds)){
-            if(quizStanding.currentPlayer % 2 == 0){
+            if(quizStanding.currentPlayerIdx % 2 == 0){
                 quizStanding.recordResult(20)
             }
             else{
@@ -76,8 +76,8 @@ class QuizStandingTest{
             }
         }
         // Then
-        assertThat(quizStanding.scores[0], `is`(numRounds*20))
-        assertThat(quizStanding.scores[1], `is`(0))
+        assertThat(quizStanding.players[0].points, `is`(numRounds*20))
+        assertThat(quizStanding.players[1].points, `is`(0))
     }
 
 }

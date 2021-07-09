@@ -9,6 +9,7 @@ import com.aaronfodor.android.songquiz.model.SpeechRecognizerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.HiltAndroidApp
+import java.util.*
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -22,8 +23,9 @@ class ApplicationRoot : Application() {
 
     private val localeChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            textToSpeechService.init()
-            speechRecognizerService.init()
+            val languageISO3 = Locale.getDefault().isO3Language
+            textToSpeechService.init(languageISO3)
+            speechRecognizerService.init(languageISO3)
         }
     }
 

@@ -3,6 +3,8 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -12,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class InfoUiState{
-    LOADING, READY, PLAYLIST_FALLBACK, ERROR_PLAYLIST_LOAD, CLOSE
+    LOADING, READY, PLAYLIST_FALLBACK, ERROR_PLAYLIST_LOAD, CLOSE, AUTH_NEEDED, START_QUIZ
 }
 
 enum class TtsInfoState{
@@ -26,7 +28,8 @@ enum class InfoScreenCaller{
 @HiltViewModel
 class InfoViewModel  @Inject constructor(
     var repository: PlaylistsRepository,
-    var textToSpeechService: TextToSpeechService
+    var textToSpeechService: TextToSpeechService,
+    val accountService: AccountService
 ) : ViewModel() {
 
     var infoScreenCaller = InfoScreenCaller.UNSPECIFIED
@@ -95,7 +98,7 @@ class InfoViewModel  @Inject constructor(
 
     fun setPlaylistById(playlistId: String) = viewModelScope.launch(Dispatchers.IO) {
         if(playlist.value?.id == playlistId){
-            uiState.postValue(InfoUiState.READY)
+            ready()
             return@launch
         }
         else{
@@ -106,7 +109,7 @@ class InfoViewModel  @Inject constructor(
 
             // successfully downloaded
             if(downloadedPlaylist.id == playlistId){
-                uiState.postValue(InfoUiState.READY)
+                ready()
                 playlist.postValue(downloadedPlaylist)
                 if(infoScreenCaller == InfoScreenCaller.PLAYLISTS){
                     repository.updatePlaylist(downloadedPlaylist)
@@ -147,6 +150,15 @@ class InfoViewModel  @Inject constructor(
 
     fun ready() = viewModelScope.launch {
         uiState.value = InfoUiState.READY
+    }
+
+    fun startQuiz() = viewModelScope.launch {
+        if(accountService.accountState.value != AccountState.LOGGED_IN){
+            uiState.value = InfoUiState.AUTH_NEEDED
+            return@launch
+        }
+
+        uiState.value = InfoUiState.START_QUIZ
     }
 
 }

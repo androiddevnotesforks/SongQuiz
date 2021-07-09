@@ -16,8 +16,9 @@
 
     <color name="colorMessageBox">#DDDDDD</color>
 
-    <color name="colorIcon">#336699</color>
+    <color name="colorIcon">#121212</color>
     <color name="colorActive">#FF0000</color>
+    <color name="colorActionGameButtonGlow">#FAFAFA</color>
 
     <color name="colorButton">#336699</color>
     <color name="colorButtonPressed">#BB4DEEEA</color>

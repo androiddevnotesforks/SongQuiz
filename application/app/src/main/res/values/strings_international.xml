@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "04/07/2021">
+    <!ENTITY appDate "08/07/2021">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY developerContact "arpadfodor01@gmail.com">
     <!ENTITY developerPage "https://github.com/aaronfodor">
@@ -12,7 +12,7 @@
     <string name="app_name" translatable="false">&appName;</string>
     <string name="app_date" translatable="false">&appDate;</string>
     <string name="app_creator" translatable="false">&appCreator;</string>
-    <string name="app_copyright" translatable="false">© &appDate; &appCreator;</string>
+    <string name="app_copyright" translatable="false">© &appDate; &appCreator;\n\n</string>
     <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE</string>
     <string name="privacy_page" translatable="false">&developerPage;/SongQuiz/blob/master/PRIVACY.md</string>
     <string name="developer_page" translatable="false">&developerPage;</string>

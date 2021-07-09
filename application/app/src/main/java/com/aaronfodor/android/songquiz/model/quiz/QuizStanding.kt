@@ -4,47 +4,43 @@ class QuizStanding {
     var numPlayers: Int = 0
     var numRounds: Int = 0
     // gameplay specific, should be reset to start new game
-    var currentPlayer: Int = 0
-    var currentRound: Int = 0
+    var currentRound: Int = 1
+    var currentPlayerIdx: Int = 0
     var currentTrackIndex: Int = 0
-    var scores: MutableList<Int> = mutableListOf()
+    var players: MutableList<QuizPlayer> = mutableListOf()
     var isFinished = false
 
     fun clearState(){
-        currentPlayer = 0
-        currentRound = 0
+        currentRound = 1
+        currentPlayerIdx = 0
         currentTrackIndex = 0
-        scores = mutableListOf()
-        for(i in 0 until numPlayers){
-            scores.add(0)
+        players = mutableListOf()
+        for(i in 1..numPlayers){
+            players.add(QuizPlayer(i, "", 0))
         }
         isFinished = false
     }
 
     fun recordResult(points: Int){
         currentTrackIndex++
-        scores[currentPlayer] += points
-        currentPlayer++
-        if(currentPlayer >= numPlayers){
-            currentPlayer = 0
+        players[currentPlayerIdx].points += points
+        currentPlayerIdx++
+        if(currentPlayerIdx >= numPlayers){
+            currentPlayerIdx = 0
             currentRound++
-            if(currentRound >= numRounds){
+            if(currentRound > numRounds){
                 isFinished = true
-                currentRound--
+                currentRound = numRounds
             }
         }
     }
 
-    fun getCurrentPlayerIndex() : Int{
-        return (currentPlayer+1)
+    fun getCurrentPlayer() : QuizPlayer{
+        return players[currentPlayerIdx]
     }
 
     fun getCurrentRoundIndex() : Int{
-        return (currentRound+1)
-    }
-
-    fun getCurrentPlayerPoints() : Int{
-        return scores[currentPlayer]
+        return currentRound
     }
 
 }
