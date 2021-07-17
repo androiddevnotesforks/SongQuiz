@@ -17,8 +17,8 @@ android {
         applicationId "com.aaronfodor.android.songquiz"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 9
-        versionName "v1.0.8"
+        versionCode 10
+        versionName "v1.0.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
