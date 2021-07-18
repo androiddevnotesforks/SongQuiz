@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -104,7 +105,18 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         viewModel.ttsState.observe(this, ttsStateObserver)
     }
 
-    override fun appearingAnimations() {}
+    override fun appearingAnimations() {
+        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+        binding.fabSpeak.startAnimation(rightAnimation)
+
+        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        binding.content.fabPrivacy.startAnimation(leftAnimation)
+        binding.content.fabLicense.startAnimation(leftAnimation)
+        binding.content.fabReview.startAnimation(leftAnimation)
+        binding.content.fabMoreFromDeveloper.startAnimation(leftAnimation)
+        binding.content.fabReport.startAnimation(leftAnimation)
+    }
+
     override fun unsubscribeViewModel() {
         viewModel.unsubscribeTtsListeners()
     }

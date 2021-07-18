@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -217,7 +218,16 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
         viewModel.ready()
     }
 
-    override fun appearingAnimations() {}
+    override fun appearingAnimations() {
+        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+        binding.fabSpeak.startAnimation(rightAnimation)
+
+        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        binding.content.fabPrimaryAction.startAnimation(leftAnimation)
+        binding.content.fabSecondaryAction.startAnimation(leftAnimation)
+        binding.content.fabTertiaryAction.startAnimation(leftAnimation)
+    }
+
     override fun unsubscribeViewModel() {
         viewModel.unsubscribeTtsListeners()
     }

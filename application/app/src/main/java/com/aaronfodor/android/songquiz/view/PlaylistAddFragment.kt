@@ -2,6 +2,7 @@ package com.aaronfodor.android.songquiz.view
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -100,7 +101,11 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         viewModel.uiState.observe(this, uiStateObserver)
     }
 
-    override fun appearingAnimations() {}
+    override fun appearingAnimations() {
+        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+        binding.fabSearch.startAnimation(rightAnimation)
+    }
+
     override fun unsubscribeViewModel() {}
 
     private fun showSearchExpressionDialog() {

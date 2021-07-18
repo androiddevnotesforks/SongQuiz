@@ -3,7 +3,9 @@ package com.aaronfodor.android.songquiz.view
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -81,7 +83,7 @@ class PlaylistsAdapter(private val context: Context,
         return PlaylistViewHolder(itemBinding, context, onMainAction, onMainText, onSecondaryAction, onSecondaryIcon)
     }
 
-    /* Gets current playlist and uses it to bind view. */
+    /* Get current playlist and use it to bind view. */
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int){
         // last item reached, invoke callback
         if(position == itemCount-1){
@@ -92,9 +94,24 @@ class PlaylistsAdapter(private val context: Context,
         holder.bind(playlist)
     }
 
+    private fun setAppearingAnimation(viewToAnimate: View){
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        viewToAnimate.startAnimation(animation)
+    }
+
     override fun onViewRecycled(holder: PlaylistViewHolder) {
         super.onViewRecycled(holder)
         Glide.with(holder.itemBinding.playlistImage).clear(holder.itemBinding.playlistImage)
+    }
+
+    override fun onViewAttachedToWindow(holder: PlaylistViewHolder) {
+        setAppearingAnimation(holder.itemView)
+        super.onViewAttachedToWindow(holder)
+    }
+
+    override fun onViewDetachedFromWindow(holder: PlaylistViewHolder) {
+        holder.itemView.clearAnimation()
+        super.onViewDetachedFromWindow(holder)
     }
 
 }
