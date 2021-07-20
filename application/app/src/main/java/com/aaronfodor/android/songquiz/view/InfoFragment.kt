@@ -221,6 +221,7 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
     override fun appearingAnimations() {
         val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         binding.fabSpeak.startAnimation(rightAnimation)
+        binding.fabSpeak.visibility = View.VISIBLE
 
         val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
         binding.content.fabPrimaryAction.startAnimation(leftAnimation)

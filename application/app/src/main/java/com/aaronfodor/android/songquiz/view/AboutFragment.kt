@@ -108,6 +108,7 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     override fun appearingAnimations() {
         val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         binding.fabSpeak.startAnimation(rightAnimation)
+        binding.fabSpeak.visibility = View.VISIBLE
 
         val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
         binding.content.fabPrivacy.startAnimation(leftAnimation)

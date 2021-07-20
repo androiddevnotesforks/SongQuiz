@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
@@ -106,6 +103,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     override fun appearingAnimations() {
         val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         binding.fabAddPlaylist.startAnimation(rightAnimation)
+        binding.fabAddPlaylist.visibility = View.VISIBLE
     }
 
     override fun unsubscribeViewModel() {}

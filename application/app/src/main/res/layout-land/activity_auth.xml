@@ -10,6 +10,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
+        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -24,6 +25,7 @@
 
     <ImageView
         android:id="@+id/AppIcon"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/song_quiz"
@@ -33,7 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:visibility="visible"
         android:importantForAccessibility="no"
         app:layout_constraintDimensionRatio="1.0"/>
 

@@ -124,27 +124,9 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ActionImageButton"
-        android:id="@+id/fabMoreFromDeveloper"
-        app:srcCompat="@drawable/icon_more_apps"
-        app:layout_constraintTop_toBottomOf="@+id/fabReview"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/more_from_developer" />
-
-    <TextView
-        android:id="@+id/tvMoreFromDeveloper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabMoreFromDeveloper"
-        app:layout_constraintTop_toTopOf="@+id/fabMoreFromDeveloper"
-        app:layout_constraintBottom_toBottomOf="@+id/fabMoreFromDeveloper"
-        style="@style/ButtonLabel"
-        android:text="@string/more_from_developer"/>
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
         android:id="@+id/fabReport"
         app:srcCompat="@drawable/icon_bug"
-        app:layout_constraintTop_toBottomOf="@+id/fabMoreFromDeveloper"
+        app:layout_constraintTop_toBottomOf="@+id/fabReview"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/report" />
 
@@ -157,5 +139,23 @@
         app:layout_constraintBottom_toBottomOf="@+id/fabReport"
         style="@style/ButtonLabel"
         android:text="@string/report"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/ActionImageButton"
+        android:id="@+id/fabMoreFromDeveloper"
+        app:srcCompat="@drawable/icon_more_apps"
+        app:layout_constraintTop_toBottomOf="@+id/fabReport"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/more_from_developer" />
+
+    <TextView
+        android:id="@+id/tvMoreFromDeveloper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/fabMoreFromDeveloper"
+        app:layout_constraintTop_toTopOf="@+id/fabMoreFromDeveloper"
+        app:layout_constraintBottom_toBottomOf="@+id/fabMoreFromDeveloper"
+        style="@style/ButtonLabel"
+        android:text="@string/more_from_developer"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

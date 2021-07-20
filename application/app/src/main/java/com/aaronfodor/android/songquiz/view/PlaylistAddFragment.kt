@@ -104,6 +104,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
     override fun appearingAnimations() {
         val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         binding.fabSearch.startAnimation(rightAnimation)
+        binding.fabSearch.visibility = View.VISIBLE
     }
 
     override fun unsubscribeViewModel() {}

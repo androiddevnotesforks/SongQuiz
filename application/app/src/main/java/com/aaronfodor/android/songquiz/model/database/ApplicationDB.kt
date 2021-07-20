@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import dagger.Module
 import dagger.Provides
@@ -35,15 +36,17 @@ class DatabaseInjector {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext appContext: Context): ApplicationDB {
-        return Room.databaseBuilder(
+        val builder = Room.databaseBuilder(
             appContext,
             ApplicationDB::class.java,
             ApplicationDB.APPLICATION_DB_NAME
-        )
-            .createFromAsset("database/application_database.db")
-            // enable traditional DB execution (no wal, shm) - use to generate a .db file
-            //.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-            .build()
+        ).createFromAsset("database/application_database.db")
+        // enable traditional DB execution (no wal, shm) in debug mode - use to generate a .db file
+        if(BuildConfig.DEBUG){
+            builder.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+        }
+
+        return builder.build()
     }
 
     @Provides
