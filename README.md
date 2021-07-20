@@ -15,10 +15,11 @@ Song Quiz guides you into the world of music. Play with more than 4 billion Spot
 	<img src="https://user-images.githubusercontent.com/37120889/125031546-173fcd80-e08d-11eb-9e3e-0d9e762a53e6.PNG" alt="Song Quiz3" width="240"/>
 </p>
 <p float="middle">
-	<img src="https://user-images.githubusercontent.com/37120889/125031548-17d86400-e08d-11eb-88fd-14ae3fb5ceac.PNG" alt="Song Quiz4" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/125031549-17d86400-e08d-11eb-8b37-9c4bf01ccaca.PNG" alt="Song Quiz5" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/126392564-502783c0-630d-441a-b771-2ebbb7592771.png" alt="Song Quiz4" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/126392736-599e6913-b624-47eb-8d97-7e2877be45ad.png" alt="Song Quiz5" width="240"/>
     <img src="https://user-images.githubusercontent.com/37120889/125031551-1870fa80-e08d-11eb-9f39-535f76b4ec5f.PNG" alt="Song Quiz6" width="240"/>
 </p>
+
 
 
 

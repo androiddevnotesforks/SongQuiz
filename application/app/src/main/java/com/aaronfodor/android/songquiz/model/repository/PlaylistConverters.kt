@@ -1,5 +1,6 @@
 package com.aaronfodor.android.songquiz.model.repository
 
+import androidx.core.text.HtmlCompat
 import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
@@ -55,7 +56,7 @@ fun PlaylistDTO.toPlaylist() : Playlist {
     return Playlist(
         id = this.id,
         name = this.name,
-        description = this.description ?: "",
+        description = HtmlCompat.fromHtml(this.description ?: "", 0).toString(),
         owner = this.owner?.display_name ?: "",
         previewImageUri = previewUri,
         followers = this.followers?.total ?: 0,
