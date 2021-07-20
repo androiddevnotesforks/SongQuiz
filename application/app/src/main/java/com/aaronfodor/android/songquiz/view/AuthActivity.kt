@@ -6,6 +6,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -118,7 +119,16 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.accountState.observe(this, accountStateObserver)
     }
 
-    override fun appearingAnimations() {}
+    override fun appearingAnimations() {
+        val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_top)
+        binding.tvTitle.startAnimation(topAnimation)
+        binding.tvTitle.visibility = View.VISIBLE
+
+        val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom)
+        binding.AppIcon.startAnimation(bottomAnimation)
+        binding.AppIcon.visibility = View.VISIBLE
+    }
+
     override fun unsubscribeViewModel() {}
 
     private fun showInfo(infoType: AuthUiState){

@@ -3,5 +3,5 @@
     android:layout_height="match_parent"
     android:shape="oval">
     <gradient android:type="radial" android:gradientRadius="50%p"
-        android:startColor="@color/colorAccent" android:endColor="@color/colorTransparent" />
+        android:startColor="@color/colorActionButton" android:endColor="@color/colorTransparent" />
 </shape>

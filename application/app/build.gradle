@@ -17,8 +17,9 @@ android {
         applicationId "com.aaronfodor.android.songquiz"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 11
-        versionName "v1.0.10"
+        versionCode 12
+        versionName "v1.1.0"
+
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,8 +53,9 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
             debuggable false
+            testCoverageEnabled false
+            signingConfig signingConfigs.release
 
             resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
             resValue "string", "spotifyClientSec", ""
