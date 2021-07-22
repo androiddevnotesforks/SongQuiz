@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="SETTINGS_KEY_ACCOUNT" translatable="false">account</string>
-    <string name="SETTINGS_KEY_LOGINOUT" translatable="false">loginout</string>
+    <string name="SETTINGS_KEY_ACCOUNT" translatable="false">loginout</string>
     <string name="SETTINGS_KEY_REPEAT" translatable="false">repeat</string>
     <string name="SETTINGS_KEY_SONG_DURATION" translatable="false">song_duration</string>
     <string name="SETTINGS_KEY_SEASONAL_THEMES" translatable="false">seasonal_themes</string>

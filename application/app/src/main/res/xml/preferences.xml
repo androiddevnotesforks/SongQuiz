@@ -71,10 +71,7 @@
         app:title="@string/settings_category_title_account">
 
         <Preference
-            app:key="@string/SETTINGS_KEY_ACCOUNT"/>
-
-        <Preference
-            app:key="@string/SETTINGS_KEY_LOGINOUT"
+            app:key="@string/SETTINGS_KEY_ACCOUNT"
             app:selectable="true"/>
 
     </PreferenceCategory>

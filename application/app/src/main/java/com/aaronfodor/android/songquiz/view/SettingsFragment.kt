@@ -30,7 +30,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private lateinit var viewModel: SettingsViewModel
 
     private var keyAccount = ""
-    private var keyLoginout = ""
     private var keyRepeat = ""
     private var keySongDuration = ""
     private var keySeasonalThemes = ""
@@ -44,7 +43,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
         keyAccount = getString(R.string.SETTINGS_KEY_ACCOUNT)
-        keyLoginout = getString(R.string.SETTINGS_KEY_LOGINOUT)
         keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
         keySongDuration = getString(R.string.SETTINGS_KEY_SONG_DURATION)
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
@@ -151,11 +149,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun showLoggedOut(){
         val accountPref = findPreference<Preference>(keyAccount)?.let {
             it.title = getString(R.string.settings_title_logged_out)
-            it.summary = ""
-        }
-
-        val loginoutPref = findPreference<Preference>(keyLoginout)?.let {
-            it.title = getString(R.string.settings_title_log_in)
             it.summary = getString(R.string.settings_summary_log_in)
 
             it.setOnPreferenceClickListener {
@@ -168,12 +161,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun showLoggedIn(accountNameAndEmail: Pair<String, String>){
         val accountPref = findPreference<Preference>(keyAccount)?.let {
             it.title = getString(R.string.settings_title_logged_in, accountNameAndEmail.first)
-            it.summary = accountNameAndEmail.second
-        }
-
-        val loginoutPref = findPreference<Preference>(keyLoginout)?.let {
-            it.title = getString(R.string.settings_title_log_out)
-            it.summary = getString(R.string.settings_summary_log_out)
+            it.summary = accountNameAndEmail.second + "\n" + getString(R.string.settings_summary_log_out)
 
             it.setOnPreferenceClickListener {
                 showLogoutDialog()
