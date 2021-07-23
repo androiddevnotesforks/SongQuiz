@@ -7,6 +7,7 @@
     <dimen name="navigation_menu_vertical_spacing">8dp</dimen>
 
     <dimen name="shadow_elevation">3dp</dimen>
+    <dimen name="progressbar_elevation">5dp</dimen>
 
     <dimen name="title_padding">6dp</dimen>
     <dimen name="title_margin">6dp</dimen>

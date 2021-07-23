@@ -7,12 +7,14 @@
     <string name="settings_title_log_out">Log out</string>
     <string name="settings_title_repeat">Repeating a song</string>
     <string name="settings_title_song_duration">Song duration</string>
+    <string name="settings_title_extended_quiz_info">Information during the quiz</string>
     <string name="settings_title_seasonal_themes">Seasonal themes</string>
     <string name="settings_title_color_mode">Color modes</string>
     <string name="settings_title_language">Current language: English</string>
     <string name="settings_title_speech">Speech</string>
     <string name="settings_title_clear_cache">Clear cache</string>
     <string name="settings_title_delete_all_playlists">Delete all playlists</string>
+    <string name="settings_title_restore_default_db">Restore defaults</string>
 
     <string name="settings_summary_log_in">Tap to log in with Spotify</string>
     <string name="settings_summary_log_out">Tap to log out</string>
@@ -22,6 +24,9 @@
     <string name="settings_summary_speech">Tap to open system speech settings</string>
     <string name="settings_summary_clear_cache">Reduce memory usage by clearing image cache</string>
     <string name="settings_summary_delete_all_playlists">Remove all items from your playlists</string>
+    <string name="settings_summary_restore_default_db">Remove all local data and restore defaults</string>
+    <string name="settings_title_extended_quiz_info_enabled">Verbose</string>
+    <string name="settings_title_extended_quiz_info_disabled">Short-spoken</string>
 
     <string name="settings_category_title_account">Account</string>
     <string name="settings_category_title_gameplay">Gameplay</string>
@@ -32,6 +37,7 @@
     <string name="disabled">Disabled</string>
 
     <string name="playlists_deleted">Playlists successfully deleted</string>
+    <string name="default_db_restored">Defaults restored</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="account_forgot">Logged out successfully</string>
 </resources>

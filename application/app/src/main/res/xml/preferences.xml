@@ -22,6 +22,13 @@
             app:showSeekBarValue="true"
             android:defaultValue="@integer/song_duration_sec_default"/>
 
+        <SwitchPreferenceCompat
+            app:key="@string/SETTINGS_KEY_EXTENDED_QUIZ_INFO"
+            app:title="@string/settings_title_extended_quiz_info"
+            app:summaryOn="@string/settings_title_extended_quiz_info_enabled"
+            app:summaryOff="@string/settings_title_extended_quiz_info_disabled"
+            android:defaultValue="@bool/extended_quiz_info_default"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -63,6 +70,12 @@
             app:key="@string/SETTINGS_KEY_DELETE_ALL_PLAYLISTS"
             app:title="@string/settings_title_delete_all_playlists"
             app:summary="@string/settings_summary_delete_all_playlists"
+            app:selectable="true"/>
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_RESTORE_DEFAULT_DB"
+            app:title="@string/settings_title_restore_default_db"
+            app:summary="@string/settings_summary_restore_default_db"
             app:selectable="true"/>
 
     </PreferenceCategory>

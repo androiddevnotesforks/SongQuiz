@@ -104,6 +104,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         binding.fabAddPlaylist.startAnimation(rightAnimation)
         binding.fabAddPlaylist.visibility = View.VISIBLE
+
+        val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
+        binding.tvEmpty.startAnimation(bottomAnimation)
     }
 
     override fun unsubscribeViewModel() {}

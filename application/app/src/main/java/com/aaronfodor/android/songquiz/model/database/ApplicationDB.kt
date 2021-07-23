@@ -23,6 +23,7 @@ abstract class ApplicationDB : RoomDatabase() {
     companion object{
         const val APPLICATION_DB_NAME = "application_database"
         const val PLAYLIST_TABLE_NAME = "playlist_table"
+        const val DEFAULT_DB_FILE_PATH = "database/application_database.db"
     }
 
     abstract fun playlistDAO(): PlaylistDAO
@@ -40,7 +41,7 @@ class DatabaseInjector {
             appContext,
             ApplicationDB::class.java,
             ApplicationDB.APPLICATION_DB_NAME
-        ).createFromAsset("database/application_database.db")
+        ).createFromAsset(ApplicationDB.DEFAULT_DB_FILE_PATH)
         // enable traditional DB execution (no wal, shm) in debug mode - use to generate a .db file
         if(BuildConfig.DEBUG){
             builder.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)

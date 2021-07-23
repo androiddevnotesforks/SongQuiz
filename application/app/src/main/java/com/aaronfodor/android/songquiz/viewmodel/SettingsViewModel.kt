@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class SettingsUiState{
-    READY, CACHE_CLEARED, PLAYLISTS_DELETED, ACCOUNT_LOGGED_OUT
+    READY, CACHE_CLEARED, PLAYLISTS_DELETED, DEFAULT_DB_RESTORED, ACCOUNT_LOGGED_OUT
 }
 
 enum class SettingsAccountState{
@@ -52,6 +52,11 @@ class SettingsViewModel  @Inject constructor(
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
         playlistsRepository.deleteAllPlaylists()
         uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
+    }
+
+    fun prepareToRestoreDefaultDB() = viewModelScope.launch(Dispatchers.IO) {
+        playlistsRepository.prepareToRestoreDefaults()
+        uiState.postValue(SettingsUiState.DEFAULT_DB_RESTORED)
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {

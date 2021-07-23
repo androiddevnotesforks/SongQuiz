@@ -71,6 +71,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
+        style="@style/LoadIndicatorProgressBar"
         android:id="@+id/loadIndicatorProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

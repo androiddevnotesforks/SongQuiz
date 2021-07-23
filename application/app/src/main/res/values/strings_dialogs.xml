@@ -19,6 +19,9 @@
     <string name="delete_playlists">Delete all playlists</string>
     <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
 
+    <string name="restore_default_db">Restore default playlists</string>
+    <string name="restore_default_db_description">Are you sure you want to delete your local data and restore the defaults? This will not affect anything on Spotify.</string>
+
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>
 </resources>

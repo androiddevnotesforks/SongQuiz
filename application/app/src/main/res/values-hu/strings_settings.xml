@@ -7,12 +7,14 @@
     <string name="settings_title_log_out">Kijelentkezés</string>
     <string name="settings_title_repeat">Dal ismétlése</string>
     <string name="settings_title_song_duration">Dal hossza</string>
+    <string name="settings_title_extended_quiz_info">Információk a kvíz során</string>
     <string name="settings_title_seasonal_themes">Szezonális témák</string>
     <string name="settings_title_color_mode">Színmódok</string>
     <string name="settings_title_language">Aktuális nyelv: magyar</string>
     <string name="settings_title_speech">Beszéd</string>
     <string name="settings_title_clear_cache">Gyorsítótár törlése</string>
     <string name="settings_title_delete_all_playlists">Listák törlése</string>
+    <string name="settings_title_restore_default_db">Alapértelmezett adatok visszaállítása</string>
 
     <string name="settings_summary_log_in">Koppints a Spotify bejelentkezéshez</string>
     <string name="settings_summary_log_out">Koppints a kijelentkezéshez</string>
@@ -22,6 +24,9 @@
     <string name="settings_summary_speech">Koppints a beszéd beállítások megnyitásához</string>
     <string name="settings_summary_clear_cache">Memóriahasználat csökkentése a gyorsítótár törlésével</string>
     <string name="settings_summary_delete_all_playlists">Az összes felvett lista törlése</string>
+    <string name="settings_summary_restore_default_db">A lokális adatok törlése, majd az alapértelmezettek visszaállítása</string>
+    <string name="settings_title_extended_quiz_info_enabled">Bőbeszédű</string>
+    <string name="settings_title_extended_quiz_info_disabled">Szűkszavú</string>
 
     <string name="settings_category_title_account">Fiók</string>
     <string name="settings_category_title_gameplay">Játék</string>
@@ -32,6 +37,7 @@
     <string name="disabled">Letiltva</string>
 
     <string name="playlists_deleted">Listák törölve</string>
+    <string name="default_db_restored">Alapértelmezett adatok visszaállítva</string>
     <string name="cache_cleared">Gyorsítótár törölve</string>
     <string name="account_forgot">Sikeres kijelentkezés</string>
 </resources>

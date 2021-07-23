@@ -73,8 +73,9 @@ class QuizService @Inject constructor(
     var quizStanding = QuizStanding()
     private val textParser = textParserService
 
-    var repeatSongAllowed = false
+    var repeatSongAllowed = true
     var songDurationSec = 0
+    var extendedInfoAllowed = true
 
     var lastPlayerPoints = 0
     var lastPlayerAllPoints = 0
@@ -111,11 +112,14 @@ class QuizService @Inject constructor(
     /**
      * Set the quiz playlist & settings
      */
-    fun setQuizPlaylistAndSettings(playlistToPlay: Playlist, repeatAllowed: Boolean, songDuration: Int){
-        playlist = playlistToPlay
-        playlist.tracks.shuffle()
-        repeatSongAllowed = repeatAllowed
-        songDurationSec = songDuration
+    fun setQuizPlaylistAndSettings(playlistToPlay: Playlist, repeatAllowed: Boolean, songDuration: Int,
+                                   extendedInfoAllowed: Boolean){
+        this.playlist = playlistToPlay
+        this.playlist.tracks.shuffle()
+        // settings
+        this.repeatSongAllowed = repeatAllowed
+        this.songDurationSec = songDuration
+        this.extendedInfoAllowed = extendedInfoAllowed
     }
 
     /**
@@ -229,14 +233,21 @@ class QuizService @Inject constructor(
         }
 
         var infoString = ""
-        infoString += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
-        infoString += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
-        infoString += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}. "
+
+        if(extendedInfoAllowed){
+            // add points info
+            var pointsInfo = ""
+            pointsInfo += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
+            pointsInfo += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
+            pointsInfo += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}"
+            infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
+        }
+
         infoString += context.getString(R.string.c_settings_info, quizType.songDurationSec.toString(), isRepeatAllowed)
         infoString = infoString.replace("  ", " ")
 
         return InformationPacket(listOf(
-            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString(), infoString)),
+            InformationItem(InfoType.SPEECH, context.getString(R.string.c_game_type_selected, quizType.name, quizType.numRounds.toString()) + " " + infoString),
             InformationItem(InfoType.SPEECH, firstTurnStringBuilder()),
             InformationItem(InfoType.SOUND_URL, playlist.tracks[quizStanding.currentTrackIndex].previewUri)
         ), true)
@@ -271,9 +282,16 @@ class QuizService @Inject constructor(
             resultString = context.resources.getStringArray(R.array.failed_guess_prefixes).random()
         }
 
-        val songWasString = context.getString(R.string.c_what_song_was, lastSongTitle, lastSongArtist, lastSongAlbum,
-                lastSongPopularity.toString(), lastPlayerAllPoints.toString())
-        return "$resultString $songWasString".replace("  ", " ")
+        var songInfoString = context.getString(R.string.c_song_info, lastSongTitle, lastSongArtist, lastSongAlbum) + " "
+        if(extendedInfoAllowed){
+            // popularity info
+            songInfoString += context.getString(R.string.c_song_popularity, lastSongPopularity.toString()) + " "
+        }
+        songInfoString += context.getString(R.string.c_your_score, lastPlayerAllPoints.toString())
+
+
+
+        return "$resultString $songInfoString".replace("  ", " ")
     }
 
     private fun playSong(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
