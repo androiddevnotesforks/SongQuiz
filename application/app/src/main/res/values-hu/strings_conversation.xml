@@ -10,7 +10,8 @@
 
     <string name="c_ask_game_type">Milyen típusú legyen a játék? Válassz az alábbiak közül: egy kör, rövid, közepes vagy hosszú.</string>
     <string name="c_ask_game_type_invalid">A választott %1$s játék nem indítható: csak %2$s játszható dal van, de minimum %3$s szükséges %4$s játékossal. Kérlek válassz másik típusú játékot.</string>
-    <string name="c_game_type_selected">A választott fajta: %1$s. Ebben a játékban a körök száma %2$s. Az alábbiak számítanak: %3$s.</string>
+    <string name="c_game_type_selected">A választott fajta: %1$s. Ebben a játékban a körök száma %2$s.</string>
+    <string name="c_game_type_points">Az alábbiak számítanak: %1$s.</string>
 
     <string name="c_starting_game">Indul a választott %1$s játék.</string>
 
@@ -57,9 +58,11 @@
     <string name="c_title">cím</string>
     <string name="c_artist">előadó</string>
     <string name="c_album">album</string>
-    <string name="c_settings_info">A beállításaid alapján egy dal %1$s másodpercig tart, és a dalok ismétlése %2$s engedélyezett</string>
+    <string name="c_settings_info">A beállításaid alapján egy dal %1$s másodpercig tart, és a dalok ismétlése %2$s engedélyezett.</string>
     <string name="c_player_good_guess">%1$s %2$s pontot kaptál.</string>
-    <string name="c_what_song_was">A dal címe %1$s, előadója %2$s. Az alábbi albumon szerepel: %3$s. Ennek a számnak %4$s a népszerűségi indexe. Jelenleg %5$s pontod van.</string>
+    <string name="c_song_info">A dal címe %1$s, előadója %2$s. Az alábbi albumon szerepel: %3$s.</string>
+    <string name="c_song_popularity">Ennek a számnak %1$s a népszerűségi indexe.</string>
+    <string name="c_your_score">Jelenleg %1$s pontod van.</string>
 
     <string name="c_end_game">Vége a játéknak.</string>
     <string name="c_player_scored">%1$s. játékos pontszáma: %2$s pont.</string>

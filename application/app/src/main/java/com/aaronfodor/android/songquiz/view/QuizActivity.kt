@@ -57,10 +57,9 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
         // get settings related to the quiz
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT),
-            this.resources.getBoolean(R.bool.repeat_default))
-        val songDuration = sharedPreferences.getInt(getString(R.string.SETTINGS_KEY_SONG_DURATION),
-            this.resources.getInteger(R.integer.song_duration_sec_default))
+        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), this.resources.getBoolean(R.bool.repeat_default))
+        val songDuration = sharedPreferences.getInt(getString(R.string.SETTINGS_KEY_SONG_DURATION), this.resources.getInteger(R.integer.song_duration_sec_default))
+        val extendedInfoAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_EXTENDED_QUIZ_INFO), this.resources.getBoolean(R.bool.extended_quiz_info_default))
 
         // load ad
         val adRequest = AdRequest.Builder().build()
@@ -69,7 +68,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
-        viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration)
+        viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration, extendedInfoAllowed)
         viewModel.numProgressBarSteps = resources.getInteger(R.integer.progressbar_max_value)
         imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
     }

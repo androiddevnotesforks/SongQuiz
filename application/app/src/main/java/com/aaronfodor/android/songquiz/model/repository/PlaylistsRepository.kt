@@ -1,5 +1,6 @@
 package com.aaronfodor.android.songquiz.model.repository
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -63,6 +64,11 @@ class PlaylistsRepository @Inject constructor(
 
     fun deleteAllPlaylists(){
         dao.deleteAll()
+    }
+
+    fun prepareToRestoreDefaults(){
+        // force creating a checkpoint file
+        dao.runQuery(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
 
     fun downloadPlaylistById(id: String) : Playlist{

@@ -106,6 +106,10 @@
         <item name="android:progressTint">@color/colorAccent</item>
     </style>
 
+    <style name="LoadIndicatorProgressBar">
+        <item name="android:elevation">@dimen/progressbar_elevation</item>
+    </style>
+
     <style name="ParagraphText">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textSize">@dimen/paragraph_text_size</item>

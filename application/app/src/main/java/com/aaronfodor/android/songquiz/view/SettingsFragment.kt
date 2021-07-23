@@ -11,6 +11,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import com.aaronfodor.android.songquiz.R
+import com.aaronfodor.android.songquiz.model.database.ApplicationDB
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
@@ -23,20 +24,26 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, AuthRequestModule {
 
     private lateinit var viewModel: SettingsViewModel
 
+    @Inject
+    lateinit var database: ApplicationDB
+
     private var keyAccount = ""
     private var keyRepeat = ""
     private var keySongDuration = ""
+    private var keyExtendedQuizInfo = ""
     private var keySeasonalThemes = ""
     private var keyLanguage = ""
     private var keySpeech = ""
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
+    private var keyRestoreDefaultDb = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,11 +52,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyAccount = getString(R.string.SETTINGS_KEY_ACCOUNT)
         keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
         keySongDuration = getString(R.string.SETTINGS_KEY_SONG_DURATION)
+        keyExtendedQuizInfo = getString(R.string.SETTINGS_KEY_EXTENDED_QUIZ_INFO)
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
         keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
         keySpeech = getString(R.string.SETTINGS_KEY_SPEECH)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
+        keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -68,6 +77,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val deletePlaylistsPref = findPreference<Preference>(keyDeletePlaylists)?.setOnPreferenceClickListener {
             showDeletePlaylistsDialog()
+            true
+        }
+
+        val restoreDefaultDbPref = findPreference<Preference>(keyRestoreDefaultDb)?.setOnPreferenceClickListener {
+            showRestoreDefaultDbDialog()
             true
         }
 
@@ -99,13 +113,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         val uiStateObserver = Observer<SettingsUiState> { state ->
             when(state){
                 SettingsUiState.CACHE_CLEARED -> {
-                    showInfo(SettingsUiState.CACHE_CLEARED)
+                    showInfo(state)
                 }
                 SettingsUiState.PLAYLISTS_DELETED -> {
-                    showInfo(SettingsUiState.PLAYLISTS_DELETED)
+                    showInfo(state)
+                }
+                SettingsUiState.DEFAULT_DB_RESTORED -> {
+                    showInfo(state)
                 }
                 SettingsUiState.ACCOUNT_LOGGED_OUT -> {
-                    showInfo(SettingsUiState.ACCOUNT_LOGGED_OUT)
+                    showInfo(state)
                 }
                 else -> {}
             }
@@ -194,6 +211,25 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         dialog.show()
     }
 
+    private fun showRestoreDefaultDbDialog() {
+        val dialog = AppDialog(requireContext(), getString(R.string.restore_default_db),
+            getString(R.string.restore_default_db_description), R.drawable.icon_restore)
+        dialog.setPositiveButton {
+            CoroutineScope(Dispatchers.IO).launch {
+                // prepare to restore DB: force checkpoint creation
+                viewModel.prepareToRestoreDefaultDB()
+                // copy default database content to current database
+                val assetManager = requireContext().assets
+                val defaultDbStream = assetManager.open(ApplicationDB.DEFAULT_DB_FILE_PATH)
+                val currentDbStream = requireContext().getDatabasePath(ApplicationDB.APPLICATION_DB_NAME).outputStream()
+                defaultDbStream.copyTo(currentDbStream)
+                // delete Glide local disk cache too; blocks main thread so schedule on an IO dispatcher
+                Glide.get(requireContext()).clearDiskCache()
+            }
+        }
+        dialog.show()
+    }
+
     /**
      * Called when a shared preference is changed, added, or removed. This
      * may be called even if a preference is set to its existing value.
@@ -222,6 +258,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     requireContext().resources.getInteger(R.integer.song_duration_sec_default))
                 putInt(keySongDuration, valueDuration)
 
+                remove(keyExtendedQuizInfo)
+                val valueExtendedQuizInfo = it.getBoolean(keyExtendedQuizInfo, true)
+                putBoolean(keyExtendedQuizInfo, valueExtendedQuizInfo)
+
                 remove(keySeasonalThemes)
                 val valueSeasonalThemes = it.getBoolean(keySeasonalThemes, true)
                 putBoolean(keySeasonalThemes, valueSeasonalThemes)
@@ -238,6 +278,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
             SettingsUiState.PLAYLISTS_DELETED -> {
                 getString(R.string.playlists_deleted)
+            }
+            SettingsUiState.DEFAULT_DB_RESTORED -> {
+                getString(R.string.default_db_restored)
             }
             SettingsUiState.ACCOUNT_LOGGED_OUT -> {
                 getString(R.string.account_forgot)
