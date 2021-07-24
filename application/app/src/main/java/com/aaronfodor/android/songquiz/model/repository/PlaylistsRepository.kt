@@ -66,11 +66,6 @@ class PlaylistsRepository @Inject constructor(
         dao.deleteAll()
     }
 
-    fun prepareToRestoreDefaults(){
-        // force creating a checkpoint file
-        dao.runQuery(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
-    }
-
     fun downloadPlaylistById(id: String) : Playlist{
         val apiPlaylist = apiService.getPlaylistById(id)
         return apiPlaylist.toPlaylist()

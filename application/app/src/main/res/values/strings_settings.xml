@@ -9,6 +9,7 @@
     <string name="settings_title_song_duration">Song duration</string>
     <string name="settings_title_extended_quiz_info">Information during the quiz</string>
     <string name="settings_title_seasonal_themes">Seasonal themes</string>
+    <string name="settings_title_onboarding">How to use</string>
     <string name="settings_title_color_mode">Color modes</string>
     <string name="settings_title_language">Current language: English</string>
     <string name="settings_title_speech">Speech</string>
@@ -19,6 +20,7 @@
     <string name="settings_summary_log_in">Tap to log in with Spotify</string>
     <string name="settings_summary_log_out">Tap to log out</string>
     <string name="settings_summary_song_duration">Play one song for that many seconds</string>
+    <string name="settings_summary_onboarding">Tap to see usage hints again</string>
     <string name="settings_summary_color_mode">Color mode is based on your system</string>
     <string name="settings_summary_language">Tap to open system language settings</string>
     <string name="settings_summary_speech">Tap to open system speech settings</string>

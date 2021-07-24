@@ -19,8 +19,11 @@
     <color name="colorIcon">#121212</color>
     <color name="colorActive">#FF0000</color>
 
-    <color name="colorActionButton">#121212</color>
+    <color name="colorActionButton">#336699</color>
     <color name="colorActionGameButtonGlow">#FAFAFA</color>
+
+    <color name="colorOnboardingBackground">#EE336699</color>
+    <color name="colorOnboardingFocal">#EE121212</color>
 
     <color name="colorButton">#336699</color>
     <color name="colorButtonPressed">#BB4DEEEA</color>

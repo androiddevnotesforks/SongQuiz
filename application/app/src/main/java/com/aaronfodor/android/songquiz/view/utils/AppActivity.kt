@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.view.utils
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +44,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         setKeepScreenFlag()
         subscribeViewModel()
         appearingAnimations()
+        onboardingDialog()
     }
 
     override fun onPause() {
@@ -130,6 +132,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
+    abstract fun onboardingDialog()
     abstract fun unsubscribeViewModel()
 
     abstract override fun onBackPressed()

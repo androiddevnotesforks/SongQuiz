@@ -129,6 +129,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         binding.AppIcon.visibility = View.VISIBLE
     }
 
+    override fun onboardingDialog() {}
     override fun unsubscribeViewModel() {}
 
     private fun showInfo(infoType: AuthUiState){

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
@@ -30,6 +31,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class QuizActivity : AppActivity(keepScreenAlive = true) {
 
@@ -320,6 +323,43 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
+
+    override fun onboardingDialog(){
+        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+        // get saved info from preferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+
+        if(!onboardingFlag){
+            MaterialTapTargetSequence().addPrompt(
+                MaterialTapTargetPrompt.Builder(this)
+                .setTarget(binding.content.userSpeechButton)
+                .setPrimaryText(getString(R.string.onboarding_quiz_user_input))
+                .setAnimationInterpolator(FastOutSlowInInterpolator())
+                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
+                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                .create()
+        ).addPrompt(
+                MaterialTapTargetPrompt.Builder(this)
+                .setTarget(binding.content.ttsSpeechButton)
+                .setPrimaryText(getString(R.string.onboarding_quiz_speech))
+                .setAnimationInterpolator(FastOutSlowInInterpolator())
+                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
+                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                    .setPromptStateChangeListener { prompt, state ->
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                            // persist showed flag to preferences
+                            with(sharedPreferences.edit()){
+                                remove(keyOnboardingFlag)
+                                putBoolean(keyOnboardingFlag, true)
+                                apply()
+                            }
+                        }
+                    }
+                .create()
+        ).show()
+        }
+    }
 
     private fun showInfo(infoType: QuizUiState){
 
