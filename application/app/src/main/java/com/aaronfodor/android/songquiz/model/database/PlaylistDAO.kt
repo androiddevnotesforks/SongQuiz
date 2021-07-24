@@ -1,9 +1,7 @@
 package com.aaronfodor.android.songquiz.model.database
 
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
-
 
 @Dao
 interface PlaylistDAO {
@@ -28,8 +26,5 @@ interface PlaylistDAO {
 
     @Update
     fun update(vararg item: DbPlaylist)
-
-    @RawQuery
-    fun runQuery(query: SupportSQLiteQuery): Int
 
 }

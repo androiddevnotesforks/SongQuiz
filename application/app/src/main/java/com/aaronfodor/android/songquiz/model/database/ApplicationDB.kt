@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import dagger.Module
 import dagger.Provides
@@ -42,10 +41,9 @@ class DatabaseInjector {
             ApplicationDB::class.java,
             ApplicationDB.APPLICATION_DB_NAME
         ).createFromAsset(ApplicationDB.DEFAULT_DB_FILE_PATH)
-        // enable traditional DB execution (no wal, shm) in debug mode - use to generate a .db file
-        if(BuildConfig.DEBUG){
-            builder.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-        }
+        // enable traditional DB execution (no wal, shm files) - use to generate a .db file
+        // database file restore only works with this
+        builder.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
 
         return builder.build()
     }

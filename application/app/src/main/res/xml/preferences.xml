@@ -42,10 +42,6 @@
             android:defaultValue="@bool/seasonal_themes_default"/>
 
         <Preference
-            app:title="@string/settings_title_color_mode"
-            app:summary="@string/settings_summary_color_mode" />
-
-        <Preference
             app:key="@string/SETTINGS_KEY_LANGUAGE"
             app:title="@string/settings_title_language"
             app:summary="@string/settings_summary_language" />
@@ -54,6 +50,15 @@
             app:key="@string/SETTINGS_KEY_SPEECH"
             app:title="@string/settings_title_speech"
             app:summary="@string/settings_summary_speech" />
+
+        <Preference
+            app:title="@string/settings_title_color_mode"
+            app:summary="@string/settings_summary_color_mode" />
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_ONBOARDING"
+            app:title="@string/settings_title_onboarding"
+            app:summary="@string/settings_summary_onboarding" />
 
     </PreferenceCategory>
 

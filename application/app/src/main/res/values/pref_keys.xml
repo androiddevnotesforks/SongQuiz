@@ -8,9 +8,16 @@
     <string name="SETTINGS_KEY_SEASONAL_THEMES" translatable="false">seasonal_themes</string>
     <string name="SETTINGS_KEY_LANGUAGE" translatable="false">language</string>
     <string name="SETTINGS_KEY_SPEECH" translatable="false">speech</string>
+    <string name="SETTINGS_KEY_ONBOARDING" translatable="false">onboarding</string>
     <string name="SETTINGS_KEY_CLEAR_CACHE" translatable="false">clear_cache</string>
     <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS" translatable="false">delete_all_playlists</string>
     <string name="SETTINGS_KEY_RESTORE_DEFAULT_DB" translatable="false">restore_default_db</string>
+
+    <string name="PREF_KEY_ONBOARDING_MENU_SHOWED" translatable="false">onboarding_menu_showed</string>
+    <string name="PREF_KEY_ONBOARDING_QUIZ_SHOWED" translatable="false">onboarding_quiz_showed</string>
+    <string name="PREF_KEY_ONBOARDING_INFO_SHOWED" translatable="false">onboarding_info_showed</string>
+    <string name="PREF_KEY_ONBOARDING_ABOUT_SHOWED" translatable="false">onboarding_about_showed</string>
+    <string name="PREF_KEY_ONBOARDING_PLAYLIST_ADD_SHOWED" translatable="false">onboarding_playlist_add_showed</string>
 
     <string name="PREF_KEY_ACCOUNT_ID" translatable="false">account_id</string>
     <string name="PREF_KEY_ACCOUNT_NAME" translatable="false">account_name</string>

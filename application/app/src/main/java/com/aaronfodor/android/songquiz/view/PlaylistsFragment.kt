@@ -109,6 +109,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         binding.tvEmpty.startAnimation(bottomAnimation)
     }
 
+    override fun onboardingDialog() {}
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){

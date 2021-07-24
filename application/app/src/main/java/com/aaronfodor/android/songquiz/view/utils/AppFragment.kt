@@ -13,6 +13,7 @@ abstract class AppFragment(layoutId: Int) : Fragment(layoutId) {
         super.onResume()
         subscribeViewModel()
         appearingAnimations()
+        onboardingDialog()
     }
 
     override fun onPause() {
@@ -22,6 +23,7 @@ abstract class AppFragment(layoutId: Int) : Fragment(layoutId) {
 
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
+    abstract fun onboardingDialog()
     abstract fun unsubscribeViewModel()
 
 }

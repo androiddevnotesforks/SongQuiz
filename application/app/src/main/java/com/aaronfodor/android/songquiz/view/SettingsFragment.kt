@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.database.ApplicationDB
@@ -34,6 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     @Inject
     lateinit var database: ApplicationDB
 
+    // preferences
     private var keyAccount = ""
     private var keyRepeat = ""
     private var keySongDuration = ""
@@ -41,14 +43,22 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keySeasonalThemes = ""
     private var keyLanguage = ""
     private var keySpeech = ""
+    private var keyOnboarding = ""
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
     private var keyRestoreDefaultDb = ""
 
+    // onboarding flag keys
+    private var keyOnboardingMenuShowed = ""
+    private var keyOnboardingQuizShowed = ""
+    private var keyOnboardingInfoShowed = ""
+    private var keyOnboardingAboutShowed = ""
+    private var keyOnboardingPlaylistAddShowed = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-
+        // preferences
         keyAccount = getString(R.string.SETTINGS_KEY_ACCOUNT)
         keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
         keySongDuration = getString(R.string.SETTINGS_KEY_SONG_DURATION)
@@ -56,9 +66,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
         keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
         keySpeech = getString(R.string.SETTINGS_KEY_SPEECH)
+        keyOnboarding = getString(R.string.SETTINGS_KEY_ONBOARDING)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
+        // onboarding flag keys
+        keyOnboardingMenuShowed = getString(R.string.PREF_KEY_ONBOARDING_MENU_SHOWED)
+        keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+        keyOnboardingInfoShowed = getString(R.string.PREF_KEY_ONBOARDING_INFO_SHOWED)
+        keyOnboardingAboutShowed = getString(R.string.PREF_KEY_ONBOARDING_ABOUT_SHOWED)
+        keyOnboardingPlaylistAddShowed = getString(R.string.PREF_KEY_ONBOARDING_PLAYLIST_ADD_SHOWED)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -104,6 +121,28 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         val speechPref = findPreference<Preference>(keySpeech)?.setOnPreferenceClickListener {
             // Open Android Text-To-Speech settings
             val intent = Intent().setAction("com.android.settings.TTS_SETTINGS").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            this.startActivity(intent)
+            true
+        }
+
+        val onboardingPref = findPreference<Preference>(keyOnboarding)?.setOnPreferenceClickListener {
+            // clear onboarding flags
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            with(sharedPreferences.edit()){
+                remove(keyOnboardingMenuShowed)
+                putBoolean(keyOnboardingMenuShowed, false)
+                remove(keyOnboardingQuizShowed)
+                putBoolean(keyOnboardingQuizShowed, false)
+                remove(keyOnboardingInfoShowed)
+                putBoolean(keyOnboardingInfoShowed, false)
+                remove(keyOnboardingAboutShowed)
+                putBoolean(keyOnboardingAboutShowed, false)
+                remove(keyOnboardingPlaylistAddShowed)
+                putBoolean(keyOnboardingPlaylistAddShowed, false)
+                apply()
+            }
+            // "restart" start MenuActivity
+            val intent = Intent(requireContext(), MenuActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             this.startActivity(intent)
             true
         }
@@ -216,8 +255,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             getString(R.string.restore_default_db_description), R.drawable.icon_restore)
         dialog.setPositiveButton {
             CoroutineScope(Dispatchers.IO).launch {
-                // prepare to restore DB: force checkpoint creation
-                viewModel.prepareToRestoreDefaultDB()
                 // copy default database content to current database
                 val assetManager = requireContext().assets
                 val defaultDbStream = assetManager.open(ApplicationDB.DEFAULT_DB_FILE_PATH)
@@ -225,6 +262,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 defaultDbStream.copyTo(currentDbStream)
                 // delete Glide local disk cache too; blocks main thread so schedule on an IO dispatcher
                 Glide.get(requireContext()).clearDiskCache()
+                // notify viewModel
+                viewModel.restoredDefaultDB()
             }
         }
         dialog.show()
@@ -249,13 +288,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         sharedPreferences?.let {
             with (it.edit()){
+                // preferences
                 remove(keyRepeat)
                 val valueRepeat = it.getBoolean(keyRepeat, true)
                 putBoolean(keyRepeat, valueRepeat)
 
                 remove(keySongDuration)
-                val valueDuration = it.getInt(keySongDuration,
-                    requireContext().resources.getInteger(R.integer.song_duration_sec_default))
+                val valueDuration = it.getInt(keySongDuration, requireContext().resources.getInteger(R.integer.song_duration_sec_default))
                 putInt(keySongDuration, valueDuration)
 
                 remove(keyExtendedQuizInfo)
@@ -266,6 +305,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 val valueSeasonalThemes = it.getBoolean(keySeasonalThemes, true)
                 putBoolean(keySeasonalThemes, valueSeasonalThemes)
 
+                // persist changes
                 apply()
             }
         }

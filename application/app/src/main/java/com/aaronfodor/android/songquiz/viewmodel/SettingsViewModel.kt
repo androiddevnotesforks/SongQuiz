@@ -54,9 +54,8 @@ class SettingsViewModel  @Inject constructor(
         uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
     }
 
-    fun prepareToRestoreDefaultDB() = viewModelScope.launch(Dispatchers.IO) {
-        playlistsRepository.prepareToRestoreDefaults()
-        uiState.postValue(SettingsUiState.DEFAULT_DB_RESTORED)
+    fun restoredDefaultDB() = viewModelScope.launch {
+        uiState.value = SettingsUiState.DEFAULT_DB_RESTORED
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {

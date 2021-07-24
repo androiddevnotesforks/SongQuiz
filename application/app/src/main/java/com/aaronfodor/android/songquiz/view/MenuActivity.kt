@@ -7,13 +7,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivityMenu
 import com.bumptech.glide.Glide
 import com.bumptech.glide.MemoryCategory
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
@@ -50,6 +54,35 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override fun subscribeViewModel() {}
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
+
+    override fun onboardingDialog(){
+        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_MENU_SHOWED)
+        // get saved info from preferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+
+        if(!onboardingFlag){
+            MaterialTapTargetSequence().addPrompt(
+                MaterialTapTargetPrompt.Builder(this)
+                    .setTarget(binding.mainToolbar.getChildAt(1))
+                    .setPrimaryText(getString(R.string.onboarding_menu))
+                    .setAnimationInterpolator(FastOutSlowInInterpolator())
+                    .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
+                    .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                    .setPromptStateChangeListener { prompt, state ->
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                            // persist showed flag to preferences
+                            with(sharedPreferences.edit()){
+                                remove(keyOnboardingFlag)
+                                putBoolean(keyOnboardingFlag, true)
+                                apply()
+                            }
+                        }
+                    }
+                    .create()
+            ).show()
+        }
+    }
 
     override fun onResume() {
         super.onResume()

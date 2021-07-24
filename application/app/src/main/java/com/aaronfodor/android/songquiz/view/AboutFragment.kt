@@ -5,8 +5,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.R
@@ -14,6 +17,8 @@ import com.aaronfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.viewmodel.AboutViewModel
 import com.aaronfodor.android.songquiz.viewmodel.TtsAboutState
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class AboutFragment : AppFragment(R.layout.fragment_about) {
 
@@ -116,6 +121,35 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.content.fabReview.startAnimation(leftAnimation)
         binding.content.fabMoreFromDeveloper.startAnimation(leftAnimation)
         binding.content.fabReport.startAnimation(leftAnimation)
+    }
+
+    override fun onboardingDialog(){
+        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_ABOUT_SHOWED)
+        // get saved info from preferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+
+        if(!onboardingFlag){
+            MaterialTapTargetSequence().addPrompt(
+                MaterialTapTargetPrompt.Builder(this)
+                    .setTarget(binding.fabSpeak)
+                    .setPrimaryText(getString(R.string.onboarding_about_listen))
+                    .setAnimationInterpolator(FastOutSlowInInterpolator())
+                    .setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.colorOnboardingBackground))
+                    .setFocalColour(ContextCompat.getColor(requireContext(), R.color.colorOnboardingFocal))
+                    .setPromptStateChangeListener { prompt, state ->
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                            // persist showed flag to preferences
+                            with(sharedPreferences.edit()){
+                                remove(keyOnboardingFlag)
+                                putBoolean(keyOnboardingFlag, true)
+                                apply()
+                            }
+                        }
+                    }
+                    .create()
+            ).show()
+        }
     }
 
     override fun unsubscribeViewModel() {
