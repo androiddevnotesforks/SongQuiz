@@ -2,7 +2,6 @@ package com.aaronfodor.android.songquiz
 
 import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.api.dataclasses.ArtistDTO
-import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
@@ -25,8 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class PlaylistRepositoryTest{
 
-    private val FAKE_ID = "1"
-    private val FAKE_API_RESPONSE = PlaylistDTO(id = "1", name = "Best playlist")
     private val FAKE_DB_CONTENT = DbPlaylist(id = "1", name = "Best playlist")
 
     @Mock
@@ -45,16 +42,6 @@ class PlaylistRepositoryTest{
     }
 
     @Test
-    fun getPlaylistFromApiTest() {
-        // Given
-        `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_API_RESPONSE)
-        // When
-        val result: Playlist = repo.downloadPlaylistById(FAKE_ID)
-        // Then
-        assertThat(result.id, `is`(FAKE_ID))
-    }
-
-    @Test
     fun getPlaylistFromDBTest() {
         // Given
         `when`(mockDAO.getAll()).thenReturn(listOf(FAKE_DB_CONTENT))
@@ -62,17 +49,6 @@ class PlaylistRepositoryTest{
         val results: List<Playlist> = repo.getPlaylists()
         // Then
         assertThat(results, `is`(not(emptyList())))
-    }
-
-    @Test
-    fun addPlaylistByIdTest() {
-        // Given
-        `when`(mockApi.getPlaylistById(FAKE_ID)).thenReturn(FAKE_API_RESPONSE)
-        // When
-        repo.insertPlaylistById(FAKE_ID)
-        // Then
-        verify(mockApi, times(1)).getPlaylistById(FAKE_ID)
-        verify(mockDAO, times(1)).insert(FAKE_DB_CONTENT)
     }
 
     @Test
@@ -92,7 +68,6 @@ class PlaylistConverterTest{
     private val FAKE_ID = "1"
     private val FAKE_CONTENT = "Best playlist"
     private val API_TRACK = TrackDTO(artists = arrayOf(ArtistDTO(id="2", name="Elton John")), duration_ms = 100, id = "20", name="I'm still standing")
-    private val API_PLAYLIST = PlaylistDTO(id = FAKE_ID, name = FAKE_CONTENT)
     private val DB_PLAYLIST = DbPlaylist(id = FAKE_ID, name = FAKE_CONTENT)
     private val PLAYLIST = Playlist(id = FAKE_ID, name = FAKE_CONTENT)
 
@@ -127,17 +102,6 @@ class PlaylistConverterTest{
         assertThat(result, instanceOf(Track::class.java))
         assertThat(result.id, `is`(API_TRACK.id))
         assertThat(result.name, `is`(API_TRACK.name))
-    }
-
-    @Test
-    fun convertApiPlaylistToPlaylistTest() {
-        // Given
-        // When
-        val result = API_PLAYLIST.toPlaylist()
-        // Then
-        assertThat(result, instanceOf(Playlist::class.java))
-        assertThat(result.id, `is`(API_PLAYLIST.id))
-        assertThat(result.name, `is`(API_PLAYLIST.name))
     }
 
 }

@@ -1,6 +1,5 @@
 package com.aaronfodor.android.songquiz.model.repository
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist

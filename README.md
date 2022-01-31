@@ -1,7 +1,7 @@
 # Song Quiz
 [<img src="https://user-images.githubusercontent.com/37120889/122938687-43f8a300-d373-11eb-829d-4522f2e529a8.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
 
-![](https://img.shields.io/github/license/aaronfodor/SongQuiz) [![Build Status](https://travis-ci.com/aaronfodor/SongQuiz.svg?branch=master)](https://travis-ci.com/aaronfodor/SongQuiz)
+![](https://img.shields.io/github/license/aaronfodor/SongQuiz) [![Build Status](https://travis-ci.com/aaronfodor/SongQuiz.svg?branch=master)](https://app.travis-ci.com/aaronfodor/SongQuiz)
 
 [<img src="https://user-images.githubusercontent.com/37120889/122966033-22a2b180-d389-11eb-8b13-f65fabed4bf7.png" alt="google-play-badge" width="200"/>](https://play.google.com/store/apps/details?id=com.aaronfodor.android.songquiz)
 
@@ -19,8 +19,6 @@ Song Quiz guides you into the world of music. Play with more than 4 billion Spot
 	<img src="https://user-images.githubusercontent.com/37120889/126392736-599e6913-b624-47eb-8d97-7e2877be45ad.png" alt="Song Quiz5" width="240"/>
     <img src="https://user-images.githubusercontent.com/37120889/125031551-1870fa80-e08d-11eb-9f39-535f76b4ec5f.PNG" alt="Song Quiz6" width="240"/>
 </p>
-
-
 
 
 <p float="middle">

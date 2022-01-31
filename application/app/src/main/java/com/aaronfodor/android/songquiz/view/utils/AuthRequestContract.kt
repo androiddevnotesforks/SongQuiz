@@ -13,7 +13,7 @@ class AuthRequestContract : ActivityResultContract<Unit, Boolean>() {
     }
 
     /** Create an intent that can be used for Activity.startActivityForResult  */
-    override fun createIntent(context: Context, input: Unit?): Intent {
+    override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(context, AuthActivity::class.java).apply {
             putExtra(FOR_RESULT_AUTH_SCREEN_KEY, true)
         }

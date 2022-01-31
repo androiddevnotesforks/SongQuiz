@@ -48,7 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyDeletePlaylists = ""
     private var keyRestoreDefaultDb = ""
 
-    // onboarding flag keys
+    // boarding flag keys
     private var keyOnboardingMenuShowed = ""
     private var keyOnboardingQuizShowed = ""
     private var keyOnboardingInfoShowed = ""
@@ -57,7 +57,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         // preferences
         keyAccount = getString(R.string.SETTINGS_KEY_ACCOUNT)
         keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
@@ -70,7 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
-        // onboarding flag keys
+        // boarding flag keys
         keyOnboardingMenuShowed = getString(R.string.PREF_KEY_ONBOARDING_MENU_SHOWED)
         keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
         keyOnboardingInfoShowed = getString(R.string.PREF_KEY_ONBOARDING_INFO_SHOWED)
@@ -85,7 +85,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     override fun onResume() {
         super.onResume()
         subscribeViewModel()
-        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
 
         val clearCachePref = findPreference<Preference>(keyClearCache)?.setOnPreferenceClickListener {
             showClearCacheDialog()
@@ -127,20 +127,26 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val onboardingPref = findPreference<Preference>(keyOnboarding)?.setOnPreferenceClickListener {
             // clear onboarding flags
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            with(sharedPreferences.edit()){
-                remove(keyOnboardingMenuShowed)
-                putBoolean(keyOnboardingMenuShowed, false)
-                remove(keyOnboardingQuizShowed)
-                putBoolean(keyOnboardingQuizShowed, false)
-                remove(keyOnboardingInfoShowed)
-                putBoolean(keyOnboardingInfoShowed, false)
-                remove(keyOnboardingAboutShowed)
-                putBoolean(keyOnboardingAboutShowed, false)
-                remove(keyOnboardingPlaylistAddShowed)
-                putBoolean(keyOnboardingPlaylistAddShowed, false)
-                apply()
+            val sharedPreferences = context?.let {
+                PreferenceManager.getDefaultSharedPreferences(it)
             }
+
+            sharedPreferences?.let {
+                with(it.edit()){
+                    remove(keyOnboardingMenuShowed)
+                    putBoolean(keyOnboardingMenuShowed, false)
+                    remove(keyOnboardingQuizShowed)
+                    putBoolean(keyOnboardingQuizShowed, false)
+                    remove(keyOnboardingInfoShowed)
+                    putBoolean(keyOnboardingInfoShowed, false)
+                    remove(keyOnboardingAboutShowed)
+                    putBoolean(keyOnboardingAboutShowed, false)
+                    remove(keyOnboardingPlaylistAddShowed)
+                    putBoolean(keyOnboardingPlaylistAddShowed, false)
+                    apply()
+                }
+            }
+
             // "restart" start MenuActivity
             val intent = Intent(requireContext(), MenuActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             this.startActivity(intent)
@@ -190,7 +196,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onPause() {
         super.onPause()
-        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     private fun showLogoutDialog() {

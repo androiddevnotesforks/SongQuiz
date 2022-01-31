@@ -24,20 +24,18 @@
 
         <activity
             android:name=".view.QuizActivity"
-            android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
             android:name=".view.MenuActivity"
-            android:label="@string/app_name"
             android:theme="@style/Theme.SongQuiz.NoActionBar">
         </activity>
 
         <activity
             android:name=".view.AuthActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.SongQuiz.NoActionBar">
+            android:theme="@style/Theme.SongQuiz.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
