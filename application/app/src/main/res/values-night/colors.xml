@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#336699</color>
+    <color name="colorSecondary">#336699</color>
+    <color name="colorAccent">#336699</color>
+    <color name="colorBackground">#121212</color>
+
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorLight">#FAFAFA</color>
+    <color name="colorDark">#000000</color>
+
+    <color name="colorText">#FAFAFA</color>
+    <color name="colorTextTitle">#FAFAFA</color>
+    <color name="colorTextSubtitle">#FAFAFA</color>
+
+    <color name="colorMessageBox">#333333</color>
+
+    <color name="colorIcon">#FAFAFA</color>
+    <color name="colorActive">#FF0000</color>
+
+    <color name="colorActionButton">#336699</color>
+    <color name="colorActionGameButtonGlow">#121212</color>
+
+    <color name="colorOnboardingBackground">#EE336699</color>
+    <color name="colorOnboardingFocal">#EE121212</color>
+
+    <color name="colorButton">#336699</color>
+    <color name="colorButtonPressed">#BB4DEEEA</color>
+    <color name="colorButtonText">#FAFAFA</color>
+
+    <color name="colorDialogBackground">#BB000000</color>
+    <color name="colorNavBackground">#000000</color>
+
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="onboarding_menu">Welcome to Song Quiz. Let\'s get started! You can find the application menu here.</string>
+    <string name="onboarding_info_listen">Tap to listen to the related information</string>
+    <string name="onboarding_info_start_quiz">Tap here to start a quiz</string>
+    <string name="onboarding_about_listen">Tap to listen to the related information</string>
+    <string name="onboarding_playlist_add_search">Tap here to specify your search</string>
+    <string name="onboarding_quiz_user_input">This button indicates the user input state. When it shows a waveform, the app is listening to you.</string>
+    <string name="onboarding_quiz_speech">This button serves for providing audio information. When it shows a speaker, the app is broadcasting speech or audio information. Tap to start the quiz.</string>
+</resources>

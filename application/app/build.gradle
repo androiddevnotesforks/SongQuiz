@@ -1,28 +1,78 @@
 plugins {
     id 'com.android.application'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    id 'jacoco'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.arpadfodor.android.songquiz"
-        minSdkVersion 23
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        applicationId "com.aaronfodor.android.songquiz"
+        minSdkVersion 26
+        targetSdkVersion 31
+        versionCode 15
+        versionName "v1.1.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions 'type'
+    productFlavors {
+        Free {
+            dimension 'type'
+            versionNameSuffix "-free"
+        }
+        Experimental {
+            dimension 'type'
+            versionNameSuffix "-experimental"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+        debug {
+            storeFile file('D:/Dev/MISC/Android Keystore/Debug/debug.keystore')
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            testCoverageEnabled false
+            signingConfig signingConfigs.release
+
+            resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
+            resValue "string", "spotifyClientSec", ""
+            // production ad values
+            resValue "string", "adMobAppId", "ca-app-pub-5281333576177335~3104405139"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/1408180087"
+        }
+        debug {
+            debuggable true
+            testCoverageEnabled true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+
+            resValue "string", "spotifyClientId", "51aee5a292494583852e135803681e05"
+            resValue "string", "spotifyClientSec", ""
+            // test ad values
+            resValue "string", "adMobAppId", "ca-app-pub-3940256099942544~3347511713"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/6300978111"
         }
     }
 
@@ -30,57 +80,88 @@ android {
         viewBinding true
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
     }
 }
 
 dependencies {
-
-    //Kotlin lang
-    implementation 'androidx.core:core-ktx:1.3.2'
+    // Kotlin lang
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
-    //App compat and UI
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation "androidx.activity:activity-ktx:1.2.2"
-    implementation "androidx.fragment:fragment-ktx:1.3.2"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    implementation 'com.google.android.material:material:1.3.0'
+    // App compat and UI
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
 
-    //Navigation library
-    def nav_version = "2.3.5"
+    // Navigation library
+    def nav_version = "2.4.0"
     implementation "androidx.navigation:navigation-fragment-ktx:${nav_version}"
     implementation "androidx.navigation:navigation-ui-ktx:${nav_version}"
 
-    //db
-    def room_version = '2.2.6'
+    // viewBinding property delegate
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.6'
+
+    // DB
+    def room_version = '2.4.1'
     implementation "androidx.room:room-runtime:${room_version}"
     kapt "androidx.room:room-compiler:${room_version}"
 
-    //network
+    // network
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    //images
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    // Spotify auth Maven dependency
+    implementation 'com.spotify.android:auth:1.2.5'
 
-    //DI
+    // settings
+    def preference_version = "1.2.0"
+    implementation "androidx.preference:preference-ktx:$preference_version"
+
+    // images
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+    // onboarding
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:3.3.0'
+
+    // DI
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Firebase, Analytics, Crashlytics
+    implementation platform('com.google.firebase:firebase-bom:28.1.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    // Ads
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.test:core:1.4.0'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:5.0.0-alpha.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // debugImplementation because LeakCanary should only run in debug builds
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Vissza</string>
+
+    <string name="exit_quiz">Kvíz elhagyása</string>
+    <string name="exit_quiz_dialog">Biztosan ki szeretnél lépni ebből a kvízből?</string>
+
+    <string name="logout">Kijelentkezés</string>
+    <string name="logout_description">Biztosan ki szeretnél jelentkezni? Csak bejelentkezve tudsz játszani és listákat keresni.</string>
+
+    <string name="delete_playlist">Lista törlése</string>
+    <string name="delete_playlist_description">Biztosan törölni szeretnéd az alábbi listát: %1$s? Ez nem befolyásol semmit Spotify-on, a listát később újra felveheted.</string>
+
+    <string name="clear_cache">Gyorsítótár törlése</string>
+    <string name="clear_cache_description">Biztosan törölni szeretnéd a képek gyorsítótárát? Ez csökkenti a memóriahasználatot, de megnövelheti a hálózati forgalmat.</string>
+
+    <string name="delete_playlists">Összes lista törlése</string>
+    <string name="delete_playlists_description">Biztosan törölni szeretnéd az összes felvett listát? Ez a Spotify-on nem befolyásol semmit, a listákat később újra felveheted.</string>
+
+    <string name="restore_default_db">Alapértelmezett listák visszaállítása</string>
+    <string name="restore_default_db_description">Biztosan törölni szeretnéd a lokális adatokat, majd visszaállítani az alapértelmezetteket? Ez a Spotify-on nem befolyásol semmit.</string>
+
+    <string name="exit_title">Kilépés</string>
+    <string name="exit_dialog">Biztosan ki szeretnél lépni?</string>
+</resources>

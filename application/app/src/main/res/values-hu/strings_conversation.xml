@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="c_welcome">Üdvözöl a %1$s!</string>
+    <string name="c_playlist_info">Az általad választott lista neve %1$s, ami %2$s lejátszható dalt tartalmaz.</string>
+    <string name="c_reconfigure">Játék finomhangolása. Az aktuális lista neve %1$s, ami %2$s lejátszható dalt tartalmaz.</string>
+
+    <string name="c_ask_num_players">Hányan szeretnétek játszani? Mondj egy számot 1 és 4 között.</string>
+    <string name="c_num_players_selected">%1$s játékos kiválasztva.</string>
+
+    <string name="c_ask_game_type">Milyen típusú legyen a játék? Válassz az alábbiak közül: egy kör, rövid, közepes vagy hosszú.</string>
+    <string name="c_ask_game_type_invalid">A választott %1$s játék nem indítható: csak %2$s játszható dal van, de minimum %3$s szükséges %4$s játékossal. Kérlek válassz másik típusú játékot.</string>
+    <string name="c_game_type_selected">A választott fajta: %1$s. Ebben a játékban a körök száma %2$s.</string>
+    <string name="c_game_type_points">Az alábbiak számítanak: %1$s.</string>
+
+    <string name="c_starting_game">Indul a választott %1$s játék.</string>
+
+    <string name="c_player_turn">%1$s. játékos, %2$s. kérdés. Nevezd meg a dalt és az előadót:</string>
+    <string name="c_repeating_song">A dal megismétlése.</string>
+
+    <string name="c_not_understand">Sajnálom, nem értem.</string>
+
+    <string-array
+        name="good_guess_prefixes" tools:ignore="InconsistentArrays">
+        <item>Jó válasz!</item>
+        <item>Nagyon jó!</item>
+        <item>Nagyszerű!</item>
+        <item>Szép!</item>
+        <item>Csodás!</item>
+        <item>Pompás!</item>
+        <item>Pazar!</item>
+        <item>Szuper!</item>
+        <item>Klassz!</item>
+        <item>Sikerült!</item>
+        <item>Príma!</item>
+        <item>Csúcsszuper!</item>
+        <item>Ász!</item>
+        <item>Bitang!</item>
+        <item>Figyelemre méltó!</item>
+        <item>Ez már döfi!</item>
+        <item>Heuréka!</item>
+    </string-array>
+
+    <string-array
+        name="failed_guess_prefixes" tools:ignore="InconsistentArrays">
+        <item>Jaj ne!</item>
+        <item>Legközelebb.</item>
+        <item>Majd máskor.</item>
+        <item>Sajnálom.</item>
+        <item>Rossz hír.</item>
+    </string-array>
+
+    <string name="c_points">pont</string>
+    <string name="c_for"/>
+    <string name="c_and">és</string>
+    <string name="c_not">nem</string>
+    <string name="c_few_extra">néhány extra</string>
+    <string name="c_title">cím</string>
+    <string name="c_artist">előadó</string>
+    <string name="c_album">album</string>
+    <string name="c_settings_info">A beállításaid alapján egy dal %1$s másodpercig tart, és a dalok ismétlése %2$s engedélyezett.</string>
+    <string name="c_player_good_guess">%1$s %2$s pontot kaptál.</string>
+    <string name="c_song_info">A dal címe %1$s, előadója %2$s. Az alábbi albumon szerepel: %3$s.</string>
+    <string name="c_song_popularity">Ennek a számnak %1$s a népszerűségi indexe.</string>
+    <string name="c_your_score">Jelenleg %1$s pontod van.</string>
+
+    <string name="c_end_game">Vége a játéknak.</string>
+    <string name="c_player_scored">%1$s. játékos pontszáma: %2$s pont.</string>
+
+    <string name="c_winner_player">Gratulálunk! A győztes: %1$s. játékos.</string>
+    <string name="c_winner_tie">Döntetlen. Gratulálunk!</string>
+    <string name="c_next_time">Több szerencsét legközelebb!</string>
+    <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. Ha szeretnél változtatni a játékon, mondd hangolás.</string>
+
+    <string name="c_not_enough_tracks">Sajnos ezenn a listán nincs elég dal a kvízhez, mert legalább %1$s szám kellene. Kérlek lépj ki ebből a kvízből, és válassz másik listát.</string>
+    <string name="c_error">Hiba történt.</string>
+
+    <string-array
+        name="input_1" tools:ignore="InconsistentArrays">
+        <item>egy</item>
+        <item>1</item>
+    </string-array>
+    <string-array
+        name="input_2" tools:ignore="InconsistentArrays">
+        <item>kettő</item>
+        <item>2</item>
+    </string-array>
+    <string-array
+        name="input_3" tools:ignore="InconsistentArrays">
+        <item>három</item>
+        <item>3</item>
+    </string-array>
+    <string-array
+        name="input_4" tools:ignore="InconsistentArrays">
+        <item>négy</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array
+        name="input_oneshot" tools:ignore="InconsistentArrays">
+        <item>egy kör</item>
+        <item>egy</item>
+        <item>1</item>
+        <item>kör</item>
+    </string-array>
+    <string-array
+        name="input_short" tools:ignore="InconsistentArrays">
+        <item>rövid</item>
+    </string-array>
+    <string-array
+        name="input_medium" tools:ignore="InconsistentArrays">
+        <item>közepes</item>
+        <item>közép</item>
+        <item>köz</item>
+    </string-array>
+    <string-array
+        name="input_long" tools:ignore="InconsistentArrays">
+        <item>hosszú</item>
+        <item>hossz</item>
+    </string-array>
+
+    <string-array
+        name="input_repeat" tools:ignore="InconsistentArrays">
+        <item>ismétlés</item>
+        <item>ismét</item>
+        <item>újra</item>
+        <item>megint</item>
+    </string-array>
+
+    <string-array
+        name="input_restart" tools:ignore="InconsistentArrays">
+        <item>ismétlés</item>
+        <item>ismét</item>
+        <item>újra</item>
+        <item>megint</item>
+    </string-array>
+
+    <string-array
+        name="input_configure" tools:ignore="InconsistentArrays">
+        <item>hangolás</item>
+        <item>hangol</item>
+        <item>angol</item>
+        <item>hang</item>
+    </string-array>
+
+</resources>

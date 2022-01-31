@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="content_description_get_information">Get information</string>
+    <string name="content_description_user_input">User input</string>
+    <string name="content_description_search">Search</string>
+    <string name="content_description_add_playlist">Add playlist</string>
+    <string name="content_description_play">Play</string>
+    <string name="content_description_info">Information</string>
+    <string name="content_description_delete">Delete</string>
+    <string name="content_description_add">Add</string>
+</resources>

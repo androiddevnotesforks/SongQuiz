@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/icon_music_notes"
+    tools:context=".view.AuthActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:padding="@dimen/navigation_menu_vertical_spacing"
+        android:text="@string/app_name"
+        android:textAppearance="@style/FancyText"
+        android:textColor="@color/colorLight"
+        app:layout_constraintStart_toStartOf="@+id/glVertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/glHorizontal"/>
+
+    <ImageView
+        android:id="@+id/AppIcon"
+        android:visibility="invisible"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/song_quiz"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/glVertical"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:importantForAccessibility="no"
+        app:layout_constraintDimensionRatio="1.0"/>
+
+    <ProgressBar
+        style="@style/LoadIndicatorProgressBar"
+        android:id="@+id/loadIndicatorProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/glVertical"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
+        android:id="@+id/btnLogin"
+        style="@style/AuthButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/login_button"
+        android:contentDescription="@string/login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glVertical"
+        app:layout_constraintTop_toBottomOf="@+id/glHorizontal"/>
+
+    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
+        android:id="@+id/btnSkip"
+        style="@style/AuthButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/skip_button"
+        android:contentDescription="@string/skip_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glVertical"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/glVertical"
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="vertical"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/glHorizontal"
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="horizontal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

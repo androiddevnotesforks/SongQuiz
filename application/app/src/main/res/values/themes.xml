@@ -17,8 +17,13 @@
     <style name="Theme.SongQuiz.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
-    <style name="Theme.SongQuiz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.SongQuiz.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:fontFamily">@font/font_title</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
     <style name="Theme.SongQuiz.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

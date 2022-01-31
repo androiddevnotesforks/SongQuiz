@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="onboarding_menu">Üdvözöl a Song Quiz. Vágjunk bele! A főmenüt itt találod.</string>
+    <string name="onboarding_info_listen">Koppints az információk meghallgatásához</string>
+    <string name="onboarding_info_start_quiz">Koppints a kvíz indításához</string>
+    <string name="onboarding_about_listen">Koppints az információk meghallgatásához</string>
+    <string name="onboarding_playlist_add_search">Koppints a keresésed specifikálásához</string>
+    <string name="onboarding_quiz_user_input">Ez a gomb mutatja a felhasználói bemenet aktuális állapotát. Mikor egy hullámformát mutat, az alkalmazás épp hallgat téged.</string>
+    <string name="onboarding_quiz_speech">Ez a gomb hangalapú információk nyújtására szolgál. Mikor egy hangszórót mutat, az alkalmazás épp beszél hozzád, vagy zenét játszik le. Koppints a kvíz indításához.</string>
+</resources>

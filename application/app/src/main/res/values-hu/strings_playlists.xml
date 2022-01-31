@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="ready_to_start">Játékra fel! Koppints a hangszóró ikonra a kezdéshez.</string>
+    <string name="error_playlist_load">Nem sikerült a lista betöltése</string>
+    <string name="error_playlist_load_description">Nem sikerült a lista betöltése. Kérlek ellenőrizd az internetkapcsolatot és próbáld újra, illetve bizonyosodj meg róla, hogy a lista továbbra is létezik Spotify-on.</string>
+    <string name="error_play_song">Nem sikerült a dal lejátszása</string>
+    <string name="error_play_song_description">Nem sikerült a dal lejátszása. Kérlek ellenőrizd az internetkapcsolatot.</string>
+    <string name="error_speak_to_user">Nem sikerült a felhasználóhoz beszélni</string>
+    <string name="error_speak_to_user_description">Nem sikerült a felhasználóhoz beszélni. Kérlek bizonyosodj meg róla, hogy az eszközöd támogatja a text-to-speech funkciót.</string>
+
+    <string name="owner_text">készítette: %1$s</string>
+    <string name="num_songs_followers">%1$s lejátszható dal, %2$s követő</string>
+
+    <string name="view_on_spotify">Megnyitás Spotify-on</string>
+    <string name="play">Játék indítása</string>
+
+    <string name="search_playlist">Lista keresése</string>
+    <string name="search_playlist_description">Írd be a keresett lista nevét vagy Spotify azonosítóját.</string>
+    <string name="empty_list">Koppints a hozzáadásra egy lista felvételéhez</string>
+    <string name="empty_search_list">Koppints a keresésre listák kereséséhez</string>
+    <string name="cannot_find_playlist">Nem található, vagy nincs internetkapcsolat</string>
+    <string name="error_playlist_add">Nem sikerült hozzáadni</string>
+    <string name="success_playlist_add">Hozzáadva</string>
+    <string name="playlist_already_added">Már szerepel a listáid közt</string>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE resources [
+    <!ENTITY appName "Song Quiz">
+    <!ENTITY appDate "24/07/2021">
+    <!ENTITY appCreator "Arpad Fodor">
+    <!ENTITY developerContact "arpadfodor01@gmail.com">
+    <!ENTITY developerPage "https://github.com/aaronfodor">
+    <!ENTITY storePage "https://play.google.com/store/apps/dev?id=8378344595376884385">
+    ]>
+
+<resources>
+    <string name="app_name" translatable="false">&appName;</string>
+    <string name="app_date" translatable="false">&appDate;</string>
+    <string name="app_creator" translatable="false">&appCreator;</string>
+    <string name="app_copyright" translatable="false">© &appDate; &appCreator;\n\n</string>
+    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE.md</string>
+    <string name="privacy_page" translatable="false">&developerPage;/SongQuiz/blob/master/PRIVACY.md</string>
+    <string name="developer_page" translatable="false">&storePage;</string>
+    <string name="report_contact" translatable="false">&developerContact;</string>
+    <string name="report_message_title" translatable="false">[%1$s][report]</string>
+    <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
+
+    <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
+
+    <string name="acknowledgments_text" translatable="false">
+        naobim,\n
+        Gordon Johnson,\n
+        OpenClipart-Vectors\n
+        (Pixabay)\n\n
+        wishforge.games\n
+        (Freeicons.io)\n\n
+        Freepik\n
+        (Flaticon.com)\n\n
+    </string>
+
+    <string name="unicode_start" translatable="false">►</string>
+    <string name="unicode_add" translatable="false">＋</string>
+
+    <string name="nav_header_title" translatable="false">&appName;</string>
+</resources>
