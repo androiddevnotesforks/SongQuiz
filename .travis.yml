@@ -1,34 +1,47 @@
 language: android
+jdk: oraclejdk8
 dist: trusty
+
 android:
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
   components:
     - tools
-    - platform-tools
-
     # The BuildTools version
-    - build-tools-30.0.3
-
+    - build-tools-30.0.2
+    - tools
     # The SDK version
     - android-30
-
+    - android-22
     # Additional components
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-
     # System image run emulator(s) during tests
-    - sys-img-x86-android-30
+    - sys-img-armeabi-v7a-android-22
+
 before_install:
-  - yes | sdkmanager "platforms;android-30"
-before_script:
   - cd application
+  - chmod +x gradlew
+  - yes | sdkmanager "platforms;android-30"
+
+before_script:
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - bash android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
 script:
-  - chmod +x ./gradlew
+  - ./gradlew clean build
+  - ./gradlew test
+  - ./gradlew build check
+
 notifications:
   email:
     recipients:
       - arpadfodor01@gmail.com
-    on_success: always
+    on_success: change
     on_failure: always
-script:
-  - ./gradlew build

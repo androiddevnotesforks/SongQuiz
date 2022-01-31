@@ -42,7 +42,9 @@ class DatabaseInjector {
             ApplicationDB.APPLICATION_DB_NAME
         ).createFromAsset(ApplicationDB.DEFAULT_DB_FILE_PATH)
         // enable traditional DB execution (no wal, shm files) - use to generate a .db file
-        // database file restore only works with this
+        // database file restore works with JournalMode.TRUNCATE
+        // more: https://blog.devart.com/increasing-sqlite-performance.html
+        // more: https://www.sqlite.org/pragma.html#pragma_wal_checkpoint
         builder.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
 
         return builder.build()
