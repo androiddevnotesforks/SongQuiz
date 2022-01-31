@@ -45,7 +45,10 @@
         <item>You go girl!</item>
         <item>Oh snap!</item>
         <item>Kerpow!</item>
+        <item>Impressive!</item>
         <item>Cha Ching!</item>
+        <item>Yowza!</item>
+        <item>Well done!</item>
     </string-array>
 
     <string-array
@@ -81,7 +84,7 @@
     <string name="c_winner_player">Player %1$s is the winner. Congratulations!</string>
     <string name="c_winner_tie">It\'s a tie. Congratulations!</string>
     <string name="c_next_time">Better luck next time!</string>
-    <string name="c_play_again_possible">If you want to restart this game, say restart. If you want to configure the game, say configure.</string>
+    <string name="c_play_again_possible">If you want to restart this game, say restart. If you want to configure the game, say configure. Say exit to leave.</string>
 
     <string name="c_not_enough_tracks">Unfortunately, this is not enough to play a quiz, because at least %1$s songs needed. Please exit this quiz and select another playlist.</string>
     <string name="c_error">Looks like an error occurred.</string>
@@ -155,6 +158,15 @@
         <item>config</item>
         <item>conf</item>
         <item>con</item>
+    </string-array>
+
+    <string-array
+        name="input_exit" tools:ignore="InconsistentArrays">
+        <item>exit</item>
+        <item>leave</item>
+        <item>live</item>
+        <item>bye</item>
+        <item>goodbye</item>
     </string-array>
 
 </resources>

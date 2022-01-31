@@ -36,6 +36,7 @@
         <item>Csúcsszuper!</item>
         <item>Ász!</item>
         <item>Bitang!</item>
+        <item>Lenyűgöző!</item>
         <item>Figyelemre méltó!</item>
         <item>Ez már döfi!</item>
         <item>Heuréka!</item>
@@ -70,7 +71,7 @@
     <string name="c_winner_player">Gratulálunk! A győztes: %1$s. játékos.</string>
     <string name="c_winner_tie">Döntetlen. Gratulálunk!</string>
     <string name="c_next_time">Több szerencsét legközelebb!</string>
-    <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. Ha szeretnél változtatni a játékon, mondd hangolás.</string>
+    <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. Ha szeretnél változtatni a játékon, mondd hangolás. A kilépéshez mondd kilépés.</string>
 
     <string name="c_not_enough_tracks">Sajnos ezenn a listán nincs elég dal a kvízhez, mert legalább %1$s szám kellene. Kérlek lépj ki ebből a kvízből, és válassz másik listát.</string>
     <string name="c_error">Hiba történt.</string>
@@ -141,6 +142,13 @@
         <item>hangol</item>
         <item>angol</item>
         <item>hang</item>
+    </string-array>
+
+    <string-array
+        name="input_exit" tools:ignore="InconsistentArrays">
+        <item>kilépés</item>
+        <item>kilép</item>
+        <item>viszlát</item>
     </string-array>
 
 </resources>

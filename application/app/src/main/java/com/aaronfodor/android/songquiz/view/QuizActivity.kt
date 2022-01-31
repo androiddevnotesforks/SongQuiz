@@ -89,6 +89,11 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         closeDialog.show()
     }
 
+    fun navigateToMainMenu() {
+        viewModel.clearState()
+        startActivity(Intent(this, MenuActivity::class.java))
+    }
+
     override fun subscribeViewModel() {
 
         binding.content.userSpeechButton.setOnClickListener {
@@ -197,6 +202,9 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 QuizUiState.ERROR_SPEAK_TO_USER -> {
                     viewModel.info.value = getString(R.string.error_speak_to_user_description)
                     showInfo(QuizUiState.ERROR_SPEAK_TO_USER)
+                }
+                QuizUiState.EXIT -> {
+                    navigateToMainMenu()
                 }
                 else -> {}
             }
@@ -387,7 +395,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     private fun playlistColorSetter(colorInt: Int){
         val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
         val playlistColor = if(darkness < 0.35){
-            // color is too light, replace with accent
+            // color is too light, replace with the accent
             getColor(R.color.colorAccent)
         }
         else{

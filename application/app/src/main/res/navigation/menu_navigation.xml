@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/nav_playlists">
+    app:startDestination="@+id/nav_play">
 
     <fragment
-        android:id="@+id/nav_playlists"
+        android:id="@+id/nav_play"
         android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
-        android:label="@string/menu_playlists"
+        android:label="@string/menu_play"
         tools:layout="@layout/fragment_playlists" >
     </fragment>
 
@@ -54,7 +54,7 @@
 
     <action
         android:id="@+id/to_nav_playlists"
-        app:destination="@id/nav_playlists"/>
+        app:destination="@id/nav_play"/>
 
     <action
         android:id="@+id/to_nav_playlist_add"

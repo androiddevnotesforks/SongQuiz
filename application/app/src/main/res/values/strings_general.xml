@@ -20,7 +20,7 @@
     <string name="app_license">License</string>
     <string name="app_privacy">Privacy</string>
 
-    <string name="menu_playlists">Playlists</string>
+    <string name="menu_play">Play</string>
     <string name="menu_playlist_add">Add playlist</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>

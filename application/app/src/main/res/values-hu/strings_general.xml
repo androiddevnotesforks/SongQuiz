@@ -20,7 +20,7 @@
     <string name="app_license">Licenszfeltételek</string>
     <string name="app_privacy">Adatkezelési információk</string>
 
-    <string name="menu_playlists">Listák</string>
+    <string name="menu_play">Játék</string>
     <string name="menu_playlist_add">Hozzáadás</string>
     <string name="menu_settings">Beállítások</string>
     <string name="menu_about">Információk</string>

@@ -61,7 +61,7 @@ abstract class AppActivityMenu(keepScreenAlive: Boolean) : AppActivity(keepScree
 
         when (item.itemId) {
 
-            R.id.nav_playlists -> {
+            R.id.nav_play -> {
                 navController.navigate(R.id.to_nav_playlists)
             }
 

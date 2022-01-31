@@ -45,7 +45,7 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         navController = navHostFragment.navController
         // Each menu Id as a set of Ids - each should be considered as a top level destination
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_playlists, R.id.nav_about, R.id.nav_settings),
+            setOf(R.id.nav_play, R.id.nav_about, R.id.nav_settings),
             activityDrawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)

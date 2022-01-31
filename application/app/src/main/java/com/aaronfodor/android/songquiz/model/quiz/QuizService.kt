@@ -10,7 +10,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 enum class InfoType{
-    SPEECH, SOUND_URL, SOUND_LOCAL_ID
+    SPEECH, SOUND_URL, SOUND_LOCAL_ID, EXIT_QUIZ
 }
 
 enum class QuizState{
@@ -25,7 +25,8 @@ enum class QuizState{
     END,
     END_REPEAT,
     RESTART_GAME,
-    CONFIGURE_GAME
+    CONFIGURE_GAME,
+    EXIT_GAME
 }
 
 enum class RepeatCause{
@@ -141,6 +142,7 @@ class QuizService @Inject constructor(
             QuizState.END_REPEAT -> endGame(true)
             QuizState.RESTART_GAME -> restartGame()
             QuizState.CONFIGURE_GAME -> configureGame()
+            QuizState.EXIT_GAME -> exitGame()
             else -> InformationPacket(listOf(InformationItem(InfoType.SPEECH, context.getString(R.string.c_error))), false)
         }
         return response
@@ -234,14 +236,12 @@ class QuizService @Inject constructor(
 
         var infoString = ""
 
-        if(extendedInfoAllowed){
-            // add points info
-            var pointsInfo = ""
-            pointsInfo += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
-            pointsInfo += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
-            pointsInfo += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}"
-            infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
-        }
+        // add points info
+        var pointsInfo = ""
+        pointsInfo += "${quizType.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}, "
+        pointsInfo += "${quizType.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}, "
+        pointsInfo += "${context.getString(R.string.c_and)} ${quizType.pointForAlbum} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_album)}"
+        infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
 
         infoString += context.getString(R.string.c_settings_info, quizType.songDurationSec.toString(), isRepeatAllowed)
         infoString = infoString.replace("  ", " ")
@@ -423,6 +423,11 @@ class QuizService @Inject constructor(
         return welcome(true, RepeatCause.RECONFIGURE_GAME)
     }
 
+    private fun exitGame() : InformationPacket {
+        clear()
+        return InformationPacket(listOf(InformationItem(InfoType.EXIT_QUIZ, "")), false)
+    }
+
     /**
      * Update state based on user input
      *
@@ -437,21 +442,28 @@ class QuizService @Inject constructor(
             QuizState.GAME_TYPE_ASK -> parseGameType(probableSpeeches)
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> parseGameType(probableSpeeches)
             QuizState.GAME_TYPE_INVALID -> parseGameType(probableSpeeches)
-            QuizState.START_GAME -> parseArtistTitleAlbum(probableSpeeches)
-            QuizState.PLAY_SONG -> parseArtistTitleAlbum(probableSpeeches)
-            QuizState.REPEAT_SONG -> parseArtistTitleAlbum(probableSpeeches)
-            QuizState.END_REPEAT -> parseRepeatGame(probableSpeeches)
+            QuizState.START_GAME -> parseGuess(probableSpeeches)
+            QuizState.PLAY_SONG -> parseGuess(probableSpeeches)
+            QuizState.REPEAT_SONG -> parseGuess(probableSpeeches)
+            QuizState.END_REPEAT -> parseAfterFinishedCommand(probableSpeeches)
             else -> false
         }
         return speakToUserNeeded
     }
 
+    enum class KeyNumPlayers(val value: String){
+        ONE("1"),
+        TWO("2"),
+        THREE("3"),
+        FOUR("4")
+    }
+
     private fun parseNumPlayers(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "1" to context.resources.getStringArray(R.array.input_1).toList(),
-            "2" to context.resources.getStringArray(R.array.input_2).toList(),
-            "3" to context.resources.getStringArray(R.array.input_3).toList(),
-            "4" to context.resources.getStringArray(R.array.input_4).toList()
+            KeyNumPlayers.ONE.value to context.resources.getStringArray(R.array.input_1).toList(),
+            KeyNumPlayers.TWO.value to context.resources.getStringArray(R.array.input_2).toList(),
+            KeyNumPlayers.THREE.value to context.resources.getStringArray(R.array.input_3).toList(),
+            KeyNumPlayers.FOUR.value to context.resources.getStringArray(R.array.input_4).toList()
         )
 
         val numPlayers = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -467,12 +479,19 @@ class QuizService @Inject constructor(
         return true
     }
 
+    enum class KeyGameType(val value: String){
+        ONE_SHOT("one-shot"),
+        SHORT("short"),
+        MEDIUM("medium"),
+        LONG("long")
+    }
+
     private fun parseGameType(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "one-shot" to context.resources.getStringArray(R.array.input_oneshot).toList(),
-            "short" to context.resources.getStringArray(R.array.input_short).toList(),
-            "medium" to context.resources.getStringArray(R.array.input_medium).toList(),
-            "long" to context.resources.getStringArray(R.array.input_long).toList()
+            KeyGameType.ONE_SHOT.value to context.resources.getStringArray(R.array.input_oneshot).toList(),
+            KeyGameType.SHORT.value to context.resources.getStringArray(R.array.input_short).toList(),
+            KeyGameType.MEDIUM.value to context.resources.getStringArray(R.array.input_medium).toList(),
+            KeyGameType.LONG.value to context.resources.getStringArray(R.array.input_long).toList()
         )
 
         val gameType = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -485,29 +504,29 @@ class QuizService @Inject constructor(
 
         if(gameType.isNotEmpty()){
             when(gameType[0]){
-                "one-shot" -> {
-                    name = possibleWords["one-shot"]?.get(0) ?: ""
+                KeyGameType.ONE_SHOT.value -> {
+                    name = possibleWords[KeyGameType.ONE_SHOT.value]?.get(0) ?: ""
                     numRounds = 1
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
-                "short" -> {
-                    name = possibleWords["short"]?.get(0) ?: ""
+                KeyGameType.SHORT.value -> {
+                    name = possibleWords[KeyGameType.SHORT.value]?.get(0) ?: ""
                     numRounds = 3
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
-                "medium" -> {
-                    name = possibleWords["medium"]?.get(0) ?: ""
+                KeyGameType.MEDIUM.value -> {
+                    name = possibleWords[KeyGameType.MEDIUM.value]?.get(0) ?: ""
                     numRounds = 5
                     pointForArtist = 10
                     pointForTrack = 10
                     pointForAlbum = 2
                 }
-                "long" -> {
-                    name = possibleWords["long"]?.get(0) ?: ""
+                KeyGameType.LONG.value -> {
+                    name = possibleWords[KeyGameType.LONG.value]?.get(0) ?: ""
                     numRounds = 7
                     pointForArtist = 10
                     pointForTrack = 10
@@ -535,7 +554,14 @@ class QuizService @Inject constructor(
         return true
     }
 
-    private fun parseArtistTitleAlbum(probableSpeeches : ArrayList<String>) : Boolean{
+    enum class KeyGuess(val value: String){
+        ARTIST("artist"),
+        TITLE("title"),
+        ALBUM("album"),
+        REPEAT("repeat")
+    }
+
+    private fun parseGuess(probableSpeeches : ArrayList<String>) : Boolean{
         val currentTrack = playlist.tracks[quizStanding.currentTrackIndex]
 
         val artistParts = mutableListOf<String>()
@@ -546,25 +572,25 @@ class QuizService @Inject constructor(
         val albumParts = textParser.normalizeText(currentTrack.album)
 
         val possibleHitWords = mutableMapOf<String, List<String>>()
-        possibleHitWords["artist"] = artistParts
-        possibleHitWords["title"] = titleParts
-        possibleHitWords["album"] = albumParts
-        // repeat command
-        possibleHitWords["repeat"] = context.resources.getStringArray(R.array.input_repeat).toList()
+        possibleHitWords[KeyGuess.ARTIST.value] = artistParts
+        possibleHitWords[KeyGuess.TITLE.value] = titleParts
+        possibleHitWords[KeyGuess.ALBUM.value] = albumParts
+        // extra command
+        possibleHitWords[KeyGuess.REPEAT.value] = context.resources.getStringArray(R.array.input_repeat).toList()
 
         val playerHits = textParser.searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
         // if repeat allowed
         if(quizType.repeatAllowed){
-            // if only the repeat command has been identified, repeat
-            if(playerHits.size == 1 && playerHits.contains("repeat")){
+            // if only the extra command has been identified, execute it
+            if(playerHits.size == 1 && playerHits.contains(KeyGuess.REPEAT.value)){
                 state = QuizState.REPEAT_SONG
                 return true
             }
         }
 
         var points = 0
-        if(playerHits.contains("album")){
+        if(playerHits.contains(KeyGuess.ALBUM.value)){
             points += quizType.pointForAlbum
             lastSongAlbumHit = true
         }
@@ -572,7 +598,7 @@ class QuizService @Inject constructor(
             lastSongAlbumHit = false
         }
 
-        if(playerHits.contains("title")){
+        if(playerHits.contains(KeyGuess.TITLE.value)){
             points += quizType.pointForTitle
             lastSongTitleHit = true
         }
@@ -580,7 +606,7 @@ class QuizService @Inject constructor(
             lastSongTitleHit = false
         }
 
-        if(playerHits.contains("artist")){
+        if(playerHits.contains(KeyGuess.ARTIST.value)){
             points += quizType.pointForArtist
             lastSongArtistHit = true
         }
@@ -609,10 +635,17 @@ class QuizService @Inject constructor(
         return true
     }
 
-    private fun parseRepeatGame(probableSpeeches : ArrayList<String>) : Boolean{
+    enum class KeyAfterFinishedCommand(val value: String){
+        RESTART("restart"),
+        CONFIGURE("configure"),
+        EXIT("exit")
+    }
+
+    private fun parseAfterFinishedCommand(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            "restart" to context.resources.getStringArray(R.array.input_restart).toList(),
-            "configure" to context.resources.getStringArray(R.array.input_configure).toList(),
+            KeyAfterFinishedCommand.RESTART.value to context.resources.getStringArray(R.array.input_restart).toList(),
+            KeyAfterFinishedCommand.CONFIGURE.value to context.resources.getStringArray(R.array.input_configure).toList(),
+            KeyAfterFinishedCommand.EXIT.value to context.resources.getStringArray(R.array.input_exit).toList(),
         )
 
         val whatAsked = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -622,8 +655,9 @@ class QuizService @Inject constructor(
         }
 
         when(whatAsked[0]){
-            "restart" -> state = QuizState.RESTART_GAME
-            "configure" -> state = QuizState.CONFIGURE_GAME
+            KeyAfterFinishedCommand.RESTART.value -> state = QuizState.RESTART_GAME
+            KeyAfterFinishedCommand.CONFIGURE.value -> state = QuizState.CONFIGURE_GAME
+            KeyAfterFinishedCommand.EXIT.value -> state = QuizState.EXIT_GAME
         }
 
         return true

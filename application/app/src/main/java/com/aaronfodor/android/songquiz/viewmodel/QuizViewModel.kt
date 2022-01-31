@@ -32,7 +32,7 @@ enum class TtsState{
 }
 
 enum class QuizUiState{
-    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER
+    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, EXIT
 }
 
 @HiltViewModel
@@ -347,6 +347,10 @@ class QuizViewModel @Inject constructor(
                     }
                     InfoType.SOUND_LOCAL_ID -> {
                         playLocalSound(information.payload)
+                    }
+                    InfoType.EXIT_QUIZ -> {
+                        uiState.postValue(QuizUiState.EXIT)
+                        true
                     }
                 }
 
