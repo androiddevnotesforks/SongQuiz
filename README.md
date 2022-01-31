@@ -1,7 +1,7 @@
 # Song Quiz
 [<img src="https://user-images.githubusercontent.com/37120889/122938687-43f8a300-d373-11eb-829d-4522f2e529a8.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
 
-![](https://img.shields.io/github/license/aaronfodor/SongQuiz) [![Build Status](https://travis-ci.com/aaronfodor/SongQuiz.svg?branch=master)](https://app.travis-ci.com/aaronfodor/SongQuiz)
+![](https://img.shields.io/github/license/aaronfodor/SongQuiz) 
 
 [<img src="https://user-images.githubusercontent.com/37120889/122966033-22a2b180-d389-11eb-8b13-f65fabed4bf7.png" alt="google-play-badge" width="200"/>](https://play.google.com/store/apps/details?id=com.aaronfodor.android.songquiz)
 
