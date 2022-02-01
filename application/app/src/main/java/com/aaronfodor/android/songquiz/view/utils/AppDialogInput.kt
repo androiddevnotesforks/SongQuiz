@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import androidx.core.content.ContextCompat
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.AppDialogInputBinding
 

@@ -6,9 +6,29 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/icon_home"
+            android:title="@string/menu_home" />
+        <item
             android:id="@+id/nav_play"
             android:icon="@drawable/icon_playlists"
             android:title="@string/menu_play" />
+        <item
+            android:id="@+id/nav_add"
+            android:icon="@drawable/icon_add_playlist"
+            android:title="@string/menu_add" />
+        <item
+            android:id="@+id/nav_favourites"
+            android:icon="@drawable/icon_favourite"
+            android:title="@string/menu_favourites" />
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/icon_statistics"
+            android:title="@string/menu_statistics" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/icon_question"
+            android:title="@string/menu_help" />
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/icon_info"

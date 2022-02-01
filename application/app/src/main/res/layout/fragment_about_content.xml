@@ -83,7 +83,7 @@
         app:layout_constraintStart_toEndOf="@+id/fabPrivacy"
         app:layout_constraintTop_toTopOf="@+id/fabPrivacy"
         app:layout_constraintBottom_toBottomOf="@+id/fabPrivacy"
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:text="@string/app_privacy"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -101,7 +101,7 @@
         app:layout_constraintStart_toEndOf="@+id/fabLicense"
         app:layout_constraintTop_toTopOf="@+id/fabLicense"
         app:layout_constraintBottom_toBottomOf="@+id/fabLicense"
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:text="@string/app_license"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -119,7 +119,7 @@
         app:layout_constraintStart_toEndOf="@+id/fabReview"
         app:layout_constraintTop_toTopOf="@+id/fabReview"
         app:layout_constraintBottom_toBottomOf="@+id/fabReview"
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:text="@string/review_app"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -137,7 +137,7 @@
         app:layout_constraintStart_toEndOf="@+id/fabReport"
         app:layout_constraintTop_toTopOf="@+id/fabReport"
         app:layout_constraintBottom_toBottomOf="@+id/fabReport"
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:text="@string/report"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -155,7 +155,7 @@
         app:layout_constraintStart_toEndOf="@+id/fabMoreFromDeveloper"
         app:layout_constraintTop_toTopOf="@+id/fabMoreFromDeveloper"
         app:layout_constraintBottom_toBottomOf="@+id/fabMoreFromDeveloper"
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:text="@string/more_from_developer"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

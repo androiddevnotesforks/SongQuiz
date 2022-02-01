@@ -59,24 +59,42 @@ abstract class AppActivityMenu(keepScreenAlive: Boolean) : AppActivity(keepScree
      **/
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-        when (item.itemId) {
-
-            R.id.nav_play -> {
-                navController.navigate(R.id.to_nav_playlists)
-            }
-
-            R.id.nav_about -> {
-                navController.navigate(R.id.to_nav_about)
-            }
-
-            else ->{
-                return false
-            }
-
-        }
-
         if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
             activityDrawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else{
+            when (item.itemId) {
+
+                R.id.nav_home -> {
+                    navController.navigate(R.id.to_nav_home)
+                }
+                R.id.nav_play -> {
+                    navController.navigate(R.id.to_nav_play)
+                }
+                R.id.nav_add -> {
+                    navController.navigate(R.id.to_nav_add)
+                }
+                R.id.nav_favourites -> {
+                    navController.navigate(R.id.nav_favourites)
+                }
+                R.id.nav_statistics -> {
+                    navController.navigate(R.id.nav_statistics)
+                }
+                R.id.nav_help -> {
+                    navController.navigate(R.id.nav_help)
+                }
+                R.id.nav_about -> {
+                    navController.navigate(R.id.nav_about)
+                }
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.nav_settings)
+                }
+
+                else ->{
+                    return false
+                }
+
+            }
         }
         return true
 

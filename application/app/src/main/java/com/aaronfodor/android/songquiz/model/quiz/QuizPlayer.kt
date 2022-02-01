@@ -1,7 +1,39 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
-data class QuizPlayer(
+class QuizPlayer(
     val id: Int = 0,
     val name: String = "",
-    var points: Int = 0
-)
+){
+
+    private var numGuesses: Int = 0
+    private var numArtistHits: Int = 0
+    private var numTitleHits: Int = 0
+
+    private var artistPoints: Int = 0
+    private var titlePoints: Int = 0
+    private var difficultyCompensationPoints: Int = 0
+
+    fun recordGuess(artistPoint: Int, titlePoint: Int, difficultyCompensationPoint: Int){
+        numGuesses += 1
+        if(artistPoint > 0){
+            numArtistHits += 1
+            artistPoints += artistPoint
+        }
+        if(titlePoint > 0){
+            numTitleHits += 1
+            titlePoints += titlePoint
+        }
+        if(difficultyCompensationPoint > 0){
+            difficultyCompensationPoints += difficultyCompensationPoint
+        }
+    }
+
+    fun getPoints(difficultyCompensationNeeded: Boolean): Int{
+        var points = artistPoints + titlePoints
+        if(difficultyCompensationNeeded){
+            points += difficultyCompensationPoints
+        }
+        return points
+    }
+
+}

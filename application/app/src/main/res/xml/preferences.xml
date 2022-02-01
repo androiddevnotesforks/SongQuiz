@@ -23,6 +23,13 @@
             android:defaultValue="@integer/song_duration_sec_default"/>
 
         <SwitchPreferenceCompat
+            app:key="@string/SETTINGS_KEY_DIFFICULTY_COMPENSATION"
+            app:title="@string/settings_title_difficulty_compensation"
+            app:summaryOn="@string/enabled"
+            app:summaryOff="@string/disabled"
+            android:defaultValue="@bool/difficulty_compensation_default"/>
+
+        <SwitchPreferenceCompat
             app:key="@string/SETTINGS_KEY_EXTENDED_QUIZ_INFO"
             app:title="@string/settings_title_extended_quiz_info"
             app:summaryOn="@string/settings_title_extended_quiz_info_enabled"

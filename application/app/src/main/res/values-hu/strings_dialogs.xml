@@ -22,6 +22,9 @@
     <string name="restore_default_db">Alapértelmezett listák visszaállítása</string>
     <string name="restore_default_db_description">Biztosan törölni szeretnéd a lokális adatokat, majd visszaállítani az alapértelmezetteket? Ez a Spotify-on nem befolyásol semmit.</string>
 
+    <string name="why_login_title">Miért szükséges bejelentkezned</string>
+    <string name="why_login_dialog">A Spotify segítségével sokféle dalt érünk el. Ahhoz, hogy zenét tudjunk lejátszani Neked, be kell jelentkezned. Adataid a Spotify felületén adod meg – mi csak olyan felhasználói adataidhoz férünk hozzá, amelyekhez előzetesen hozzájárultál.</string>
+
     <string name="exit_title">Kilépés</string>
     <string name="exit_dialog">Biztosan ki szeretnél lépni?</string>
 </resources>

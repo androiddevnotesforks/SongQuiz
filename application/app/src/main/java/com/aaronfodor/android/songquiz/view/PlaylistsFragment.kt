@@ -140,7 +140,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
     private fun showAddPlaylistsScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_playlist_add, null)
+        navHostFragment.navigate(R.id.to_nav_add, null)
         viewModel.ready()
     }
 

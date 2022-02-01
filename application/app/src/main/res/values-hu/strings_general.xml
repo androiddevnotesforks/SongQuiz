@@ -20,10 +20,14 @@
     <string name="app_license">Licenszfeltételek</string>
     <string name="app_privacy">Adatkezelési információk</string>
 
+    <string name="menu_home">Főképernyő</string>
     <string name="menu_play">Játék</string>
-    <string name="menu_playlist_add">Hozzáadás</string>
-    <string name="menu_settings">Beállítások</string>
+    <string name="menu_add">Hozzáadás</string>
+    <string name="menu_favourites">Kedvencek</string>
+    <string name="menu_statistics">Statisztikák</string>
+    <string name="menu_help">Segítség</string>
     <string name="menu_about">Információk</string>
+    <string name="menu_settings">Beállítások</string>
     <string name="menu_info">Lejátszási lista részletei</string>
 
     <string name="request_permission_title">Engedélykérés</string>
@@ -34,6 +38,8 @@
     <string name="nav_menu_open">Főmenü kinyit</string>
     <string name="nav_menu_close">Főmenü bezár</string>
     <string name="nav_header_desc">Főmenü fejléc</string>
+
+    <string name="type_here">Koppints a bevitelhez</string>
 
     <string name="recognition_error_audio">Szövegbemeneti hiba. Kérlek próbáld újra.</string>
     <string name="recognition_error_client">Kliensoldali hiba. Kérlek próbáld újra.</string>

@@ -5,6 +5,6 @@
     <string name="error_login_denied">Please log in to continue</string>
     <string name="error_login">An error occurred - please try again</string>
 
-    <string name="login_button">LOG IN</string>
-    <string name="skip_button">NOT NOW</string>
+    <string name="login_button">log in</string>
+    <string name="skip_button">not now</string>
 </resources>

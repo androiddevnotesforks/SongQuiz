@@ -2,6 +2,7 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.os.Bundle
+import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -45,7 +46,8 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         navController = navHostFragment.navController
         // Each menu Id as a set of Ids - each should be considered as a top level destination
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_play, R.id.nav_about, R.id.nav_settings),
+            setOf(R.id.nav_home, R.id.nav_play, R.id.nav_add, R.id.nav_favourites, R.id.nav_statistics,
+                R.id.nav_help, R.id.nav_about, R.id.nav_settings),
             activityDrawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -98,18 +100,44 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
     // to handle pop behavior specifically
     override fun onBackPressed() {
-        when (navController.currentDestination?.id) {
-            R.id.nav_playlist_add -> {
-                navController.navigate(R.id.to_nav_playlists, null)
-            }
-            R.id.nav_info_from_playlists -> {
-                navController.navigate(R.id.to_nav_playlists, null)
-            }
-            R.id.nav_info_from_add_playlists -> {
-                navController.navigate(R.id.to_nav_playlist_add, null)
-            }
-            else -> {
-                super.onBackPressed()
+        if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            activityDrawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else{
+            when (navController.currentDestination?.id) {
+                R.id.nav_play -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_add -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_favourites -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_statistics -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_help -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_about -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_info_from_home -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
+                R.id.nav_info_from_play -> {
+                    navController.navigate(R.id.to_nav_play, null)
+                }
+                R.id.nav_info_from_add_playlists -> {
+                    navController.navigate(R.id.to_nav_add, null)
+                }
+                else -> {
+                    super.onBackPressed()
+                }
             }
         }
     }
@@ -117,16 +145,16 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     // to handle back button specifically
     override fun onSupportNavigateUp(): Boolean {
         return when (navController.currentDestination?.id) {
-            R.id.nav_playlist_add -> {
-                navController.navigate(R.id.to_nav_playlists, null)
+            R.id.nav_info_from_home -> {
+                navController.navigate(R.id.to_nav_home, null)
                 true
             }
-            R.id.nav_info_from_playlists -> {
-                navController.navigate(R.id.to_nav_playlists, null)
+            R.id.nav_info_from_play -> {
+                navController.navigate(R.id.to_nav_play, null)
                 true
             }
             R.id.nav_info_from_add_playlists -> {
-                navController.navigate(R.id.to_nav_playlist_add, null)
+                navController.navigate(R.id.to_nav_add, null)
                 true
             }
             else -> {

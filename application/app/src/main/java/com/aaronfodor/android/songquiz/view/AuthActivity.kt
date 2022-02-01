@@ -61,6 +61,17 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         exitDialog.show()
     }
 
+    fun skipLoginTapped() {
+        val warningDialog = AppDialog(this, getString(R.string.why_login_title),
+            getString(R.string.why_login_dialog), R.drawable.icon_info)
+        warningDialog.setPositiveButton {
+            //showing the next screen
+            showNextScreenCalled = false
+            showNextScreen(false)
+        }
+        warningDialog.show()
+    }
+
     override fun subscribeViewModel() {
 
         binding.btnLogin.setOnClickListener {
@@ -69,8 +80,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         }
 
         binding.btnSkip.setOnClickListener {
-            showNextScreenCalled = false
-            showNextScreen(false)
+            skipLoginTapped()
         }
         
         val uiStateObserver = Observer<AuthUiState> { state ->

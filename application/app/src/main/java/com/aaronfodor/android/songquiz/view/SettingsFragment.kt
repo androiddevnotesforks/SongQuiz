@@ -37,8 +37,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     // preferences
     private var keyAccount = ""
-    private var keyRepeat = ""
     private var keySongDuration = ""
+    private var keyRepeat = ""
+    private var keyDifficultyCompensation = ""
     private var keyExtendedQuizInfo = ""
     private var keySeasonalThemes = ""
     private var keyLanguage = ""
@@ -60,8 +61,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
         // preferences
         keyAccount = getString(R.string.SETTINGS_KEY_ACCOUNT)
-        keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
         keySongDuration = getString(R.string.SETTINGS_KEY_SONG_DURATION)
+        keyRepeat = getString(R.string.SETTINGS_KEY_REPEAT)
+        keyDifficultyCompensation = getString(R.string.SETTINGS_KEY_DIFFICULTY_COMPENSATION)
         keyExtendedQuizInfo = getString(R.string.SETTINGS_KEY_EXTENDED_QUIZ_INFO)
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
         keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
@@ -295,16 +297,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         sharedPreferences?.let {
             with (it.edit()){
                 // preferences
-                remove(keyRepeat)
-                val valueRepeat = it.getBoolean(keyRepeat, true)
-                putBoolean(keyRepeat, valueRepeat)
-
                 remove(keySongDuration)
                 val valueDuration = it.getInt(keySongDuration, requireContext().resources.getInteger(R.integer.song_duration_sec_default))
                 putInt(keySongDuration, valueDuration)
 
+                remove(keyRepeat)
+                val valueRepeat = it.getBoolean(keyRepeat, true)
+                putBoolean(keyRepeat, valueRepeat)
+
+                remove(keyDifficultyCompensation)
+                val valueDifficultyCompensation = it.getBoolean(keyDifficultyCompensation, true)
+                putBoolean(keyDifficultyCompensation, valueDifficultyCompensation)
+
                 remove(keyExtendedQuizInfo)
-                val valueExtendedQuizInfo = it.getBoolean(keyExtendedQuizInfo, true)
+                val valueExtendedQuizInfo = it.getBoolean(keyExtendedQuizInfo, false)
                 putBoolean(keyExtendedQuizInfo, valueExtendedQuizInfo)
 
                 remove(keySeasonalThemes)

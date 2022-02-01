@@ -1,8 +1,9 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
-class QuizStanding {
+class Quiz {
+
+    var type: QuizType = UndefinedQuiz()
     var numPlayers: Int = 0
-    var numRounds: Int = 0
     // gameplay specific, should be reset to start new game
     var currentRound: Int = 1
     var currentPlayerIdx: Int = 0
@@ -16,21 +17,21 @@ class QuizStanding {
         currentTrackIndex = 0
         players = mutableListOf()
         for(i in 1..numPlayers){
-            players.add(QuizPlayer(i, "", 0))
+            players.add(QuizPlayer(i, ""))
         }
         isFinished = false
     }
 
-    fun recordResult(points: Int){
+    fun recordResult(artistPoint: Int, titlePoint: Int, difficultyCompensationPoint: Int){
         currentTrackIndex++
-        players[currentPlayerIdx].points += points
+        players[currentPlayerIdx].recordGuess(artistPoint, titlePoint, difficultyCompensationPoint)
         currentPlayerIdx++
         if(currentPlayerIdx >= numPlayers){
             currentPlayerIdx = 0
             currentRound++
-            if(currentRound > numRounds){
+            if(currentRound > type.numRounds){
                 isFinished = true
-                currentRound = numRounds
+                currentRound = type.numRounds
             }
         }
     }

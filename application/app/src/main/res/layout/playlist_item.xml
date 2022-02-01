@@ -26,8 +26,7 @@
         android:padding="@dimen/list_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
-        android:theme="@style/SubtitleText"
-        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:theme="@style/ListTitleText"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintTop_toTopOf="@+id/playlist_image"/>
@@ -40,7 +39,7 @@
         android:padding="@dimen/list_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
-        android:theme="@style/ParagraphText"
+        android:theme="@style/ListText"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintTop_toBottomOf="@+id/playlist_title"
@@ -54,7 +53,7 @@
         android:padding="@dimen/list_item_small_padding"
         android:maxLines="1"
         android:ellipsize="end"
-        android:theme="@style/ParagraphText"
+        android:theme="@style/ListText"
         app:layout_constraintStart_toEndOf="@+id/playlist_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
         app:layout_constraintBottom_toBottomOf="@+id/playlist_image"/>

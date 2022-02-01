@@ -22,7 +22,7 @@ enum class TtsInfoState{
 }
 
 enum class InfoScreenCaller{
-    UNSPECIFIED, PLAYLISTS, ADD_PLAYLIST
+    UNSPECIFIED, HOME, PLAY, ADD_PLAYLIST
 }
 
 @HiltViewModel
@@ -111,7 +111,7 @@ class InfoViewModel  @Inject constructor(
             if(downloadedPlaylist.id == playlistId){
                 ready()
                 playlist.postValue(downloadedPlaylist)
-                if(infoScreenCaller == InfoScreenCaller.PLAYLISTS){
+                if(infoScreenCaller == InfoScreenCaller.PLAY){
                     repository.updatePlaylist(downloadedPlaylist)
                 }
             }
@@ -133,7 +133,7 @@ class InfoViewModel  @Inject constructor(
 
     fun deletePlaylist() = viewModelScope.launch(Dispatchers.IO) {
         playlist.value?.let {
-            if(infoScreenCaller == InfoScreenCaller.PLAYLISTS){
+            if(infoScreenCaller == InfoScreenCaller.PLAY){
                 repository.deletePlaylistById(it.id)
                 uiState.postValue(InfoUiState.CLOSE)
             }

@@ -52,7 +52,7 @@
         android:contentDescription="@string/content_description_info" />
 
     <TextView
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:id="@+id/tvPrimaryAction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:contentDescription="@string/content_description_info" />
 
     <TextView
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:id="@+id/tvSecondaryAction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
         android:contentDescription="@string/content_description_info" />
 
     <TextView
-        style="@style/ButtonLabel"
+        style="@style/ButtonText"
         android:id="@+id/tvTertiaryAction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

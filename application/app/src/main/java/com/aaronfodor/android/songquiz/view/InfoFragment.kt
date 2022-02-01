@@ -46,8 +46,11 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
 
         val navController = NavHostFragment.findNavController(this)
         when (navController.currentDestination?.id) {
-            R.id.nav_info_from_playlists -> {
-                viewModel.infoScreenCaller = InfoScreenCaller.PLAYLISTS
+            R.id.nav_info_from_home -> {
+                viewModel.infoScreenCaller = InfoScreenCaller.HOME
+            }
+            R.id.nav_info_from_play -> {
+                viewModel.infoScreenCaller = InfoScreenCaller.PLAY
             }
             R.id.nav_info_from_add_playlists -> {
                 viewModel.infoScreenCaller = InfoScreenCaller.ADD_PLAYLIST
@@ -108,7 +111,7 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
             binding.content.description.text = playlist.description
 
             if(viewModel.uiState.value == InfoUiState.READY){
-                binding.content.numSongsFollowers.text = getString(R.string.num_songs_followers, playlist.tracks.size, playlist.followers)
+                binding.content.numSongsFollowers.text = getString(R.string.num_songs_followers, playlist.tracks.size.toString(), playlist.followers.toString())
             }
             else{
                 binding.content.numSongsFollowers.text = ""
@@ -137,7 +140,13 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
             binding.content.tvSecondaryAction.setOnClickListener { viewOnSpotify() }
 
             when (viewModel.infoScreenCaller) {
-                InfoScreenCaller.PLAYLISTS -> {
+                InfoScreenCaller.HOME -> {
+                    binding.content.fabTertiaryAction.visibility = View.INVISIBLE
+                    binding.content.tvTertiaryAction.visibility = View.INVISIBLE
+                    binding.content.fabTertiaryAction.setOnClickListener {}
+                    binding.content.tvTertiaryAction.setOnClickListener {}
+                }
+                InfoScreenCaller.PLAY -> {
                     val deletePlaylist = {
                         deletePlaylist(playlist.name)
                     }
@@ -184,7 +193,7 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
                         playlist?.let {
 
                             val textSongsFollowers = if(viewModel.uiState.value == InfoUiState.READY){
-                                getString(R.string.num_songs_followers, playlist.tracks.size, playlist.followers)
+                                getString(R.string.num_songs_followers, playlist.tracks.size.toString(), playlist.followers.toString())
                             }
                             else{
                                 ""
@@ -219,7 +228,7 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
 
     private fun closeScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_playlists, null)
+        navHostFragment.navigate(R.id.to_nav_play, null)
         viewModel.ready()
     }
 
