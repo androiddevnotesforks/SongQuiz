@@ -8,7 +8,7 @@
     android:layout_margin="@dimen/list_item_small_margin">
 
     <ImageView
-        android:id="@+id/playlist_image"
+        android:id="@+id/listable_image"
         style="@style/ListImage"
         android:layout_width="@dimen/list_item_image_size"
         android:layout_height="@dimen/list_item_image_size"
@@ -19,7 +19,7 @@
         android:importantForAccessibility="no"/>
 
     <TextView
-        android:id="@+id/playlist_title"
+        android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_small_margin"
@@ -27,12 +27,12 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:theme="@style/ListTitleText"
-        app:layout_constraintStart_toEndOf="@+id/playlist_image"
+        app:layout_constraintStart_toEndOf="@+id/listable_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
-        app:layout_constraintTop_toTopOf="@+id/playlist_image"/>
+        app:layout_constraintTop_toTopOf="@+id/listable_image"/>
 
     <TextView
-        android:id="@+id/playlist_owner"
+        android:id="@+id/content_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_small_margin"
@@ -40,13 +40,13 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:theme="@style/ListText"
-        app:layout_constraintStart_toEndOf="@+id/playlist_image"
+        app:layout_constraintStart_toEndOf="@+id/listable_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
-        app:layout_constraintTop_toBottomOf="@+id/playlist_title"
-        app:layout_constraintBottom_toTopOf="@+id/playlist_description"/>
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toTopOf="@+id/content_2"/>
 
     <TextView
-        android:id="@+id/playlist_description"
+        android:id="@+id/content_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_small_margin"
@@ -54,9 +54,9 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:theme="@style/ListText"
-        app:layout_constraintStart_toEndOf="@+id/playlist_image"
+        app:layout_constraintStart_toEndOf="@+id/listable_image"
         app:layout_constraintEnd_toStartOf="@+id/secondary_action"
-        app:layout_constraintBottom_toBottomOf="@+id/playlist_image"/>
+        app:layout_constraintBottom_toBottomOf="@+id/listable_image"/>
 
     <ImageButton
         android:id="@+id/secondary_action"
@@ -67,13 +67,10 @@
         app:layout_constraintEnd_toStartOf="@+id/primary_action"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
+    <ImageButton
         android:id="@+id/primary_action"
-        style="@style/AppButton"
-        android:layout_width="@dimen/list_item_button_size"
-        android:layout_height="@dimen/list_item_button_size"
-        android:layout_margin="@dimen/list_item_margin"
-        android:text="@string/unicode_start"
+        style="@style/ListItemImageButton"
+        android:background="@drawable/icon_info"
         android:contentDescription="@string/content_description_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

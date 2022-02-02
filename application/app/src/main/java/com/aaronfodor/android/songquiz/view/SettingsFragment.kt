@@ -245,8 +245,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     private fun showDeletePlaylistsDialog() {
-        val dialog = AppDialog(requireContext(), getString(R.string.delete_playlists),
-            getString(R.string.delete_playlists_description), R.drawable.icon_delete)
+        val dialog = AppDialog(requireContext(), getString(R.string.delete_all_playlists),
+            getString(R.string.delete_all_playlists_description), R.drawable.icon_delete)
         dialog.setPositiveButton {
             // delete playlists
             viewModel.deletePlaylists()

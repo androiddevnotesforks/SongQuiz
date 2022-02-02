@@ -2,6 +2,7 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.ui.AppBarConfiguration
@@ -105,6 +106,9 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         }
         else{
             when (navController.currentDestination?.id) {
+                R.id.to_nav_home -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
                 R.id.nav_play -> {
                     navController.navigate(R.id.to_nav_home, null)
                 }
@@ -140,6 +144,52 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
                 }
             }
         }
+    }
+
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param item The selected item
+     * @return true to display the item as the selected item
+     **/
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+        if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            activityDrawerLayout.closeDrawer(GravityCompat.START)
+        }
+        else{
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    navController.navigate(R.id.to_nav_home)
+                }
+                R.id.nav_play -> {
+                    navController.navigate(R.id.to_nav_play)
+                }
+                R.id.nav_add -> {
+                    navController.navigate(R.id.to_nav_add)
+                }
+                R.id.nav_favourites -> {
+                    navController.navigate(R.id.nav_favourites)
+                }
+                R.id.nav_statistics -> {
+                    navController.navigate(R.id.nav_statistics)
+                }
+                R.id.nav_help -> {
+                    navController.navigate(R.id.nav_help)
+                }
+                R.id.nav_about -> {
+                    navController.navigate(R.id.nav_about)
+                }
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.nav_settings)
+                }
+                else ->{
+                    return false
+                }
+            }
+        }
+        return true
+
     }
 
     // to handle back button specifically

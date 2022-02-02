@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,8 +26,8 @@ class PlaylistsAddViewModel @Inject constructor(
         var transferPlaylistIdsAlreadyAdded : List<String> = listOf()
     }
 
-    val searchResult : MutableLiveData<PlaylistSearchResult> by lazy {
-        MutableLiveData<PlaylistSearchResult>()
+    val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
+        MutableLiveData<ViewModelPlaylistSearchResult>()
     }
 
     val uiState: MutableLiveData<PlaylistsAddUiState> by lazy {
@@ -36,9 +36,11 @@ class PlaylistsAddViewModel @Inject constructor(
 
     var playlistIdsAlreadyAdded = mutableListOf<String>()
 
-    init { viewModelScope.launch {
-        uiState.value = PlaylistsAddUiState.READY
-    } }
+    init {
+        viewModelScope.launch {
+            uiState.value = PlaylistsAddUiState.READY
+        }
+    }
 
     fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch {
         playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
@@ -52,8 +54,8 @@ class PlaylistsAddViewModel @Inject constructor(
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
 
-        val result = repository.searchPlaylistByIdOrName(searchExpression)
-        searchResult.postValue(result)
+        val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
+        searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
         if(result.items.isEmpty()){
             uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
@@ -67,7 +69,8 @@ class PlaylistsAddViewModel @Inject constructor(
         val currentResult = searchResult.value ?: return@launch
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
-        searchResult.postValue(repository.searchGetNextBatch(currentResult))
+        val searchBatch = repository.searchGetNextBatch(currentResult.toPlaylistSearchResult()).toViewModelPlaylistSearchResult()
+        searchResult.postValue(searchBatch.removeIds(playlistIdsAlreadyAdded))
         uiState.postValue(PlaylistsAddUiState.READY)
     }
 
@@ -78,11 +81,16 @@ class PlaylistsAddViewModel @Inject constructor(
         }
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
-        val success = searchResult.value?.items?.let { repository.insertPlaylist(it.first{ item -> item.id == id }) } ?: false
+        val success = searchResult.value?.items?.let {
+            repository.insertPlaylist(it.first{ item -> item.id == id }.toPlaylist())
+        } ?: false
 
         if(success){
             uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
             playlistIdsAlreadyAdded.add(id)
+            searchResult.value?.let {
+                searchResult.postValue(it.removeIds(playlistIdsAlreadyAdded))
+            }
         }
         else{
             uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)

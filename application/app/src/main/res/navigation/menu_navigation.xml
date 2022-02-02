@@ -123,6 +123,10 @@
         app:destination="@id/nav_settings" />
 
     <action
+        android:id="@+id/to_nav_info_from_home"
+        app:destination="@id/nav_info_from_home" />
+
+    <action
         android:id="@+id/to_nav_info_from_playlists"
         app:destination="@id/nav_info_from_play" />
 

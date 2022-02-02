@@ -69,8 +69,8 @@
     <string name="c_and">and</string>
     <string name="c_comma_and_and">, and</string>
     <string name="c_not">not</string>
-    <string name="c_difficulty_compensation_explanation">up to the same amount as difficulty bonus</string>
-    <string name="c_difficulty_compensation_point">an extra %1$s for the difficulty</string>
+    <string name="c_difficulty_compensation_explanation">a multiplier for difficulty</string>
+    <string name="c_difficulty_compensation_point">an extra %1$s for the %2$s%% difficulty</string>
     <string name="c_title">title</string>
     <string name="c_artist">artist</string>
     <string name="c_settings_info">Based on your settings, a song lasts for %1$s seconds, and repeating a song is %2$s allowed.</string>

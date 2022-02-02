@@ -228,7 +228,20 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
 
     private fun closeScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_play, null)
+        when(viewModel.infoScreenCaller){
+            InfoScreenCaller.HOME -> {
+                navHostFragment.navigate(R.id.to_nav_home, null)
+            }
+            InfoScreenCaller.PLAY -> {
+                navHostFragment.navigate(R.id.to_nav_play, null)
+            }
+            InfoScreenCaller.ADD_PLAYLIST -> {
+                navHostFragment.navigate(R.id.to_nav_add, null)
+            }
+            InfoScreenCaller.UNSPECIFIED -> {
+                navHostFragment.navigate(R.id.to_nav_home, null)
+            }
+        }
         viewModel.ready()
     }
 

@@ -55,16 +55,17 @@ class InfoViewModel  @Inject constructor(
         MutableLiveData<Playlist>()
     }
 
-    init { viewModelScope.launch {
-        if(textToSpeechService.isSpeaking()){
-            ttsState.value = TtsInfoState.SPEAKING
+    init {
+        viewModelScope.launch {
+            if(textToSpeechService.isSpeaking()){
+                ttsState.value = TtsInfoState.SPEAKING
+            }
+            else{
+                ttsState.value = TtsInfoState.ENABLED
+            }
+            subscribeTtsListeners()
         }
-        else{
-            ttsState.value = TtsInfoState.ENABLED
-        }
-
-        subscribeTtsListeners()
-    } }
+    }
 
     fun subscribeTtsListeners() = viewModelScope.launch {
         textToSpeechService.setCallbacks(
@@ -133,7 +134,7 @@ class InfoViewModel  @Inject constructor(
 
     fun deletePlaylist() = viewModelScope.launch(Dispatchers.IO) {
         playlist.value?.let {
-            if(infoScreenCaller == InfoScreenCaller.PLAY){
+            if(infoScreenCaller == InfoScreenCaller.PLAY || infoScreenCaller == InfoScreenCaller.HOME){
                 repository.deletePlaylistById(it.id)
                 uiState.postValue(InfoUiState.CLOSE)
             }

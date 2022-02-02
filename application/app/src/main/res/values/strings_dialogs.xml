@@ -16,8 +16,8 @@
     <string name="clear_cache">Clear cache</string>
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>
 
-    <string name="delete_playlists">Delete all playlists</string>
-    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
+    <string name="delete_all_playlists">Delete all playlists</string>
+    <string name="delete_all_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
 
     <string name="restore_default_db">Restore default playlists</string>
     <string name="restore_default_db_description">Are you sure you want to delete your local data and restore the defaults? This will not affect anything on Spotify.</string>

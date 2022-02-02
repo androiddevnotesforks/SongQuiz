@@ -56,8 +56,8 @@
     <string name="c_and">és</string>
     <string name="c_comma_and_and">, és</string>
     <string name="c_not">nem</string>
-    <string name="c_difficulty_compensation_explanation">maximum ugyanennyi nehézségi bónusz</string>
-    <string name="c_difficulty_compensation_point">további %1$s nehézségi</string>
+    <string name="c_difficulty_compensation_explanation">nehézségi szorzó</string>
+    <string name="c_difficulty_compensation_point">további %1$s, %2$s%% nehézség miatti</string>
     <string name="c_title">cím</string>
     <string name="c_artist">előadó</string>
     <string name="c_settings_info">A beállításaid alapján egy dal %1$s másodpercig tart, és a dalok ismétlése %2$s engedélyezett.</string>

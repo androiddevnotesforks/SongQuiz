@@ -1,6 +1,7 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
 import android.content.Context
+import android.util.Log
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.TextParserService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -81,6 +82,7 @@ class QuizService @Inject constructor(
 
     var lastPlayerArtistTitlePoints = 0
     var lastPlayerDifficultyCompensationPoints = 0
+    var lastPlayerDifficultyCompensationPercentage = 0
     var lastPlayerAllPoints = 0
     var lastSongAlbum = ""
     var lastSongTitle = ""
@@ -288,7 +290,7 @@ class QuizService @Inject constructor(
                 forWhatString += context.getString(R.string.c_artist)
             }
             if(quiz.type.difficultyCompensation){
-                forWhatString += "${context.getString(R.string.c_comma_and_and)} ${context.getString(R.string.c_difficulty_compensation_point, lastPlayerDifficultyCompensationPoints.toString())}"
+                forWhatString += "${context.getString(R.string.c_comma_and_and)} ${context.getString(R.string.c_difficulty_compensation_point, lastPlayerDifficultyCompensationPoints.toString(), lastPlayerDifficultyCompensationPercentage.toString())}"
             }
             val goodGuessPrefix = context.resources.getStringArray(R.array.good_guess_prefixes).random()
             resultString = context.getString(R.string.c_player_good_guess, goodGuessPrefix, "$pointsString $forWhatString")
@@ -605,6 +607,7 @@ class QuizService @Inject constructor(
 
         lastPlayerArtistTitlePoints = artistPoint + titlePoint
         if(quiz.type.difficultyCompensation){
+            lastPlayerDifficultyCompensationPercentage = (compensationRatio * 100.0).roundToInt()
             lastPlayerDifficultyCompensationPoints = difficultyCompensationPoint
         }
 

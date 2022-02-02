@@ -8,21 +8,27 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsViewModel
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule {
+
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule, View.OnCreateContextMenuListener {
 
     private val binding: FragmentPlaylistsBinding by viewBinding()
 
@@ -32,16 +38,44 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PlaylistsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[PlaylistsViewModel::class.java]
 
-        val startLambda: (Playlist) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
-        val infoLambda: (Playlist) -> Unit = { playlist -> showInfoScreen(playlist.id) }
+        val startLambda: (Listable) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
+        val startDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_play_circular)
+        val startText = getString(R.string.play)
 
-        val startText = getString(R.string.unicode_start)
+        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
         val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
+        val infoText = getString(R.string.info)
 
-        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), startLambda, startText, infoLambda, infoDrawable, {})
-        binding.RecyclerViewPlaylists.adapter = playlistsAdapter
+        val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id) }
+        val deleteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_delete)
+        val deleteText = getString(R.string.delete)
+
+        val primaryAction = ListableAction(startLambda, startDrawable, startText)
+        val secondaryAction = ListableAction(infoLambda, infoDrawable, infoText)
+        val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
+
+        val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
+        binding.RecyclerViewPlaylists.adapter = listAdapter
+
+        //swipe
+        binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                viewModel.playlists.value?.let {
+                    viewModel.deletePlaylist(it[position].id)
+                }
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewPlaylists)
+
+        registerForContextMenu(binding.RecyclerViewPlaylists)
 
         binding.fabAddPlaylist.setOnClickListener {
             viewModel.showAddPlaylistScreen()
@@ -52,8 +86,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     }
 
     override fun subscribeViewModel() {
-        val playlistsObserver = Observer<List<Playlist>> { playlists ->
-            (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(playlists)
+        val playlistsObserver = Observer<List<ViewModelPlaylist>> { playlists ->
+            val newList = playlists.map { it.toListable() }
+            (binding.RecyclerViewPlaylists.adapter as ListableAdapter).submitList(newList)
 
             if(playlists.isEmpty() && (viewModel.uiState.value == PlaylistsUiState.READY)){
                 binding.tvEmpty.visibility = View.VISIBLE
@@ -123,6 +158,15 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         // record the selected playlist
         selectedPlaylistId = id
         viewModel.startQuiz()
+    }
+
+    private fun deletePlaylist(name: String, id: String) {
+        val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
+            getString(R.string.delete_playlist_description, name), R.drawable.icon_delete)
+        dialog.setPositiveButton {
+            viewModel.deletePlaylist(id)
+        }
+        dialog.show()
     }
 
     private fun showQuizScreen(){

@@ -10,17 +10,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
-import com.aaronfodor.android.songquiz.view.utils.AppDialogInput
-import com.aaronfodor.android.songquiz.view.utils.AppFragment
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddViewModel
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylistSearchResult
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.removeIds
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
@@ -35,18 +36,43 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PlaylistsAddViewModel::class.java)
+        viewModel = ViewModelProvider(this)[PlaylistsAddViewModel::class.java]
 
-        val addLambda: (Playlist) -> Unit = { playlist -> addPlaylist(playlist.id) }
-        val infoLambda: (Playlist) -> Unit = { playlist -> showInfoScreen(playlist.id) }
+        val addLambda: (Listable) -> Unit = { playlist -> addPlaylist(playlist.id) }
+        val addDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_add_circular)
+        val addText = getString(R.string.add)
 
-        val addText = getString(R.string.unicode_add)
+        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
         val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
+        val infoText = getString(R.string.info)
+
+        val primaryAction = ListableAction(addLambda, addDrawable, addText)
+        val secondaryAction = ListableAction(infoLambda, infoDrawable, infoText)
+        val swipeAction = ListableAction({}, null, "")
 
         val lastItemLambda: () -> Unit = { searchGetNextBatch() }
 
-        val playlistsAdapter = PlaylistsAdapter(this.requireContext(), addLambda, addText, infoLambda, infoDrawable, lastItemLambda)
-        binding.RecyclerViewPlaylists.adapter = playlistsAdapter
+        val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, lastItemLambda)
+        binding.RecyclerViewPlaylists.adapter = listAdapter
+
+        //swipe
+        binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                viewModel.searchResult.value?.let {
+                    val idToRemove = it.items[position].id
+                    viewModel.searchResult.postValue(it.removeIds(listOf(idToRemove)))
+                }
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewPlaylists)
+
+        registerForContextMenu(binding.RecyclerViewPlaylists)
 
         binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
         binding.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
@@ -55,8 +81,8 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
     override fun subscribeViewModel() {
         viewModel.setPlaylistIdsAlreadyAdded()
 
-        val playlistsFoundObserver = Observer<PlaylistSearchResult> { result ->
-            (binding.RecyclerViewPlaylists.adapter as PlaylistsAdapter).submitList(result.items)
+        val playlistsFoundObserver = Observer<ViewModelPlaylistSearchResult> { result ->
+            (binding.RecyclerViewPlaylists.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
 
             if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
                 binding.tvEmpty.visibility = View.VISIBLE

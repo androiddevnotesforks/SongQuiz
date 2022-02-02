@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,8 +23,8 @@ class PlaylistsViewModel @Inject constructor(
     val accountService: AccountService
 ) : ViewModel() {
 
-    val playlists : MutableLiveData<List<Playlist>> by lazy {
-        MutableLiveData<List<Playlist>>()
+    val playlists : MutableLiveData<List<ViewModelPlaylist>> by lazy {
+        MutableLiveData<List<ViewModelPlaylist>>()
     }
 
     val uiState: MutableLiveData<PlaylistsUiState> by lazy {
@@ -36,7 +37,15 @@ class PlaylistsViewModel @Inject constructor(
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(PlaylistsUiState.LOADING)
-        playlists.postValue(repository.getPlaylists())
+        playlists.postValue(repository.getPlaylists().map { it.toViewModelPlaylist() })
+        uiState.postValue(PlaylistsUiState.READY)
+    }
+
+    fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        uiState.postValue(PlaylistsUiState.LOADING)
+        repository.deletePlaylistById(id)
+        val newList = repository.getPlaylists().map { it.toViewModelPlaylist() }
+        playlists.postValue(newList)
         uiState.postValue(PlaylistsUiState.READY)
     }
 

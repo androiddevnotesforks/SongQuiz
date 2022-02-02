@@ -8,18 +8,62 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/app_input_field.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/app_input_field_normal.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/app_input_field_pressed.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/ic_launcher_background.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_add.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_add_circular.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_add_playlist.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_album.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_audio.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_back.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_bug.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_celebration.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_cross.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_delete.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_error.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_exit.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_favourite.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_favourite_border.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_home.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_hourglass.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_info.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_license.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_mic_off.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_mic_on.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_mic_rec.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_more_apps.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_music_notes.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_no_internet.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_notification.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_play.xml" value="0.2615" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_play_circular.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_playlists.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_privacy.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_proceed.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_question.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_replay.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_restore.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_review.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_search.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_settings.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_sound_off.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_sound_on.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_sound_speaking.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_spotify.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_statistics.xml" value="0.331" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_warning.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_waveform.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/image_shadow.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/message_box.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/progressbar_time.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/activity_auth.xml" value="0.33" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/app_dialog.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_auth.xml" value="0.36666666666666664" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_quiz_content.xml" value="0.25" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/app_dialog.xml" value="0.18854166666666666" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/app_dialog_input.xml" value="0.3009833262077811" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_info.xml" value="0.3009833262077811" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_info_content.xml" value="0.3009833262077811" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_playlist_add.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/playlist_item.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/menu/main_menu.xml" value="0.5" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.331" />

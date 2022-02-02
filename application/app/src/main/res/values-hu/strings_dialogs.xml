@@ -16,8 +16,8 @@
     <string name="clear_cache">Gyorsítótár törlése</string>
     <string name="clear_cache_description">Biztosan törölni szeretnéd a képek gyorsítótárát? Ez csökkenti a memóriahasználatot, de megnövelheti a hálózati forgalmat.</string>
 
-    <string name="delete_playlists">Összes lista törlése</string>
-    <string name="delete_playlists_description">Biztosan törölni szeretnéd az összes felvett listát? Ez a Spotify-on nem befolyásol semmit, a listákat később újra felveheted.</string>
+    <string name="delete_all_playlists">Összes lista törlése</string>
+    <string name="delete_all_playlists_description">Biztosan törölni szeretnéd az összes felvett listát? Ez a Spotify-on nem befolyásol semmit, a listákat később újra felveheted.</string>
 
     <string name="restore_default_db">Alapértelmezett listák visszaállítása</string>
     <string name="restore_default_db_description">Biztosan törölni szeretnéd a lokális adatokat, majd visszaállítani az alapértelmezetteket? Ez a Spotify-on nem befolyásol semmit.</string>

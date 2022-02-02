@@ -35,8 +35,5 @@
         (Flaticon.com)\n\n
     </string>
 
-    <string name="unicode_start" translatable="false">►</string>
-    <string name="unicode_add" translatable="false">＋</string>
-
     <string name="nav_header_title" translatable="false">&appName;</string>
 </resources>
