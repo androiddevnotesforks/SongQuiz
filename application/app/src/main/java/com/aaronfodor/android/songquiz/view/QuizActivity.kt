@@ -375,7 +375,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
         when(infoType){
             QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                val message = getString(R.string.error_playlist_load)
+                val message = getString(R.string.error_listable_load)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                 viewModel.empty()
             }

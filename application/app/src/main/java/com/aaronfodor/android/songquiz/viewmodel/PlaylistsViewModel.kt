@@ -17,11 +17,25 @@ enum class PlaylistsUiState{
     LOADING, READY, AUTH_NEEDED, START_QUIZ, SHOW_ADD_SCREEN
 }
 
+enum class PlaylistsNotification{
+    NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST
+}
+
 @HiltViewModel
 class PlaylistsViewModel @Inject constructor(
     val repository: PlaylistsRepository,
     val accountService: AccountService
 ) : ViewModel() {
+
+    companion object{
+        var notificationFromCaller = PlaylistsNotification.NONE
+
+        fun getInitialNotification() : PlaylistsNotification {
+            val value = notificationFromCaller
+            notificationFromCaller = PlaylistsNotification.NONE
+            return value
+        }
+    }
 
     val playlists : MutableLiveData<List<ViewModelPlaylist>> by lazy {
         MutableLiveData<List<ViewModelPlaylist>>()
@@ -31,9 +45,15 @@ class PlaylistsViewModel @Inject constructor(
         MutableLiveData<PlaylistsUiState>()
     }
 
-    init { viewModelScope.launch {
-        loadData()
-    } }
+    val notification: MutableLiveData<PlaylistsNotification> by lazy {
+        MutableLiveData<PlaylistsNotification>(getInitialNotification())
+    }
+
+    init {
+        viewModelScope.launch {
+            loadData()
+        }
+    }
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(PlaylistsUiState.LOADING)
@@ -42,11 +62,16 @@ class PlaylistsViewModel @Inject constructor(
     }
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        uiState.postValue(PlaylistsUiState.LOADING)
-        repository.deletePlaylistById(id)
+        val success = repository.deletePlaylistById(id)
+        if(success){
+            notification.postValue(PlaylistsNotification.SUCCESS_DELETE_PLAYLIST)
+        }
+        else{
+            notification.postValue(PlaylistsNotification.ERROR_DELETE_PLAYLIST)
+        }
+
         val newList = repository.getPlaylists().map { it.toViewModelPlaylist() }
         playlists.postValue(newList)
-        uiState.postValue(PlaylistsUiState.READY)
     }
 
     fun startQuiz() = viewModelScope.launch {

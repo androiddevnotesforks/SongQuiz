@@ -41,6 +41,13 @@
 
     <string name="type_here">Type here</string>
 
+    <string name="ready_to_start">Playlist is ready! Tap the speaker icon to start.</string>
+    <string name="error_playlist_load_description">Cannot load playlist. Please check your internet connection and try again, or make sure that the playlist still exists on Spotify.</string>
+    <string name="error_play_song">Cannot play current song</string>
+    <string name="error_play_song_description">Cannot play current song. Please check your internet connection.</string>
+    <string name="error_speak_to_user">Cannot speak to user</string>
+    <string name="error_speak_to_user_description">Cannot speak to user. Please make sure your device supports text-to-speech.</string>
+
     <string name="recognition_error_audio">Audio recording error. Please try again.</string>
     <string name="recognition_error_client">Client side error. Please try again.</string>
     <string name="recognition_error_permissions">Insufficient permissions. Please enable required permissions and make sure that the app is in the foreground while using speech input.</string>

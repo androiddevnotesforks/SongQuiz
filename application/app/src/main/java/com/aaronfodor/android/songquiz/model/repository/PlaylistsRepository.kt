@@ -57,12 +57,14 @@ class PlaylistsRepository @Inject constructor(
         return true
     }
 
-    fun deletePlaylistById(id: String){
+    fun deletePlaylistById(id: String) : Boolean{
         dao.delete(id)
+        return true
     }
 
-    fun deleteAllPlaylists(){
+    fun deleteAllPlaylists() : Boolean{
         dao.deleteAll()
+        return true
     }
 
     fun downloadPlaylistById(id: String) : Playlist{

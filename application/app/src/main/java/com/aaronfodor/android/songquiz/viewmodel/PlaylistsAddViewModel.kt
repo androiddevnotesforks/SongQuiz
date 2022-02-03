@@ -13,7 +13,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsAddUiState{
-    LOADING, READY, NOT_FOUND, AUTH_NEEDED, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED
+    LOADING, READY, AUTH_NEEDED
+}
+
+enum class PlaylistsAddNotification{
+    NONE, DISCARDED, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED, NOT_FOUND
 }
 
 @HiltViewModel
@@ -24,6 +28,14 @@ class PlaylistsAddViewModel @Inject constructor(
 
     companion object{
         var transferPlaylistIdsAlreadyAdded : List<String> = listOf()
+
+        var notificationFromCaller = PlaylistsAddNotification.NONE
+
+        fun getInitialNotification() : PlaylistsAddNotification {
+            val value = notificationFromCaller
+            notificationFromCaller = PlaylistsAddNotification.NONE
+            return value
+        }
     }
 
     val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
@@ -32,6 +44,10 @@ class PlaylistsAddViewModel @Inject constructor(
 
     val uiState: MutableLiveData<PlaylistsAddUiState> by lazy {
         MutableLiveData<PlaylistsAddUiState>()
+    }
+
+    val notification: MutableLiveData<PlaylistsAddNotification> by lazy {
+        MutableLiveData<PlaylistsAddNotification>(getInitialNotification())
     }
 
     var playlistIdsAlreadyAdded = mutableListOf<String>()
@@ -53,16 +69,13 @@ class PlaylistsAddViewModel @Inject constructor(
         }
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
-
         val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
         searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
         if(result.items.isEmpty()){
-            uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
+            notification.postValue(PlaylistsAddNotification.NOT_FOUND)
         }
-        else{
-            uiState.postValue(PlaylistsAddUiState.READY)
-        }
+        uiState.postValue(PlaylistsAddUiState.READY)
     }
 
     fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
@@ -76,24 +89,23 @@ class PlaylistsAddViewModel @Inject constructor(
 
     fun addPlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {
         if(playlistIdsAlreadyAdded.contains(id)){
-            uiState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
+            notification.postValue(PlaylistsAddNotification.PLAYLIST_ALREADY_ADDED)
             return@launch
         }
 
-        uiState.postValue(PlaylistsAddUiState.LOADING)
         val success = searchResult.value?.items?.let {
             repository.insertPlaylist(it.first{ item -> item.id == id }.toPlaylist())
         } ?: false
 
         if(success){
-            uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
+            notification.postValue(PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST)
             playlistIdsAlreadyAdded.add(id)
             searchResult.value?.let {
                 searchResult.postValue(it.removeIds(playlistIdsAlreadyAdded))
             }
         }
         else{
-            uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
+            notification.postValue(PlaylistsAddNotification.ERROR_ADD_PLAYLIST)
         }
     }
 

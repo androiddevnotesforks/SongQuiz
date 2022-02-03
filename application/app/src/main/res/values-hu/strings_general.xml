@@ -41,6 +41,13 @@
 
     <string name="type_here">Koppints a bevitelhez</string>
 
+    <string name="ready_to_start">Játékra fel! Koppints a hangszóró ikonra a kezdéshez.</string>
+    <string name="error_playlist_load_description">Nem sikerült a lista betöltése. Kérlek ellenőrizd az internetkapcsolatot és próbáld újra, illetve bizonyosodj meg róla, hogy a lista továbbra is létezik Spotify-on.</string>
+    <string name="error_play_song">Nem sikerült a dal lejátszása</string>
+    <string name="error_play_song_description">Nem sikerült a dal lejátszása. Kérlek ellenőrizd az internetkapcsolatot.</string>
+    <string name="error_speak_to_user">Nem sikerült a felhasználóhoz beszélni</string>
+    <string name="error_speak_to_user_description">Nem sikerült a felhasználóhoz beszélni. Kérlek bizonyosodj meg róla, hogy az eszközöd támogatja a text-to-speech funkciót.</string>
+
     <string name="recognition_error_audio">Szövegbemeneti hiba. Kérlek próbáld újra.</string>
     <string name="recognition_error_client">Kliensoldali hiba. Kérlek próbáld újra.</string>
     <string name="recognition_error_permissions">Hiányzó engedély. Kérlek hagyd jóvá a szükséges engedélyeket, illetve beszéd közben bizonyosodj meg róla, hogy az alkalmazás előtérben van.</string>

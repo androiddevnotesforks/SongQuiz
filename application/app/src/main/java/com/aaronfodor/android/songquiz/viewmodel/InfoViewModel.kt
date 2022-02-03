@@ -7,14 +7,21 @@ import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getDifficulty
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class InfoUiState{
-    LOADING, READY, PLAYLIST_FALLBACK, ERROR_PLAYLIST_LOAD, CLOSE, AUTH_NEEDED, START_QUIZ
+    LOADING, READY_COMPLETE, READY_FALLBACK, CLOSE, AUTH_NEEDED, START_QUIZ
+}
+
+enum class InfoUiNotification{
+    NONE, FALLBACK_LOAD, ERROR_LOAD, ERROR_ADD_ITEM, SUCCESS_ADD_ITEM, ERROR_DELETE_ITEM, SUCCESS_DELETE_ITEM
 }
 
 enum class TtsInfoState{
@@ -34,11 +41,12 @@ class InfoViewModel  @Inject constructor(
 
     var infoScreenCaller = InfoScreenCaller.UNSPECIFIED
 
-    /**
-     * Info state
-     */
     val uiState: MutableLiveData<InfoUiState> by lazy {
         MutableLiveData<InfoUiState>()
+    }
+
+    val notification: MutableLiveData<InfoUiNotification> by lazy {
+        MutableLiveData<InfoUiNotification>()
     }
 
     /**
@@ -51,8 +59,8 @@ class InfoViewModel  @Inject constructor(
     /**
      * Playlist to show
      */
-    val playlist: MutableLiveData<Playlist> by lazy {
-        MutableLiveData<Playlist>()
+    val item: MutableLiveData<ViewModelPlaylist> by lazy {
+        MutableLiveData<ViewModelPlaylist>()
     }
 
     init {
@@ -97,9 +105,15 @@ class InfoViewModel  @Inject constructor(
         textToSpeechService.stop()
     }
 
-    fun setPlaylistById(playlistId: String) = viewModelScope.launch(Dispatchers.IO) {
-        if(playlist.value?.id == playlistId){
-            ready()
+    fun setItemById(playlistId: String, forceLoad: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+        if(item.value?.id == playlistId && !forceLoad){
+            item.value?.let {
+                if(it.tracks.size > 0 || it.followers > 0 || it.getDifficulty() > 0){
+                    ready(InfoUiState.READY_COMPLETE)
+                    return@launch
+                }
+            }
+            ready(InfoUiState.READY_FALLBACK)
             return@launch
         }
         else{
@@ -110,47 +124,65 @@ class InfoViewModel  @Inject constructor(
 
             // successfully downloaded
             if(downloadedPlaylist.id == playlistId){
-                ready()
-                playlist.postValue(downloadedPlaylist)
+                ready(InfoUiState.READY_COMPLETE)
+                item.postValue(downloadedPlaylist.toViewModelPlaylist())
                 if(infoScreenCaller == InfoScreenCaller.PLAY){
                     repository.updatePlaylist(downloadedPlaylist)
                 }
             }
             // cannot download
             else{
+                ready(InfoUiState.READY_FALLBACK)
                 val fallbackPlaylist = repository.getPlaylistById(playlistId)
                 // load from disk
                 if(fallbackPlaylist.id == playlistId){
-                    uiState.postValue(InfoUiState.PLAYLIST_FALLBACK)
-                    playlist.postValue(fallbackPlaylist)
+                    notification.postValue(InfoUiNotification.FALLBACK_LOAD)
+                    item.postValue(fallbackPlaylist.toViewModelPlaylist())
                 }
                 // cannot load from disk either
                 else{
-                    uiState.postValue(InfoUiState.ERROR_PLAYLIST_LOAD)
+                    notification.postValue(InfoUiNotification.ERROR_LOAD)
                 }
             }
+
         }
     }
 
-    fun deletePlaylist() = viewModelScope.launch(Dispatchers.IO) {
-        playlist.value?.let {
+    fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
+        item.value?.let {
             if(infoScreenCaller == InfoScreenCaller.PLAY || infoScreenCaller == InfoScreenCaller.HOME){
-                repository.deletePlaylistById(it.id)
+
+                val success = repository.deletePlaylistById(it.id)
+                if(success){
+                    notification.postValue(InfoUiNotification.SUCCESS_DELETE_ITEM)
+                }
+                else{
+                    notification.postValue(InfoUiNotification.ERROR_DELETE_ITEM)
+                }
+
                 uiState.postValue(InfoUiState.CLOSE)
             }
         }
     }
 
-    fun addPlaylist() = viewModelScope.launch(Dispatchers.IO) {
-        playlist.value?.let {
+    fun addItem() = viewModelScope.launch(Dispatchers.IO) {
+        item.value?.let {
             uiState.postValue(InfoUiState.LOADING)
-            repository.insertPlaylist(it)
+
+            val success = repository.insertPlaylist(it.toPlaylist())
+            if(success){
+                notification.postValue(InfoUiNotification.SUCCESS_ADD_ITEM)
+            }
+            else{
+                notification.postValue(InfoUiNotification.ERROR_ADD_ITEM)
+            }
+
             uiState.postValue(InfoUiState.CLOSE)
         }
     }
 
-    fun ready() = viewModelScope.launch {
-        uiState.value = InfoUiState.READY
+    fun ready(vale: InfoUiState) = viewModelScope.launch {
+        uiState.value = vale
     }
 
     fun startQuiz() = viewModelScope.launch {
@@ -158,7 +190,6 @@ class InfoViewModel  @Inject constructor(
             uiState.value = InfoUiState.AUTH_NEEDED
             return@launch
         }
-
         uiState.value = InfoUiState.START_QUIZ
     }
 

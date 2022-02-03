@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel.dataclasses
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
 import com.aaronfodor.android.songquiz.view.Listable
+import kotlin.math.roundToInt
 
 class ViewModelPlaylist (
     val id: String,
@@ -65,4 +66,23 @@ fun ViewModelPlaylist.toListable() : Listable {
         content2 = this.description,
         imageUri = this.previewImageUri
     )
+}
+
+fun ViewModelPlaylist.getDifficulty() : Int {
+    var sumPopularity = 0
+    var validItems = 0
+
+    for(track in this.tracks){
+        if(track.popularity > 0){
+            sumPopularity += track.popularity
+            validItems += 1
+        }
+    }
+
+    var difficulty = 0
+    if(sumPopularity > 0 && validItems > 0){
+        difficulty = 100 - (sumPopularity.toDouble() / validItems.toDouble()).roundToInt()
+    }
+
+    return difficulty
 }

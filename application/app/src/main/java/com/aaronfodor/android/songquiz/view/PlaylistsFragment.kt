@@ -18,15 +18,16 @@ import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
+import com.aaronfodor.android.songquiz.viewmodel.PlaylistsNotification
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsViewModel
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-
 
 class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule, View.OnCreateContextMenuListener {
 
@@ -48,7 +49,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
         val infoText = getString(R.string.info)
 
-        val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id) }
+        val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id, {}) }
         val deleteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_delete)
         val deleteText = getString(R.string.delete)
 
@@ -61,7 +62,8 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
         //swipe
         binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        var itemTouchHelper: ItemTouchHelper? = null
+        itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return true
             }
@@ -69,7 +71,12 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 viewModel.playlists.value?.let {
-                    viewModel.deletePlaylist(it[position].id)
+                    val playlist = it[position].toListable()
+                    deletePlaylist(playlist.title, playlist.id, dismissAction = {
+                        // bring back the swiped item
+                        itemTouchHelper?.attachToRecyclerView(null)
+                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewPlaylists)
+                    })
                 }
             }
         })
@@ -100,7 +107,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<PlaylistsUiState> { state ->
-
             if(state != PlaylistsUiState.READY){
                 binding.tvEmpty.visibility = View.GONE
             }
@@ -133,6 +139,22 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
+
+        val notificationObserver = Observer<PlaylistsNotification> { notification ->
+            when(notification){
+                PlaylistsNotification.SUCCESS_DELETE_PLAYLIST -> {
+                    Snackbar.make(binding.root, getString(R.string.success_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                }
+                PlaylistsNotification.ERROR_DELETE_PLAYLIST -> {
+                    Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                }
+                PlaylistsNotification.NONE -> {}
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
     }
 
     override fun appearingAnimations() {
@@ -160,11 +182,17 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         viewModel.startQuiz()
     }
 
-    private fun deletePlaylist(name: String, id: String) {
+    private fun deletePlaylist(name: String, id: String, dismissAction: () -> Unit) {
         val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
             getString(R.string.delete_playlist_description, name), R.drawable.icon_delete)
         dialog.setPositiveButton {
             viewModel.deletePlaylist(id)
+        }
+        dialog.setNegativeButton {
+            dismissAction()
+        }
+        dialog.setOnDismissListener {
+            dismissAction()
         }
         dialog.show()
     }

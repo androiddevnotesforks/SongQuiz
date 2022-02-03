@@ -15,9 +15,10 @@ import androidx.preference.PreferenceManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentInfoBinding
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getDifficulty
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -61,10 +62,11 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
         }
 
         val safeArgs: InfoFragmentArgs by navArgs()
-        viewModel.setPlaylistById(safeArgs.playlistId)
+        viewModel.setItemById(safeArgs.playlistId, forceLoad = false)
     }
 
     override fun subscribeViewModel() {
+
         val uiStateObserver = Observer<InfoUiState> { state ->
             if(state == InfoUiState.LOADING){
                 binding.loadIndicatorProgressBar.visibility = View.VISIBLE
@@ -77,14 +79,20 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
                 InfoUiState.CLOSE -> {
                     closeScreen()
                 }
-                else -> {
-                    showInfo(state)
+                InfoUiState.AUTH_NEEDED -> {
+                    startAuthentication()
                 }
+                InfoUiState.START_QUIZ -> {
+                    showQuizScreen()
+                }
+                InfoUiState.READY_FALLBACK -> {}
+                InfoUiState.READY_COMPLETE -> {}
+                else -> {}
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
-        val playlistObserver = Observer<Playlist> { playlist ->
+        val playlistObserver = Observer<ViewModelPlaylist> { playlist ->
 
             if(playlist.previewImageUri.isEmpty()){
                 binding.ivLogo.setImageResource(R.drawable.icon_album)
@@ -107,81 +115,158 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
             }
 
             binding.content.title.text = playlist.name
-            binding.content.owner.text = getString(R.string.owner_text, playlist.owner)
-            binding.content.description.text = playlist.description
-
-            if(viewModel.uiState.value == InfoUiState.READY){
-                binding.content.numSongsFollowers.text = getString(R.string.num_songs_followers, playlist.tracks.size.toString(), playlist.followers.toString())
+            if(playlist.name.isNotBlank()){
+                binding.content.title.visibility = View.VISIBLE
             }
             else{
-                binding.content.numSongsFollowers.text = ""
+                binding.content.title.visibility = View.GONE
             }
 
-            val play = {
-                viewModel.startQuiz()
+            binding.content.content1.text = getString(R.string.owner_text, playlist.owner)
+            if(playlist.owner.isNotBlank()){
+                binding.content.content1.visibility = View.VISIBLE
             }
-            val playContentDescription = getString(R.string.play)
-            binding.content.fabPrimaryAction.setImageResource(R.drawable.icon_play)
-            binding.content.fabPrimaryAction.contentDescription = playContentDescription
-            binding.content.tvPrimaryAction.text = playContentDescription
-            binding.content.fabPrimaryAction.setOnClickListener { play() }
-            binding.content.tvPrimaryAction.setOnClickListener { play() }
+            else{
+                binding.content.content1.visibility = View.GONE
+            }
 
-            val viewOnSpotify = {
-                val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, playlist.id))
-                val spotifyPageIntent = Intent(Intent.ACTION_VIEW, spotifyPageUri)
-                startActivity(spotifyPageIntent)
+            binding.content.content2.text = playlist.description
+            if(playlist.description.isNotBlank()){
+                binding.content.content2.visibility = View.VISIBLE
             }
-            val viewSpotifyContentDescription = getString(R.string.view_on_spotify)
-            binding.content.fabSecondaryAction.setImageResource(R.drawable.icon_spotify)
-            binding.content.fabSecondaryAction.contentDescription = viewSpotifyContentDescription
-            binding.content.tvSecondaryAction.text = viewSpotifyContentDescription
-            binding.content.fabSecondaryAction.setOnClickListener { viewOnSpotify() }
-            binding.content.tvSecondaryAction.setOnClickListener { viewOnSpotify() }
+            else{
+                binding.content.content2.visibility = View.GONE
+            }
+
+            if(viewModel.uiState.value == InfoUiState.READY_COMPLETE){
+                binding.content.content3.text = getString(R.string.songs_followers_difficulty, playlist.tracks.size.toString(), playlist.followers.toString(), playlist.getDifficulty().toString())
+                binding.content.content3.visibility = View.VISIBLE
+            }
+            else{
+                binding.content.content3.text = ""
+                binding.content.content3.visibility = View.GONE
+            }
 
             when (viewModel.infoScreenCaller) {
+
                 InfoScreenCaller.HOME -> {
+                    binding.content.fabPrimaryAction.visibility = View.INVISIBLE
+                    binding.content.tvPrimaryAction.visibility = View.INVISIBLE
+                    binding.content.fabPrimaryAction.setOnClickListener {}
+                    binding.content.tvPrimaryAction.setOnClickListener {}
+
+                    binding.content.fabSecondaryAction.visibility = View.INVISIBLE
+                    binding.content.tvSecondaryAction.visibility = View.INVISIBLE
+                    binding.content.fabSecondaryAction.setOnClickListener {}
+                    binding.content.tvSecondaryAction.setOnClickListener {}
+
                     binding.content.fabTertiaryAction.visibility = View.INVISIBLE
                     binding.content.tvTertiaryAction.visibility = View.INVISIBLE
                     binding.content.fabTertiaryAction.setOnClickListener {}
                     binding.content.tvTertiaryAction.setOnClickListener {}
                 }
+
                 InfoScreenCaller.PLAY -> {
+                    val play = {
+                        viewModel.startQuiz()
+                    }
+                    val playContentDescription = getString(R.string.play)
+                    binding.content.fabPrimaryAction.visibility = View.VISIBLE
+                    binding.content.tvPrimaryAction.visibility = View.VISIBLE
+                    binding.content.fabPrimaryAction.setImageResource(R.drawable.icon_play)
+                    binding.content.fabPrimaryAction.contentDescription = playContentDescription
+                    binding.content.tvPrimaryAction.text = playContentDescription
+                    binding.content.fabPrimaryAction.setOnClickListener { play() }
+                    binding.content.tvPrimaryAction.setOnClickListener { play() }
+
+                    val viewOnSpotify = {
+                        val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, playlist.id))
+                        val spotifyPageIntent = Intent(Intent.ACTION_VIEW, spotifyPageUri)
+                        startActivity(spotifyPageIntent)
+                    }
+                    val viewSpotifyContentDescription = getString(R.string.view_on_spotify)
+                    binding.content.fabSecondaryAction.visibility = View.VISIBLE
+                    binding.content.tvSecondaryAction.visibility = View.VISIBLE
+                    binding.content.fabSecondaryAction.setImageResource(R.drawable.icon_spotify)
+                    binding.content.fabSecondaryAction.contentDescription = viewSpotifyContentDescription
+                    binding.content.tvSecondaryAction.text = viewSpotifyContentDescription
+                    binding.content.fabSecondaryAction.setOnClickListener { viewOnSpotify() }
+                    binding.content.tvSecondaryAction.setOnClickListener { viewOnSpotify() }
+
                     val deletePlaylist = {
-                        deletePlaylist(playlist.name)
+                        deleteItem(playlist.name)
                     }
                     val contentDescription = getString(R.string.content_description_delete)
+                    binding.content.fabTertiaryAction.visibility = View.VISIBLE
+                    binding.content.tvTertiaryAction.visibility = View.VISIBLE
                     binding.content.fabTertiaryAction.setImageResource(R.drawable.icon_delete)
                     binding.content.fabTertiaryAction.contentDescription = contentDescription
                     binding.content.tvTertiaryAction.text = contentDescription
-                    binding.content.fabTertiaryAction.visibility = View.VISIBLE
-                    binding.content.tvTertiaryAction.visibility = View.VISIBLE
                     binding.content.fabTertiaryAction.setOnClickListener { deletePlaylist() }
                     binding.content.tvTertiaryAction.setOnClickListener { deletePlaylist() }
                 }
+
                 InfoScreenCaller.ADD_PLAYLIST -> {
                     val addPlaylist = {
-                        viewModel.addPlaylist()
+                        viewModel.addItem()
                     }
                     val contentDescription = getString(R.string.content_description_add)
-                    binding.content.fabTertiaryAction.setImageResource(R.drawable.icon_add)
-                    binding.content.fabTertiaryAction.contentDescription = contentDescription
-                    binding.content.tvTertiaryAction.text = contentDescription
+                    binding.content.fabPrimaryAction.visibility = View.VISIBLE
+                    binding.content.tvPrimaryAction.visibility = View.VISIBLE
+                    binding.content.fabPrimaryAction.setImageResource(R.drawable.icon_add)
+                    binding.content.fabPrimaryAction.contentDescription = contentDescription
+                    binding.content.tvPrimaryAction.text = contentDescription
+                    binding.content.fabPrimaryAction.setOnClickListener { addPlaylist() }
+                    binding.content.tvPrimaryAction.setOnClickListener { addPlaylist() }
+
+                    val play = {
+                        viewModel.startQuiz()
+                    }
+                    val playContentDescription = getString(R.string.play)
+                    binding.content.fabSecondaryAction.visibility = View.VISIBLE
+                    binding.content.tvSecondaryAction.visibility = View.VISIBLE
+                    binding.content.fabSecondaryAction.setImageResource(R.drawable.icon_play)
+                    binding.content.fabSecondaryAction.contentDescription = playContentDescription
+                    binding.content.tvSecondaryAction.text = playContentDescription
+                    binding.content.fabSecondaryAction.setOnClickListener { play() }
+                    binding.content.tvSecondaryAction.setOnClickListener { play() }
+
+                    val viewOnSpotify = {
+                        val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, playlist.id))
+                        val spotifyPageIntent = Intent(Intent.ACTION_VIEW, spotifyPageUri)
+                        startActivity(spotifyPageIntent)
+                    }
+                    val viewSpotifyContentDescription = getString(R.string.view_on_spotify)
                     binding.content.fabTertiaryAction.visibility = View.VISIBLE
                     binding.content.tvTertiaryAction.visibility = View.VISIBLE
-                    binding.content.fabTertiaryAction.setOnClickListener { addPlaylist() }
-                    binding.content.tvTertiaryAction.setOnClickListener { addPlaylist() }
+                    binding.content.fabTertiaryAction.setImageResource(R.drawable.icon_spotify)
+                    binding.content.fabTertiaryAction.contentDescription = viewSpotifyContentDescription
+                    binding.content.tvTertiaryAction.text = viewSpotifyContentDescription
+                    binding.content.fabTertiaryAction.setOnClickListener { viewOnSpotify() }
+                    binding.content.tvTertiaryAction.setOnClickListener { viewOnSpotify() }
                 }
+
                 else -> {
+                    binding.content.fabPrimaryAction.visibility = View.INVISIBLE
+                    binding.content.tvPrimaryAction.visibility = View.INVISIBLE
+                    binding.content.fabPrimaryAction.setOnClickListener {}
+                    binding.content.tvPrimaryAction.setOnClickListener {}
+
+                    binding.content.fabSecondaryAction.visibility = View.INVISIBLE
+                    binding.content.tvSecondaryAction.visibility = View.INVISIBLE
+                    binding.content.fabSecondaryAction.setOnClickListener {}
+                    binding.content.tvSecondaryAction.setOnClickListener {}
+
                     binding.content.fabTertiaryAction.visibility = View.INVISIBLE
                     binding.content.tvTertiaryAction.visibility = View.INVISIBLE
                     binding.content.fabTertiaryAction.setOnClickListener {}
                     binding.content.tvTertiaryAction.setOnClickListener {}
                 }
+
             }
 
         }
-        viewModel.playlist.observe(this, playlistObserver)
+        viewModel.item.observe(this, playlistObserver)
 
         viewModel.subscribeTtsListeners()
         val ttsStateObserver = Observer<TtsInfoState> { state ->
@@ -189,11 +274,11 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
                 TtsInfoState.ENABLED -> {
                     binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
                     binding.fabSpeak.setOnClickListener {
-                        val playlist = viewModel.playlist.value
+                        val playlist = viewModel.item.value
                         playlist?.let {
 
-                            val textSongsFollowers = if(viewModel.uiState.value == InfoUiState.READY){
-                                getString(R.string.num_songs_followers, playlist.tracks.size.toString(), playlist.followers.toString())
+                            val textSongsFollowers = if(viewModel.uiState.value == InfoUiState.READY_COMPLETE){
+                                getString(R.string.songs_followers_difficulty, playlist.tracks.size.toString(), playlist.followers.toString(), playlist.getDifficulty().toString())
                             }
                             else{
                                 ""
@@ -215,34 +300,76 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
+
+        val notificationObserver = Observer<InfoUiNotification> { notification ->
+            when(notification){
+                InfoUiNotification.FALLBACK_LOAD -> {
+                    Snackbar.make(binding.root, getString(R.string.listable_partially_loaded), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoUiNotification.NONE)
+                }
+                InfoUiNotification.ERROR_LOAD -> {
+                    Snackbar.make(binding.root, getString(R.string.error_listable_load), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoUiNotification.NONE)
+                }
+                InfoUiNotification.ERROR_ADD_ITEM -> {
+                    Snackbar.make(binding.root, getString(R.string.error_listable_add), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoUiNotification.NONE)
+                }
+                InfoUiNotification.SUCCESS_ADD_ITEM -> {
+                    // don't do anything, exit and the next fragment will show the notification
+                }
+                InfoUiNotification.ERROR_DELETE_ITEM -> {
+                    Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoUiNotification.NONE)
+                }
+                InfoUiNotification.SUCCESS_DELETE_ITEM -> {
+                    // don't do anything, exit and the next fragment will show the notification
+                }
+                InfoUiNotification.NONE -> {}
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
     }
 
-    private fun deletePlaylist(name: String) {
+    private fun deleteItem(name: String) {
         val dialog = AppDialog(this.requireContext(), getString(R.string.delete_playlist),
             getString(R.string.delete_playlist_description, name), R.drawable.icon_delete)
         dialog.setPositiveButton {
-            viewModel.deletePlaylist()
+            viewModel.deleteItem()
         }
         dialog.show()
     }
 
     private fun closeScreen(){
         val navHostFragment = NavHostFragment.findNavController(this)
+
         when(viewModel.infoScreenCaller){
+
             InfoScreenCaller.HOME -> {
                 navHostFragment.navigate(R.id.to_nav_home, null)
             }
+
             InfoScreenCaller.PLAY -> {
+                if(viewModel.notification.value == InfoUiNotification.SUCCESS_DELETE_ITEM){
+                    PlaylistsViewModel.notificationFromCaller = PlaylistsNotification.SUCCESS_DELETE_PLAYLIST
+                }
                 navHostFragment.navigate(R.id.to_nav_play, null)
             }
+
             InfoScreenCaller.ADD_PLAYLIST -> {
+                if(viewModel.notification.value == InfoUiNotification.SUCCESS_ADD_ITEM){
+                    PlaylistsAddViewModel.notificationFromCaller = PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST
+                }
                 navHostFragment.navigate(R.id.to_nav_add, null)
             }
+
             InfoScreenCaller.UNSPECIFIED -> {
                 navHostFragment.navigate(R.id.to_nav_home, null)
             }
+
         }
-        viewModel.ready()
+        viewModel.ready(InfoUiState.READY_FALLBACK)
     }
 
     override fun appearingAnimations() {
@@ -297,26 +424,9 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
         viewModel.unsubscribeTtsListeners()
     }
 
-    private fun showInfo(infoType: InfoUiState){
-        when(infoType){
-            InfoUiState.ERROR_PLAYLIST_LOAD -> {
-                val message = getString(R.string.error_playlist_load)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.ready()
-            }
-            InfoUiState.AUTH_NEEDED -> {
-                startAuthentication()
-            }
-            InfoUiState.START_QUIZ -> {
-                showQuizScreen()
-            }
-            else -> {}
-        }
-    }
-
     private fun showQuizScreen(){
-        viewModel.ready()
-        viewModel.playlist.value?.let {
+        viewModel.ready(InfoUiState.READY_FALLBACK)
+        viewModel.item.value?.let {
             // Log start game event
             Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
                 param(FirebaseAnalytics.Param.ITEM_ID, it.id)
@@ -334,7 +444,7 @@ class InfoFragment : AppFragment(R.layout.fragment_info), AuthRequestModule {
             viewModel.startQuiz()
         }
         else{
-            viewModel.ready()
+            viewModel.ready(InfoUiState.READY_FALLBACK)
         }
         authLauncherStarted = false
     }

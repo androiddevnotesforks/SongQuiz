@@ -17,6 +17,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistAddBinding
 import com.aaronfodor.android.songquiz.view.utils.*
+import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddNotification
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsAddViewModel
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylistSearchResult
@@ -67,6 +68,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
                 viewModel.searchResult.value?.let {
                     val idToRemove = it.items[position].id
                     viewModel.searchResult.postValue(it.removeIds(listOf(idToRemove)))
+                    viewModel.notification.postValue(PlaylistsAddNotification.DISCARDED)
                 }
             }
         })
@@ -94,7 +96,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         viewModel.searchResult.observe(this, playlistsFoundObserver)
 
         val uiStateObserver = Observer<PlaylistsAddUiState> { state ->
-
             if(state != PlaylistsAddUiState.LOADING){
                 binding.loadIndicatorProgressBar.visibility = View.GONE
             }
@@ -103,22 +104,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
                 PlaylistsAddUiState.LOADING -> {
                     binding.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                PlaylistsAddUiState.READY -> {}
-                PlaylistsAddUiState.NOT_FOUND -> {
-                    showInfo(PlaylistsAddUiState.NOT_FOUND)
-                }
                 PlaylistsAddUiState.AUTH_NEEDED -> {
                     startAuthentication()
                 }
-                PlaylistsAddUiState.ERROR_ADD_PLAYLIST -> {
-                    showInfo(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
-                }
-                PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST -> {
-                    showInfo(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
-                }
-                PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED -> {
-                    showInfo(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
-                }
+                PlaylistsAddUiState.READY -> {}
                 else -> {}
             }
 
@@ -130,6 +119,34 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
+
+        val notificationObserver = Observer<PlaylistsAddNotification> { notification ->
+            when(notification){
+                PlaylistsAddNotification.NOT_FOUND -> {
+                    Snackbar.make(binding.root, getString(R.string.cannot_find_listable), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsAddNotification.NONE)
+                }
+                PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST -> {
+                    Snackbar.make(binding.root, getString(R.string.success_listable_add), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsAddNotification.NONE)
+                }
+                PlaylistsAddNotification.ERROR_ADD_PLAYLIST -> {
+                    Snackbar.make(binding.root, getString(R.string.error_listable_add), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsAddNotification.NONE)
+                }
+                PlaylistsAddNotification.PLAYLIST_ALREADY_ADDED -> {
+                    Snackbar.make(binding.root, getString(R.string.listable_already_added), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsAddNotification.NONE)
+                }
+                PlaylistsAddNotification.DISCARDED -> {
+                    Snackbar.make(binding.root, getString(R.string.listable_discarded), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(PlaylistsAddNotification.NONE)
+                }
+                PlaylistsAddNotification.NONE -> {}
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
     }
 
     override fun appearingAnimations() {
@@ -194,28 +211,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         val navHostFragment = NavHostFragment.findNavController(this)
         val action = PlaylistsFragmentDirections.toNavInfoFromAddPlaylists(id)
         navHostFragment.navigate(action)
-        viewModel.ready()
-    }
-
-    private fun showInfo(infoType: PlaylistsAddUiState){
-        val message = when(infoType){
-            PlaylistsAddUiState.NOT_FOUND -> {
-                getString(R.string.cannot_find_playlist)
-            }
-            PlaylistsAddUiState.ERROR_ADD_PLAYLIST -> {
-                getString(R.string.error_playlist_add)
-            }
-            PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST -> {
-                getString(R.string.success_playlist_add)
-            }
-            PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED -> {
-                getString(R.string.playlist_already_added)
-            }
-            else -> {
-                ""
-            }
-        }
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         viewModel.ready()
     }
 
