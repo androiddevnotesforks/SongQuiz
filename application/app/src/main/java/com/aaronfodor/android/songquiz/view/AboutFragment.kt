@@ -123,35 +123,6 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.content.fabReport.startAnimation(leftAnimation)
     }
 
-    override fun onboardingDialog(){
-        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_ABOUT_SHOWED)
-        // get saved info from preferences
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
-
-        if(!onboardingFlag){
-            MaterialTapTargetSequence().addPrompt(
-                MaterialTapTargetPrompt.Builder(this)
-                    .setTarget(binding.fabSpeak)
-                    .setPrimaryText(getString(R.string.onboarding_about_listen))
-                    .setAnimationInterpolator(FastOutSlowInInterpolator())
-                    .setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.colorOnboardingBackground))
-                    .setFocalColour(ContextCompat.getColor(requireContext(), R.color.colorOnboardingFocal))
-                    .setPromptStateChangeListener { prompt, state ->
-                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
-                            // persist showed flag to preferences
-                            with(sharedPreferences.edit()){
-                                remove(keyOnboardingFlag)
-                                putBoolean(keyOnboardingFlag, true)
-                                apply()
-                            }
-                        }
-                    }
-                    .create()
-            ).show()
-        }
-    }
-
     override fun unsubscribeViewModel() {
         viewModel.unsubscribeTtsListeners()
     }

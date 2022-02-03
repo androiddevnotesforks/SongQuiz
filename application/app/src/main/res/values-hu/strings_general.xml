@@ -20,6 +20,8 @@
     <string name="app_license">Licenszfeltételek</string>
     <string name="app_privacy">Adatkezelési információk</string>
 
+    <string name="greeting_fallback">Szia!</string>
+
     <string name="menu_home">Főképernyő</string>
     <string name="menu_play">Játék</string>
     <string name="menu_add">Hozzáadás</string>
@@ -28,7 +30,8 @@
     <string name="menu_help">Segítség</string>
     <string name="menu_about">Információk</string>
     <string name="menu_settings">Beállítások</string>
-    <string name="menu_info">Lejátszási lista részletei</string>
+    <string name="menu_info_playlist">Lejátszási lista részletei</string>
+    <string name="menu_info_track">A dal részletei</string>
 
     <string name="request_permission_title">Engedélykérés</string>
     <string name="request_permission_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s.</string>

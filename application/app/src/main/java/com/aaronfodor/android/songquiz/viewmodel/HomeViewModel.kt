@@ -13,26 +13,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class PlaylistsUiState{
-    LOADING, READY, AUTH_NEEDED, START_QUIZ, SHOW_ADD_SCREEN
+enum class HomeUiState{
+    LOADING, READY, AUTH_NEEDED, START_QUIZ
 }
 
-enum class PlaylistsNotification{
+enum class HomeNotification{
     NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST
 }
 
 @HiltViewModel
-class PlaylistsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     val repository: PlaylistsRepository,
     val accountService: AccountService
 ) : ViewModel() {
 
     companion object{
-        var notificationFromCaller = PlaylistsNotification.NONE
+        var notificationFromCaller = HomeNotification.NONE
 
-        fun getInitialNotification() : PlaylistsNotification {
+        fun getInitialNotification() : HomeNotification {
             val value = notificationFromCaller
-            notificationFromCaller = PlaylistsNotification.NONE
+            notificationFromCaller = HomeNotification.NONE
             return value
         }
     }
@@ -41,27 +41,27 @@ class PlaylistsViewModel @Inject constructor(
         MutableLiveData<List<ViewModelPlaylist>>()
     }
 
-    val uiState: MutableLiveData<PlaylistsUiState> by lazy {
-        MutableLiveData<PlaylistsUiState>()
+    val uiState: MutableLiveData<HomeUiState> by lazy {
+        MutableLiveData<HomeUiState>()
     }
 
-    val notification: MutableLiveData<PlaylistsNotification> by lazy {
-        MutableLiveData<PlaylistsNotification>(getInitialNotification())
+    val notification: MutableLiveData<HomeNotification> by lazy {
+        MutableLiveData<HomeNotification>(getInitialNotification())
     }
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
-        uiState.postValue(PlaylistsUiState.LOADING)
+        uiState.postValue(HomeUiState.LOADING)
         playlists.postValue(repository.getPlaylists().map { it.toViewModelPlaylist() })
-        uiState.postValue(PlaylistsUiState.READY)
+        uiState.postValue(HomeUiState.READY)
     }
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deletePlaylistById(id)
         if(success){
-            notification.postValue(PlaylistsNotification.SUCCESS_DELETE_PLAYLIST)
+            notification.postValue(HomeNotification.SUCCESS_DELETE_PLAYLIST)
         }
         else{
-            notification.postValue(PlaylistsNotification.ERROR_DELETE_PLAYLIST)
+            notification.postValue(HomeNotification.ERROR_DELETE_PLAYLIST)
         }
 
         val newList = repository.getPlaylists().map { it.toViewModelPlaylist() }
@@ -70,21 +70,15 @@ class PlaylistsViewModel @Inject constructor(
 
     fun startQuiz() = viewModelScope.launch {
         if(accountService.accountState.value != AccountState.LOGGED_IN){
-            uiState.value = PlaylistsUiState.AUTH_NEEDED
+            uiState.value = HomeUiState.AUTH_NEEDED
             return@launch
         }
 
-        uiState.value = PlaylistsUiState.START_QUIZ
-    }
-
-    fun showAddPlaylistScreen() = viewModelScope.launch(Dispatchers.Default) {
-        val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
-        PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
-        uiState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
+        uiState.value = HomeUiState.START_QUIZ
     }
 
     fun ready() = viewModelScope.launch {
-        uiState.value = PlaylistsUiState.READY
+        uiState.value = HomeUiState.READY
     }
 
 }

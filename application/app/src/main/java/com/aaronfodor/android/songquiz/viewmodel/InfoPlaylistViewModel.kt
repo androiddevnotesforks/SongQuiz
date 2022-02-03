@@ -16,48 +16,48 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class InfoUiState{
+enum class InfoPlaylistUiState{
     LOADING, READY_COMPLETE, READY_FALLBACK, CLOSE, AUTH_NEEDED, START_QUIZ
 }
 
-enum class InfoUiNotification{
+enum class InfoPlaylistUiNotification{
     NONE, FALLBACK_LOAD, ERROR_LOAD, ERROR_ADD_ITEM, SUCCESS_ADD_ITEM, ERROR_DELETE_ITEM, SUCCESS_DELETE_ITEM
 }
 
-enum class TtsInfoState{
+enum class TtsInfoPlaylistState{
     ENABLED, SPEAKING
 }
 
-enum class InfoScreenCaller{
+enum class InfoPlaylistScreenCaller{
     UNSPECIFIED, HOME, PLAY, ADD_PLAYLIST
 }
 
 @HiltViewModel
-class InfoViewModel  @Inject constructor(
+class InfoPlaylistViewModel  @Inject constructor(
     var repository: PlaylistsRepository,
     var textToSpeechService: TextToSpeechService,
     val accountService: AccountService
 ) : ViewModel() {
 
-    var infoScreenCaller = InfoScreenCaller.UNSPECIFIED
+    var infoScreenCaller = InfoPlaylistScreenCaller.UNSPECIFIED
 
-    val uiState: MutableLiveData<InfoUiState> by lazy {
-        MutableLiveData<InfoUiState>()
+    val uiState: MutableLiveData<InfoPlaylistUiState> by lazy {
+        MutableLiveData<InfoPlaylistUiState>()
     }
 
-    val notification: MutableLiveData<InfoUiNotification> by lazy {
-        MutableLiveData<InfoUiNotification>()
+    val notification: MutableLiveData<InfoPlaylistUiNotification> by lazy {
+        MutableLiveData<InfoPlaylistUiNotification>()
     }
 
     /**
      * Is text to speech currently speaking
      */
-    val ttsState: MutableLiveData<TtsInfoState> by lazy {
-        MutableLiveData<TtsInfoState>()
+    val ttsState: MutableLiveData<TtsInfoPlaylistState> by lazy {
+        MutableLiveData<TtsInfoPlaylistState>()
     }
 
     /**
-     * Playlist to show
+     * Item to show
      */
     val item: MutableLiveData<ViewModelPlaylist> by lazy {
         MutableLiveData<ViewModelPlaylist>()
@@ -66,10 +66,10 @@ class InfoViewModel  @Inject constructor(
     init {
         viewModelScope.launch {
             if(textToSpeechService.isSpeaking()){
-                ttsState.value = TtsInfoState.SPEAKING
+                ttsState.value = TtsInfoPlaylistState.SPEAKING
             }
             else{
-                ttsState.value = TtsInfoState.ENABLED
+                ttsState.value = TtsInfoPlaylistState.ENABLED
             }
             subscribeTtsListeners()
         }
@@ -78,13 +78,13 @@ class InfoViewModel  @Inject constructor(
     fun subscribeTtsListeners() = viewModelScope.launch {
         textToSpeechService.setCallbacks(
             started = {
-                ttsState.postValue(TtsInfoState.SPEAKING)
+                ttsState.postValue(TtsInfoPlaylistState.SPEAKING)
             },
             finished = {
-                ttsState.postValue(TtsInfoState.ENABLED)
+                ttsState.postValue(TtsInfoPlaylistState.ENABLED)
             },
             error = {
-                ttsState.postValue(TtsInfoState.ENABLED)
+                ttsState.postValue(TtsInfoPlaylistState.ENABLED)
             }
         )
     }
@@ -109,39 +109,39 @@ class InfoViewModel  @Inject constructor(
         if(item.value?.id == playlistId && !forceLoad){
             item.value?.let {
                 if(it.tracks.size > 0 || it.followers > 0 || it.getDifficulty() > 0){
-                    ready(InfoUiState.READY_COMPLETE)
+                    ready(InfoPlaylistUiState.READY_COMPLETE)
                     return@launch
                 }
             }
-            ready(InfoUiState.READY_FALLBACK)
+            ready(InfoPlaylistUiState.READY_FALLBACK)
             return@launch
         }
         else{
             // loading state
-            uiState.postValue(InfoUiState.LOADING)
+            uiState.postValue(InfoPlaylistUiState.LOADING)
 
             val downloadedPlaylist = repository.downloadPlaylistById(playlistId)
 
             // successfully downloaded
             if(downloadedPlaylist.id == playlistId){
-                ready(InfoUiState.READY_COMPLETE)
+                ready(InfoPlaylistUiState.READY_COMPLETE)
                 item.postValue(downloadedPlaylist.toViewModelPlaylist())
-                if(infoScreenCaller == InfoScreenCaller.PLAY){
+                if(infoScreenCaller == InfoPlaylistScreenCaller.PLAY){
                     repository.updatePlaylist(downloadedPlaylist)
                 }
             }
             // cannot download
             else{
-                ready(InfoUiState.READY_FALLBACK)
+                ready(InfoPlaylistUiState.READY_FALLBACK)
                 val fallbackPlaylist = repository.getPlaylistById(playlistId)
                 // load from disk
                 if(fallbackPlaylist.id == playlistId){
-                    notification.postValue(InfoUiNotification.FALLBACK_LOAD)
+                    notification.postValue(InfoPlaylistUiNotification.FALLBACK_LOAD)
                     item.postValue(fallbackPlaylist.toViewModelPlaylist())
                 }
                 // cannot load from disk either
                 else{
-                    notification.postValue(InfoUiNotification.ERROR_LOAD)
+                    notification.postValue(InfoPlaylistUiNotification.ERROR_LOAD)
                 }
             }
 
@@ -150,47 +150,47 @@ class InfoViewModel  @Inject constructor(
 
     fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
         item.value?.let {
-            if(infoScreenCaller == InfoScreenCaller.PLAY || infoScreenCaller == InfoScreenCaller.HOME){
+            if(infoScreenCaller == InfoPlaylistScreenCaller.PLAY || infoScreenCaller == InfoPlaylistScreenCaller.HOME){
 
                 val success = repository.deletePlaylistById(it.id)
                 if(success){
-                    notification.postValue(InfoUiNotification.SUCCESS_DELETE_ITEM)
+                    notification.postValue(InfoPlaylistUiNotification.SUCCESS_DELETE_ITEM)
                 }
                 else{
-                    notification.postValue(InfoUiNotification.ERROR_DELETE_ITEM)
+                    notification.postValue(InfoPlaylistUiNotification.ERROR_DELETE_ITEM)
                 }
 
-                uiState.postValue(InfoUiState.CLOSE)
+                uiState.postValue(InfoPlaylistUiState.CLOSE)
             }
         }
     }
 
     fun addItem() = viewModelScope.launch(Dispatchers.IO) {
         item.value?.let {
-            uiState.postValue(InfoUiState.LOADING)
+            uiState.postValue(InfoPlaylistUiState.LOADING)
 
             val success = repository.insertPlaylist(it.toPlaylist())
             if(success){
-                notification.postValue(InfoUiNotification.SUCCESS_ADD_ITEM)
+                notification.postValue(InfoPlaylistUiNotification.SUCCESS_ADD_ITEM)
             }
             else{
-                notification.postValue(InfoUiNotification.ERROR_ADD_ITEM)
+                notification.postValue(InfoPlaylistUiNotification.ERROR_ADD_ITEM)
             }
 
-            uiState.postValue(InfoUiState.CLOSE)
+            uiState.postValue(InfoPlaylistUiState.CLOSE)
         }
     }
 
-    fun ready(vale: InfoUiState) = viewModelScope.launch {
+    fun ready(vale: InfoPlaylistUiState) = viewModelScope.launch {
         uiState.value = vale
     }
 
     fun startQuiz() = viewModelScope.launch {
         if(accountService.accountState.value != AccountState.LOGGED_IN){
-            uiState.value = InfoUiState.AUTH_NEEDED
+            uiState.value = InfoPlaylistUiState.AUTH_NEEDED
             return@launch
         }
-        uiState.value = InfoUiState.START_QUIZ
+        uiState.value = InfoPlaylistUiState.START_QUIZ
     }
 
 }

@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.view.utils
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,7 +29,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
-            // Permission is granted
+            // Permission granted
         } else {
             // Permission denied
         }

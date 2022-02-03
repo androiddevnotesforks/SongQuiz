@@ -49,12 +49,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyDeletePlaylists = ""
     private var keyRestoreDefaultDb = ""
 
-    // boarding flag keys
-    private var keyOnboardingMenuShowed = ""
+    // boarding flag key
     private var keyOnboardingQuizShowed = ""
-    private var keyOnboardingInfoShowed = ""
-    private var keyOnboardingAboutShowed = ""
-    private var keyOnboardingPlaylistAddShowed = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,11 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
         // boarding flag keys
-        keyOnboardingMenuShowed = getString(R.string.PREF_KEY_ONBOARDING_MENU_SHOWED)
         keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
-        keyOnboardingInfoShowed = getString(R.string.PREF_KEY_ONBOARDING_INFO_SHOWED)
-        keyOnboardingAboutShowed = getString(R.string.PREF_KEY_ONBOARDING_ABOUT_SHOWED)
-        keyOnboardingPlaylistAddShowed = getString(R.string.PREF_KEY_ONBOARDING_PLAYLIST_ADD_SHOWED)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -135,16 +127,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
             sharedPreferences?.let {
                 with(it.edit()){
-                    remove(keyOnboardingMenuShowed)
-                    putBoolean(keyOnboardingMenuShowed, false)
                     remove(keyOnboardingQuizShowed)
                     putBoolean(keyOnboardingQuizShowed, false)
-                    remove(keyOnboardingInfoShowed)
-                    putBoolean(keyOnboardingInfoShowed, false)
-                    remove(keyOnboardingAboutShowed)
-                    putBoolean(keyOnboardingAboutShowed, false)
-                    remove(keyOnboardingPlaylistAddShowed)
-                    putBoolean(keyOnboardingPlaylistAddShowed, false)
                     apply()
                 }
             }

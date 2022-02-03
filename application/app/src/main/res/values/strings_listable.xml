@@ -9,11 +9,14 @@
     <string name="info">Information</string>
     <string name="delete">Delete</string>
     <string name="add">Add</string>
+    <string name="listen">Listen</string>
 
     <string name="search_playlist">Search playlist</string>
     <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>
-    <string name="empty_list">Tap add to add a playlists</string>
-    <string name="empty_search_list">Tap search to browse playlists</string>
+    <string name="empty_list_playlists">Tap to add playlists</string>
+    <string name="empty_search_list">Tap to search for playlists</string>
+
+    <string name="empty_list_tracks">No favourites yet. While playing, you can add with the icon</string>
 
     <string name="cannot_find_listable">Not found or internet is not available</string>
     <string name="error_listable_load">Cannot load item</string>

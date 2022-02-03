@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_playlists" >
+        tools:layout="@layout/fragment_home" >
     </fragment>
 
     <fragment
@@ -28,9 +28,9 @@
 
     <fragment
         android:id="@+id/nav_favourites"
-        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.FavouritesFragment"
         android:label="@string/menu_favourites"
-        tools:layout="@layout/fragment_playlists" >
+        tools:layout="@layout/fragment_favourites" >
     </fragment>
 
     <fragment
@@ -62,9 +62,9 @@
 
     <fragment
         android:id="@+id/nav_info_from_home"
-        android:name="com.aaronfodor.android.songquiz.view.InfoFragment"
-        android:label="@string/menu_info"
-        tools:layout="@layout/fragment_info" >
+        android:name="com.aaronfodor.android.songquiz.view.InfoPlaylistFragment"
+        android:label="@string/menu_info_playlist"
+        tools:layout="@layout/fragment_info_playlist" >
     <argument
         android:name="playlistId"
         app:argType="string"/>
@@ -72,9 +72,9 @@
 
     <fragment
         android:id="@+id/nav_info_from_play"
-        android:name="com.aaronfodor.android.songquiz.view.InfoFragment"
-        android:label="@string/menu_info"
-        tools:layout="@layout/fragment_info" >
+        android:name="com.aaronfodor.android.songquiz.view.InfoPlaylistFragment"
+        android:label="@string/menu_info_playlist"
+        tools:layout="@layout/fragment_info_playlist" >
         <argument
             android:name="playlistId"
             app:argType="string"/>
@@ -82,12 +82,29 @@
 
     <fragment
         android:id="@+id/nav_info_from_add_playlists"
-        android:name="com.aaronfodor.android.songquiz.view.InfoFragment"
-        android:label="@string/menu_info"
-        tools:layout="@layout/fragment_info" >
+        android:name="com.aaronfodor.android.songquiz.view.InfoPlaylistFragment"
+        android:label="@string/menu_info_playlist"
+        tools:layout="@layout/fragment_info_playlist" >
         <argument
             android:name="playlistId"
             app:argType="string"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_info_from_favourites"
+        android:name="com.aaronfodor.android.songquiz.view.InfoTrackFragment"
+        android:label="@string/menu_info_track"
+        tools:layout="@layout/fragment_info_track" >
+        <argument
+            android:name="trackId"
+            app:argType="string"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_from_play"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistAddFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_playlist_add" >
     </fragment>
 
     <action
@@ -133,5 +150,13 @@
     <action
         android:id="@+id/to_nav_info_from_add_playlists"
         app:destination="@id/nav_info_from_add_playlists" />
+
+    <action
+        android:id="@+id/to_nav_info_from_favourites"
+        app:destination="@id/nav_info_from_favourites" />
+
+    <action
+        android:id="@+id/to_nav_add_from_play"
+        app:destination="@id/nav_add_from_play" />
 
 </navigation>

@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
-import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
+import com.aaronfodor.android.songquiz.databinding.FragmentHomeBinding
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
-import com.aaronfodor.android.songquiz.viewmodel.PlaylistsNotification
-import com.aaronfodor.android.songquiz.viewmodel.PlaylistsUiState
-import com.aaronfodor.android.songquiz.viewmodel.PlaylistsViewModel
+import com.aaronfodor.android.songquiz.viewmodel.HomeNotification
+import com.aaronfodor.android.songquiz.viewmodel.HomeUiState
+import com.aaronfodor.android.songquiz.viewmodel.HomeViewModel
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
@@ -29,17 +29,17 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule, View.OnCreateContextMenuListener {
+class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, View.OnCreateContextMenuListener {
 
-    private val binding: FragmentPlaylistsBinding by viewBinding()
+    private val binding: FragmentHomeBinding by viewBinding()
 
-    private lateinit var viewModel: PlaylistsViewModel
+    private lateinit var viewModel: HomeViewModel
 
     private var selectedPlaylistId = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[PlaylistsViewModel::class.java]
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         val startLambda: (Listable) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
         val startDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_play_circular)
@@ -58,10 +58,10 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
 
         val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
-        binding.RecyclerViewPlaylists.adapter = listAdapter
+        binding.RecyclerViewHome.adapter = listAdapter
 
         //swipe
-        binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.RecyclerViewHome.layoutManager = GridLayoutManager(requireContext(), 1)
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -75,21 +75,14 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
                     deletePlaylist(playlist.title, playlist.id, dismissAction = {
                         // bring back the swiped item
                         itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewPlaylists)
+                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewHome)
                     })
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewPlaylists)
+        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewHome)
 
-        registerForContextMenu(binding.RecyclerViewPlaylists)
-
-        binding.fabAddPlaylist.setOnClickListener {
-            viewModel.showAddPlaylistScreen()
-        }
-        binding.tvEmpty.setOnClickListener {
-            viewModel.showAddPlaylistScreen()
-        }
+        registerForContextMenu(binding.RecyclerViewHome)
     }
 
     override fun subscribeViewModel() {
@@ -98,62 +91,47 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
         val playlistsObserver = Observer<List<ViewModelPlaylist>> { playlists ->
             val newList = playlists.map { it.toListable() }
-            (binding.RecyclerViewPlaylists.adapter as ListableAdapter).submitList(newList)
-
-            if(playlists.isEmpty() && (viewModel.uiState.value == PlaylistsUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
-            }
-            else{
-                binding.tvEmpty.visibility = View.GONE
-            }
+            (binding.RecyclerViewHome.adapter as ListableAdapter).submitList(newList)
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
-        val uiStateObserver = Observer<PlaylistsUiState> { state ->
-            if(state != PlaylistsUiState.READY){
-                binding.tvEmpty.visibility = View.GONE
+        val uiStateObserver = Observer<HomeUiState> { state ->
+            if(state != HomeUiState.READY){
+                binding.tvGreet.visibility = View.GONE
             }
-            if(state != PlaylistsUiState.LOADING){
+            if(state != HomeUiState.LOADING){
                 binding.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
-                PlaylistsUiState.LOADING -> {
+                HomeUiState.LOADING -> {
                     binding.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                PlaylistsUiState.READY -> {}
-                PlaylistsUiState.AUTH_NEEDED -> {
+                HomeUiState.READY -> {
+                    binding.tvGreet.visibility = View.VISIBLE
+                }
+                HomeUiState.AUTH_NEEDED -> {
                     startAuthentication()
                 }
-                PlaylistsUiState.START_QUIZ -> {
+                HomeUiState.START_QUIZ -> {
                     showQuizScreen()
                 }
-                PlaylistsUiState.SHOW_ADD_SCREEN -> {
-                    showAddPlaylistsScreen()
-                }
                 else -> {}
-            }
-
-            if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
-            }
-            else{
-                binding.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
-        val notificationObserver = Observer<PlaylistsNotification> { notification ->
+        val notificationObserver = Observer<HomeNotification> { notification ->
             when(notification){
-                PlaylistsNotification.SUCCESS_DELETE_PLAYLIST -> {
+                HomeNotification.SUCCESS_DELETE_PLAYLIST -> {
                     Snackbar.make(binding.root, getString(R.string.success_listable_delete), Snackbar.LENGTH_LONG).show()
-                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                    viewModel.notification.postValue(HomeNotification.NONE)
                 }
-                PlaylistsNotification.ERROR_DELETE_PLAYLIST -> {
+                HomeNotification.ERROR_DELETE_PLAYLIST -> {
                     Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
-                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                    viewModel.notification.postValue(HomeNotification.NONE)
                 }
-                PlaylistsNotification.NONE -> {}
+                HomeNotification.NONE -> {}
                 else -> {}
             }
         }
@@ -161,19 +139,15 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     }
 
     override fun appearingAnimations() {
-        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-        binding.fabAddPlaylist.startAnimation(rightAnimation)
-        binding.fabAddPlaylist.visibility = View.VISIBLE
-
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.tvEmpty.startAnimation(bottomAnimation)
+        binding.tvGreet.startAnimation(bottomAnimation)
     }
 
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
         val navHostFragment = NavHostFragment.findNavController(this)
-        val action = PlaylistsFragmentDirections.toNavInfoFromPlaylists(id)
+        val action = HomeFragmentDirections.toNavInfoFromHome(id)
         navHostFragment.navigate(action)
         viewModel.ready()
     }
@@ -210,12 +184,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
         intent.putExtra(QuizActivity.PLAYLIST_KEY, selectedPlaylistId)
         startActivity(intent)
-    }
-
-    private fun showAddPlaylistsScreen(){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_add_from_play, null)
-        viewModel.ready()
     }
 
     override var authLauncherStarted = false

@@ -13,6 +13,9 @@
     <string name="delete_playlist">Delete playlist</string>
     <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add it again later.</string>
 
+    <string name="delete_track">Delete track</string>
+    <string name="delete_track_description">Are you sure you want to delete %1$s? This will only affect your favourites, and you can add it again later.</string>
+
     <string name="clear_cache">Clear cache</string>
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>
 

@@ -13,6 +13,9 @@
     <string name="delete_playlist">Lista törlése</string>
     <string name="delete_playlist_description">Biztosan törölni szeretnéd az alábbi listát: %1$s? Ez nem befolyásol semmit Spotify-on, a listát később újra felveheted.</string>
 
+    <string name="delete_track">A dal törlése</string>
+    <string name="delete_track_description">Biztosan törölni szeretnéd az alábbi dalt: %1$s? Ez csak a kedvenceid befolyásolja, a dalt később újra a kedvenceidhez adhatod.</string>
+
     <string name="clear_cache">Gyorsítótár törlése</string>
     <string name="clear_cache_description">Biztosan törölni szeretnéd a képek gyorsítótárát? Ez csökkenti a memóriahasználatot, de megnövelheti a hálózati forgalmat.</string>
 

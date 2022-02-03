@@ -158,35 +158,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         binding.tvEmpty.startAnimation(bottomAnimation)
     }
 
-    override fun onboardingDialog(){
-        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_PLAYLIST_ADD_SHOWED)
-        // get saved info from preferences
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
-
-        if(!onboardingFlag){
-            MaterialTapTargetSequence().addPrompt(
-                MaterialTapTargetPrompt.Builder(this)
-                    .setTarget(binding.fabSearch)
-                    .setPrimaryText(getString(R.string.onboarding_playlist_add_search))
-                    .setAnimationInterpolator(FastOutSlowInInterpolator())
-                    .setBackgroundColour(getColor(requireContext(), R.color.colorOnboardingBackground))
-                    .setFocalColour(getColor(requireContext(), R.color.colorOnboardingFocal))
-                    .setPromptStateChangeListener { prompt, state ->
-                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
-                            // persist showed flag to preferences
-                            with(sharedPreferences.edit()){
-                                remove(keyOnboardingFlag)
-                                putBoolean(keyOnboardingFlag, true)
-                                apply()
-                            }
-                        }
-                    }
-                    .create()
-            ).show()
-        }
-    }
-
     override fun unsubscribeViewModel() {}
 
     private fun showSearchExpressionDialog() {
