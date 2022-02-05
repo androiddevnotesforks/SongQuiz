@@ -184,31 +184,28 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         val randomPlay = {
             viewModel.startRandomQuiz()
         }
-        val randomPlayContentDescription = getString(R.string.random_play)
-        binding.actionRandom.fab.setImageResource(R.drawable.icon_random)
-        binding.actionRandom.fab.contentDescription = randomPlayContentDescription
-        binding.actionRandom.tv.text = randomPlayContentDescription
-        binding.actionRandom.fab.setOnClickListener { randomPlay() }
-        binding.actionRandom.tv.setOnClickListener { randomPlay() }
+        val randomPlayText = getString(R.string.random_play)
+        val drawable = getDrawable(requireContext(), R.drawable.icon_random)
+        binding.actionRandom.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+        binding.actionRandom.contentDescription = randomPlayText
+        binding.actionRandom.text = randomPlayText
+        binding.actionRandom.setOnClickListener { randomPlay() }
 
     }
 
     override fun appearingAnimations() {
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
         binding.tvGreet.startAnimation(bottomAnimation)
-        binding.actionRandom.tv.startAnimation(bottomAnimation)
+        binding.actionRandom.startAnimation(bottomAnimation)
         binding.list.tvEmpty.startAnimation(bottomAnimation)
-
-        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        binding.actionRandom.fab.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        val action = HomeFragmentDirections.toNavInfoFromHome(id)
-        navHostFragment.navigate(action)
+        val navController = NavHostFragment.findNavController(this)
+        val action = HomeFragmentDirections.actionNavHomeToNavInfoPlaylist(viewModel.callerType, id)
+        navController.navigate(action)
         viewModel.ready()
     }
 
@@ -245,8 +242,9 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
     }
 
     private fun showAddPlaylistsScreen(){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_add_from_home, null)
+        val navController = NavHostFragment.findNavController(this)
+        val action = HomeFragmentDirections.actionNavHomeToNavAdd()
+        navController.navigate(action)
         viewModel.ready()
     }
 

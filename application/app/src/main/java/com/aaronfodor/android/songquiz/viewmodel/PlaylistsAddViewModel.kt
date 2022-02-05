@@ -27,8 +27,6 @@ class PlaylistsAddViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object{
-        var transferPlaylistIdsAlreadyAdded : List<String> = listOf()
-
         var notificationFromCaller = PlaylistsAddNotification.NONE
 
         fun getInitialNotification() : PlaylistsAddNotification {
@@ -38,6 +36,7 @@ class PlaylistsAddViewModel @Inject constructor(
         }
     }
 
+    val callerType = InfoPlaylistScreenCaller.ADD_PLAYLIST.name
     var lastSearchExpression = ""
 
     val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
@@ -60,8 +59,9 @@ class PlaylistsAddViewModel @Inject constructor(
         }
     }
 
-    fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch {
-        playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
+    fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch(Dispatchers.IO) {
+        playlistIdsAlreadyAdded = repository.getPlaylists().map{it.id}.toMutableList()
+        searchResult.postValue(searchResult.value?.removeIds(playlistIdsAlreadyAdded))
     }
 
     fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -103,9 +103,7 @@ class PlaylistsAddViewModel @Inject constructor(
         if(success){
             notification.postValue(PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST)
             playlistIdsAlreadyAdded.add(id)
-            searchResult.value?.let {
-                searchResult.postValue(it.removeIds(playlistIdsAlreadyAdded))
-            }
+            searchResult.postValue(searchResult.value?.removeIds(playlistIdsAlreadyAdded))
         }
         else{
             notification.postValue(PlaylistsAddNotification.ERROR_ADD_PLAYLIST)

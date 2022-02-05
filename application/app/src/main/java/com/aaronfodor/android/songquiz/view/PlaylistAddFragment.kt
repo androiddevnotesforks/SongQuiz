@@ -79,14 +79,16 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
     override fun subscribeViewModel() {
         viewModel.setPlaylistIdsAlreadyAdded()
 
-        val playlistsFoundObserver = Observer<ViewModelPlaylistSearchResult> { result ->
-            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
+        val playlistsFoundObserver = Observer<ViewModelPlaylistSearchResult> { searchResult ->
+            searchResult?.let { result ->
+                (binding.list.RecyclerView.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
 
-            if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
-            }
-            else{
-                binding.list.tvEmpty.visibility = View.GONE
+                if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
+                    binding.list.tvEmpty.visibility = View.VISIBLE
+                }
+                else{
+                    binding.list.tvEmpty.visibility = View.GONE
+                }
             }
         }
         viewModel.searchResult.observe(this, playlistsFoundObserver)
@@ -174,9 +176,9 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
     }
 
     private fun showInfoScreen(id: String){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        val action = PlaylistsFragmentDirections.toNavInfoFromAddPlaylists(id)
-        navHostFragment.navigate(action)
+        val navController = NavHostFragment.findNavController(this)
+        val action = PlaylistAddFragmentDirections.actionNavAddToNavInfoPlaylist(viewModel.callerType, id)
+        navController.navigate(action)
         viewModel.ready()
     }
 

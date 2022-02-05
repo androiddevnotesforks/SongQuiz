@@ -37,6 +37,10 @@ class InfoTrackViewModel  @Inject constructor(
 ) : ViewModel() {
 
     var infoScreenCaller = InfoTrackScreenCaller.UNSPECIFIED
+        private set
+    fun setCaller(text: String){
+        infoScreenCaller = InfoTrackScreenCaller.valueOf(text)
+    }
 
     val uiState: MutableLiveData<InfoTrackUiState> by lazy {
         MutableLiveData<InfoTrackUiState>()

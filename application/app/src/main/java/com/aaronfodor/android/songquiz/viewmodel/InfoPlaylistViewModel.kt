@@ -40,6 +40,10 @@ class InfoPlaylistViewModel  @Inject constructor(
 ) : ViewModel() {
 
     var infoScreenCaller = InfoPlaylistScreenCaller.UNSPECIFIED
+        private set
+    fun setCaller(text: String){
+        infoScreenCaller = InfoPlaylistScreenCaller.valueOf(text)
+    }
 
     val uiState: MutableLiveData<InfoPlaylistUiState> by lazy {
         MutableLiveData<InfoPlaylistUiState>()

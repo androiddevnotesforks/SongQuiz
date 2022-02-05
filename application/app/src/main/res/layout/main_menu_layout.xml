@@ -8,7 +8,7 @@
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
     android:backgroundTint="@color/colorNavBackground"
-    app:headerLayout="@layout/nav_menu_header"
+    app:headerLayout="@layout/main_menu_header"
     app:itemTextAppearance="@style/SubtitleText"
     app:itemIconTint="@color/colorText"
     app:itemTextColor="@color/colorText"

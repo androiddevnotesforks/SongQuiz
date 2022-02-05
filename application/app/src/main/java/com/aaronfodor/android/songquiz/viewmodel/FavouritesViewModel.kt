@@ -36,6 +36,7 @@ class FavouritesViewModel @Inject constructor(
         }
     }
 
+    val callerType = InfoTrackScreenCaller.FAVOURITES.name
     val tracks : MutableLiveData<List<ViewModelPlaylist>> by lazy {
         MutableLiveData<List<ViewModelPlaylist>>()
     }

@@ -174,9 +174,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        val action = PlaylistsFragmentDirections.toNavInfoFromPlaylists(id)
-        navHostFragment.navigate(action)
+        val navController = NavHostFragment.findNavController(this)
+        val action = PlaylistsFragmentDirections.actionNavPlayToNavInfoPlaylist(viewModel.callerType, id)
+        navController.navigate(action)
         viewModel.ready()
     }
 
@@ -214,8 +214,9 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     }
 
     private fun showAddPlaylistsScreen(){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        navHostFragment.navigate(R.id.to_nav_add_from_play, null)
+        val navController = NavHostFragment.findNavController(this)
+        val action = PlaylistsFragmentDirections.actionNavPlayToNavAdd()
+        navController.navigate(action)
         viewModel.ready()
     }
 

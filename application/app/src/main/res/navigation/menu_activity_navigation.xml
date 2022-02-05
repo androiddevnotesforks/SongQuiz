@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.aaronfodor.android.songquiz.view.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_add"
+            app:destination="@id/nav_add" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_info_playlist"
+            app:destination="@id/nav_info_playlist" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_play"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:label="@string/menu_play"
+        tools:layout="@layout/fragment_playlists" >
+        <action
+            android:id="@+id/action_nav_play_to_nav_info_playlist"
+            app:destination="@id/nav_info_playlist" />
+        <action
+            android:id="@+id/action_nav_play_to_nav_add"
+            app:destination="@id/nav_add" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistAddFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_playlist_add" >
+        <action
+            android:id="@+id/action_nav_add_to_nav_info_playlist"
+            app:destination="@id/nav_info_playlist" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_favourites"
+        android:name="com.aaronfodor.android.songquiz.view.FavouritesFragment"
+        android:label="@string/menu_favourites"
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_nav_favourites_to_nav_info_track"
+            app:destination="@id/nav_info_track" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_statistics"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:label="@string/menu_statistics"
+        tools:layout="@layout/fragment_playlists" />
+
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:label="@string/menu_help"
+        tools:layout="@layout/fragment_playlists" />
+
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.aaronfodor.android.songquiz.view.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.aaronfodor.android.songquiz.view.SettingsFragment"
+        android:label="@string/menu_settings"/>
+
+    <fragment
+        android:id="@+id/nav_info_playlist"
+        android:name="com.aaronfodor.android.songquiz.view.InfoPlaylistFragment"
+        android:label="@string/menu_info_playlist"
+        tools:layout="@layout/fragment_info_playlist" >
+        <argument
+            android:name="callerAsString"
+            app:argType="string"/>
+        <argument
+            android:name="playlistId"
+            app:argType="string"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_info_track"
+        android:name="com.aaronfodor.android.songquiz.view.InfoTrackFragment"
+        android:label="@string/menu_info_track"
+        tools:layout="@layout/fragment_info_track" >
+        <argument
+            android:name="callerAsString"
+            app:argType="string"/>
+        <argument
+            android:name="trackId"
+            app:argType="string"/>
+    </fragment>
+
+</navigation>

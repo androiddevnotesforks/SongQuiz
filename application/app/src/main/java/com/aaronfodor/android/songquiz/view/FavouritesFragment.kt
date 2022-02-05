@@ -149,9 +149,9 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
-        val navHostFragment = NavHostFragment.findNavController(this)
-        val action = FavouritesFragmentDirections.toNavInfoFromFavourites(id)
-        navHostFragment.navigate(action)
+        val navController = NavHostFragment.findNavController(this)
+        val action = FavouritesFragmentDirections.actionNavFavouritesToNavInfoTrack(viewModel.callerType, id)
+        navController.navigate(action)
         viewModel.ready()
     }
 

@@ -42,6 +42,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    val callerType = InfoPlaylistScreenCaller.HOME.name
     var selectedPlaylistId = ""
 
     val playlists : MutableLiveData<List<ViewModelPlaylist>> by lazy {
@@ -98,8 +99,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showAddPlaylistScreen() = viewModelScope.launch(Dispatchers.Default) {
-        val playlistIdsAlreadyAdded : List<String> = playlists.value?.map { it -> it.id } ?: listOf()
-        PlaylistsAddViewModel.transferPlaylistIdsAlreadyAdded = playlistIdsAlreadyAdded
         uiState.postValue(HomeUiState.SHOW_ADD_SCREEN)
     }
 

@@ -40,23 +40,8 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
 
         imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
 
-        val navController = NavHostFragment.findNavController(this)
-        when (navController.currentDestination?.id) {
-            R.id.nav_info_from_home -> {
-                viewModel.infoScreenCaller = InfoPlaylistScreenCaller.HOME
-            }
-            R.id.nav_info_from_play -> {
-                viewModel.infoScreenCaller = InfoPlaylistScreenCaller.PLAY
-            }
-            R.id.nav_info_from_add_playlists -> {
-                viewModel.infoScreenCaller = InfoPlaylistScreenCaller.ADD_PLAYLIST
-            }
-            else -> {
-                viewModel.infoScreenCaller = InfoPlaylistScreenCaller.UNSPECIFIED
-            }
-        }
-
         val safeArgs: InfoPlaylistFragmentArgs by navArgs()
+        viewModel.setCaller(safeArgs.callerAsString)
         viewModel.setItemById(safeArgs.playlistId, forceLoad = false)
     }
 
@@ -294,14 +279,16 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
                     viewModel.notification.postValue(InfoPlaylistUiNotification.NONE)
                 }
                 InfoPlaylistUiNotification.SUCCESS_ADD_ITEM -> {
-                    // don't do anything, exit and the next fragment will show the notification
+                    Snackbar.make(binding.root, getString(R.string.success_listable_add), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoPlaylistUiNotification.NONE)
                 }
                 InfoPlaylistUiNotification.ERROR_DELETE_ITEM -> {
                     Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(InfoPlaylistUiNotification.NONE)
                 }
                 InfoPlaylistUiNotification.SUCCESS_DELETE_ITEM -> {
-                    // don't do anything, exit and the next fragment will show the notification
+                    Snackbar.make(binding.root, getString(R.string.success_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoPlaylistUiNotification.NONE)
                 }
                 InfoPlaylistUiNotification.NONE -> {}
                 else -> {}
@@ -320,33 +307,8 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
     }
 
     private fun closeScreen(){
-        val navHostFragment = NavHostFragment.findNavController(this)
-
-        when(viewModel.infoScreenCaller){
-
-            InfoPlaylistScreenCaller.HOME -> {
-                navHostFragment.navigate(R.id.to_nav_home, null)
-            }
-
-            InfoPlaylistScreenCaller.PLAY -> {
-                if(viewModel.notification.value == InfoPlaylistUiNotification.SUCCESS_DELETE_ITEM){
-                    PlaylistsViewModel.notificationFromCaller = PlaylistsNotification.SUCCESS_DELETE_PLAYLIST
-                }
-                navHostFragment.navigate(R.id.to_nav_play, null)
-            }
-
-            InfoPlaylistScreenCaller.ADD_PLAYLIST -> {
-                if(viewModel.notification.value == InfoPlaylistUiNotification.SUCCESS_ADD_ITEM){
-                    PlaylistsAddViewModel.notificationFromCaller = PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST
-                }
-                navHostFragment.navigate(R.id.to_nav_add, null)
-            }
-
-            InfoPlaylistScreenCaller.UNSPECIFIED -> {
-                navHostFragment.navigate(R.id.to_nav_home, null)
-            }
-
-        }
+        val navController = NavHostFragment.findNavController(this)
+        navController.navigateUp()
         viewModel.ready(InfoPlaylistUiState.READY_FALLBACK)
     }
 

@@ -20,12 +20,13 @@
         app:layout_constraintBottom_toTopOf="@+id/glHorizontal"
         app:layout_constraintEnd_toEndOf="@+id/glVertical"/>
 
-    <include
+    <TextView
         android:id="@+id/action_random"
-        layout="@layout/action_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/button_margin_medium"
+        android:theme="@style/SubtitleText"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/glHorizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

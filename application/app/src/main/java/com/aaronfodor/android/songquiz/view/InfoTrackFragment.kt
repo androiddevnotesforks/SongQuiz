@@ -35,17 +35,8 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
 
         imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
 
-        val navController = NavHostFragment.findNavController(this)
-        when (navController.currentDestination?.id) {
-            R.id.nav_info_from_favourites -> {
-                viewModel.infoScreenCaller = InfoTrackScreenCaller.FAVOURITES
-            }
-            else -> {
-                viewModel.infoScreenCaller = InfoTrackScreenCaller.UNSPECIFIED
-            }
-        }
-
         val safeArgs: InfoTrackFragmentArgs by navArgs()
+        viewModel.setCaller(safeArgs.callerAsString)
         viewModel.setItemById(safeArgs.trackId, forceLoad = false)
     }
 
@@ -205,7 +196,8 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
                     viewModel.notification.postValue(InfoTrackUiNotification.NONE)
                 }
                 InfoTrackUiNotification.SUCCESS_DELETE_ITEM -> {
-                    // don't do anything, exit and the next fragment will show the notification
+                    Snackbar.make(binding.root, getString(R.string.success_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoTrackUiNotification.NONE)
                 }
                 InfoTrackUiNotification.NONE -> {}
                 else -> {}
@@ -224,22 +216,8 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
     }
 
     private fun closeScreen(){
-        val navHostFragment = NavHostFragment.findNavController(this)
-
-        when(viewModel.infoScreenCaller){
-
-            InfoTrackScreenCaller.FAVOURITES -> {
-                if(viewModel.notification.value == InfoTrackUiNotification.SUCCESS_DELETE_ITEM){
-                    FavouritesViewModel.notificationFromCaller = FavouritesNotification.SUCCESS_DELETE_TRACK
-                }
-                navHostFragment.navigate(R.id.to_nav_favourites, null)
-            }
-
-            InfoTrackScreenCaller.UNSPECIFIED -> {
-                navHostFragment.navigate(R.id.to_nav_home, null)
-            }
-
-        }
+        val navController = NavHostFragment.findNavController(this)
+        navController.navigateUp()
         viewModel.ready()
     }
 
