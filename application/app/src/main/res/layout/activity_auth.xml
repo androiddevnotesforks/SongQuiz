@@ -54,24 +54,46 @@
         style="@style/AuthButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="@string/login_button"
         android:contentDescription="@string/login_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/login_button"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btnLoginInfo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow"/>
+        app:layout_constraintTop_toBottomOf="@+id/glHorizontalLow" />
+
+    <ImageView
+        android:id="@+id/btnLoginInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:contentDescription="@string/login_info_title"
+        android:src="@drawable/icon_warning"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnLogin"
+        app:layout_constraintBottom_toBottomOf="@+id/btnLogin"/>
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnSkip"
         style="@style/AuthButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="@string/skip_button"
         android:contentDescription="@string/skip_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/skip_button"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btnWhyLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <ImageView
+        android:id="@+id/btnWhyLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:contentDescription="@string/why_login_title"
+        android:src="@drawable/icon_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnSkip"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSkip"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"

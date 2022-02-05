@@ -25,8 +25,11 @@
     <string name="restore_default_db">Restore default playlists</string>
     <string name="restore_default_db_description">Are you sure you want to delete your local data and restore the defaults? This will not affect anything on Spotify.</string>
 
-    <string name="why_login_title">Why log in is required</string>
-    <string name="why_login_dialog">We use Spotify to access a wide range of songs. We need you to be logged in to play music for you. You enter your login information on Spotify\'s interface - we only access user information to which you have previously consented.</string>
+    <string name="login_info_title">Login information</string>
+    <string name="login_info_dialog">Spotify\'s Google Express Sign-In feature is currently paused. If you created your Spotify account with your Google Account, you can sign in as usual by entering your Google email address and password.</string>
+
+    <string name="why_login_title">Why login is required</string>
+    <string name="why_login_dialog">We use Spotify to access a wide range of songs. We need you to be authenticated in order to play music for you. You enter your credentials on Spotify\'s own interface - we only access user information to which you have previously consented.</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>

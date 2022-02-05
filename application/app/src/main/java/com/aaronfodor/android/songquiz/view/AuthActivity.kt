@@ -62,14 +62,23 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     }
 
     fun skipLoginTapped() {
-        val warningDialog = AppDialog(this, getString(R.string.why_login_title),
-            getString(R.string.why_login_dialog), R.drawable.icon_info)
-        warningDialog.setPositiveButton {
-            //showing the next screen
-            showNextScreenCalled = false
-            showNextScreen(false)
-        }
+        //showing the next screen
+        showNextScreenCalled = false
+        showNextScreen(false)
+    }
+
+    fun loginInfoTapped(){
+        val warningDialog = AppDialog(this, getString(R.string.login_info_title),
+            getString(R.string.login_info_dialog), R.drawable.icon_warning)
+        warningDialog.setPositiveButton{}
         warningDialog.show()
+    }
+
+    fun whyLoginTapped(){
+        val infoDialog = AppDialog(this, getString(R.string.why_login_title),
+            getString(R.string.why_login_dialog), R.drawable.icon_info)
+        infoDialog.setPositiveButton{}
+        infoDialog.show()
     }
 
     override fun subscribeViewModel() {
@@ -82,12 +91,22 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         binding.btnSkip.setOnClickListener {
             skipLoginTapped()
         }
+
+        binding.btnLoginInfo.setOnClickListener {
+            loginInfoTapped()
+        }
+
+        binding.btnWhyLogin.setOnClickListener {
+            whyLoginTapped()
+        }
         
         val uiStateObserver = Observer<AuthUiState> { state ->
 
             if(state == AuthUiState.EMPTY){
                 binding.btnLogin.visibility = View.VISIBLE
                 binding.btnSkip.visibility = View.VISIBLE
+                binding.btnLoginInfo.visibility = View.VISIBLE
+                binding.btnWhyLogin.visibility = View.VISIBLE
             }
 
             if(state == AuthUiState.START_LOGIN){

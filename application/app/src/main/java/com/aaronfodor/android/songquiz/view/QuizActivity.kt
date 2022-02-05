@@ -1,6 +1,10 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -44,6 +48,9 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     private lateinit var viewModel: QuizViewModel
 
     var imageSize = 0
+
+    var userInputButtonAnimation: ObjectAnimator? = null
+    var ttsButtonAnimation: ObjectAnimator? = null
 
     override var requiredPermissions = listOf(
         Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.VIBRATE
@@ -111,17 +118,29 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 UserInputState.ENABLED -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_on)
                     binding.content.userSpeechButton.isEnabled = true
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = tappableInfiniteAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation?.start()
                 }
                 UserInputState.DISABLED -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_off)
                     binding.content.userSpeechButton.isEnabled = false
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation?.start()
                 }
                 UserInputState.RECORDING -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform)
                     binding.content.userSpeechButton.isEnabled = true
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.userSpeechButton.isEnabled = false
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation?.start()
                 }
             }
         }
@@ -164,17 +183,29 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 TtsState.ENABLED -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_on)
                     binding.content.ttsSpeechButton.isEnabled = true
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = tappableInfiniteAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation?.start()
                 }
                 TtsState.DISABLED -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_off)
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation?.start()
                 }
                 TtsState.SPEAKING -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_speaking)
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation?.start()
                 }
             }
         }
@@ -410,6 +441,28 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         gradientDrawable.cornerRadius = 0F
         binding.root.background = gradientDrawable
         this.window.statusBarColor = playlistColor
+    }
+
+    private fun tappableInfiniteAnimation(viewToAnimate: View) : ObjectAnimator{
+        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f)
+        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.1f)
+        val animation = ObjectAnimator.ofPropertyValuesHolder(viewToAnimate, scaleX, scaleY)
+        animation.interpolator = FastOutSlowInInterpolator()
+        animation.duration = 500L
+        animation.repeatCount = ObjectAnimator.INFINITE
+        animation.repeatMode = ObjectAnimator.REVERSE
+        return animation
+    }
+
+    private fun tappableEndAnimation(viewToAnimate: View) : ObjectAnimator{
+        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.00f)
+        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.00f)
+        val animation = ObjectAnimator.ofPropertyValuesHolder(viewToAnimate, scaleX, scaleY)
+        animation.interpolator = FastOutSlowInInterpolator()
+        animation.duration = 0L
+        animation.repeatCount = 0
+        animation.repeatMode = ObjectAnimator.RESTART
+        return animation
     }
 
 }
