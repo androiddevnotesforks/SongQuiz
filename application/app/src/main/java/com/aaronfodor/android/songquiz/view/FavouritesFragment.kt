@@ -49,10 +49,10 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
 
         val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
-        binding.RecyclerViewFavourites.adapter = listAdapter
+        binding.list.RecyclerView.adapter = listAdapter
 
         //swipe
-        binding.RecyclerViewFavourites.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -66,14 +66,18 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
                     deleteTrack(track.title, track.id, dismissAction = {
                         // bring back the swiped item
                         itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewFavourites)
+                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
                     })
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewFavourites)
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
 
-        registerForContextMenu(binding.RecyclerViewFavourites)
+        registerForContextMenu(binding.list.RecyclerView)
+
+        binding.list.tvEmpty.text = getText(R.string.empty_list_tracks)
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_favourite)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
     }
 
     override fun subscribeViewModel() {
@@ -82,40 +86,40 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
 
         val tracksObserver = Observer<List<ViewModelPlaylist>> { tracks ->
             val newList = tracks.map { it.toListable() }
-            (binding.RecyclerViewFavourites.adapter as ListableAdapter).submitList(newList)
+            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(tracks.isEmpty() && (viewModel.uiState.value == FavouritesUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.tracks.observe(this, tracksObserver)
 
         val uiStateObserver = Observer<FavouritesUiState> { state ->
             if(state != FavouritesUiState.READY){
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
             if(state != FavouritesUiState.LOADING){
-                binding.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
                 FavouritesUiState.LOADING -> {
-                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 FavouritesUiState.READY -> {
-                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.list.tvEmpty.visibility = View.VISIBLE
                 }
                 else -> {}
             }
 
             if(viewModel.tracks.value.isNullOrEmpty() && (state == FavouritesUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -139,7 +143,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
 
     override fun appearingAnimations() {
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.tvEmpty.startAnimation(bottomAnimation)
+        binding.list.tvEmpty.startAnimation(bottomAnimation)
     }
 
     override fun unsubscribeViewModel() {}

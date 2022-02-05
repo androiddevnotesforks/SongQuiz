@@ -5,11 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.R
@@ -17,8 +14,6 @@ import com.aaronfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.viewmodel.AboutViewModel
 import com.aaronfodor.android.songquiz.viewmodel.TtsAboutState
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class AboutFragment : AppFragment(R.layout.fragment_about) {
 
@@ -35,37 +30,38 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.content.aboutText.text = getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME)
         binding.content.legalText.text = getString(R.string.app_copyright)
 
-        val licenseOpenAction = {
-            val licensePageUri = Uri.parse(getString(R.string.license_page))
-            val browserIntent = Intent(Intent.ACTION_VIEW, licensePageUri)
-            startActivity(browserIntent)
-        }
-        binding.content.fabLicense.setOnClickListener { licenseOpenAction() }
-        binding.content.tvLicense.setOnClickListener { licenseOpenAction() }
-
         val privacyOpenAction = {
             val privacyPageUri = Uri.parse(getString(R.string.privacy_page))
             val browserIntent = Intent(Intent.ACTION_VIEW, privacyPageUri)
             startActivity(browserIntent)
         }
-        binding.content.fabPrivacy.setOnClickListener { privacyOpenAction() }
-        binding.content.tvPrivacy.setOnClickListener { privacyOpenAction() }
+        binding.content.action1.fab.setOnClickListener { privacyOpenAction() }
+        binding.content.action1.tv.setOnClickListener { privacyOpenAction() }
+        binding.content.action1.fab.setImageResource(R.drawable.icon_privacy)
+        binding.content.action1.fab.contentDescription = getText(R.string.app_privacy)
+        binding.content.action1.tv.text = getText(R.string.app_privacy)
 
-        val moreFromDeveloperAction = {
-            val developerPageUri = Uri.parse(getString(R.string.developer_page))
-            val browserIntent = Intent(Intent.ACTION_VIEW, developerPageUri)
+        val licenseOpenAction = {
+            val licensePageUri = Uri.parse(getString(R.string.license_page))
+            val browserIntent = Intent(Intent.ACTION_VIEW, licensePageUri)
             startActivity(browserIntent)
         }
-        binding.content.fabMoreFromDeveloper.setOnClickListener { moreFromDeveloperAction() }
-        binding.content.tvMoreFromDeveloper.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.action2.fab.setOnClickListener { licenseOpenAction() }
+        binding.content.action2.tv.setOnClickListener { licenseOpenAction() }
+        binding.content.action2.fab.setImageResource(R.drawable.icon_license)
+        binding.content.action2.fab.contentDescription = getText(R.string.app_license)
+        binding.content.action2.tv.text = getText(R.string.app_license)
 
         val reviewAction = {
             val storePageUri = Uri.parse(getString(R.string.store_page, context?.packageName ?: ""))
             val storeIntent = Intent(Intent.ACTION_VIEW, storePageUri)
             startActivity(storeIntent)
         }
-        binding.content.fabReview.setOnClickListener { reviewAction() }
-        binding.content.tvReview.setOnClickListener { reviewAction() }
+        binding.content.action3.fab.setOnClickListener { reviewAction() }
+        binding.content.action3.tv.setOnClickListener { reviewAction() }
+        binding.content.action3.fab.setImageResource(R.drawable.icon_review)
+        binding.content.action3.fab.contentDescription = getText(R.string.review_app)
+        binding.content.action3.tv.text = getText(R.string.review_app)
 
         val reportAction = {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -77,8 +73,22 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             }
             startActivity(reportIntent)
         }
-        binding.content.fabReport.setOnClickListener { reportAction() }
-        binding.content.tvReport.setOnClickListener { reportAction() }
+        binding.content.action4.fab.setOnClickListener { reportAction() }
+        binding.content.action4.tv.setOnClickListener { reportAction() }
+        binding.content.action4.fab.setImageResource(R.drawable.icon_bug)
+        binding.content.action4.fab.contentDescription = getText(R.string.report)
+        binding.content.action4.tv.text = getText(R.string.report)
+
+        val moreFromDeveloperAction = {
+            val developerPageUri = Uri.parse(getString(R.string.developer_page))
+            val browserIntent = Intent(Intent.ACTION_VIEW, developerPageUri)
+            startActivity(browserIntent)
+        }
+        binding.content.action5.fab.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.action5.tv.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.action5.fab.setImageResource(R.drawable.icon_more_apps)
+        binding.content.action5.fab.contentDescription = getText(R.string.more_from_developer)
+        binding.content.action5.tv.text = getText(R.string.more_from_developer)
     }
 
     override fun subscribeViewModel() {
@@ -116,11 +126,11 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.fabSpeak.visibility = View.VISIBLE
 
         val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        binding.content.fabPrivacy.startAnimation(leftAnimation)
-        binding.content.fabLicense.startAnimation(leftAnimation)
-        binding.content.fabReview.startAnimation(leftAnimation)
-        binding.content.fabMoreFromDeveloper.startAnimation(leftAnimation)
-        binding.content.fabReport.startAnimation(leftAnimation)
+        binding.content.action1.fab.startAnimation(leftAnimation)
+        binding.content.action2.fab.startAnimation(leftAnimation)
+        binding.content.action3.fab.startAnimation(leftAnimation)
+        binding.content.action4.fab.startAnimation(leftAnimation)
+        binding.content.action5.fab.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {

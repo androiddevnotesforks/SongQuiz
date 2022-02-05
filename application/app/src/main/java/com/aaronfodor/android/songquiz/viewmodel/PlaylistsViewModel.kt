@@ -37,6 +37,8 @@ class PlaylistsViewModel @Inject constructor(
         }
     }
 
+    var selectedPlaylistId = ""
+
     val playlists : MutableLiveData<List<ViewModelPlaylist>> by lazy {
         MutableLiveData<List<ViewModelPlaylist>>()
     }
@@ -68,7 +70,8 @@ class PlaylistsViewModel @Inject constructor(
         playlists.postValue(newList)
     }
 
-    fun startQuiz() = viewModelScope.launch {
+    fun startQuiz(playListId: String) = viewModelScope.launch {
+        selectedPlaylistId = playListId
         if(accountService.accountState.value != AccountState.LOGGED_IN){
             uiState.value = PlaylistsUiState.AUTH_NEEDED
             return@launch

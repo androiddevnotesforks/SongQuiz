@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getColor
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -24,16 +21,12 @@ import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylistSe
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.removeIds
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthRequestModule {
 
     private val binding: FragmentPlaylistAddBinding by viewBinding()
 
     private lateinit var viewModel: PlaylistsAddViewModel
-
-    private var lastSearchExpression = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,10 +47,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         val lastItemLambda: () -> Unit = { searchGetNextBatch() }
 
         val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, lastItemLambda)
-        binding.RecyclerViewPlaylists.adapter = listAdapter
+        binding.list.RecyclerView.adapter = listAdapter
 
         //swipe
-        binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return true
@@ -72,37 +65,40 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewPlaylists)
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
 
-        registerForContextMenu(binding.RecyclerViewPlaylists)
+        registerForContextMenu(binding.list.RecyclerView)
 
         binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
-        binding.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
+        binding.list.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
+        binding.list.tvEmpty.text = getText(R.string.empty_search_list)
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_search)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
     }
 
     override fun subscribeViewModel() {
         viewModel.setPlaylistIdsAlreadyAdded()
 
         val playlistsFoundObserver = Observer<ViewModelPlaylistSearchResult> { result ->
-            (binding.RecyclerViewPlaylists.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
+            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
 
             if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.searchResult.observe(this, playlistsFoundObserver)
 
         val uiStateObserver = Observer<PlaylistsAddUiState> { state ->
             if(state != PlaylistsAddUiState.LOADING){
-                binding.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
                 PlaylistsAddUiState.LOADING -> {
-                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 PlaylistsAddUiState.AUTH_NEEDED -> {
                     startAuthentication()
@@ -112,10 +108,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
             }
 
             if(viewModel.searchResult.value?.items.isNullOrEmpty() && (state == PlaylistsAddUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -155,7 +151,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         binding.fabSearch.visibility = View.VISIBLE
 
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.tvEmpty.startAnimation(bottomAnimation)
+        binding.list.tvEmpty.startAnimation(bottomAnimation)
     }
 
     override fun unsubscribeViewModel() {}
@@ -164,7 +160,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         val inputDialog = AppDialogInput(this.requireContext(), getString(R.string.search_playlist),
             getString(R.string.search_playlist_description))
         inputDialog.setPositiveButton {
-            lastSearchExpression = it
             viewModel.searchPlaylistByIdOrName(it)
         }
         inputDialog.show()
@@ -188,7 +183,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
     override var authLauncherStarted = false
     override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
         if(isAuthSuccess){
-            viewModel.searchPlaylistByIdOrName(lastSearchExpression)
+            viewModel.searchPlaylistByIdOrName(viewModel.lastSearchExpression)
         }
         else{
             viewModel.ready()

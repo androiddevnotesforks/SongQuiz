@@ -57,7 +57,7 @@
 
                 <include
                     android:id="@+id/content"
-                    layout="@layout/fragment_info_content"
+                    layout="@layout/fragment_info_playlist_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/ivLogo"

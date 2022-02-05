@@ -114,6 +114,9 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
                 R.id.nav_add_from_play -> {
                     navController.navigate(R.id.to_nav_play, null)
                 }
+                R.id.nav_add_from_home -> {
+                    navController.navigate(R.id.to_nav_home, null)
+                }
                 else -> {
                     super.onBackPressed()
                 }
@@ -165,6 +168,32 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         }
         return true
 
+    }
+
+
+    // to handle back button specifically
+    override fun onSupportNavigateUp(): Boolean {
+        return when (navController.currentDestination?.id) {
+            R.id.nav_info_from_home -> {
+                navController.navigate(R.id.to_nav_home, null)
+                true
+            }
+            R.id.nav_info_from_play -> {
+                navController.navigate(R.id.to_nav_play, null)
+                true
+            }
+            R.id.nav_info_from_add_playlists -> {
+                navController.navigate(R.id.to_nav_add, null)
+                true
+            }
+            R.id.nav_info_from_favourites -> {
+                navController.navigate(R.id.to_nav_favourites, null)
+                true
+            }
+            else -> {
+                super.onSupportNavigateUp()
+            }
+        }
     }
     
 }

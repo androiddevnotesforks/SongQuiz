@@ -32,4 +32,8 @@
     <color name="colorDialogBackground">#DDFFFFFF</color>
     <color name="colorNavBackground">#FFFFFF</color>
 
+    <color name="colorSun">#FDB813</color>
+    <color name="colorSunset">#CF8C59</color>
+    <color name="colorMoon">#FDB813</color>
+
 </resources>

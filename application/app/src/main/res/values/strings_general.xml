@@ -21,6 +21,10 @@
     <string name="app_privacy">Privacy</string>
 
     <string name="greeting_fallback">Hello!</string>
+    <string name="greeting_morning">Good morning!</string>
+    <string name="greeting_afternoon">Good afternoon!</string>
+    <string name="greeting_evening">Good evening!</string>
+    <string name="greeting_night">Good evening!</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_play">Play</string>

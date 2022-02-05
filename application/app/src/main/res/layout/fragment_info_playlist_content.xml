@@ -5,75 +5,51 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/FancyText"
-        android:gravity="center"
-        android:id="@+id/about_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        style="@style/ParagraphText"
-        android:gravity="center"
-        android:id="@+id/about_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/about_title" />
-
-    <TextView
         style="@style/SubtitleText"
         android:gravity="center"
-        android:id="@+id/acknowledgements_title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/about_text"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         style="@style/ParagraphText"
         android:gravity="center"
-        android:id="@+id/acknowledgements_text"
+        android:id="@+id/content1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_title" />
-
-    <TextView
-        style="@style/SubtitleText"
-        android:gravity="center"
-        android:id="@+id/legal_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/legal_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_text"/>
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         style="@style/ParagraphText"
         android:gravity="center"
-        android:id="@+id/legal_text"
+        android:id="@+id/content2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/legal_title" />
+        app:layout_constraintTop_toBottomOf="@+id/content1" />
+
+    <TextView
+        style="@style/ParagraphText"
+        android:gravity="center"
+        android:id="@+id/content3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content2" />
 
     <include
         android:id="@+id/action1"
         layout="@layout/action_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/legal_text"
+        app:layout_constraintTop_toBottomOf="@+id/content3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -92,24 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/action2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <include
-        android:id="@+id/action4"
-        layout="@layout/action_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/action3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <include
-        android:id="@+id/action5"
-        layout="@layout/action_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/action4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

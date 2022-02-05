@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -35,8 +36,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
     private lateinit var viewModel: PlaylistsViewModel
 
-    private var selectedPlaylistId = ""
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[PlaylistsViewModel::class.java]
@@ -58,10 +57,10 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
 
         val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
-        binding.RecyclerViewPlaylists.adapter = listAdapter
+        binding.list.RecyclerView.adapter = listAdapter
 
         //swipe
-        binding.RecyclerViewPlaylists.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -75,21 +74,24 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
                     deletePlaylist(playlist.title, playlist.id, dismissAction = {
                         // bring back the swiped item
                         itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewPlaylists)
+                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
                     })
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewPlaylists)
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
 
-        registerForContextMenu(binding.RecyclerViewPlaylists)
+        registerForContextMenu(binding.list.RecyclerView)
 
         binding.fabAddPlaylist.setOnClickListener {
             viewModel.showAddPlaylistScreen()
         }
-        binding.tvEmpty.setOnClickListener {
+        binding.list.tvEmpty.setOnClickListener {
             viewModel.showAddPlaylistScreen()
         }
+        binding.list.tvEmpty.text = getText(R.string.empty_list_playlists)
+        val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
     }
 
     override fun subscribeViewModel() {
@@ -98,28 +100,28 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
         val playlistsObserver = Observer<List<ViewModelPlaylist>> { playlists ->
             val newList = playlists.map { it.toListable() }
-            (binding.RecyclerViewPlaylists.adapter as ListableAdapter).submitList(newList)
+            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(playlists.isEmpty() && (viewModel.uiState.value == PlaylistsUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<PlaylistsUiState> { state ->
             if(state != PlaylistsUiState.READY){
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
             if(state != PlaylistsUiState.LOADING){
-                binding.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
                 PlaylistsUiState.LOADING -> {
-                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 PlaylistsUiState.READY -> {}
                 PlaylistsUiState.AUTH_NEEDED -> {
@@ -135,10 +137,10 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
             }
 
             if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
-                binding.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.GONE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -166,7 +168,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         binding.fabAddPlaylist.visibility = View.VISIBLE
 
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.tvEmpty.startAnimation(bottomAnimation)
+        binding.list.tvEmpty.startAnimation(bottomAnimation)
     }
 
     override fun unsubscribeViewModel() {}
@@ -180,8 +182,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
     private fun playlistByIdSelected(id: String){
         // record the selected playlist
-        selectedPlaylistId = id
-        viewModel.startQuiz()
+        viewModel.startQuiz(id)
     }
 
     private fun deletePlaylist(name: String, id: String, dismissAction: () -> Unit) {
@@ -204,11 +205,11 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
 
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
-            param(FirebaseAnalytics.Param.ITEM_ID, selectedPlaylistId)
+            param(FirebaseAnalytics.Param.ITEM_ID, viewModel.selectedPlaylistId)
         }
 
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
-        intent.putExtra(QuizActivity.PLAYLIST_KEY, selectedPlaylistId)
+        intent.putExtra(QuizActivity.PLAYLIST_KEY, viewModel.selectedPlaylistId)
         startActivity(intent)
     }
 
@@ -221,7 +222,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
     override var authLauncherStarted = false
     override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
         if(isAuthSuccess){
-            viewModel.startQuiz()
+            viewModel.startQuiz(viewModel.selectedPlaylistId)
         }
         else{
             viewModel.ready()

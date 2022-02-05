@@ -10,11 +10,13 @@
     <string name="delete">Törlés</string>
     <string name="add">Hozzáadás</string>
     <string name="listen">Belehallgatás</string>
+    <string name="random_play">Játék véletlenszerű lejátszási listán</string>
 
     <string name="search_playlist">Lista keresése</string>
     <string name="search_playlist_description">Írd be a keresett lista nevét vagy Spotify azonosítóját.</string>
     <string name="empty_list_playlists">Koppints egy lista felvételéhez</string>
     <string name="empty_search_list">Koppints a listák kereséséhez</string>
+    <string name="empty_list_playlists_random">Nincsenek lejátszási listák, amik közül választani lehetne</string>
 
     <string name="empty_list_tracks">A kedvenceid listája üres. Új elemet felvenni játék közben, az alábbi ikonnal tudsz</string>
 

@@ -58,7 +58,7 @@
 
                 <include
                     android:id="@+id/content"
-                    layout="@layout/fragment_info_content"/>
+                    layout="@layout/fragment_info_track_content"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -38,6 +38,8 @@ class PlaylistsAddViewModel @Inject constructor(
         }
     }
 
+    var lastSearchExpression = ""
+
     val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
         MutableLiveData<ViewModelPlaylistSearchResult>()
     }
@@ -63,6 +65,7 @@ class PlaylistsAddViewModel @Inject constructor(
     }
 
     fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
+        lastSearchExpression = searchExpression
         if(accountService.accountState.value != AccountState.LOGGED_IN){
             uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
             return@launch

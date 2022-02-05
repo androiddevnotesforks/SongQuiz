@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -18,9 +18,7 @@ import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
-import com.aaronfodor.android.songquiz.viewmodel.HomeNotification
-import com.aaronfodor.android.songquiz.viewmodel.HomeUiState
-import com.aaronfodor.android.songquiz.viewmodel.HomeViewModel
+import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
@@ -35,22 +33,20 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
 
     private lateinit var viewModel: HomeViewModel
 
-    private var selectedPlaylistId = ""
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        val startLambda: (Listable) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
-        val startDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_play_circular)
+        val startLambda: (Listable) -> Unit = { playlist -> playByIdSelected(playlist.id) }
+        val startDrawable = getDrawable(requireContext(), R.drawable.icon_play_circular)
         val startText = getString(R.string.play)
 
         val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
-        val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
+        val infoDrawable = getDrawable(requireContext(), R.drawable.icon_info)
         val infoText = getString(R.string.info)
 
         val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id, {}) }
-        val deleteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_delete)
+        val deleteDrawable = getDrawable(requireContext(), R.drawable.icon_delete)
         val deleteText = getString(R.string.delete)
 
         val primaryAction = ListableAction(startLambda, startDrawable, startText)
@@ -58,10 +54,10 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
 
         val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
-        binding.RecyclerViewHome.adapter = listAdapter
+        binding.list.RecyclerView.adapter = listAdapter
 
         //swipe
-        binding.RecyclerViewHome.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -75,14 +71,24 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
                     deletePlaylist(playlist.title, playlist.id, dismissAction = {
                         // bring back the swiped item
                         itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerViewHome)
+                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
                     })
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.RecyclerViewHome)
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
 
-        registerForContextMenu(binding.RecyclerViewHome)
+        registerForContextMenu(binding.list.RecyclerView)
+
+        // because it is already in a scrollview, make it non-scrollable
+        binding.list.RecyclerView.isNestedScrollingEnabled = false
+
+        binding.list.tvEmpty.setOnClickListener {
+            viewModel.showAddPlaylistScreen()
+        }
+        binding.list.tvEmpty.text = getText(R.string.empty_list_playlists)
+        val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
     }
 
     override fun subscribeViewModel() {
@@ -91,30 +97,35 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
 
         val playlistsObserver = Observer<List<ViewModelPlaylist>> { playlists ->
             val newList = playlists.map { it.toListable() }
-            (binding.RecyclerViewHome.adapter as ListableAdapter).submitList(newList)
+            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
+
+            if(playlists.isEmpty() && (viewModel.uiState.value == HomeUiState.READY)){
+                binding.list.tvEmpty.visibility = View.VISIBLE
+            }
+            else{
+                binding.list.tvEmpty.visibility = View.GONE
+            }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<HomeUiState> { state ->
-            if(state != HomeUiState.READY){
-                binding.tvGreet.visibility = View.GONE
-            }
             if(state != HomeUiState.LOADING){
-                binding.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
                 HomeUiState.LOADING -> {
-                    binding.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                HomeUiState.READY -> {
-                    binding.tvGreet.visibility = View.VISIBLE
-                }
+                HomeUiState.READY -> {}
                 HomeUiState.AUTH_NEEDED -> {
                     startAuthentication()
                 }
                 HomeUiState.START_QUIZ -> {
                     showQuizScreen()
+                }
+                HomeUiState.SHOW_ADD_SCREEN -> {
+                    showAddPlaylistsScreen()
                 }
                 else -> {}
             }
@@ -131,16 +142,65 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
                     Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(HomeNotification.NONE)
                 }
+                HomeNotification.NO_PLAYLISTS -> {
+                    Snackbar.make(binding.root, getString(R.string.empty_list_playlists_random), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(HomeNotification.NONE)
+                }
                 HomeNotification.NONE -> {}
                 else -> {}
             }
         }
         viewModel.notification.observe(this, notificationObserver)
+
+        binding.tvGreet.isAllCaps = false
+        when(viewModel.getPartOfTheDay()){
+            PartOfTheDay.MORNING -> {
+                binding.tvGreet.text = getText(R.string.greeting_morning)
+                val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            }
+            PartOfTheDay.AFTERNOON -> {
+                binding.tvGreet.text = getText(R.string.greeting_afternoon)
+                val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            }
+            PartOfTheDay.EVENING -> {
+                binding.tvGreet.text = getText(R.string.greeting_evening)
+                val drawable = getDrawable(requireContext(), R.drawable.icon_sunset)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            }
+            PartOfTheDay.NIGHT -> {
+                binding.tvGreet.text = getText(R.string.greeting_night)
+                val drawable = getDrawable(requireContext(), R.drawable.icon_moon)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            }
+            PartOfTheDay.UNKNOWN -> {
+                binding.tvGreet.text = getText(R.string.greeting_fallback)
+                val drawable = getDrawable(requireContext(), R.drawable.icon_hello)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            }
+        }
+
+        val randomPlay = {
+            viewModel.startRandomQuiz()
+        }
+        val randomPlayContentDescription = getString(R.string.random_play)
+        binding.actionRandom.fab.setImageResource(R.drawable.icon_random)
+        binding.actionRandom.fab.contentDescription = randomPlayContentDescription
+        binding.actionRandom.tv.text = randomPlayContentDescription
+        binding.actionRandom.fab.setOnClickListener { randomPlay() }
+        binding.actionRandom.tv.setOnClickListener { randomPlay() }
+
     }
 
     override fun appearingAnimations() {
         val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
         binding.tvGreet.startAnimation(bottomAnimation)
+        binding.actionRandom.tv.startAnimation(bottomAnimation)
+        binding.list.tvEmpty.startAnimation(bottomAnimation)
+
+        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        binding.actionRandom.fab.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {}
@@ -152,10 +212,8 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         viewModel.ready()
     }
 
-    private fun playlistByIdSelected(id: String){
-        // record the selected playlist
-        selectedPlaylistId = id
-        viewModel.startQuiz()
+    private fun playByIdSelected(id: String){
+        viewModel.startQuiz(id)
     }
 
     private fun deletePlaylist(name: String, id: String, dismissAction: () -> Unit) {
@@ -178,18 +236,24 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
 
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
-            param(FirebaseAnalytics.Param.ITEM_ID, selectedPlaylistId)
+            param(FirebaseAnalytics.Param.ITEM_ID, viewModel.selectedPlaylistId)
         }
 
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
-        intent.putExtra(QuizActivity.PLAYLIST_KEY, selectedPlaylistId)
+        intent.putExtra(QuizActivity.PLAYLIST_KEY, viewModel.selectedPlaylistId)
         startActivity(intent)
+    }
+
+    private fun showAddPlaylistsScreen(){
+        val navHostFragment = NavHostFragment.findNavController(this)
+        navHostFragment.navigate(R.id.to_nav_add_from_home, null)
+        viewModel.ready()
     }
 
     override var authLauncherStarted = false
     override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
         if(isAuthSuccess){
-            viewModel.startQuiz()
+            viewModel.startQuiz(viewModel.selectedPlaylistId)
         }
         else{
             viewModel.ready()

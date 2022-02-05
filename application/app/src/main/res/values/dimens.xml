@@ -27,7 +27,7 @@
     <dimen name="input_field_stroke">2dp</dimen>
 
     <dimen name="button_action_size">70dp</dimen>
-    <dimen name="button_action_margin">12dp</dimen>
+    <dimen name="button_action_margin">6dp</dimen>
     <dimen name="button_action_padding">22dp</dimen>
 
     <dimen name="playlist_scrollview_bottom_padding">80dp</dimen>

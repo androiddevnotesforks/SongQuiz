@@ -35,7 +35,7 @@ class ListableAdapter(private val context: Context,
                       private val onLastItemReached: () -> Unit) :
         ListAdapter<Listable, ListableAdapter.ListableViewHolder>(ListableDiffCallback){
 
-    /* ViewHolder for Playlist, takes the view binding, the click behaviors, and the context. */
+    /* ViewHolder for item, takes the view binding, the click behaviors, and the context. */
     class ListableViewHolder(val itemBinding: ListableItemBinding,
                              val context: Context,
                              val onPrimaryAction: ListableAction,
@@ -51,7 +51,7 @@ class ListableAdapter(private val context: Context,
         }
 
         fun bind(item: Listable){
-            itemBinding.playlistItemLayout.setOnClickListener {
+            itemBinding.listableItemLayout.setOnClickListener {
                 onPrimaryAction.action(item)
             }
             itemBinding.primaryAction.setOnClickListener {
@@ -128,7 +128,7 @@ class ListableAdapter(private val context: Context,
 
     }
 
-    /* Creates and inflates view and return PlaylistViewHolder. */
+    /* Creates and inflates view and return ListableViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ListableViewHolder{
         val itemBinding = ListableItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListableViewHolder(itemBinding, context, onPrimaryAction, onSecondaryAction, onSwipeAction)
@@ -141,8 +141,8 @@ class ListableAdapter(private val context: Context,
             onLastItemReached()
         }
 
-        val playlist = getItem(position)
-        holder.bind(playlist)
+        val item = getItem(position)
+        holder.bind(item)
     }
 
     private fun setAppearingAnimation(viewToAnimate: View){

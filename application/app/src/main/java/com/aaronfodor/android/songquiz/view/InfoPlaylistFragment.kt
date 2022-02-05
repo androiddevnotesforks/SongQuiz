@@ -149,13 +149,13 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
                         viewModel.startQuiz()
                     }
                     val playContentDescription = getString(R.string.play)
-                    binding.content.fabPrimaryAction.visibility = View.VISIBLE
-                    binding.content.tvPrimaryAction.visibility = View.VISIBLE
-                    binding.content.fabPrimaryAction.setImageResource(R.drawable.icon_play)
-                    binding.content.fabPrimaryAction.contentDescription = playContentDescription
-                    binding.content.tvPrimaryAction.text = playContentDescription
-                    binding.content.fabPrimaryAction.setOnClickListener { play() }
-                    binding.content.tvPrimaryAction.setOnClickListener { play() }
+                    binding.content.action1.fab.visibility = View.VISIBLE
+                    binding.content.action1.tv.visibility = View.VISIBLE
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_play)
+                    binding.content.action1.fab.contentDescription = playContentDescription
+                    binding.content.action1.tv.text = playContentDescription
+                    binding.content.action1.fab.setOnClickListener { play() }
+                    binding.content.action1.tv.setOnClickListener { play() }
 
                     val viewOnSpotify = {
                         val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, item.id))
@@ -163,25 +163,25 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
                         startActivity(spotifyPageIntent)
                     }
                     val viewSpotifyContentDescription = getString(R.string.view_on_spotify)
-                    binding.content.fabSecondaryAction.visibility = View.VISIBLE
-                    binding.content.tvSecondaryAction.visibility = View.VISIBLE
-                    binding.content.fabSecondaryAction.setImageResource(R.drawable.icon_spotify)
-                    binding.content.fabSecondaryAction.contentDescription = viewSpotifyContentDescription
-                    binding.content.tvSecondaryAction.text = viewSpotifyContentDescription
-                    binding.content.fabSecondaryAction.setOnClickListener { viewOnSpotify() }
-                    binding.content.tvSecondaryAction.setOnClickListener { viewOnSpotify() }
+                    binding.content.action2.fab.visibility = View.VISIBLE
+                    binding.content.action2.tv.visibility = View.VISIBLE
+                    binding.content.action2.fab.setImageResource(R.drawable.icon_spotify)
+                    binding.content.action2.fab.contentDescription = viewSpotifyContentDescription
+                    binding.content.action2.tv.text = viewSpotifyContentDescription
+                    binding.content.action2.fab.setOnClickListener { viewOnSpotify() }
+                    binding.content.action2.tv.setOnClickListener { viewOnSpotify() }
 
                     val deletePlaylist = {
                         deleteItem(item.name)
                     }
                     val contentDescription = getString(R.string.content_description_delete)
-                    binding.content.fabTertiaryAction.visibility = View.VISIBLE
-                    binding.content.tvTertiaryAction.visibility = View.VISIBLE
-                    binding.content.fabTertiaryAction.setImageResource(R.drawable.icon_delete)
-                    binding.content.fabTertiaryAction.contentDescription = contentDescription
-                    binding.content.tvTertiaryAction.text = contentDescription
-                    binding.content.fabTertiaryAction.setOnClickListener { deletePlaylist() }
-                    binding.content.tvTertiaryAction.setOnClickListener { deletePlaylist() }
+                    binding.content.action3.fab.visibility = View.VISIBLE
+                    binding.content.action3.tv.visibility = View.VISIBLE
+                    binding.content.action3.fab.setImageResource(R.drawable.icon_delete)
+                    binding.content.action3.fab.contentDescription = contentDescription
+                    binding.content.action3.tv.text = contentDescription
+                    binding.content.action3.fab.setOnClickListener { deletePlaylist() }
+                    binding.content.action3.tv.setOnClickListener { deletePlaylist() }
                 }
 
                 InfoPlaylistScreenCaller.ADD_PLAYLIST -> {
@@ -189,25 +189,25 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
                         viewModel.addItem()
                     }
                     val contentDescription = getString(R.string.content_description_add)
-                    binding.content.fabPrimaryAction.visibility = View.VISIBLE
-                    binding.content.tvPrimaryAction.visibility = View.VISIBLE
-                    binding.content.fabPrimaryAction.setImageResource(R.drawable.icon_add)
-                    binding.content.fabPrimaryAction.contentDescription = contentDescription
-                    binding.content.tvPrimaryAction.text = contentDescription
-                    binding.content.fabPrimaryAction.setOnClickListener { addPlaylist() }
-                    binding.content.tvPrimaryAction.setOnClickListener { addPlaylist() }
+                    binding.content.action1.fab.visibility = View.VISIBLE
+                    binding.content.action1.tv.visibility = View.VISIBLE
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_add)
+                    binding.content.action1.fab.contentDescription = contentDescription
+                    binding.content.action1.tv.text = contentDescription
+                    binding.content.action1.fab.setOnClickListener { addPlaylist() }
+                    binding.content.action1.tv.setOnClickListener { addPlaylist() }
 
                     val play = {
                         viewModel.startQuiz()
                     }
                     val playContentDescription = getString(R.string.play)
-                    binding.content.fabSecondaryAction.visibility = View.VISIBLE
-                    binding.content.tvSecondaryAction.visibility = View.VISIBLE
-                    binding.content.fabSecondaryAction.setImageResource(R.drawable.icon_play)
-                    binding.content.fabSecondaryAction.contentDescription = playContentDescription
-                    binding.content.tvSecondaryAction.text = playContentDescription
-                    binding.content.fabSecondaryAction.setOnClickListener { play() }
-                    binding.content.tvSecondaryAction.setOnClickListener { play() }
+                    binding.content.action2.fab.visibility = View.VISIBLE
+                    binding.content.action2.tv.visibility = View.VISIBLE
+                    binding.content.action2.fab.setImageResource(R.drawable.icon_play)
+                    binding.content.action2.fab.contentDescription = playContentDescription
+                    binding.content.action2.tv.text = playContentDescription
+                    binding.content.action2.fab.setOnClickListener { play() }
+                    binding.content.action2.tv.setOnClickListener { play() }
 
                     val viewOnSpotify = {
                         val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, item.id))
@@ -215,30 +215,30 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
                         startActivity(spotifyPageIntent)
                     }
                     val viewSpotifyContentDescription = getString(R.string.view_on_spotify)
-                    binding.content.fabTertiaryAction.visibility = View.VISIBLE
-                    binding.content.tvTertiaryAction.visibility = View.VISIBLE
-                    binding.content.fabTertiaryAction.setImageResource(R.drawable.icon_spotify)
-                    binding.content.fabTertiaryAction.contentDescription = viewSpotifyContentDescription
-                    binding.content.tvTertiaryAction.text = viewSpotifyContentDescription
-                    binding.content.fabTertiaryAction.setOnClickListener { viewOnSpotify() }
-                    binding.content.tvTertiaryAction.setOnClickListener { viewOnSpotify() }
+                    binding.content.action3.fab.visibility = View.VISIBLE
+                    binding.content.action3.tv.visibility = View.VISIBLE
+                    binding.content.action3.fab.setImageResource(R.drawable.icon_spotify)
+                    binding.content.action3.fab.contentDescription = viewSpotifyContentDescription
+                    binding.content.action3.tv.text = viewSpotifyContentDescription
+                    binding.content.action3.fab.setOnClickListener { viewOnSpotify() }
+                    binding.content.action3.tv.setOnClickListener { viewOnSpotify() }
                 }
 
                 else -> {
-                    binding.content.fabPrimaryAction.visibility = View.INVISIBLE
-                    binding.content.tvPrimaryAction.visibility = View.INVISIBLE
-                    binding.content.fabPrimaryAction.setOnClickListener {}
-                    binding.content.tvPrimaryAction.setOnClickListener {}
+                    binding.content.action1.fab.visibility = View.INVISIBLE
+                    binding.content.action1.tv.visibility = View.INVISIBLE
+                    binding.content.action1.fab.setOnClickListener {}
+                    binding.content.action1.tv.setOnClickListener {}
 
-                    binding.content.fabSecondaryAction.visibility = View.INVISIBLE
-                    binding.content.tvSecondaryAction.visibility = View.INVISIBLE
-                    binding.content.fabSecondaryAction.setOnClickListener {}
-                    binding.content.tvSecondaryAction.setOnClickListener {}
+                    binding.content.action2.fab.visibility = View.INVISIBLE
+                    binding.content.action2.tv.visibility = View.INVISIBLE
+                    binding.content.action2.fab.setOnClickListener {}
+                    binding.content.action2.tv.setOnClickListener {}
 
-                    binding.content.fabTertiaryAction.visibility = View.INVISIBLE
-                    binding.content.tvTertiaryAction.visibility = View.INVISIBLE
-                    binding.content.fabTertiaryAction.setOnClickListener {}
-                    binding.content.tvTertiaryAction.setOnClickListener {}
+                    binding.content.action3.fab.visibility = View.INVISIBLE
+                    binding.content.action3.tv.visibility = View.INVISIBLE
+                    binding.content.action3.fab.setOnClickListener {}
+                    binding.content.action3.tv.setOnClickListener {}
                 }
 
             }
@@ -356,9 +356,9 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
         binding.fabSpeak.visibility = View.VISIBLE
 
         val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        binding.content.fabPrimaryAction.startAnimation(leftAnimation)
-        binding.content.fabSecondaryAction.startAnimation(leftAnimation)
-        binding.content.fabTertiaryAction.startAnimation(leftAnimation)
+        binding.content.action1.fab.startAnimation(leftAnimation)
+        binding.content.action2.fab.startAnimation(leftAnimation)
+        binding.content.action3.fab.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {
