@@ -14,6 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+data class RequiredPermission(
+    val id: String,
+    val name: String,
+    val explanation: String
+)
+
 /**
  * The base activity class of the app - can be inherited from
  */
@@ -24,7 +30,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         var systemPermissionDialogShowed = false
     }
 
-    abstract var requiredPermissions: List<String>
+    abstract var requiredPermissions: List<RequiredPermission>
     var permissionDialogShowed = false
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -53,16 +59,16 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     private fun permissionCheck(){
 
-        val requestPermissionLambda: (requiredPermission: String) -> Unit = {
+        val requestPermissionLambda: (requiredPermission: RequiredPermission) -> Unit = {
             val requestPermissionDialog = AppDialog(
                 this,
                 getString(R.string.request_permission_title),
-                getString(R.string.request_permission_description, it),
+                getString(R.string.request_permission_description, it.name, it.explanation),
                 R.drawable.icon_warning
             )
             requestPermissionDialog.setPositiveButton{
                 lifecycleScope.launch(Dispatchers.Main) {
-                    requestPermissionLauncher.launch(it)
+                    requestPermissionLauncher.launch(it.id)
                     systemPermissionDialogShowed = true
                 }
             }
@@ -73,11 +79,11 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
             permissionDialogShowed = true
         }
 
-        val requestSettingsLambda: (requiredPermission: String) -> Unit = {
+        val requestPermissionSettingsLambda: (requiredPermission: RequiredPermission) -> Unit = {
             val requestSettingsDialog = AppDialog(
                 this,
-                getString(R.string.request_settings_title),
-                getString(R.string.request_settings_description, it),
+                getString(R.string.request_permission_settings_title),
+                getString(R.string.request_permission_settings_description, it.name, it.explanation),
                 R.drawable.icon_warning
             )
             requestSettingsDialog.setPositiveButton{
@@ -100,11 +106,11 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         for(requiredPermission in requiredPermissions){
             when{
                 // permission is granted
-                ContextCompat.checkSelfPermission(this, requiredPermission) == PackageManager.PERMISSION_GRANTED -> {
+                ContextCompat.checkSelfPermission(this, requiredPermission.id) == PackageManager.PERMISSION_GRANTED -> {
                     // Hooray, permission granted
                 }
                 // permission rejected
-                shouldShowRequestPermissionRationale(requiredPermission) -> {
+                shouldShowRequestPermissionRationale(requiredPermission.id) -> {
                     if(!permissionDialogShowed && !systemPermissionDialogShowed){
                         requestPermissionLambda(requiredPermission)
                     }
@@ -112,7 +118,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
                 // permission rejected & don't ask again/device policy prohibits having the permission
                 else -> {
                     if(!permissionDialogShowed && !systemPermissionDialogShowed){
-                        requestSettingsLambda(requiredPermission)
+                        requestPermissionSettingsLambda(requiredPermission)
                     }
                 }
             }

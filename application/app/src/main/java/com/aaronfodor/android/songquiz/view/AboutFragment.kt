@@ -27,7 +27,7 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
 
         val appCreator = getString(R.string.app_creator)
         val appDate = getString(R.string.app_date)
-        binding.content.aboutText.text = getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME)
+        binding.content.aboutText.text = getString(R.string.about_text, BuildConfig.VERSION_NAME, appCreator, appDate)
         binding.content.legalText.text = getString(R.string.app_copyright)
 
         val privacyOpenAction = {
@@ -102,9 +102,9 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                         val appCreator = getString(R.string.app_creator)
                         val appCopyright = getString(R.string.app_copyright)
 
-                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, appCreator, appDate, BuildConfig.VERSION_NAME) + " " +
+                        var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, BuildConfig.VERSION_NAME, appCreator, appDate) + " " +
                                 getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text) + " " +
-                                getString(R.string.legal_title) + ". " + appCopyright + ". "
+                                getString(R.string.legal_title) + ". " + appCopyright
                         text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                         viewModel.speak(text)
                     }

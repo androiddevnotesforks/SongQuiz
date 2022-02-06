@@ -17,7 +17,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class AuthUiState{
-    EMPTY, START_LOGIN, SUCCESS, ERROR_INTERNET, ERROR_DENIED, ERROR
+    EMPTY, START_LOGIN, SUCCESS
+}
+
+enum class AuthNotification{
+    ERROR_INTERNET, ERROR_DENIED, ERROR, NONE
 }
 
 enum class AuthAccountState{
@@ -35,6 +39,10 @@ class AuthViewModel  @Inject constructor(
      */
     val uiState: MutableLiveData<AuthUiState> by lazy {
         MutableLiveData<AuthUiState>()
+    }
+
+    val notification: MutableLiveData<AuthNotification> by lazy {
+        MutableLiveData<AuthNotification>()
     }
 
     // subscribe to the service's MutableLiveData from the ViewModel with Transformations
@@ -62,6 +70,13 @@ class AuthViewModel  @Inject constructor(
         val token = response.accessToken
         val tokenExpireTime = System.currentTimeMillis() + ((response.expiresIn - accountService.tokenRequireBeforeExpiresSec) * 1000)
 
+        if(response.type == AuthorizationResponse.Type.TOKEN){
+            uiState.postValue(AuthUiState.SUCCESS)
+        }
+        else{
+            uiState.postValue(AuthUiState.EMPTY)
+        }
+
         when (response.type) {
             // success
             AuthorizationResponse.Type.TOKEN -> {
@@ -77,16 +92,15 @@ class AuthViewModel  @Inject constructor(
                 )
                 repository.updateAccount(accountToSet)
                 accountService.setAccount(accountToSet)
-                uiState.postValue(AuthUiState.SUCCESS)
             }
             AuthorizationResponse.Type.ERROR -> {
-                uiState.postValue(AuthUiState.ERROR_INTERNET)
+                notification.postValue(AuthNotification.ERROR_INTERNET)
             }
             AuthorizationResponse.Type.EMPTY -> {
-                uiState.postValue(AuthUiState.ERROR_DENIED)
+                notification.postValue(AuthNotification.ERROR_DENIED)
             }
             else -> {
-                uiState.postValue(AuthUiState.ERROR)
+                notification.postValue(AuthNotification.ERROR)
             }
         }
     }

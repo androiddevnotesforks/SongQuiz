@@ -46,7 +46,8 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun getUserNameAndEmail() : Pair<String, String>{
-        return accountService.getUserNameAndEmail()
+        val publicAccontInfo = accountService.getPublicAccountInfo()
+        return Pair(publicAccontInfo.name, publicAccontInfo.email)
     }
 
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {

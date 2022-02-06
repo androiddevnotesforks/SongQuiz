@@ -15,9 +15,8 @@ import com.aaronfodor.android.songquiz.databinding.ActivityAuthBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.viewmodel.AuthAccountState
-import com.aaronfodor.android.songquiz.viewmodel.AuthUiState
-import com.aaronfodor.android.songquiz.viewmodel.AuthViewModel
+import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.aaronfodor.android.songquiz.viewmodel.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +26,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     private lateinit var binding: ActivityAuthBinding
     private lateinit var viewModel: AuthViewModel
 
-    override var requiredPermissions = listOf(Manifest.permission.INTERNET)
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     var loginStarted = false
     var showNextScreenCalled = false
@@ -37,6 +36,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)))
 
         binding = ActivityAuthBinding.inflate(layoutInflater)
         val view = binding.root
@@ -62,6 +62,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     }
 
     fun skipLoginTapped() {
+        hideAuthActions()
         //showing the next screen
         showNextScreenCalled = false
         showNextScreen(false)
@@ -85,6 +86,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
         binding.btnLogin.setOnClickListener {
             loginStarted = false
+            hideAuthActions()
             login()
         }
 
@@ -101,15 +103,12 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         }
         
         val uiStateObserver = Observer<AuthUiState> { state ->
-
             if(state == AuthUiState.EMPTY){
-                binding.btnLogin.visibility = View.VISIBLE
-                binding.btnSkip.visibility = View.VISIBLE
-                binding.btnLoginInfo.visibility = View.VISIBLE
-                binding.btnWhyLogin.visibility = View.VISIBLE
+                showAuthActions()
             }
 
             if(state == AuthUiState.START_LOGIN){
+                hideAuthActions()
                 binding.loadIndicatorProgressBar.visibility = View.VISIBLE
             }
             else{
@@ -123,19 +122,33 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
                 AuthUiState.SUCCESS -> {
                     showNextScreen(true)
                 }
-                AuthUiState.ERROR_DENIED -> {
-                    showInfo(AuthUiState.ERROR_DENIED)
-                }
-                AuthUiState.ERROR_INTERNET -> {
-                    showInfo(AuthUiState.ERROR_INTERNET)
-                }
-                AuthUiState.ERROR -> {
-                    showInfo(AuthUiState.ERROR)
-                }
-                else -> {}
+                AuthUiState.EMPTY -> {}
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
+
+        val notificationObserver = Observer<AuthNotification> { notification ->
+            when(notification){
+                AuthNotification.ERROR_INTERNET -> {
+                    val message = getString(R.string.error_login_internet)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.ERROR_DENIED -> {
+                    val message = getString(R.string.error_login_denied)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.ERROR -> {
+                    val message = getString(R.string.error_login)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.NONE -> {}
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
 
         val accountStateObserver = Observer<AuthAccountState> { accountState ->
             if(accountState == AuthAccountState.LOGGED_IN){
@@ -148,7 +161,9 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.accountState.observe(this, accountStateObserver)
     }
 
-    override fun appearingAnimations() {
+    override fun appearingAnimations() {}
+
+    private fun showAuthActions(){
         val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_top)
         binding.tvTitle.startAnimation(topAnimation)
         binding.tvTitle.visibility = View.VISIBLE
@@ -156,31 +171,44 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom)
         binding.AppIcon.startAnimation(bottomAnimation)
         binding.AppIcon.visibility = View.VISIBLE
+
+        binding.btnLogin.startAnimation(bottomAnimation)
+        binding.btnLogin.visibility = View.VISIBLE
+
+        binding.btnSkip.startAnimation(bottomAnimation)
+        binding.btnSkip.visibility = View.VISIBLE
+
+        binding.btnLoginInfo.startAnimation(bottomAnimation)
+        binding.btnLoginInfo.visibility = View.VISIBLE
+
+        binding.btnWhyLogin.startAnimation(bottomAnimation)
+        binding.btnWhyLogin.visibility = View.VISIBLE
+    }
+
+    private fun hideAuthActions(){
+        val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_out_top)
+        binding.tvTitle.startAnimation(topAnimation)
+        binding.tvTitle.visibility = View.GONE
+
+        val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom)
+        binding.AppIcon.startAnimation(bottomAnimation)
+        binding.AppIcon.visibility = View.GONE
+
+        binding.btnLogin.startAnimation(bottomAnimation)
+        binding.btnLogin.visibility = View.GONE
+
+        binding.btnSkip.startAnimation(bottomAnimation)
+        binding.btnSkip.visibility = View.GONE
+
+        binding.btnLoginInfo.startAnimation(bottomAnimation)
+        binding.btnLoginInfo.visibility = View.GONE
+
+        binding.btnWhyLogin.startAnimation(bottomAnimation)
+        binding.btnWhyLogin.visibility = View.GONE
     }
 
     override fun onboardingDialog() {}
     override fun unsubscribeViewModel() {}
-
-    private fun showInfo(infoType: AuthUiState){
-        when(infoType){
-            AuthUiState.ERROR_INTERNET -> {
-                val message = getString(R.string.error_login_internet)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            AuthUiState.ERROR_DENIED -> {
-                val message = getString(R.string.error_login_denied)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            AuthUiState.ERROR -> {
-                val message = getString(R.string.error_login)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            else -> {}
-        }
-    }
 
     private fun login(){
         if(loginStarted){

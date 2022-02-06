@@ -10,7 +10,7 @@
     <string name="delete">Törlés</string>
     <string name="add">Hozzáadás</string>
     <string name="listen">Belehallgatás</string>
-    <string name="random_play">Koppints a játék indításához véletlenszerű lejátszási listán</string>
+    <string name="random_play">Koppints ide egy játék indításához véletlenszerű listán</string>
 
     <string name="search_playlist">Lista keresése</string>
     <string name="search_playlist_description">Írd be a keresett lista nevét vagy Spotify azonosítóját.</string>

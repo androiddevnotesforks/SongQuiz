@@ -161,23 +161,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         viewModel.uiState.observe(this, uiStateObserver)
 
         val accountStateObserver = Observer<SettingsAccountState> { accountState ->
-            if(accountState == SettingsAccountState.LOGGED_OUT){
-                showLoggedOut()
-            }
-            else{
-                showLoggedIn(viewModel.getUserNameAndEmail())
+            when(accountState){
+                SettingsAccountState.LOGGED_OUT -> {
+                    showLoggedOut()
+                }
+                SettingsAccountState.LOGGED_IN -> {
+                    showLoggedIn(viewModel.getUserNameAndEmail())
+                }
+                SettingsAccountState.INVALID_TOKEN -> {
+                    showLoggedIn(viewModel.getUserNameAndEmail())
+                }
             }
         }
         viewModel.accountState.observe(this, accountStateObserver)
-
-        // to start, show current account state
-        val currentAccountState = viewModel.accountState.value ?: SettingsAccountState.LOGGED_OUT
-        if(currentAccountState == SettingsAccountState.LOGGED_OUT){
-            showLoggedOut()
-        }
-        else{
-            showLoggedIn(viewModel.getUserNameAndEmail())
-        }
     }
 
     override fun onPause() {

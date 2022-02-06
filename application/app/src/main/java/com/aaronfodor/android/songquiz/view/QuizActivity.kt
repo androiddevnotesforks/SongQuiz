@@ -1,8 +1,6 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
@@ -25,6 +23,7 @@ import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivity
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
+import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -52,12 +51,15 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     var userInputButtonAnimation: ObjectAnimator? = null
     var ttsButtonAnimation: ObjectAnimator? = null
 
-    override var requiredPermissions = listOf(
-        Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.VIBRATE
-    )
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(
+            RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)),
+            RequiredPermission(Manifest.permission.RECORD_AUDIO, getString(R.string.permission_record_audio), getString(R.string.permission_record_audio_explanation)),
+            RequiredPermission(Manifest.permission.VIBRATE, getString(R.string.permission_vibrate), getString(R.string.permission_vibrate_explanation))
+        )
 
         binding = ActivityQuizBinding.inflate(layoutInflater)
         val view = binding.root

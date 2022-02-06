@@ -4,10 +4,11 @@
     <string name="nav_header_subtitle">Tudod mit hallasz?</string>
 
     <string name="about_text">
-        Készítette %1$s\n\n
-        %2$s\n\n
+        %1$s\n\n
+        Készítette %2$s\n\n
         %3$s\n\n
-        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Privát listák csak az egyedi azonosítójuk alapján kereshetők, név alapján nem kerülnek listázásra. Nem minden dalnak van zenei előnézete. Ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van. A szövegfelismerés angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
+        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Privát listák csak az egyedi azonosítójuk alapján kereshetők, név alapján nem kerülnek listázásra. Nem minden dalnak van zenei előnézete. Ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van.\n\n
+        A szövegfelismerés magyar és angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
     </string>
 
     <string name="legal_title">Jogi információk</string>
@@ -23,8 +24,8 @@
     <string name="greeting_fallback">Szia!</string>
     <string name="greeting_morning">Jó reggelt!</string>
     <string name="greeting_afternoon">Szép délutánt!</string>
-    <string name="greeting_evening">Jó estét!</string>
-    <string name="greeting_night">Jó estét!</string>
+    <string name="greeting_evening">Szép estét!</string>
+    <string name="greeting_night">Szép estét!</string>
 
     <string name="menu_home">Főképernyő</string>
     <string name="menu_play">Játék</string>
@@ -36,11 +37,6 @@
     <string name="menu_settings">Beállítások</string>
     <string name="menu_info_playlist">Lejátszási lista részletei</string>
     <string name="menu_info_track">A dal részletei</string>
-
-    <string name="request_permission_title">Engedélykérés</string>
-    <string name="request_permission_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s.</string>
-    <string name="request_settings_title">Engedélyezés az alkalmazás beállításainál</string>
-    <string name="request_settings_description">Az alkalmazás működése érdekében az alábbi engedély szükséges: %1$s. Engedélyezés az alkalmazás beállításainál.</string>
 
     <string name="nav_menu_open">Főmenü kinyit</string>
     <string name="nav_menu_close">Főmenü bezár</string>

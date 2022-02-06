@@ -13,8 +13,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 enum class AccountState{
-    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT
+    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT, INVALID
 }
+
+data class PublicAccountInfo(
+    val id: String,
+    val name: String,
+    val email: String
+)
 
 /**
  * Injected everywhere as a singleton
@@ -49,9 +55,7 @@ class AccountService @Inject constructor(
             // force the logged out dialog
             AuthorizationClient.clearCookies(context)
         }
-
-        val builder = AuthorizationRequest.Builder(
-            clientId, AuthorizationResponse.Type.TOKEN, spotifyRedirectURI)
+        val builder = AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.TOKEN, spotifyRedirectURI)
         return builder.setScopes(arrayOf("user-read-email")).setShowDialog(false).build()
     }
 
@@ -103,7 +107,10 @@ class AccountService @Inject constructor(
 
     fun getValidToken() : String{
         val currentTime = System.currentTimeMillis()
-        if(account.token.isBlank() || currentTime > account.tokenExpireTime){
+        if(accountState.value == AccountState.LOGGED_OUT || accountState.value == AccountState.INVALID){
+            // do nothing, the state is not changed
+        }
+        else if(account.token.isBlank() || currentTime > account.tokenExpireTime){
             accountState.postValue(AccountState.INVALID_TOKEN)
         }
         return account.token
@@ -115,8 +122,8 @@ class AccountService @Inject constructor(
         accountState.postValue(AccountState.LOGGED_OUT)
     }
 
-    fun getUserNameAndEmail() : Pair<String, String>{
-        return Pair(account.name, account.email)
+    fun getPublicAccountInfo() : PublicAccountInfo{
+        return PublicAccountInfo(account.id, account.name, account.email)
     }
 
 }

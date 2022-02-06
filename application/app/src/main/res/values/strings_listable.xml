@@ -10,7 +10,7 @@
     <string name="delete">Delete</string>
     <string name="add">Add</string>
     <string name="listen">Listen</string>
-    <string name="random_play">Tap to play on a random playlist</string>
+    <string name="random_play">Tap here to play on a random playlist</string>
 
     <string name="search_playlist">Search playlist</string>
     <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>

@@ -13,6 +13,9 @@ import androidx.navigation.ui.navigateUp
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivityMenu
+import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.bumptech.glide.Glide
+import com.bumptech.glide.MemoryCategory
 
 class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
@@ -21,12 +24,11 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override lateinit var appBarConfiguration: AppBarConfiguration
     override lateinit var navController: NavController
 
-    override var requiredPermissions: List<String> = listOf(
-        Manifest.permission.INTERNET
-    )
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)))
 
         binding = ActivityMenuBinding.inflate(layoutInflater)
         val view = binding.root
@@ -59,13 +61,13 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override fun onResume() {
         super.onResume()
         // prevent Glide using too much memory
-        //Glide.get(this).setMemoryCategory(MemoryCategory.LOW)
+        Glide.get(this).setMemoryCategory(MemoryCategory.LOW)
     }
 
     override fun onPause() {
         super.onPause()
         // reset Glide's original memory cache strategy
-        //Glide.get(this).setMemoryCategory(MemoryCategory.NORMAL)
+        Glide.get(this).setMemoryCategory(MemoryCategory.NORMAL)
     }
 
     override fun onSupportNavigateUp(): Boolean {

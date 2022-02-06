@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="request_permission_title">Engedélykérés</string>
+    <string name="request_permission_description">Az alkalmazás működése érdekében %1$s engedély szükséges. %2$s</string>
+    <string name="request_permission_settings_title">Engedélykérés</string>
+    <string name="request_permission_settings_description">Az alkalmazás működése érdekében %1$s engedély szükséges. %2$s Ezt az OK gombra koppintva, az alkalmazás beállításainál engedélyezheted.</string>
+
+    <string name="permission_internet">internetelérés</string>
+    <string name="permission_internet_explanation">Ez a bejelentkezéshez, a lejátszási listák eléréséhez, valamint a dalok lejátszásához kell.</string>
+
+    <string name="permission_record_audio">mikrofon</string>
+    <string name="permission_record_audio_explanation">Ez a játék közbeni beszédbevitelhez kell (semmilyen felvételt nem mentünk el).</string>
+
+    <string name="permission_vibrate">vibrálás</string>
+    <string name="permission_vibrate_explanation">Ez a felhasználói bemenet aktív állapotának jelzéséhez kell.</string>
+</resources>
