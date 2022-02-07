@@ -23,7 +23,7 @@ class QuizPlayer(
             numTitleHits += 1
             titlePoints += titlePoint
         }
-        if(difficultyCompensationPoint > 0){
+        if(difficultyCompensationPoint >= 0){
             difficultyCompensationPoints += difficultyCompensationPoint
         }
     }

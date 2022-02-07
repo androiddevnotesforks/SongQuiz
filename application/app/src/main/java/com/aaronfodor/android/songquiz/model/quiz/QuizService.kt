@@ -1,7 +1,6 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
 import android.content.Context
-import android.util.Log
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.TextParserService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -81,8 +80,8 @@ class QuizService @Inject constructor(
     var extendedInfoAllowed = false
 
     var lastPlayerArtistTitlePoints = 0
-    var lastPlayerDifficultyCompensationPoints = 0
-    var lastPlayerDifficultyCompensationPercentage = 0
+    var lastPlayerDifficultyPoints = 0
+    var lastPlayerDifficultyPercentage = 0
     var lastPlayerAllPoints = 0
     var lastSongAlbum = ""
     var lastSongTitle = ""
@@ -245,7 +244,7 @@ class QuizService @Inject constructor(
         // add points info
         var pointsInfo = ""
         // title points
-        pointsInfo += "${quiz.type.pointForTitle} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_title)}"
+        pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForTitle.toString(), context.getString(R.string.c_title))
         // conjunction if needed
         pointsInfo += if(quiz.type.difficultyCompensation){
             ", "
@@ -253,10 +252,11 @@ class QuizService @Inject constructor(
             "${context.getString(R.string.c_comma_and_and)} "
         }
         // artist points
-        pointsInfo += "${quiz.type.pointForArtist} ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)} ${context.getString(R.string.c_artist)}"
+        pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForArtist.toString(), context.getString(R.string.c_artist))
         // difficulty compensation and conjunction
         if(quiz.type.difficultyCompensation){
-            pointsInfo += "${context.getString(R.string.c_comma_and_and)} ${context.getString(R.string.c_difficulty_compensation_explanation)}"
+            pointsInfo += "${context.getString(R.string.c_comma_and_and)} "
+            pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForDifficulty.toString(), context.getString(R.string.c_difficulty))
         }
         // merge the points info into one string
         infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
@@ -275,10 +275,8 @@ class QuizService @Inject constructor(
 
     private fun guessFeedbackStringBuilder() : String{
         var resultString = ""
-        if(lastPlayerArtistTitlePoints > 0){
-            var pointsString = ""
-            pointsString += "$lastPlayerArtistTitlePoints ${context.getString(R.string.c_points)} ${context.getString(R.string.c_for)}"
 
+        if(lastPlayerArtistTitlePoints > 0){
             var forWhatString = ""
             if(lastSongTitleHit){
                 forWhatString += context.getString(R.string.c_title)
@@ -289,14 +287,31 @@ class QuizService @Inject constructor(
                 }
                 forWhatString += context.getString(R.string.c_artist)
             }
+
+            var pointsString = ""
+            pointsString += context.getString(R.string.c_points_for_the, lastPlayerArtistTitlePoints.toString(), forWhatString)
+
+            var difficultyString = ""
             if(quiz.type.difficultyCompensation){
-                forWhatString += "${context.getString(R.string.c_comma_and_and)} ${context.getString(R.string.c_difficulty_compensation_point, lastPlayerDifficultyCompensationPoints.toString(), lastPlayerDifficultyCompensationPercentage.toString())}"
+                difficultyString += "${context.getString(R.string.c_comma_and_and)} "
+                difficultyString += context.getString(R.string.c_difficulty_compensation, lastPlayerDifficultyPoints.toString(), lastPlayerDifficultyPercentage.toString())
             }
+            pointsString += difficultyString
+
             val goodGuessPrefix = context.resources.getStringArray(R.array.good_guess_prefixes).random()
-            resultString = context.getString(R.string.c_player_good_guess, goodGuessPrefix, "$pointsString $forWhatString")
+            resultString = context.getString(R.string.c_player_good_guess, goodGuessPrefix, pointsString)
         }
         else{
-            resultString = context.resources.getStringArray(R.array.failed_guess_prefixes).random()
+            val badGuessPrefix = context.resources.getStringArray(R.array.failed_guess_prefixes).random()
+
+            var pointsString = ""
+            if(quiz.type.difficultyCompensation){
+                pointsString += context.getString(R.string.c_difficulty_compensation, lastPlayerDifficultyPoints.toString(), lastPlayerDifficultyPercentage.toString())
+                resultString = context.getString(R.string.c_player_bad_guess, badGuessPrefix, pointsString)
+            }
+            else{
+                resultString = badGuessPrefix
+            }
         }
 
         var songInfoString = context.getString(R.string.c_song_info, lastSongTitle, lastSongArtist) + " "
@@ -598,22 +613,22 @@ class QuizService @Inject constructor(
         }
 
         val compensationRatio = (1.0 - (currentTrack.popularity.toDouble() / 100.0))
-        difficultyCompensationPoint = ((artistPoint + titlePoint) * compensationRatio).roundToInt()
+        difficultyCompensationPoint = ((quiz.type.pointForDifficulty) * compensationRatio).roundToInt()
 
-        lastSongAlbum = currentTrack.album
         lastSongTitle = currentTrack.name
         lastSongArtist = textParser.stringListToString(currentTrack.artists)
+        lastSongAlbum = currentTrack.album
         lastSongPopularity = currentTrack.popularity
 
         lastPlayerArtistTitlePoints = artistPoint + titlePoint
         if(quiz.type.difficultyCompensation){
-            lastPlayerDifficultyCompensationPercentage = (compensationRatio * 100.0).roundToInt()
-            lastPlayerDifficultyCompensationPoints = difficultyCompensationPoint
+            lastPlayerDifficultyPoints = difficultyCompensationPoint
+            lastPlayerDifficultyPercentage = (compensationRatio * 100.0).roundToInt()
         }
 
         val currentPlayerPoints = quiz.getCurrentPlayer().getPoints(quiz.type.difficultyCompensation)
         lastPlayerAllPoints = currentPlayerPoints
-        lastPlayerAllPoints += lastPlayerArtistTitlePoints + lastPlayerDifficultyCompensationPoints
+        lastPlayerAllPoints += lastPlayerArtistTitlePoints + lastPlayerDifficultyPoints
 
         quiz.recordResult(artistPoint, titlePoint, difficultyCompensationPoint)
 

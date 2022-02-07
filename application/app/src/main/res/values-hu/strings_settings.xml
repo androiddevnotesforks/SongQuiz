@@ -7,7 +7,7 @@
     <string name="settings_title_log_out">Kijelentkezés</string>
     <string name="settings_title_song_duration">Dal hossza</string>
     <string name="settings_title_repeat">Dal ismétlése</string>
-    <string name="settings_title_difficulty_compensation">Nehézségi szorzó</string>
+    <string name="settings_title_difficulty_compensation">Nehézségi pontok</string>
     <string name="settings_title_extended_quiz_info">Információ a kvíz során</string>
     <string name="settings_title_seasonal_themes">Szezonális témák</string>
     <string name="settings_title_onboarding">Használati tippek</string>

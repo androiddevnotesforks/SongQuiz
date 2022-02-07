@@ -7,7 +7,7 @@
     <string name="settings_title_log_out">Log out</string>
     <string name="settings_title_song_duration">Song duration</string>
     <string name="settings_title_repeat">Repeating a song</string>
-    <string name="settings_title_difficulty_compensation">Difficulty multiplier</string>
+    <string name="settings_title_difficulty_compensation">Difficulty points</string>
     <string name="settings_title_extended_quiz_info">Information during the quiz</string>
     <string name="settings_title_seasonal_themes">Seasonal themes</string>
     <string name="settings_title_onboarding">How to use</string>

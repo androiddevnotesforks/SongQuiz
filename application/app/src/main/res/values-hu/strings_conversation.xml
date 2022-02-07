@@ -11,7 +11,7 @@
     <string name="c_ask_game_type">Milyen típusú legyen a játék? Válassz az alábbiak közül: egy kör, rövid, közepes vagy hosszú.</string>
     <string name="c_ask_game_type_invalid">A választott %1$s játék nem indítható: csak %2$s játszható dal van, de minimum %3$s szükséges %4$s játékossal. Kérlek válassz másik típusú játékot.</string>
     <string name="c_game_type_selected">A választott fajta: %1$s. Ebben a játékban a körök száma %2$s.</string>
-    <string name="c_game_type_points">Az alábbiak számítanak: %1$s.</string>
+    <string name="c_game_type_points">Egy dalhoz összesen %1$s kaphatsz.</string>
 
     <string name="c_starting_game">Indul a választott %1$s játék.</string>
 
@@ -51,17 +51,17 @@
         <item>Rossz hír.</item>
     </string-array>
 
-    <string name="c_points">pont</string>
-    <string name="c_for"/>
     <string name="c_and">és</string>
     <string name="c_comma_and_and">, és</string>
     <string name="c_not">nem</string>
-    <string name="c_difficulty_compensation_explanation">nehézségi szorzó</string>
-    <string name="c_difficulty_compensation_point">további %1$s, %2$s%% nehézség miatti</string>
+    <string name="c_points_for_the">%1$s %2$s pontot</string>
+    <string name="c_difficulty_compensation">%1$s pontot a szám %2$s%%-os nehézségéért</string>
     <string name="c_title">cím</string>
     <string name="c_artist">előadó</string>
+    <string name="c_difficulty">nehézség</string>
     <string name="c_settings_info">A beállításaid alapján egy dal %1$s másodpercig tart, és a dalok ismétlése %2$s engedélyezett.</string>
-    <string name="c_player_good_guess">%1$s %2$s pontot kaptál.</string>
+    <string name="c_player_good_guess">%1$s Kaptál %2$s.</string>
+    <string name="c_player_bad_guess">%1$s Összesen kaptál %2$s.</string>
     <string name="c_song_info">A dal címe %1$s, előadója %2$s.</string>
     <string name="c_song_extended_info">Az alábbi albumon szerepel: %1$s.</string>
     <string name="c_your_score">Jelenleg %1$s pontod van.</string>
@@ -72,9 +72,9 @@
     <string name="c_winner_player">Gratulálunk! A győztes: %1$s. játékos.</string>
     <string name="c_winner_tie">Döntetlen. Gratulálunk!</string>
     <string name="c_next_time">Több szerencsét legközelebb!</string>
-    <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. Ha szeretnél változtatni a játékon, mondd hangolás. A kilépéshez mondd kilépés.</string>
+    <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. A játék hangolásához mondd hangolás. Ha ki szeretnél lépni, mondd kilépés.</string>
 
-    <string name="c_not_enough_tracks">Sajnos ezenn a listán nincs elég dal a kvízhez, mert legalább %1$s szám kellene. Kérlek lépj ki ebből a kvízből, és válassz másik listát.</string>
+    <string name="c_not_enough_tracks">Sajnos ezen a listán nincs elég dal a kvízhez, mert legalább %1$s számra van szükség. Kérlek lépj ki ebből a kvízből, és válassz másik listát.</string>
     <string name="c_error">Hiba történt.</string>
 
     <string-array
@@ -152,6 +152,9 @@
         <item>angol</item>
         <item>hang</item>
         <item>konfiguráció</item>
+        <item>változ</item>
+        <item>változtat</item>
+        <item>változtatás</item>
     </string-array>
 
     <string-array

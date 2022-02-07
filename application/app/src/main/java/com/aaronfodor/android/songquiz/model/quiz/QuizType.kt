@@ -11,6 +11,7 @@ sealed class QuizType(
     abstract val numRounds: Int
     val pointForArtist: Int = 10
     val pointForTitle: Int = 10
+    val pointForDifficulty: Int = 20
 }
 
 class UndefinedQuiz():
