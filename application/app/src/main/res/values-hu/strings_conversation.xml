@@ -5,6 +5,8 @@
     <string name="c_playlist_info">Az általad választott lista neve %1$s, ami %2$s lejátszható dalt tartalmaz.</string>
     <string name="c_reconfigure">Játék finomhangolása. Az aktuális lista neve %1$s, ami %2$s lejátszható dalt tartalmaz.</string>
 
+    <string name="c_player">%1$s. játékos</string>
+
     <string name="c_ask_num_players">Hányan szeretnétek játszani? Mondj egy számot 1 és 4 között.</string>
     <string name="c_num_players_selected">%1$s játékos kiválasztva.</string>
 
@@ -15,7 +17,7 @@
 
     <string name="c_starting_game">Indul a választott %1$s játék.</string>
 
-    <string name="c_player_turn">%1$s. játékos, %2$s. kérdés. Nevezd meg a dalt és az előadót:</string>
+    <string name="c_player_turn">%1$s, %2$s. kérdés. Nevezd meg a dalt és az előadót:</string>
     <string name="c_repeating_song">A dal megismétlése.</string>
 
     <string name="c_not_understand">Sajnálom, nem értem.</string>
@@ -67,9 +69,9 @@
     <string name="c_your_score">Jelenleg %1$s pontod van.</string>
 
     <string name="c_end_game">Vége a játéknak.</string>
-    <string name="c_player_scored">%1$s. játékos pontszáma: %2$s pont.</string>
+    <string name="c_player_scored">%1$s pontszáma: %2$s pont.</string>
 
-    <string name="c_winner_player">Gratulálunk! A győztes: %1$s. játékos.</string>
+    <string name="c_winner_player">Gratulálunk! A győztes: %1$s.</string>
     <string name="c_winner_tie">Döntetlen. Gratulálunk!</string>
     <string name="c_next_time">Több szerencsét legközelebb!</string>
     <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. A játék hangolásához mondd hangolás. Ha ki szeretnél lépni, mondd kilépés.</string>

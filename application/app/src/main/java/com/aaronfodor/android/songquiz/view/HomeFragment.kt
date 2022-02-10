@@ -157,27 +157,27 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
             PartOfTheDay.MORNING -> {
                 binding.tvGreet.text = getText(R.string.greeting_morning)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+                binding.ivGreet.setImageDrawable(drawable)
             }
             PartOfTheDay.AFTERNOON -> {
                 binding.tvGreet.text = getText(R.string.greeting_afternoon)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+                binding.ivGreet.setImageDrawable(drawable)
             }
             PartOfTheDay.EVENING -> {
                 binding.tvGreet.text = getText(R.string.greeting_evening)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sunset)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+                binding.ivGreet.setImageDrawable(drawable)
             }
             PartOfTheDay.NIGHT -> {
                 binding.tvGreet.text = getText(R.string.greeting_night)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_moon)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+                binding.ivGreet.setImageDrawable(drawable)
             }
             PartOfTheDay.UNKNOWN -> {
                 binding.tvGreet.text = getText(R.string.greeting_fallback)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_hello)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+                binding.ivGreet.setImageDrawable(drawable)
             }
         }
 
@@ -198,6 +198,9 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         binding.tvGreet.startAnimation(bottomAnimation)
         binding.actionRandom.startAnimation(bottomAnimation)
         binding.list.tvEmpty.startAnimation(bottomAnimation)
+
+        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+        binding.ivGreet.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {}

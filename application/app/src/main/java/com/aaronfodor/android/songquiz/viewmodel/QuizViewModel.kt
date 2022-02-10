@@ -13,6 +13,8 @@ import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.quiz.InfoType
 import com.aaronfodor.android.songquiz.model.quiz.QuizService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelQuizState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -105,7 +107,7 @@ class QuizViewModel @Inject constructor(
     }
 
     /**
-     * Song played percentage
+     * Song played progress value
      */
     val songPlayProgressValue: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
@@ -116,6 +118,13 @@ class QuizViewModel @Inject constructor(
      */
     val songPlayProgressPercentage: MutableLiveData<Float> by lazy {
         MutableLiveData<Float>()
+    }
+
+    /**
+     * Quiz UI state
+     */
+    val viewModelQuizState: MutableLiveData<ViewModelQuizState> by lazy {
+        MutableLiveData<ViewModelQuizState>()
     }
 
     /**
@@ -133,9 +142,11 @@ class QuizViewModel @Inject constructor(
      */
     private var getUserInputJob: Job? = null
 
-    init { viewModelScope.launch {
-        clearState()
-    } }
+    init {
+        viewModelScope.launch {
+            clearState()
+        }
+    }
 
     private fun stopActions() = viewModelScope.launch {
         info.value = ""
@@ -155,7 +166,8 @@ class QuizViewModel @Inject constructor(
 
     fun clearState() = viewModelScope.launch {
         stopActions()
-        quizService.clear()
+        quizService.setClearQuizState()
+        viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
     }
 
     fun setPlaylistByIdAndSettings(playlistId: String, songDuration: Int, repeatAllowed: Boolean,
@@ -168,7 +180,7 @@ class QuizViewModel @Inject constructor(
                 return@launch
             }
 
-            quizService.setStartQuizState()
+            quizService.setConfigureQuizState()
             // ready to start
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.ENABLED)
@@ -199,6 +211,7 @@ class QuizViewModel @Inject constructor(
             }
         }
 
+        viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
     }
 
     private suspend fun speakToUser(text: String) : Boolean{
@@ -329,6 +342,7 @@ class QuizViewModel @Inject constructor(
             immediateAnswerNeeded = response.immediateAnswerNeeded
             isSuccessful = true
 
+            viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.SPEAKING)
 
@@ -446,6 +460,7 @@ class QuizViewModel @Inject constructor(
                                 rmsState.postValue(RmsState.LEVEL6)
                             }
                         }
+                        else -> {}
                     }
                 }
                 else{

@@ -5,20 +5,37 @@ class Quiz {
     var type: QuizType = UndefinedQuiz()
     var numPlayers: Int = 0
     // gameplay specific, should be reset to start new game
-    var currentRound: Int = 1
+    var currentRound: Int = 0
     var currentPlayerIdx: Int = 0
     var currentTrackIndex: Int = 0
     var players: MutableList<QuizPlayer> = mutableListOf()
     var isFinished = false
 
-    fun clearState(){
+    fun setPlayers(numPlayers: Int, names: List<String>){
+        this.numPlayers = numPlayers
+
+        players = mutableListOf()
+        var id = 1
+        for(i in 0 until this.numPlayers){
+            val name = if(i < names.size){
+                names[i]
+            }
+            else{
+                ""
+            }
+            players.add(QuizPlayer(id, name))
+            id++
+        }
+    }
+
+    fun setQuizType(type: QuizType){
+        this.type = type
+    }
+
+    fun startState(){
         currentRound = 1
         currentPlayerIdx = 0
         currentTrackIndex = 0
-        players = mutableListOf()
-        for(i in 1..numPlayers){
-            players.add(QuizPlayer(i, ""))
-        }
         isFinished = false
     }
 

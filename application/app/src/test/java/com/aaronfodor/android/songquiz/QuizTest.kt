@@ -29,7 +29,7 @@ class QuizTest{
         quiz = Quiz()
         quiz.type = quizType
         quiz.numPlayers = numPlayers
-        quiz.clearState()
+        quiz.startState()
         // When
         for(i in 0 until (numPlayers*quiz.type.numRounds)){
             quiz.recordResult(0, 0, 0)
@@ -48,7 +48,7 @@ class QuizTest{
         quiz = Quiz()
         quiz.numPlayers = numPlayers
         quiz.type = quizType
-        quiz.clearState()
+        quiz.startState()
         // When
         for(i in 0 until (numPlayers*(quiz.type.numRounds-1))){
             quiz.recordResult(0, 0, 0)
@@ -67,7 +67,7 @@ class QuizTest{
         quiz = Quiz()
         quiz.numPlayers = numPlayers
         quiz.type = quizType
-        quiz.clearState()
+        quiz.startState()
         // When
         for(i in 0 until (numPlayers*quiz.type.numRounds)){
             if(quiz.currentPlayerIdx % 2 == 0){

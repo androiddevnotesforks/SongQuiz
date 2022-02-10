@@ -90,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/glHorizontalLow"
-        app:layout_constraintGuide_percent="0.52"
+        app:layout_constraintGuide_percent="0.50"
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -109,16 +109,28 @@
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
         android:contentDescription="@string/content_description_user_input"
+        android:layout_marginBottom="@dimen/standing_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/adQuiz"
+        app:layout_constraintBottom_toTopOf="@id/standing"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        android:id="@+id/standing"
+        layout="@layout/standing_dashboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/standing_margin"/>
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adQuiz"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/glVerticalMiddle"
         app:layout_constraintEnd_toEndOf="parent"

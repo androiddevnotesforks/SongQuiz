@@ -90,25 +90,42 @@ class QuizService @Inject constructor(
     var lastSongTitleHit = false
     var lastSongArtistHit = false
 
-    fun clear(){
+    fun getQuizState() : Quiz{
+        return quiz
+    }
+
+    fun setClearQuizState(){
         lastSaidByUser = ""
         playlist = Playlist("")
         quiz = Quiz()
         state = QuizState.WELCOME
     }
 
-    fun setStartQuizState(){
-        lastSaidByUser = ""
-        playlist.tracks.shuffle()
-        quiz.clearState()
-        state = QuizState.START_GAME
-    }
-
     fun setConfigureQuizState(){
         lastSaidByUser = ""
         playlist.tracks.shuffle()
-        quiz.clearState()
+        quiz = Quiz()
         state = QuizState.WELCOME
+    }
+
+    fun setQuizPlayers(numPlayers: Int, names: List<String>){
+        quiz.setPlayers(numPlayers, listOf(
+            context.getString(R.string.c_player, 1.toString()),
+            context.getString(R.string.c_player, 2.toString()),
+            context.getString(R.string.c_player, 3.toString()),
+            context.getString(R.string.c_player, 4.toString()))
+        )
+    }
+
+    fun setQuizType(type: QuizType){
+        quiz.setQuizType(type)
+    }
+
+    fun setStartQuizState(){
+        lastSaidByUser = ""
+        playlist.tracks.shuffle()
+        quiz.startState()
+        state = QuizState.START_GAME
     }
 
     /**
@@ -132,8 +149,8 @@ class QuizService @Inject constructor(
      */
     fun getCurrentInfo() : InformationPacket {
         val response = when(state){
-            QuizState.WELCOME -> welcome()
-            QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> welcome(true, RepeatCause.NOT_UNDERSTOOD)
+            QuizState.WELCOME -> welcomeAndAskNumPlayers()
+            QuizState.NUM_PLAYERS_NOT_UNDERSTOOD -> welcomeAndAskNumPlayers(true, RepeatCause.NOT_UNDERSTOOD)
             QuizState.GAME_TYPE_ASK -> askGameType()
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> askGameType(true, RepeatCause.NOT_UNDERSTOOD)
             QuizState.GAME_TYPE_INVALID -> askGameType(true, RepeatCause.INVALID_INPUT)
@@ -150,7 +167,7 @@ class QuizService @Inject constructor(
         return response
     }
 
-    private fun welcome(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
+    private fun welcomeAndAskNumPlayers(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
     : InformationPacket {
         if(playlist.tracks.size < MIN_NUM_TRACKS){
             return InformationPacket(listOf(
@@ -220,12 +237,12 @@ class QuizService @Inject constructor(
     private fun firstTurnStringBuilder() : String{
         val currentPlayer = quiz.getCurrentPlayer()
         val quizTypeName = context.resources.getStringArray(quiz.type.nameStringKey)[0]
-        return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_player_turn,
-            currentPlayer.id.toString(), quiz.getCurrentRoundIndex().toString())
+        val playerToSay = currentPlayer.name
+        return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_player_turn, playerToSay, quiz.getCurrentRoundIndex().toString())
     }
 
     private fun startGame() : InformationPacket {
-        quiz.clearState()
+        setStartQuizState()
 
         state = if(quiz.type.repeatAllowed){
             QuizState.PLAY_SONG_REPEATABLE
@@ -241,25 +258,27 @@ class QuizService @Inject constructor(
 
         var infoString = ""
 
-        // add points info
-        var pointsInfo = ""
-        // title points
-        pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForTitle.toString(), context.getString(R.string.c_title))
-        // conjunction if needed
-        pointsInfo += if(quiz.type.difficultyCompensation){
-            ", "
-        } else{
-            "${context.getString(R.string.c_comma_and_and)} "
+        if(extendedInfoAllowed){
+            // add points info
+            var pointsInfo = ""
+            // title points
+            pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForTitle.toString(), context.getString(R.string.c_title))
+            // conjunction if needed
+            pointsInfo += if(quiz.type.difficultyCompensation){
+                ", "
+            } else{
+                "${context.getString(R.string.c_comma_and_and)} "
+            }
+            // artist points
+            pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForArtist.toString(), context.getString(R.string.c_artist))
+            // difficulty compensation and conjunction
+            if(quiz.type.difficultyCompensation){
+                pointsInfo += "${context.getString(R.string.c_comma_and_and)} "
+                pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForDifficulty.toString(), context.getString(R.string.c_difficulty))
+            }
+            // merge the points info into one string
+            infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
         }
-        // artist points
-        pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForArtist.toString(), context.getString(R.string.c_artist))
-        // difficulty compensation and conjunction
-        if(quiz.type.difficultyCompensation){
-            pointsInfo += "${context.getString(R.string.c_comma_and_and)} "
-            pointsInfo += context.getString(R.string.c_points_for_the, quiz.type.pointForDifficulty.toString(), context.getString(R.string.c_difficulty))
-        }
-        // merge the points info into one string
-        infoString += context.getString(R.string.c_game_type_points, pointsInfo) + " "
 
         infoString += context.getString(R.string.c_settings_info, quiz.type.songDurationSec.toString(), isRepeatAllowed)
         infoString = infoString.replace("  ", " ")
@@ -351,11 +370,11 @@ class QuizService @Inject constructor(
             }
 
             val currentPlayer = quiz.getCurrentPlayer()
+
             return InformationPacket(listOf(
                 InformationItem(InfoType.SOUND_LOCAL_ID, localSoundName),
                 InformationItem(InfoType.SPEECH, previousGuessString),
-                InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn,
-                    currentPlayer.id.toString(), quiz.getCurrentRoundIndex().toString())),
+                InformationItem(InfoType.SPEECH, context.getString(R.string.c_player_turn, currentPlayer.name, quiz.getCurrentRoundIndex().toString())),
                 InformationItem(InfoType.SOUND_URL, playlist.tracks[quiz.currentTrackIndex].previewUri)
             ), true)
         }
@@ -379,18 +398,18 @@ class QuizService @Inject constructor(
         val quizPlayers = quiz.players
         var resultString = ""
 
-        var winnerId = -1
+        var winnerName = ""
         var winnerPoints = 0
 
         for(player in quizPlayers){
             val currentPlayerPoints = player.getPoints(quiz.type.difficultyCompensation)
-            resultString += context.getString(R.string.c_player_scored, (player.id).toString(), currentPlayerPoints.toString()) + " "
+            resultString += context.getString(R.string.c_player_scored, player.name, currentPlayerPoints.toString()) + " "
             if(currentPlayerPoints > winnerPoints){
                 winnerPoints = currentPlayerPoints
-                winnerId = player.id
+                winnerName = player.name
             }
             else if(currentPlayerPoints == winnerPoints){
-                winnerId = -1
+                winnerName = ""
             }
         }
 
@@ -398,8 +417,8 @@ class QuizService @Inject constructor(
             winnerPoints <= 0 -> {
                 context.getString(R.string.c_next_time)
             }
-            winnerId >= 0 -> {
-                context.getString(R.string.c_winner_player, winnerId.toString())
+            winnerName.isNotBlank() -> {
+                context.getString(R.string.c_winner_player, winnerName)
             }
             else -> {
                 context.getString(R.string.c_winner_tie)
@@ -451,11 +470,11 @@ class QuizService @Inject constructor(
 
     private fun configureGame() : InformationPacket {
         setConfigureQuizState()
-        return welcome(true, RepeatCause.RECONFIGURE_GAME)
+        return welcomeAndAskNumPlayers(true, RepeatCause.RECONFIGURE_GAME)
     }
 
     private fun exitGame() : InformationPacket {
-        clear()
+        setClearQuizState()
         return InformationPacket(listOf(InformationItem(InfoType.EXIT_QUIZ, "")), false)
     }
 
@@ -503,7 +522,7 @@ class QuizService @Inject constructor(
             state = QuizState.NUM_PLAYERS_NOT_UNDERSTOOD
         }
         else{
-            quiz.numPlayers = numPlayers[0].toInt()
+            setQuizPlayers(numPlayers[0].toInt(), listOf())
             state = QuizState.GAME_TYPE_ASK
         }
 
@@ -530,16 +549,16 @@ class QuizService @Inject constructor(
         if(gameType.isNotEmpty()){
             when(gameType[0]){
                 KeyGameType.ONE_SHOT.value -> {
-                    quiz.type = OneShotQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed)
+                    setQuizType(OneShotQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed))
                 }
                 KeyGameType.SHORT.value -> {
-                    quiz.type = ShortQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed)
+                    setQuizType(ShortQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed))
                 }
                 KeyGameType.MEDIUM.value -> {
-                    quiz.type = MediumQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed)
+                    setQuizType(MediumQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed))
                 }
                 KeyGameType.LONG.value -> {
-                    quiz.type = LongQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed)
+                    setQuizType(LongQuiz(songDurationSec, difficultyCompensation, repeatSongAllowed))
                 }
                 else -> {}
             }

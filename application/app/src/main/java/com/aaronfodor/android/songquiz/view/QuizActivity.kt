@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -25,6 +26,7 @@ import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
 import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
@@ -213,7 +215,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
 
-        val quizStateObserver = Observer<QuizUiState> { state ->
+        val uiStateObserver = Observer<QuizUiState> { state ->
 
             if(state != QuizUiState.LOADING){
                 binding.content.loadIndicatorProgressBar.visibility = View.GONE
@@ -244,7 +246,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 else -> {}
             }
         }
-        viewModel.uiState.observe(this, quizStateObserver)
+        viewModel.uiState.observe(this, uiStateObserver)
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
@@ -361,6 +363,66 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             binding.content.songPlayProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor(currentColor))
         }
         viewModel.songPlayProgressPercentage.observe(this, songPlayedProgressPercentageObserver)
+
+        val itemsToSet = listOf(binding.content.standing.item1, binding.content.standing.item2, binding.content.standing.item3, binding.content.standing.item4)
+        val quizStateObserver = Observer<ViewModelQuizState> { state ->
+
+            val roundText = getString(R.string.current_per_round, state.currentRound.toString(), state.numRounds.toString())
+            binding.content.standing.round.text = roundText
+            binding.content.standing.placeholder.text = roundText
+            if(!state.isFinished && state.currentRound != 0 && state.numRounds != 0){
+                binding.content.standing.round.visibility = View.VISIBLE
+            }
+            else{
+                binding.content.standing.round.visibility = View.INVISIBLE
+            }
+
+            // player points
+            itemsToSet.forEachIndexed { index, item ->
+
+                if(state.players.size > index){
+
+                    // if item is not gone, hide it
+                    if(item.standingItemLayout.visibility != View.VISIBLE){
+                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
+                            item.standingItemLayout.startAnimation(it)
+                            item.standingItemLayout.visibility = View.VISIBLE
+                        }
+                    }
+
+                    val currentPlayerData = state.players[index]
+                    item.tvScore.text = currentPlayerData.points.toString()
+                    item.tvName.text = currentPlayerData.name
+
+                    if(state.currentPlayerIdx == index && !state.isFinished){
+                        val color = getColor(R.color.colorActive)
+                        item.tvScore.setTextColor(color)
+                        item.tvName.setTextColor(color)
+                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
+                            item.standingItemLayout.startAnimation(it)
+                        }
+                    }
+                    else{
+                        val color = getColor(R.color.colorIcon)
+                        item.tvScore.setTextColor(color)
+                        item.tvName.setTextColor(color)
+                    }
+                }
+                else{
+                    // if item is not gone, hide it
+                    if(item.standingItemLayout.visibility != View.GONE){
+                        AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
+                            item.standingItemLayout.startAnimation(it)
+                            item.standingItemLayout.visibility = View.GONE
+                        }
+                    }
+                }
+
+            }
+
+            var text = "cur:${state.currentPlayerIdx}, rnd:${state.currentRound}/${state.numRounds}, end:${state.isFinished}, players:"
+        }
+        viewModel.viewModelQuizState.observe(this, quizStateObserver)
 
     }
 

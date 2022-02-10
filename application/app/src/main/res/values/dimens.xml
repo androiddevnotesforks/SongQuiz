@@ -40,6 +40,9 @@
     <dimen name="list_item_image_pixels">40dp</dimen>
     <dimen name="game_image_pixels">400dp</dimen>
 
+    <dimen name="standing_margin">4dp</dimen>
+    <dimen name="standing_padding">4dp</dimen>
+
     <dimen name="messagebox_corner_radius">14dp</dimen>
 
     <dimen name="dialog_margin">8dp</dimen>

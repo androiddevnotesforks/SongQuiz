@@ -186,4 +186,16 @@
         <item name="android:elevation">@dimen/shadow_elevation</item>
     </style>
 
+    <style name="StandingScoreText">
+        <item name="android:textColor">@color/colorIcon</item>
+        <item name="android:textSize">@dimen/standing_title_size</item>
+        <item name="android:fontFamily">@font/font_title</item>
+    </style>
+
+    <style name="StandingNameText">
+        <item name="android:textColor">@color/colorIcon</item>
+        <item name="android:textSize">@dimen/standing_text_size</item>
+        <item name="android:fontFamily">@font/font_paragraph</item>
+    </style>
+
 </resources>

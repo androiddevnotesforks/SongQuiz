@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "03/02/2022">
+    <!ENTITY appDate "10/02/2022">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY developerContact "arpadfodor01@gmail.com">
     <!ENTITY developerPage "https://github.com/aaronfodor">
@@ -36,6 +36,8 @@
         Icon Fonts\n
         onlinewebfonts.com\n\n
     </string>
+
+    <string name="current_per_round" translatable="false">%1$s/%2$s</string>
 
     <string name="nav_header_title" translatable="false">&appName;</string>
 </resources>

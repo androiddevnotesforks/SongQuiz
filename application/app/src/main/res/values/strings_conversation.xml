@@ -5,6 +5,8 @@
     <string name="c_playlist_info">Your chosen playlist is %1$s, which contains %2$s playable songs.</string>
     <string name="c_reconfigure">Configure your game. The current playlist is %1$s, which contains %2$s playable songs.</string>
 
+    <string name="c_player">Player %1$s</string>
+
     <string name="c_ask_num_players">How many players want to play? Say a number between 1 and 4.</string>
     <string name="c_num_players_selected">%1$s-player game selected.</string>
 
@@ -15,7 +17,7 @@
 
     <string name="c_starting_game">Starting your %1$s game.</string>
 
-    <string name="c_player_turn">Player %1$s, question %2$s, name the song title and artist:</string>
+    <string name="c_player_turn">%1$s, question %2$s, name the song title and artist:</string>
     <string name="c_repeating_song">Repeating the previous song.</string>
 
     <string name="c_not_understand">Sorry, I could not catch it.</string>
@@ -80,9 +82,9 @@
     <string name="c_your_score">Your score is %1$s.</string>
 
     <string name="c_end_game">That\'s the end of the game.</string>
-    <string name="c_player_scored">Player %1$s scored %2$s points.</string>
+    <string name="c_player_scored">%1$s scored %2$s points.</string>
 
-    <string name="c_winner_player">Player %1$s is the winner. Congratulations!</string>
+    <string name="c_winner_player">%1$s is the winner. Congratulations!</string>
     <string name="c_winner_tie">It\'s a tie. Congratulations!</string>
     <string name="c_next_time">Better luck next time!</string>
     <string name="c_play_again_possible">If you want to restart this game, say restart. To configure the game, say configure. Say exit to leave.</string>
