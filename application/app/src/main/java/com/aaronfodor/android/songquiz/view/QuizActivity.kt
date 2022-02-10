@@ -2,7 +2,6 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -11,7 +10,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -21,11 +20,9 @@ import androidx.palette.graphics.Palette
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
-import com.aaronfodor.android.songquiz.view.utils.AppActivity
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
-import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -123,27 +120,27 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_on)
                     binding.content.userSpeechButton.isEnabled = true
                     userInputButtonAnimation?.cancel()
-                    userInputButtonAnimation = tappableInfiniteAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableInfiniteAnimation()
                     userInputButtonAnimation?.start()
                 }
                 UserInputState.DISABLED -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_off)
                     binding.content.userSpeechButton.isEnabled = false
                     userInputButtonAnimation?.cancel()
-                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
                     userInputButtonAnimation?.start()
                 }
                 UserInputState.RECORDING -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform)
                     binding.content.userSpeechButton.isEnabled = true
                     userInputButtonAnimation?.cancel()
-                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
                     userInputButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.userSpeechButton.isEnabled = false
                     userInputButtonAnimation?.cancel()
-                    userInputButtonAnimation = tappableEndAnimation(binding.content.userSpeechButton)
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
                     userInputButtonAnimation?.start()
                 }
             }
@@ -188,27 +185,27 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_on)
                     binding.content.ttsSpeechButton.isEnabled = true
                     ttsButtonAnimation?.cancel()
-                    ttsButtonAnimation = tappableInfiniteAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableInfiniteAnimation()
                     ttsButtonAnimation?.start()
                 }
                 TtsState.DISABLED -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_off)
                     binding.content.ttsSpeechButton.isEnabled = false
                     ttsButtonAnimation?.cancel()
-                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
                     ttsButtonAnimation?.start()
                 }
                 TtsState.SPEAKING -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_speaking)
                     binding.content.ttsSpeechButton.isEnabled = false
                     ttsButtonAnimation?.cancel()
-                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
                     ttsButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.ttsSpeechButton.isEnabled = false
                     ttsButtonAnimation?.cancel()
-                    ttsButtonAnimation = tappableEndAnimation(binding.content.ttsSpeechButton)
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
                     ttsButtonAnimation?.start()
                 }
             }
@@ -364,25 +361,40 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.songPlayProgressPercentage.observe(this, songPlayedProgressPercentageObserver)
 
-        val itemsToSet = listOf(binding.content.standing.item1, binding.content.standing.item2, binding.content.standing.item3, binding.content.standing.item4)
+        // to set a placeholder which defines the height
+        binding.content.standing.itemPlaceholder.tvName.text = ""
+        binding.content.standing.itemPlaceholder.tvScore.text = ""
+        binding.content.standing.itemPlaceholder.standingItemLayout.visibility = View.INVISIBLE
+        // list of real items
+        val playerStandingsToSet = listOf(binding.content.standing.item1, binding.content.standing.item2, binding.content.standing.item3, binding.content.standing.item4)
         val quizStateObserver = Observer<ViewModelQuizState> { state ->
 
             val roundText = getString(R.string.current_per_round, state.currentRound.toString(), state.numRounds.toString())
             binding.content.standing.round.text = roundText
-            binding.content.standing.placeholder.text = roundText
+            binding.content.standing.roundPlaceholder.text = roundText
             if(!state.isFinished && state.currentRound != 0 && state.numRounds != 0){
+                // if currently invisible, animate to appear
+                if(binding.content.standing.round.visibility == View.INVISIBLE){
+                    AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
+                        binding.content.standing.round.startAnimation(it)
+                    }
+                }
                 binding.content.standing.round.visibility = View.VISIBLE
             }
             else{
+                // if currently visible, animate to hide
+                if(binding.content.standing.round.visibility == View.VISIBLE){
+                    AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
+                        binding.content.standing.round.startAnimation(it)
+                    }
+                }
                 binding.content.standing.round.visibility = View.INVISIBLE
             }
 
             // player points
-            itemsToSet.forEachIndexed { index, item ->
-
+            playerStandingsToSet.forEachIndexed { index, item ->
                 if(state.players.size > index){
-
-                    // if item is not gone, hide it
+                    // if item is not visible, show it
                     if(item.standingItemLayout.visibility != View.VISIBLE){
                         AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
                             item.standingItemLayout.startAnimation(it)
@@ -391,16 +403,19 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     }
 
                     val currentPlayerData = state.players[index]
-                    item.tvScore.text = currentPlayerData.points.toString()
+                    val scoreTextToSet = currentPlayerData.points.toString()
+                    // if the score text has changed, set and animate it
+                    if(scoreTextToSet != item.tvScore.text){
+                        item.tvScore.text = scoreTextToSet
+                        item.tvScore.changedAnimation().start()
+                    }
                     item.tvName.text = currentPlayerData.name
 
-                    if(state.currentPlayerIdx == index && !state.isFinished){
+                    // if this is the current player and the quiz is not finished
+                    if(state.currentPlayerIdx == index && !state.isFinished && state.numRounds > 0){
                         val color = getColor(R.color.colorActive)
                         item.tvScore.setTextColor(color)
                         item.tvName.setTextColor(color)
-                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
-                            item.standingItemLayout.startAnimation(it)
-                        }
                     }
                     else{
                         val color = getColor(R.color.colorIcon)
@@ -417,12 +432,50 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         }
                     }
                 }
-
             }
 
-            var text = "cur:${state.currentPlayerIdx}, rnd:${state.currentRound}/${state.numRounds}, end:${state.isFinished}, players:"
         }
         viewModel.viewModelQuizState.observe(this, quizStateObserver)
+
+        val guessesToSet = listOf(binding.content.guess.guess1, binding.content.guess.guess2)
+        val currentGuessObserver = Observer<List<ViewModelGuessItem>> { guesses ->
+            // last guesses
+            guessesToSet.forEachIndexed { index, item ->
+                if(guesses.size > index){
+                    val currentGuess = guesses[index]
+                    item.text = currentGuess.truth
+
+                    val drawable = when(currentGuess.isAccepted){
+                        true -> {
+                            ContextCompat.getDrawable(applicationContext, R.drawable.icon_correct)
+                        }
+                        false -> {
+                            ContextCompat.getDrawable(applicationContext, R.drawable.icon_incorrect)
+                        }
+                    }
+                    item.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+
+                    // if item is not visible, show it
+                    if(item.visibility != View.VISIBLE){
+                        AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
+                            item.startAnimation(it)
+                            item.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                else{
+                    // if item is not invisible, hide it
+                    if(item.visibility != View.INVISIBLE){
+                        AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
+                            item.startAnimation(it)
+                            item.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+            }
+
+        }
+        viewModel.currentGuesses.observe(this, currentGuessObserver)
 
     }
 
@@ -505,28 +558,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         gradientDrawable.cornerRadius = 0F
         binding.root.background = gradientDrawable
         this.window.statusBarColor = playlistColor
-    }
-
-    private fun tappableInfiniteAnimation(viewToAnimate: View) : ObjectAnimator{
-        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f)
-        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.1f)
-        val animation = ObjectAnimator.ofPropertyValuesHolder(viewToAnimate, scaleX, scaleY)
-        animation.interpolator = FastOutSlowInInterpolator()
-        animation.duration = 500L
-        animation.repeatCount = ObjectAnimator.INFINITE
-        animation.repeatMode = ObjectAnimator.REVERSE
-        return animation
-    }
-
-    private fun tappableEndAnimation(viewToAnimate: View) : ObjectAnimator{
-        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.00f)
-        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.00f)
-        val animation = ObjectAnimator.ofPropertyValuesHolder(viewToAnimate, scaleX, scaleY)
-        animation.interpolator = FastOutSlowInInterpolator()
-        animation.duration = 0L
-        animation.repeatCount = 0
-        animation.repeatMode = ObjectAnimator.RESTART
-        return animation
     }
 
 }

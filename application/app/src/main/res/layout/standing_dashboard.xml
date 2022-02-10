@@ -9,12 +9,18 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/placeholder"
+        android:id="@+id/round_placeholder"
         android:visibility="invisible"
         style="@style/StandingNameText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="bottom|start"/>
+
+    <include
+        android:id="@+id/item_placeholder"
+        layout="@layout/standing_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
 
     <include
         android:id="@+id/item1"

@@ -1,4 +1,17 @@
-package com.aaronfodor.android.songquiz.view
+/*
+ * Copyright (c) Aaron Fodor  - All Rights Reserved
+ *
+ * https://github.com/aaronfodor
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+ * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+package com.aaronfodor.android.songquiz.view.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -9,7 +22,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ListableItemBinding
-import com.aaronfodor.android.songquiz.view.utils.DrawableCrossFadeFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions

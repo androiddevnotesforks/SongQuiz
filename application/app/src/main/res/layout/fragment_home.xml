@@ -15,21 +15,11 @@
         app:layout_constraintGuide_percent="0.1"
         android:orientation="horizontal"/>
 
-    <ImageView
-        android:id="@+id/iv_greet"
-        android:layout_height="0dp"
-        android:layout_width="0dp"
-        android:gravity="center"
-        app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintEnd_toStartOf="@+id/tv_greet"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/glHorizontal"/>
-
     <TextView
         android:id="@+id/tv_greet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/button_margin_medium"
+        android:layout_margin="@dimen/margin_medium"
         android:theme="@style/TitleText"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +31,7 @@
         android:id="@+id/action_random"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/button_margin_medium"
+        android:layout_margin="@dimen/margin_medium"
         android:theme="@style/SubtitleText"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/glHorizontal"
@@ -52,7 +42,7 @@
         android:id="@+id/list_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/button_margin_medium"
+        android:layout_marginTop="@dimen/margin_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_random"

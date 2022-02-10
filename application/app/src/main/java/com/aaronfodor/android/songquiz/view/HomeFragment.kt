@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentHomeBinding
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.AppFragment
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
@@ -157,27 +154,27 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
             PartOfTheDay.MORNING -> {
                 binding.tvGreet.text = getText(R.string.greeting_morning)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.ivGreet.setImageDrawable(drawable)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
             PartOfTheDay.AFTERNOON -> {
                 binding.tvGreet.text = getText(R.string.greeting_afternoon)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.ivGreet.setImageDrawable(drawable)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
             PartOfTheDay.EVENING -> {
                 binding.tvGreet.text = getText(R.string.greeting_evening)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sunset)
-                binding.ivGreet.setImageDrawable(drawable)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
             PartOfTheDay.NIGHT -> {
                 binding.tvGreet.text = getText(R.string.greeting_night)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_moon)
-                binding.ivGreet.setImageDrawable(drawable)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
             PartOfTheDay.UNKNOWN -> {
                 binding.tvGreet.text = getText(R.string.greeting_fallback)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_hello)
-                binding.ivGreet.setImageDrawable(drawable)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
         }
 
@@ -198,9 +195,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         binding.tvGreet.startAnimation(bottomAnimation)
         binding.actionRandom.startAnimation(bottomAnimation)
         binding.list.tvEmpty.startAnimation(bottomAnimation)
-
-        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        binding.ivGreet.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {}

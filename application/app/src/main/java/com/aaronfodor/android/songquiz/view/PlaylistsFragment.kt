@@ -15,10 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentPlaylistsBinding
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.AppFragment
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsNotification
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsUiState
 import com.aaronfodor.android.songquiz.viewmodel.PlaylistsViewModel

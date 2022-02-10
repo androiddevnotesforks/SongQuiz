@@ -7,28 +7,28 @@
     </style>
 
     <style name="AppButton" parent="Theme.SongQuiz">
-        <item name="android:layout_marginStart">@dimen/button_margin_medium</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_medium</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
-        <item name="android:paddingTop">@dimen/button_padding_big</item>
-        <item name="android:paddingBottom">@dimen/button_padding_big</item>
-        <item name="android:paddingStart">@dimen/button_padding_medium</item>
-        <item name="android:paddingEnd">@dimen/button_padding_medium</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_big</item>
+        <item name="android:layout_marginBottom">@dimen/margin_big</item>
+        <item name="android:paddingTop">@dimen/padding_big</item>
+        <item name="android:paddingBottom">@dimen/padding_big</item>
+        <item name="android:paddingStart">@dimen/padding_medium</item>
+        <item name="android:paddingEnd">@dimen/padding_medium</item>
         <item name="android:textStyle">bold</item>
         <item name="tint">@color/colorLight</item>
         <item name="textAllCaps">true</item>
     </style>
 
     <style name="AuthButton" parent="Theme.SongQuiz">
-        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
-        <item name="android:paddingTop">@dimen/button_padding_big</item>
-        <item name="android:paddingBottom">@dimen/button_padding_big</item>
-        <item name="android:paddingStart">@dimen/button_padding_big</item>
-        <item name="android:paddingEnd">@dimen/button_padding_big</item>
+        <item name="android:layout_marginStart">@dimen/margin_big</item>
+        <item name="android:layout_marginEnd">@dimen/margin_big</item>
+        <item name="android:layout_marginTop">@dimen/margin_big</item>
+        <item name="android:layout_marginBottom">@dimen/margin_big</item>
+        <item name="android:paddingTop">@dimen/padding_big</item>
+        <item name="android:paddingBottom">@dimen/padding_big</item>
+        <item name="android:paddingStart">@dimen/padding_big</item>
+        <item name="android:paddingEnd">@dimen/padding_big</item>
         <item name="android:textStyle">bold</item>
         <item name="tint">@color/colorLight</item>
         <item name="textAllCaps">true</item>
@@ -38,10 +38,10 @@
     <style name="FAB" parent="Theme.SongQuiz">
         <item name="backgroundTint">@color/colorButton</item>
         <item name="tint">@color/colorLight</item>
-        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
+        <item name="android:layout_marginStart">@dimen/margin_big</item>
+        <item name="android:layout_marginEnd">@dimen/margin_big</item>
+        <item name="android:layout_marginTop">@dimen/margin_big</item>
+        <item name="android:layout_marginBottom">@dimen/margin_big</item>
     </style>
 
     <style name="ActionImageButton" parent="Theme.SongQuiz">
@@ -56,10 +56,10 @@
     </style>
 
     <style name="ActionGameImageButton" parent="Theme.SongQuiz">
-        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+        <item name="android:layout_marginBottom">@dimen/margin_medium</item>
         <item name="android:background">@drawable/action_game_button</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:minWidth">@dimen/button_size</item>
@@ -75,16 +75,21 @@
     </style>
 
     <style name="MainImage" parent="Theme.SongQuiz">
-        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
-        <item name="android:layout_marginTop">@dimen/button_margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/button_margin_big</item>
+        <item name="android:layout_marginStart">@dimen/margin_big</item>
+        <item name="android:layout_marginEnd">@dimen/margin_big</item>
+        <item name="android:layout_marginTop">@dimen/margin_big</item>
+        <item name="android:layout_marginBottom">@dimen/margin_big</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
-    <style name="ElevatedMainImage" parent="MainImage">
+    <style name="QuizMainImage">
         <item name="android:background">@drawable/image_shadow</item>
         <item name="android:elevation">@dimen/shadow_elevation</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_medium</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 
     <style name="ListImage" parent="MainImage">
@@ -100,8 +105,8 @@
     <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">6dp</item>
-        <item name="android:layout_marginStart">@dimen/button_margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/button_margin_big</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:max">@integer/progressbar_max_value</item>
         <item name="android:progress">0</item>
         <item name="android:progressDrawable">@drawable/progressbar_time</item>
@@ -195,6 +200,16 @@
     <style name="StandingNameText">
         <item name="android:textColor">@color/colorIcon</item>
         <item name="android:textSize">@dimen/standing_text_size</item>
+        <item name="android:fontFamily">@font/font_paragraph</item>
+    </style>
+
+    <style name="GuessText">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:shadowColor">@color/colorBackground</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">@dimen/shadow_radius</item>
+        <item name="android:textSize">@dimen/paragraph_text_size</item>
         <item name="android:fontFamily">@font/font_paragraph</item>
     </style>
 

@@ -10,10 +10,12 @@ import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.MediaPlayerService
 import com.aaronfodor.android.songquiz.model.SpeechRecognizerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
-import com.aaronfodor.android.songquiz.model.quiz.InfoType
-import com.aaronfodor.android.songquiz.model.quiz.QuizService
+import com.aaronfodor.android.songquiz.model.quiz.*
+import com.aaronfodor.android.songquiz.model.quiz.GuessFeedback
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelGuessItemList
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelQuizState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -125,6 +127,13 @@ class QuizViewModel @Inject constructor(
      */
     val viewModelQuizState: MutableLiveData<ViewModelQuizState> by lazy {
         MutableLiveData<ViewModelQuizState>()
+    }
+
+    /**
+     * Current guesses
+     */
+    val currentGuesses: MutableLiveData<List<ViewModelGuessItem>> by lazy {
+        MutableLiveData<List<ViewModelGuessItem>>()
     }
 
     /**
@@ -352,18 +361,27 @@ class QuizViewModel @Inject constructor(
                     return@launch
                 }
 
-                val isCurrentSuccessful = when (information.type) {
-                    InfoType.SPEECH -> {
-                        speakToUser(information.payload)
+                val isCurrentSuccessful = when (information) {
+                    is Speech -> {
+                        currentGuesses.postValue(listOf())
+                        speakToUser(information.text)
                     }
-                    InfoType.SOUND_URL -> {
-                        playUrlSound(information.payload)
+                    is SoundURL -> {
+                        currentGuesses.postValue(listOf())
+                        playUrlSound(information.url)
                     }
-                    InfoType.SOUND_LOCAL_ID -> {
-                        playLocalSound(information.payload)
+                    is LocalSound -> {
+                        currentGuesses.postValue(listOf())
+                        playLocalSound(information.name)
                     }
-                    InfoType.EXIT_QUIZ -> {
+                    is ExitRequest -> {
+                        currentGuesses.postValue(listOf())
                         uiState.postValue(QuizUiState.EXIT)
+                        true
+                    }
+                    is GuessFeedback -> {
+                        currentGuesses.postValue(information.items.toViewModelGuessItemList())
+                        speakToUser(information.text)
                         true
                     }
                 }

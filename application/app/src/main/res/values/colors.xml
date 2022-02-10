@@ -37,4 +37,7 @@
     <color name="colorMoon">#BBFFFF00</color>
     <color name="colorHelloFallback">#BB121212</color>
 
+    <color name="colorCorrect">#BB4DEEEA</color>
+    <color name="colorIncorrect">#BBFF0000</color>
+
 </resources>

@@ -1,7 +1,7 @@
 package com.aaronfodor.android.songquiz.viewmodel.dataclasses
 
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
-import com.aaronfodor.android.songquiz.view.Listable
+import com.aaronfodor.android.songquiz.view.utils.Listable
 
 class ViewModelTrack (
     var id: String,

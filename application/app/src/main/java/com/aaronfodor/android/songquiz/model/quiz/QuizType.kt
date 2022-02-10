@@ -3,7 +3,7 @@ package com.aaronfodor.android.songquiz.model.quiz
 import com.aaronfodor.android.songquiz.R
 
 sealed class QuizType(
-    val nameStringKey: Int,
+    val typeNameStringKey: Int,
     val songDurationSec: Int,
     val difficultyCompensation: Boolean,
     val repeatAllowed: Boolean

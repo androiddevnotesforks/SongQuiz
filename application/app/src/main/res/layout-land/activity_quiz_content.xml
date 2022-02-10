@@ -14,8 +14,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <include
+        android:id="@+id/guess"
+        layout="@layout/guess_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
+        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist"/>
+
     <ImageView
-        style="@style/ElevatedMainImage"
+        style="@style/QuizMainImage"
         android:id="@+id/ivPlaylist"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -24,7 +33,7 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guess"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.core.widget.NestedScrollView

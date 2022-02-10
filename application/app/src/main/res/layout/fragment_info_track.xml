@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="@dimen/button_margin_big"
+        android:paddingBottom="@dimen/margin_big"
         android:clipToPadding="false">
 
         <LinearLayout

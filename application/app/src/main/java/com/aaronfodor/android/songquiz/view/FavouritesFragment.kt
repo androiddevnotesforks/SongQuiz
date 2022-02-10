@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentFavouritesBinding
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.AppFragment
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.FavouritesNotification
 import com.aaronfodor.android.songquiz.viewmodel.FavouritesUiState
 import com.aaronfodor.android.songquiz.viewmodel.FavouritesViewModel
