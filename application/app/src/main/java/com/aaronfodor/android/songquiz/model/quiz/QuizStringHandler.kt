@@ -185,36 +185,20 @@ class QuizStringHandler @Inject constructor(
         return "$resultString $songInfoString".replace("  ", " ")
     }
 
-    fun endResultString(quizPlayers: List<QuizPlayer>, difficultyCompensation: Boolean) : String{
-        var resultString = ""
+    fun playerScored(playerName: String, playerPoints: Int) : String {
+        return context.getString(R.string.c_player_scored, playerName, playerPoints.toString())
+    }
 
-        var winnerName = ""
-        var winnerPoints = 0
-        for(player in quizPlayers){
-            val currentPlayerPoints = player.getPoints(difficultyCompensation)
-            resultString += context.getString(R.string.c_player_scored, player.name, currentPlayerPoints.toString()) + " "
-            if(currentPlayerPoints > winnerPoints){
-                winnerPoints = currentPlayerPoints
-                winnerName = player.name
-            }
-            else if(currentPlayerPoints == winnerPoints){
-                winnerName = ""
-            }
-        }
+    fun nextTime() : String {
+        return context.getString(R.string.c_next_time)
+    }
 
-        resultString += when {
-            winnerPoints <= 0 -> {
-                context.getString(R.string.c_next_time)
-            }
-            winnerName.isNotBlank() -> {
-                context.getString(R.string.c_winner_player, winnerName)
-            }
-            else -> {
-                context.getString(R.string.c_winner_tie)
-            }
-        }
+    fun winnerPlayer(playerName: String) : String {
+        return context.getString(R.string.c_winner_player, playerName)
+    }
 
-        return resultString
+    fun winnerTie() : String {
+        return context.getString(R.string.c_winner_tie)
     }
 
     fun possibleWords_1() : List<String>{ return context.resources.getStringArray(R.array.input_1).toList() }

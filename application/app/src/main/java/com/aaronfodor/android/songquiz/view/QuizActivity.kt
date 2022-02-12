@@ -24,6 +24,7 @@ import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelEndFeedback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
@@ -477,12 +478,46 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.currentGuesses.observe(this, currentGuessObserver)
 
+        val endFeedbackObserver = Observer<ViewModelEndFeedback> { feedback ->
+            // if valid end feedback observed
+            if(feedback.numWinners >= 0){
+                if(feedback.numWinners == 0){
+                    binding.content.endIndicator.text = getString(R.string.c_next_time)
+                    val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_luck)
+                    binding.content.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                }
+                else{
+                    binding.content.endIndicator.text = feedback.winnerNames
+                    val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_celebration)
+                    binding.content.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                }
+
+                // if item is not visible, show it
+                if(binding.content.endIndicator.visibility != View.VISIBLE){
+                    AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
+                        binding.content.endIndicator.startAnimation(it)
+                        binding.content.endIndicator.visibility = View.VISIBLE
+                    }
+                }
+            }
+            else{
+                // if item is not invisible, hide it
+                if(binding.content.endIndicator.visibility != View.INVISIBLE){
+                    AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
+                        binding.content.endIndicator.startAnimation(it)
+                        binding.content.endIndicator.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
+        viewModel.endFeedback.observe(this, endFeedbackObserver)
+
     }
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun onboardingDialog(){
+    override fun boardingDialog(){
         val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
         // get saved info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)

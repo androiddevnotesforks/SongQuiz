@@ -20,8 +20,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
-        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist"/>
+        app:layout_constraintStart_toStartOf="@+id/songPlayProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/songPlayProgressBar"/>
+
+    <TextView
+        style="@style/QuizFeedbackItem"
+        android:id="@+id/end_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:visibility="invisible"
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        android:drawablePadding="@dimen/drawable_padding"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/songPlayProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/songPlayProgressBar"/>
 
     <ImageView
         style="@style/QuizMainImage"

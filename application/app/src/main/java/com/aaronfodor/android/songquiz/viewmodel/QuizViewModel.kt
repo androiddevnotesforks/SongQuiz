@@ -13,10 +13,7 @@ import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.quiz.*
 import com.aaronfodor.android.songquiz.model.quiz.GuessFeedback
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelGuessItemList
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelQuizState
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -134,6 +131,13 @@ class QuizViewModel @Inject constructor(
      */
     val currentGuesses: MutableLiveData<List<ViewModelGuessItem>> by lazy {
         MutableLiveData<List<ViewModelGuessItem>>()
+    }
+
+    /**
+     * Winner feedback
+     */
+    val endFeedback: MutableLiveData<ViewModelEndFeedback> by lazy {
+        MutableLiveData<ViewModelEndFeedback>()
     }
 
     /**
@@ -364,24 +368,35 @@ class QuizViewModel @Inject constructor(
                 val isCurrentSuccessful = when (information) {
                     is Speech -> {
                         currentGuesses.postValue(listOf())
-                        speakToUser(information.text)
+                        endFeedback.postValue(ViewModelEndFeedback())
+                        speakToUser(information.speech)
                     }
                     is SoundURL -> {
                         currentGuesses.postValue(listOf())
+                        endFeedback.postValue(ViewModelEndFeedback())
                         playUrlSound(information.url)
                     }
                     is LocalSound -> {
                         currentGuesses.postValue(listOf())
-                        playLocalSound(information.name)
+                        endFeedback.postValue(ViewModelEndFeedback())
+                        playLocalSound(information.fileName)
                     }
                     is ExitRequest -> {
                         currentGuesses.postValue(listOf())
+                        endFeedback.postValue(ViewModelEndFeedback())
                         uiState.postValue(QuizUiState.EXIT)
                         true
                     }
                     is GuessFeedback -> {
                         currentGuesses.postValue(information.items.toViewModelGuessItemList())
-                        speakToUser(information.text)
+                        endFeedback.postValue(ViewModelEndFeedback())
+                        speakToUser(information.speech)
+                        true
+                    }
+                    is EndFeedback -> {
+                        currentGuesses.postValue(listOf())
+                        endFeedback.postValue(information.toViewModelEndFeedback())
+                        speakToUser(information.speech)
                         true
                     }
                 }

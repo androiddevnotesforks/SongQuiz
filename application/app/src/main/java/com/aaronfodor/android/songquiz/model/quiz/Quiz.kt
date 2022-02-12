@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.model.quiz
 class Quiz {
 
     var type: QuizType = UndefinedQuiz()
-    var numPlayers: Int = 0
     // gameplay specific, should be reset to start new game
     var currentRound: Int = 0
     var currentPlayerIdx: Int = 0
@@ -11,18 +10,10 @@ class Quiz {
     var players: MutableList<QuizPlayer> = mutableListOf()
     var isFinished = false
 
-    fun setPlayers(numPlayers: Int, names: List<String>){
-        this.numPlayers = numPlayers
-
+    fun setQuizPlayers(names: List<String>){
         players = mutableListOf()
         var id = 1
-        for(i in 0 until this.numPlayers){
-            val name = if(i < names.size){
-                names[i]
-            }
-            else{
-                ""
-            }
+        for(name in names){
             players.add(QuizPlayer(id, name))
             id++
         }
@@ -37,13 +28,14 @@ class Quiz {
         currentPlayerIdx = 0
         currentTrackIndex = 0
         isFinished = false
+        players.forEach { it.resetPoints() }
     }
 
     fun recordResult(artistPoint: Int, titlePoint: Int, difficultyCompensationPoint: Int){
         currentTrackIndex++
         players[currentPlayerIdx].recordGuess(artistPoint, titlePoint, difficultyCompensationPoint)
         currentPlayerIdx++
-        if(currentPlayerIdx >= numPlayers){
+        if(currentPlayerIdx >= players.size){
             currentPlayerIdx = 0
             currentRound++
             if(currentRound > type.numRounds){

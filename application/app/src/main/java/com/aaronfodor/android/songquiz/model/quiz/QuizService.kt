@@ -47,7 +47,7 @@ class QuizService @Inject constructor(
     var lastSaidByUser = ""
     var playlist = Playlist("")
     var quiz = Quiz()
-    private val stringService = stringService
+    private val stringHandler = stringService
     private val textParser = textParserService
 
     var songDurationSec = 0
@@ -84,13 +84,12 @@ class QuizService @Inject constructor(
         state = QuizState.WELCOME
     }
 
-    fun setQuizPlayers(numPlayers: Int, names: List<String>){
-        quiz.setPlayers(numPlayers, listOf(
-            stringService.player(1),
-            stringService.player(2),
-            stringService.player(3),
-            stringService.player(4),
-        ))
+    fun setQuizPlayers(numPlayers: Int){
+        val playerNames = mutableListOf<String>()
+        for(i in 0 until numPlayers){
+            playerNames.add(stringHandler.player(i+1))
+        }
+        quiz.setQuizPlayers(playerNames)
     }
 
     fun setQuizType(type: QuizType){
@@ -138,7 +137,7 @@ class QuizService @Inject constructor(
             QuizState.RESTART_GAME -> restartGame()
             QuizState.CONFIGURE_GAME -> configureGame()
             QuizState.EXIT_GAME -> exitGame()
-            else -> InformationPacket(listOf(Speech(stringService.error())), false)
+            else -> InformationPacket(listOf(Speech(stringHandler.error())), false)
         }
         return response
     }
@@ -147,9 +146,9 @@ class QuizService @Inject constructor(
     : InformationPacket {
         if(playlist.tracks.size < MIN_NUM_TRACKS){
             return InformationPacket(listOf(
-                Speech(stringService.welcome()),
-                Speech(stringService.playlistInfo(playlist.name, playlist.tracks.size)),
-                Speech(stringService.notEnoughTracks(MIN_NUM_TRACKS))
+                Speech(stringHandler.welcome()),
+                Speech(stringHandler.playlistInfo(playlist.name, playlist.tracks.size)),
+                Speech(stringHandler.notEnoughTracks(MIN_NUM_TRACKS))
             ), false)
         }
 
@@ -158,24 +157,24 @@ class QuizService @Inject constructor(
 
             when(cause){
                 RepeatCause.NOT_UNDERSTOOD -> {
-                    reasonText = stringService.notUnderstand()
+                    reasonText = stringHandler.notUnderstand()
                 }
                 RepeatCause.RECONFIGURE_GAME -> {
-                    reasonText = stringService.reconfigure(playlist.name, playlist.tracks.size)
+                    reasonText = stringHandler.reconfigure(playlist.name, playlist.tracks.size)
                 }
                 else -> {}
             }
 
             return InformationPacket(listOf(
                 Speech(reasonText),
-                Speech(stringService.askNumPlayers())
+                Speech(stringHandler.askNumPlayers())
             ), true)
         }
         else{
             return InformationPacket(listOf(
-                Speech(stringService.welcome()),
-                Speech(stringService.playlistInfo(playlist.name, playlist.tracks.size)),
-                Speech(stringService.askNumPlayers())
+                Speech(stringHandler.welcome()),
+                Speech(stringHandler.playlistInfo(playlist.name, playlist.tracks.size)),
+                Speech(stringHandler.askNumPlayers())
             ), true)
         }
     }
@@ -187,23 +186,23 @@ class QuizService @Inject constructor(
 
             when(cause){
                 RepeatCause.INVALID_INPUT -> {
-                    reasonText = stringService.askGameTypeInvalid(quiz.type.typeNameStringKey, playlist.tracks.size, quiz.numPlayers, quiz.type.numRounds)
+                    reasonText = stringHandler.askGameTypeInvalid(quiz.type.typeNameStringKey, playlist.tracks.size, quiz.players.size, quiz.type.numRounds)
                 }
                 RepeatCause.NOT_UNDERSTOOD -> {
-                    reasonText = stringService.notUnderstand()
+                    reasonText = stringHandler.notUnderstand()
                 }
                 else -> {}
             }
 
             return InformationPacket(listOf(
                 Speech(reasonText),
-                Speech(stringService.askGameType()),
+                Speech(stringHandler.askGameType()),
             ), true)
         }
         else{
             return InformationPacket(listOf(
-                Speech(stringService.numPlayersSelected(quiz.numPlayers)),
-                Speech(stringService.askGameType()),
+                Speech(stringHandler.numPlayersSelected(quiz.players.size)),
+                Speech(stringHandler.askGameType()),
             ), true)
         }
     }
@@ -218,12 +217,12 @@ class QuizService @Inject constructor(
             QuizState.PLAY_SONG
         }
 
-        val selectedGameAndSettingsText = stringService.selectedGameAndSettingsString(extendedInfoAllowed, quiz.type.repeatAllowed, quiz.type.difficultyCompensation,
+        val selectedGameAndSettingsText = stringHandler.selectedGameAndSettingsString(extendedInfoAllowed, quiz.type.repeatAllowed, quiz.type.difficultyCompensation,
             quiz.type.pointForTitle, quiz.type.pointForArtist, quiz.type.pointForDifficulty, quiz.type.songDurationSec, quiz.type.numRounds, quiz.type.typeNameStringKey)
 
         return InformationPacket(listOf(
             Speech(selectedGameAndSettingsText),
-            Speech(stringService.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
+            Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
             SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
         ), true)
     }
@@ -238,12 +237,12 @@ class QuizService @Inject constructor(
 
         if(isRepeat){
             return InformationPacket(listOf(
-                Speech(stringService.repeatSong()),
+                Speech(stringHandler.repeatSong()),
                 SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
             ), true)
         }
         else{
-            val guessString = stringService.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
+            val guessString = stringHandler.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
                 lastPlayerDifficultyPoints, lastPlayerDifficultyPercentage, lastSongTitle, lastSongArtist, lastSongAlbum,
                 extendedInfoAllowed, lastPlayerAllPoints, quiz.type.difficultyCompensation)
 
@@ -264,7 +263,7 @@ class QuizService @Inject constructor(
             return InformationPacket(listOf(
                 LocalSound(localSoundName),
                 GuessFeedback(guessString, guesses),
-                Speech(stringService.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())),
+                Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())),
                 SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
             ), true)
         }
@@ -279,16 +278,55 @@ class QuizService @Inject constructor(
         }
 
         return InformationPacket(listOf(
-            Speech(stringService.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
+            Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
             SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
         ), true)
     }
 
     private fun endGameInformationBuilder() : List<InformationItem>{
+        var resultText = ""
+        var winnerName = ""
+        var winnerPoints = 0
+        for(player in quiz.players){
+            val currentPlayerPoints = player.getPoints(quiz.type.difficultyCompensation)
+            resultText += stringHandler.playerScored(player.name, currentPlayerPoints) + " "
+            if(currentPlayerPoints > winnerPoints){
+                winnerPoints = currentPlayerPoints
+                winnerName = player.name
+            }
+            else if(currentPlayerPoints == winnerPoints){
+                winnerName = ""
+            }
+        }
+
+        resultText += when {
+            winnerPoints <= 0 -> {
+                stringHandler.nextTime()
+            }
+            winnerName.isNotBlank() -> {
+                stringHandler.winnerPlayer(winnerName)
+            }
+            else -> {
+                stringHandler.winnerTie()
+            }
+        }
+
+        var winnerNames = ""
+        var numWinners = 0
+        // if actually there is a winner, find out their names
+        if(winnerPoints > 0){
+            for(player in quiz.players){
+                if(player.getPoints(quiz.type.difficultyCompensation) == winnerPoints){
+                    winnerNames += "${player.name}  "
+                    numWinners += 1
+                }
+            }
+        }
+
         return listOf(
-            Speech(stringService.endResultString(quiz.players, quiz.type.difficultyCompensation)),
+            EndFeedback(resultText, winnerNames, numWinners),
             LocalSound(END_SOUND_NAME),
-            Speech(stringService.playAgainPossible())
+            Speech(stringHandler.playAgainPossible())
             )
     }
 
@@ -300,7 +338,7 @@ class QuizService @Inject constructor(
             return InformationPacket(endGameInformationBuilder(), true)
         }
         else{
-            val guessString = stringService.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
+            val guessString = stringHandler.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
                 lastPlayerDifficultyPoints, lastPlayerDifficultyPercentage, lastSongTitle, lastSongArtist, lastSongAlbum,
                 extendedInfoAllowed, lastPlayerAllPoints, quiz.type.difficultyCompensation)
 
@@ -319,7 +357,7 @@ class QuizService @Inject constructor(
             val informationItems = mutableListOf(
                 LocalSound(localSoundName),
                 GuessFeedback(guessString, guesses),
-                Speech(stringService.endGame()))
+                Speech(stringHandler.endGame()))
             informationItems.addAll(endGameInformationBuilder())
 
             return InformationPacket(informationItems, true)
@@ -373,10 +411,10 @@ class QuizService @Inject constructor(
 
     private fun parseNumPlayers(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            KeyNumPlayers.ONE.value to stringService.possibleWords_1(),
-            KeyNumPlayers.TWO.value to stringService.possibleWords_2(),
-            KeyNumPlayers.THREE.value to stringService.possibleWords_3(),
-            KeyNumPlayers.FOUR.value to stringService.possibleWords_4()
+            KeyNumPlayers.ONE.value to stringHandler.possibleWords_1(),
+            KeyNumPlayers.TWO.value to stringHandler.possibleWords_2(),
+            KeyNumPlayers.THREE.value to stringHandler.possibleWords_3(),
+            KeyNumPlayers.FOUR.value to stringHandler.possibleWords_4()
         )
 
         val numPlayers = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -385,7 +423,7 @@ class QuizService @Inject constructor(
             state = QuizState.NUM_PLAYERS_NOT_UNDERSTOOD
         }
         else{
-            setQuizPlayers(numPlayers[0].toInt(), listOf())
+            setQuizPlayers(numPlayers[0].toInt())
             state = QuizState.GAME_TYPE_ASK
         }
 
@@ -401,10 +439,10 @@ class QuizService @Inject constructor(
 
     private fun parseGameType(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            KeyGameType.ONE_SHOT.value to stringService.possibleWords_oneshot(),
-            KeyGameType.SHORT.value to stringService.possibleWords_short(),
-            KeyGameType.MEDIUM.value to stringService.possibleWords_medium(),
-            KeyGameType.LONG.value to stringService.possibleWords_long(),
+            KeyGameType.ONE_SHOT.value to stringHandler.possibleWords_oneshot(),
+            KeyGameType.SHORT.value to stringHandler.possibleWords_short(),
+            KeyGameType.MEDIUM.value to stringHandler.possibleWords_medium(),
+            KeyGameType.LONG.value to stringHandler.possibleWords_long(),
         )
 
         val gameType = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)
@@ -432,7 +470,7 @@ class QuizService @Inject constructor(
             return true
         }
 
-        state = if(quiz.type.numRounds * quiz.numPlayers > playlist.tracks.size){
+        state = if(quiz.type.numRounds * quiz.players.size > playlist.tracks.size){
             QuizState.GAME_TYPE_INVALID
         }
         else{
@@ -461,7 +499,7 @@ class QuizService @Inject constructor(
         possibleHitWords[KeyGuess.ARTIST.value] = artistParts
         possibleHitWords[KeyGuess.TITLE.value] = titleParts
         // extra command
-        possibleHitWords[KeyGuess.REPEAT.value] = stringService.possibleWords_repeat()
+        possibleHitWords[KeyGuess.REPEAT.value] = stringHandler.possibleWords_repeat()
 
         val playerHits = textParser.searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
@@ -532,9 +570,9 @@ class QuizService @Inject constructor(
 
     private fun parseAfterFinishedCommand(probableSpeeches : ArrayList<String>) : Boolean{
         val possibleWords = mapOf(
-            KeyAfterFinishedCommand.RESTART.value to stringService.possibleWords_restart(),
-            KeyAfterFinishedCommand.CONFIGURE.value to stringService.possibleWords_configure(),
-            KeyAfterFinishedCommand.EXIT.value to stringService.possibleWords_exit()
+            KeyAfterFinishedCommand.RESTART.value to stringHandler.possibleWords_restart(),
+            KeyAfterFinishedCommand.CONFIGURE.value to stringHandler.possibleWords_configure(),
+            KeyAfterFinishedCommand.EXIT.value to stringHandler.possibleWords_exit()
         )
 
         val whatAsked = textParser.searchForWordOccurrences(probableSpeeches, possibleWords, true)

@@ -207,7 +207,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         binding.btnWhyLogin.visibility = View.GONE
     }
 
-    override fun onboardingDialog() {}
+    override fun boardingDialog() {}
     override fun unsubscribeViewModel() {}
 
     private fun login(){

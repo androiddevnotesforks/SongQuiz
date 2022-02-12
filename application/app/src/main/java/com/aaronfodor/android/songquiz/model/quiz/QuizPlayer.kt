@@ -36,4 +36,14 @@ class QuizPlayer(
         return points
     }
 
+    fun resetPoints(){
+        numGuesses = 0
+        numArtistHits = 0
+        numTitleHits = 0
+
+        artistPoints = 0
+        titlePoints = 0
+        difficultyCompensationPoints = 0
+    }
+
 }

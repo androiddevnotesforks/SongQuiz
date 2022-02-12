@@ -16,7 +16,7 @@ package com.aaronfodor.android.songquiz.model.quiz
 sealed class InformationItem()
 
 class Speech(
-    val text: String
+    val speech: String
 ) : InformationItem()
 
 class SoundURL(
@@ -24,7 +24,7 @@ class SoundURL(
 ) : InformationItem()
 
 class LocalSound(
-    val name: String
+    val fileName: String
 ) : InformationItem()
 
 class ExitRequest() : InformationItem()
@@ -36,8 +36,14 @@ data class GuessItem(
 )
 
 class GuessFeedback(
-    val text: String,
+    val speech: String,
     val items: List<GuessItem>
+) : InformationItem()
+
+class EndFeedback(
+    val speech: String,
+    val winnerNames: String,
+    val numWinners: Int
 ) : InformationItem()
 
 /**

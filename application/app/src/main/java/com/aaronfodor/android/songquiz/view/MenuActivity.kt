@@ -2,6 +2,7 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -56,7 +57,7 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun onboardingDialog(){}
+    override fun boardingDialog(){}
 
     override fun onResume() {
         super.onResume()

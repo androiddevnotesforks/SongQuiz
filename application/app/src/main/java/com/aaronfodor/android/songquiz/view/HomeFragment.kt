@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -152,29 +153,29 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         binding.tvGreet.isAllCaps = false
         when(viewModel.getPartOfTheDay()){
             PartOfTheDay.MORNING -> {
-                binding.tvGreet.text = getText(R.string.greeting_morning)
+                binding.tvGreet.text = getString(R.string.greeting_morning)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
             }
             PartOfTheDay.AFTERNOON -> {
-                binding.tvGreet.text = getText(R.string.greeting_afternoon)
+                binding.tvGreet.text = getString(R.string.greeting_afternoon)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sun)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
             }
             PartOfTheDay.EVENING -> {
-                binding.tvGreet.text = getText(R.string.greeting_evening)
+                binding.tvGreet.text = getString(R.string.greeting_evening)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_sunset)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
             }
             PartOfTheDay.NIGHT -> {
-                binding.tvGreet.text = getText(R.string.greeting_night)
+                binding.tvGreet.text = getString(R.string.greeting_night)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_moon)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
             }
             PartOfTheDay.UNKNOWN -> {
-                binding.tvGreet.text = getText(R.string.greeting_fallback)
+                binding.tvGreet.text = getString(R.string.greeting_fallback)
                 val drawable = getDrawable(requireContext(), R.drawable.icon_hello)
-                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+                binding.tvGreet.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
             }
         }
 

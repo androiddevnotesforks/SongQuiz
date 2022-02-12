@@ -203,7 +203,7 @@
         <item name="android:fontFamily">@font/font_paragraph</item>
     </style>
 
-    <style name="GuessText">
+    <style name="QuizFeedbackItem">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:shadowColor">@color/colorBackground</item>
         <item name="android:shadowDx">0</item>

@@ -52,4 +52,6 @@
     <dimen name="card_horizontal_padding">40dp</dimen>
     <dimen name="card_vertical_padding">20dp</dimen>
 
+    <dimen name="drawable_padding">4dp</dimen>
+
 </resources>

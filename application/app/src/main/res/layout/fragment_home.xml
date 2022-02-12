@@ -22,6 +22,7 @@
         android:layout_margin="@dimen/margin_medium"
         android:theme="@style/TitleText"
         android:gravity="center"
+        android:drawablePadding="@dimen/drawable_padding"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

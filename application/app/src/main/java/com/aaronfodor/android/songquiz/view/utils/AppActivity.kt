@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 data class RequiredPermission(
     val id: String,
     val name: String,
@@ -46,10 +47,10 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
     override fun onResume() {
         super.onResume()
         permissionCheck()
-        setKeepScreenFlag()
+        setScreenFlags()
         subscribeViewModel()
         appearingAnimations()
-        onboardingDialog()
+        boardingDialog()
     }
 
     override fun onPause() {
@@ -126,7 +127,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     }
 
-    private fun setKeepScreenFlag(){
+    private fun setScreenFlags(){
         if(keepScreenAlive){
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
@@ -137,7 +138,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
-    abstract fun onboardingDialog()
+    abstract fun boardingDialog()
     abstract fun unsubscribeViewModel()
 
     abstract override fun onBackPressed()
