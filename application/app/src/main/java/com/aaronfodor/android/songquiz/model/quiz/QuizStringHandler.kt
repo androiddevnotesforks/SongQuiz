@@ -31,6 +31,10 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_player, id.toString())
     }
 
+    fun you() : String{
+        return context.getString(R.string.c_you)
+    }
+
     fun error() : String{
         return context.getString(R.string.c_error)
     }
@@ -63,6 +67,10 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_num_players_selected, numPlayers.toString())
     }
 
+    fun duelSelected(numPlayers: Int) : String{
+        return context.getString(R.string.c_duel_selected, numPlayers.toString())
+    }
+
     fun askGameType() : String{
         return context.getString(R.string.c_ask_game_type)
     }
@@ -78,6 +86,10 @@ class QuizStringHandler @Inject constructor(
 
     fun playerTurn(playerName: String, currentRoundIndex: Int) : String{
         return context.getString(R.string.c_player_turn, playerName, currentRoundIndex.toString())
+    }
+
+    fun yourTurn(currentRoundIndex: Int) : String{
+        return context.getString(R.string.c_your_turn, currentRoundIndex.toString())
     }
 
     fun endGame() : String{
@@ -129,6 +141,11 @@ class QuizStringHandler @Inject constructor(
     fun firstTurnString(currentPlayerName: String, quizTypeNameStringKey: Int, currentRoundIndex: Int) : String{
         val quizTypeName = context.resources.getStringArray(quizTypeNameStringKey)[0]
         return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_player_turn, currentPlayerName, currentRoundIndex.toString())
+    }
+
+    fun firstTurnYouString(quizTypeNameStringKey: Int, currentRoundIndex: Int) : String{
+        val quizTypeName = context.resources.getStringArray(quizTypeNameStringKey)[0]
+        return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_your_turn, currentRoundIndex.toString())
     }
 
     fun guessFeedbackString(lastPlayerArtistTitlePoints: Int, lastSongTitleHit: Boolean, lastSongArtistHit: Boolean,
@@ -197,8 +214,28 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_winner_player, playerName)
     }
 
+    fun winnerGeneratedPlayer(playerName: String) : String {
+        return context.getString(R.string.c_winner_generated_player, playerName)
+    }
+
+    fun winnerIsYou() : String {
+        return context.getString(R.string.c_winner_is_you)
+    }
+
     fun winnerTie() : String {
         return context.getString(R.string.c_winner_tie)
+    }
+
+    fun generatePlayerName() : String {
+        return context.resources.getStringArray(R.array.generated_names).random()
+    }
+
+    fun generatedPlayerInfo(playerName: String) : String {
+        return context.getString(R.string.c_generated_player_info, playerName)
+    }
+
+    fun generatedPlayerGuessInfo(playerName: String, playerScore: Int) : String {
+        return context.getString(R.string.c_generated_player_guess_info, playerName, playerScore.toString())
     }
 
     fun possibleWords_1() : List<String>{ return context.resources.getStringArray(R.array.input_1).toList() }

@@ -7,16 +7,17 @@ class Quiz {
     var currentRound: Int = 0
     var currentPlayerIdx: Int = 0
     var currentTrackIndex: Int = 0
-    var players: MutableList<QuizPlayer> = mutableListOf()
+    var players: List<QuizPlayer> = listOf()
     var isFinished = false
 
-    fun setQuizPlayers(names: List<String>){
-        players = mutableListOf()
-        var id = 1
-        for(name in names){
-            players.add(QuizPlayer(id, name))
-            id++
-        }
+    fun getNumPlayersLocal() : Int{
+        var numLocalPlayers = 0
+        players.forEach { if(it is QuizPlayerLocal) numLocalPlayers += 1 }
+        return numLocalPlayers
+    }
+
+    fun setQuizPlayers(players: List<QuizPlayer>){
+        this.players = players
     }
 
     fun setQuizType(type: QuizType){

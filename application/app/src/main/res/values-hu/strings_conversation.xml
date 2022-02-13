@@ -6,18 +6,24 @@
     <string name="c_reconfigure">Játék finomhangolása. Az aktuális lista neve %1$s, ami %2$s lejátszható dalt tartalmaz.</string>
 
     <string name="c_player">%1$s. játékos</string>
+    <string name="c_you">A te játékosod</string>
 
     <string name="c_ask_num_players">Hányan szeretnétek játszani? Mondj egy számot 1 és 4 között.</string>
     <string name="c_num_players_selected">%1$s játékos kiválasztva.</string>
+    <string name="c_duel_selected">%1$s játékos kiválasztva. Ebben a módban párbajozni fogsz egy másik játékossal.</string>
 
     <string name="c_ask_game_type">Milyen típusú legyen a játék? Válassz az alábbiak közül: egy kör, rövid, közepes vagy hosszú.</string>
     <string name="c_ask_game_type_invalid">A választott %1$s játék nem indítható: csak %2$s játszható dal van, de minimum %3$s szükséges %4$s játékossal. Kérlek válassz másik típusú játékot.</string>
     <string name="c_game_type_selected">A választott fajta: %1$s. Ebben a játékban a körök száma %2$s.</string>
     <string name="c_game_type_points">Egy dalhoz összesen %1$s kaphatsz.</string>
 
+    <string name="c_generated_player_info">Ebben a játékban %1$s lesz az ellenfeled.</string>
+    <string name="c_generated_player_guess_info">%1$s %2$s pontot szerzett ezzel a dallal.</string>
+
     <string name="c_starting_game">Indul a választott %1$s játék.</string>
 
     <string name="c_player_turn">%1$s, %2$s. kérdés. Nevezd meg a dalt és az előadót:</string>
+    <string name="c_your_turn">%1$s. kérdés, nevezd meg a dalt és az előadót:</string>
     <string name="c_repeating_song">A dal megismétlése.</string>
 
     <string name="c_not_understand">Sajnálom, nem értem.</string>
@@ -72,6 +78,8 @@
     <string name="c_player_scored">%1$s pontszáma: %2$s pont.</string>
 
     <string name="c_winner_player">Gratulálunk! A győztes: %1$s.</string>
+    <string name="c_winner_generated_player">%1$s nyert. Több szerencsét legközelebb!</string>
+    <string name="c_winner_is_you">Gratulálunk, te győztél!</string>
     <string name="c_winner_tie">Döntetlen. Gratulálunk!</string>
     <string name="c_next_time">Több szerencsét legközelebb!</string>
     <string name="c_play_again_possible">Ha szeretnéd megismételni ezt a játékot, mondd ismétlés. A játék hangolásához mondd hangolás. Ha ki szeretnél lépni, mondd kilépés.</string>

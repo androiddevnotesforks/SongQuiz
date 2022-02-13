@@ -1,10 +1,14 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
-class QuizPlayer(
-    val id: Int = 0,
-    val name: String = "",
-){
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.random.Random
 
+sealed class QuizPlayer(
+    val id: Int,
+    val name: String,
+){
     private var numGuesses: Int = 0
     private var numArtistHits: Int = 0
     private var numTitleHits: Int = 0
@@ -44,6 +48,49 @@ class QuizPlayer(
         artistPoints = 0
         titlePoints = 0
         difficultyCompensationPoints = 0
+    }
+
+}
+
+class QuizPlayerLocal(
+    id: Int,
+    name: String
+) : QuizPlayer(id, name)
+
+class QuizPlayerGenerated(
+    id: Int,
+    name: String,
+    val avgDifficulty: Int = 33,
+    val avgTitleHitRatio: Double = 0.4,
+    val avgArtistHitRatio: Double = 0.6,
+) : QuizPlayer(id, name){
+
+    fun calculateGuess(track: Track) : List<String> {
+        val playerHits = mutableListOf<String>()
+        val diffWeight = avgDifficulty.toDouble() / (100 - track.popularity).toDouble()
+
+        var titleHitProbability = avgTitleHitRatio * diffWeight
+        // give a slight change on very unfamiliar tracks
+        titleHitProbability = max(titleHitProbability, 0.02)
+        // do not assure that a very popular song is always a hit
+        titleHitProbability = min(titleHitProbability, 0.98)
+
+        var artistHitProbability = avgArtistHitRatio * diffWeight
+        // give a slight change on very unfamiliar tracks
+        artistHitProbability = max(artistHitProbability, 0.02)
+        // do not assure that a very popular song is always a hit
+        artistHitProbability = min(artistHitProbability, 0.98)
+
+        // title hit
+        if(Random.nextFloat() <= titleHitProbability){
+            playerHits.add(QuizService.KeyGuess.TITLE.value)
+        }
+        // artist hit
+        if(Random.nextFloat() <= artistHitProbability){
+            playerHits.add(QuizService.KeyGuess.ARTIST.value)
+        }
+
+        return playerHits
     }
 
 }

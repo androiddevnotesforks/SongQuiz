@@ -41,6 +41,7 @@ class QuizService @Inject constructor(
         const val SAD_SOUND_NAME = "sad.wav"
         const val HAPPY_SOUND_NAME = "happy.wav"
         const val END_SOUND_NAME = "end.wav"
+        const val DUEL_SOUND_NAME = "duel.wav"
     }
 
     var state = QuizState.WELCOME
@@ -54,6 +55,10 @@ class QuizService @Inject constructor(
     var difficultyCompensation = true
     var repeatSongAllowed = true
     var extendedInfoAllowed = false
+
+    var doesGeneratedPlayerPlay = false
+    var generatedPlayerName = ""
+    var generatedPlayerLastPoints = 0
 
     var lastPlayerArtistTitlePoints = 0
     var lastPlayerDifficultyPoints = 0
@@ -85,15 +90,45 @@ class QuizService @Inject constructor(
     }
 
     fun setQuizPlayers(numPlayers: Int){
-        val playerNames = mutableListOf<String>()
-        for(i in 0 until numPlayers){
-            playerNames.add(stringHandler.player(i+1))
+        doesGeneratedPlayerPlay = false
+        generatedPlayerName = ""
+        generatedPlayerLastPoints = 0
+
+        val players = mutableListOf<QuizPlayer>()
+        // if only one player is added, add a generated player
+        if(numPlayers == 1){
+            doesGeneratedPlayerPlay = true
+            generatedPlayerName = stringHandler.generatePlayerName()
+            generatedPlayerLastPoints = 0
+
+            players.add(QuizPlayerLocal(1, stringHandler.you()))
+            players.add(QuizPlayerGenerated(2, generatedPlayerName))
         }
-        quiz.setQuizPlayers(playerNames)
+        // if multiple local players are needed, just add them
+        else{
+            for(i in 1 .. numPlayers){
+                players.add(QuizPlayerLocal(i, stringHandler.player(i)))
+            }
+        }
+        quiz.setQuizPlayers(players)
     }
 
     fun setQuizType(type: QuizType){
         quiz.setQuizType(type)
+    }
+
+    fun reassignGeneratedPlayers(){
+        val players = mutableListOf<QuizPlayer>()
+        quiz.players.forEach {
+            if(it is QuizPlayerGenerated){
+                generatedPlayerName = stringHandler.generatePlayerName()
+                players.add(QuizPlayerGenerated(it.id, generatedPlayerName))
+            }
+            else{
+                players.add(it)
+            }
+        }
+        quiz.players = players
     }
 
     fun setStartQuizState(){
@@ -186,7 +221,7 @@ class QuizService @Inject constructor(
 
             when(cause){
                 RepeatCause.INVALID_INPUT -> {
-                    reasonText = stringHandler.askGameTypeInvalid(quiz.type.typeNameStringKey, playlist.tracks.size, quiz.players.size, quiz.type.numRounds)
+                    reasonText = stringHandler.askGameTypeInvalid(quiz.type.typeNameStringKey, playlist.tracks.size, quiz.getNumPlayersLocal(), quiz.type.numRounds)
                 }
                 RepeatCause.NOT_UNDERSTOOD -> {
                     reasonText = stringHandler.notUnderstand()
@@ -200,10 +235,15 @@ class QuizService @Inject constructor(
             ), true)
         }
         else{
-            return InformationPacket(listOf(
-                Speech(stringHandler.numPlayersSelected(quiz.players.size)),
-                Speech(stringHandler.askGameType()),
-            ), true)
+            val info = mutableListOf<InformationItem>()
+            if(doesGeneratedPlayerPlay){
+                info.add(Speech(stringHandler.duelSelected(quiz.getNumPlayersLocal())))
+            }
+            else{
+                info.add(Speech(stringHandler.numPlayersSelected(quiz.getNumPlayersLocal())))
+            }
+            info.add(Speech(stringHandler.askGameType()))
+            return InformationPacket(info, true)
         }
     }
 
@@ -217,14 +257,28 @@ class QuizService @Inject constructor(
             QuizState.PLAY_SONG
         }
 
+        val info = mutableListOf<InformationItem>()
+
         val selectedGameAndSettingsText = stringHandler.selectedGameAndSettingsString(extendedInfoAllowed, quiz.type.repeatAllowed, quiz.type.difficultyCompensation,
             quiz.type.pointForTitle, quiz.type.pointForArtist, quiz.type.pointForDifficulty, quiz.type.songDurationSec, quiz.type.numRounds, quiz.type.typeNameStringKey)
+        info.add(Speech(selectedGameAndSettingsText))
 
-        return InformationPacket(listOf(
-            Speech(selectedGameAndSettingsText),
-            Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
-            SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
-        ), true)
+        if(doesGeneratedPlayerPlay){
+            val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
+            info.add(Speech(generatedPlayerText))
+            info.add(LocalSound(DUEL_SOUND_NAME))
+        }
+
+        if(doesGeneratedPlayerPlay){
+            info.add(Speech(stringHandler.firstTurnYouString(quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
+        }
+        else{
+            info.add(Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
+        }
+
+        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
+
+        return InformationPacket(info, true)
     }
 
     private fun playSong(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
@@ -242,30 +296,19 @@ class QuizService @Inject constructor(
             ), true)
         }
         else{
-            val guessString = stringHandler.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
-                lastPlayerDifficultyPoints, lastPlayerDifficultyPercentage, lastSongTitle, lastSongArtist, lastSongAlbum,
-                extendedInfoAllowed, lastPlayerAllPoints, quiz.type.difficultyCompensation)
-
-            val localSoundName = if(lastPlayerArtistTitlePoints <= 0){
-                SAD_SOUND_NAME
-            }
-            else{
-                HAPPY_SOUND_NAME
-            }
-
+            val info = mutableListOf<InformationItem>()
+            info.addAll(guessInformationBuilder())
             val currentPlayer = quiz.getCurrentPlayer()
 
-            val guesses = listOf(
-                GuessItem(lastSongTitle, "", lastSongTitleHit),
-                GuessItem(lastSongArtist, "", lastSongArtistHit)
-            )
+            if(doesGeneratedPlayerPlay){
+                info.add(Speech(stringHandler.yourTurn(quiz.getCurrentRoundIndex())))
+            }
+            else{
+                info.add(Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())))
+            }
 
-            return InformationPacket(listOf(
-                LocalSound(localSoundName),
-                GuessFeedback(guessString, guesses),
-                Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())),
-                SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
-            ), true)
+            info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
+            return InformationPacket(info, true)
         }
     }
 
@@ -277,10 +320,50 @@ class QuizService @Inject constructor(
             QuizState.PLAY_SONG
         }
 
-        return InformationPacket(listOf(
-            Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())),
-            SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
-        ), true)
+        val info = mutableListOf<InformationItem>()
+
+        if(doesGeneratedPlayerPlay){
+            val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
+            info.add(Speech(generatedPlayerText))
+            info.add(LocalSound(DUEL_SOUND_NAME))
+        }
+
+        if(doesGeneratedPlayerPlay){
+            info.add(Speech(stringHandler.firstTurnYouString(quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
+        }
+        else{
+            info.add(Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
+        }
+
+        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
+        return InformationPacket(info, true)
+    }
+
+    private fun guessInformationBuilder() : List<InformationItem>{
+        val info = mutableListOf<InformationItem>()
+
+        val localSoundName = if(lastPlayerArtistTitlePoints <= 0){
+            SAD_SOUND_NAME
+        }
+        else{
+            HAPPY_SOUND_NAME
+        }
+        info.add(LocalSound(localSoundName))
+
+        val guessString = stringHandler.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
+            lastPlayerDifficultyPoints, lastPlayerDifficultyPercentage, lastSongTitle, lastSongArtist, lastSongAlbum,
+            extendedInfoAllowed, lastPlayerAllPoints, quiz.type.difficultyCompensation)
+        val guesses = listOf(
+            GuessItem(lastSongTitle, "", lastSongTitleHit),
+            GuessItem(lastSongArtist, "", lastSongArtistHit)
+        )
+        info.add(GuessFeedback(guessString, guesses))
+
+        if(doesGeneratedPlayerPlay){
+            info.add(Speech(stringHandler.generatedPlayerGuessInfo(generatedPlayerName, generatedPlayerLastPoints)))
+        }
+
+        return info
     }
 
     private fun endGameInformationBuilder() : List<InformationItem>{
@@ -304,7 +387,19 @@ class QuizService @Inject constructor(
                 stringHandler.nextTime()
             }
             winnerName.isNotBlank() -> {
-                stringHandler.winnerPlayer(winnerName)
+
+                if(doesGeneratedPlayerPlay){
+                    if(winnerName == generatedPlayerName){
+                        stringHandler.winnerGeneratedPlayer(winnerName)
+                    }
+                    else{
+                        stringHandler.winnerIsYou()
+                    }
+                }
+                else{
+                    stringHandler.winnerPlayer(winnerName)
+                }
+
             }
             else -> {
                 stringHandler.winnerTie()
@@ -327,44 +422,27 @@ class QuizService @Inject constructor(
             EndFeedback(resultText, winnerNames, numWinners),
             LocalSound(END_SOUND_NAME),
             Speech(stringHandler.playAgainPossible())
-            )
+        )
     }
 
     private fun endGame(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
     : InformationPacket {
         state = QuizState.END_REPEAT
 
-        if(isRepeat){
-            return InformationPacket(endGameInformationBuilder(), true)
+        return if(isRepeat){
+            InformationPacket(endGameInformationBuilder(), true)
         }
         else{
-            val guessString = stringHandler.guessFeedbackString(lastPlayerArtistTitlePoints, lastSongTitleHit, lastSongArtistHit,
-                lastPlayerDifficultyPoints, lastPlayerDifficultyPercentage, lastSongTitle, lastSongArtist, lastSongAlbum,
-                extendedInfoAllowed, lastPlayerAllPoints, quiz.type.difficultyCompensation)
-
-            val localSoundName = if(lastPlayerArtistTitlePoints <= 0){
-                SAD_SOUND_NAME
-            }
-            else{
-                HAPPY_SOUND_NAME
-            }
-
-            val guesses = listOf(
-                GuessItem(lastSongTitle, "", lastSongTitleHit),
-                GuessItem(lastSongArtist, "", lastSongArtistHit)
-            )
-
-            val informationItems = mutableListOf(
-                LocalSound(localSoundName),
-                GuessFeedback(guessString, guesses),
-                Speech(stringHandler.endGame()))
-            informationItems.addAll(endGameInformationBuilder())
-
-            return InformationPacket(informationItems, true)
+            val info = mutableListOf<InformationItem>()
+            info.addAll(guessInformationBuilder())
+            info.add(Speech(stringHandler.endGame()))
+            info.addAll(endGameInformationBuilder())
+            InformationPacket(info, true)
         }
     }
 
     private fun restartGame() : InformationPacket {
+        reassignGeneratedPlayers()
         setStartQuizState()
         return playFirstSong()
     }
@@ -470,7 +548,7 @@ class QuizService @Inject constructor(
             return true
         }
 
-        state = if(quiz.type.numRounds * quiz.players.size > playlist.tracks.size){
+        state = if(quiz.type.numRounds * quiz.getNumPlayersLocal() > playlist.tracks.size){
             QuizState.GAME_TYPE_INVALID
         }
         else{
@@ -484,6 +562,16 @@ class QuizService @Inject constructor(
         ARTIST("artist"),
         TITLE("title"),
         REPEAT("repeat")
+    }
+
+    private fun calculateCompensationRatio(trackPopularity: Int) : Double{
+        return (1.0 - (trackPopularity.toDouble() / 100.0))
+    }
+
+    private fun calculateDifficultyCompensation(trackPopularity: Int, pointForDifficulty: Int) : Int{
+        val compensationRatio = calculateCompensationRatio(trackPopularity)
+        val difficultyCompensationPoint = ((pointForDifficulty) * compensationRatio).roundToInt()
+        return difficultyCompensationPoint
     }
 
     private fun parseGuess(probableSpeeches : ArrayList<String>) : Boolean{
@@ -512,17 +600,9 @@ class QuizService @Inject constructor(
             }
         }
 
-        var artistPoint = 0
         var titlePoint = 0
+        var artistPoint = 0
         var difficultyCompensationPoint = 0
-
-        if(playerHits.contains(KeyGuess.ARTIST.value)){
-            artistPoint = quiz.type.pointForArtist
-            lastSongArtistHit = true
-        }
-        else{
-            lastSongArtistHit = false
-        }
 
         if(playerHits.contains(KeyGuess.TITLE.value)){
             titlePoint = quiz.type.pointForTitle
@@ -532,8 +612,15 @@ class QuizService @Inject constructor(
             lastSongTitleHit = false
         }
 
-        val compensationRatio = (1.0 - (currentTrack.popularity.toDouble() / 100.0))
-        difficultyCompensationPoint = ((quiz.type.pointForDifficulty) * compensationRatio).roundToInt()
+        if(playerHits.contains(KeyGuess.ARTIST.value)){
+            artistPoint = quiz.type.pointForArtist
+            lastSongArtistHit = true
+        }
+        else{
+            lastSongArtistHit = false
+        }
+
+        difficultyCompensationPoint = calculateDifficultyCompensation(currentTrack.popularity, quiz.type.pointForDifficulty)
 
         lastSongTitle = currentTrack.name
         lastSongArtist = textParser.stringListToString(currentTrack.artists)
@@ -543,7 +630,7 @@ class QuizService @Inject constructor(
         lastPlayerArtistTitlePoints = artistPoint + titlePoint
         if(quiz.type.difficultyCompensation){
             lastPlayerDifficultyPoints = difficultyCompensationPoint
-            lastPlayerDifficultyPercentage = (compensationRatio * 100.0).roundToInt()
+            lastPlayerDifficultyPercentage = (calculateCompensationRatio(currentTrack.popularity) * 100.0).roundToInt()
         }
 
         val currentPlayerPoints = quiz.getCurrentPlayer().getPoints(quiz.type.difficultyCompensation)
@@ -551,6 +638,37 @@ class QuizService @Inject constructor(
         lastPlayerAllPoints += lastPlayerArtistTitlePoints + lastPlayerDifficultyPoints
 
         quiz.recordResult(artistPoint, titlePoint, difficultyCompensationPoint)
+
+        // generated player guessing
+        while(doesGeneratedPlayerPlay && (quiz.getCurrentPlayer() is QuizPlayerGenerated)){
+
+            val currentGeneratedPlayer = quiz.getCurrentPlayer() as QuizPlayerGenerated
+            generatedPlayerName = currentGeneratedPlayer.name
+            generatedPlayerLastPoints = 0
+
+            val generatedPlayerHits = currentGeneratedPlayer.calculateGuess(currentTrack)
+
+            var generatedTitlePoint = 0
+            var generatedArtistPoint = 0
+
+            if(generatedPlayerHits.contains(KeyGuess.TITLE.value)){
+                generatedTitlePoint = quiz.type.pointForTitle
+            }
+            if(generatedPlayerHits.contains(KeyGuess.ARTIST.value)){
+                generatedArtistPoint = quiz.type.pointForArtist
+            }
+
+            quiz.recordResult(generatedArtistPoint, generatedTitlePoint, difficultyCompensationPoint)
+            generatedPlayerLastPoints = generatedTitlePoint + generatedArtistPoint
+            if(quiz.type.difficultyCompensation){
+                generatedPlayerLastPoints += difficultyCompensationPoint
+            }
+
+            if(quiz.isFinished){
+                state = QuizState.END
+                return true
+            }
+        }
 
         state = if(quiz.isFinished){
             QuizState.END
