@@ -7,18 +7,20 @@
 
     <string name="c_player">Player %1$s</string>
     <string name="c_you">You</string>
+    <string name="c_drawing">drawing…</string>
 
     <string name="c_ask_num_players">How many players want to play? Say a number between 1 and 4.</string>
     <string name="c_num_players_selected">%1$s-player game selected.</string>
-    <string name="c_duel_selected">%1$s-player game selected. In this mode, you will be dueling with another player.</string>
+    <string name="c_duel_selected">%1$s-player game selected. In this mode, you are going to duel with another player.</string>
 
     <string name="c_ask_game_type">What type of game do you want to play? Choose from one-shot, short, medium or long.</string>
     <string name="c_ask_game_type_invalid">Cannot start %1$s game: there are %2$s playable songs, but at least %3$s are required with %4$s players. Please choose another game type.</string>
     <string name="c_game_type_selected">A %1$s game is selected. In this type, the number of rounds is %2$s.</string>
     <string name="c_game_type_points">You get %1$s.</string>
 
-    <string name="c_generated_player_info">In this game, your designated opponent will be %1$s.</string>
-    <string name="c_generated_player_guess_info">%1$s scored %2$s points for this song.</string>
+    <string name="c_generated_player_info">Your duel partner will be %1$s.</string>
+    <string name="c_generated_player_guess_info">%1$s scored %2$s points.</string>
+    <string name="c_generated_player_same_guess_info">%1$s also scored %2$s points.</string>
 
     <string name="c_starting_game">Starting your %1$s game.</string>
 
@@ -57,6 +59,13 @@
         <item>Cha Ching!</item>
         <item>Yowza!</item>
         <item>Well done!</item>
+        <item>Excellent!</item>
+        <item>Marvelous!</item>
+        <item>Wonderful!</item>
+        <item>Incredible!</item>
+        <item>Fascinating!</item>
+        <item>Majestic!</item>
+        <item>Sublime!</item>
     </string-array>
 
     <string-array
@@ -70,6 +79,9 @@
         <item>Ouch.</item>
         <item>Sad news.</item>
         <item>Whoops-a-daisy.</item>
+        <item>Oops-a-daisy.</item>
+        <item>Meh.</item>
+        <item>Tough cheese!</item>
     </string-array>
 
     <string name="c_and">and</string>

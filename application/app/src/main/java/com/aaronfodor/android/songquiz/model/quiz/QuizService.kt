@@ -89,16 +89,16 @@ class QuizService @Inject constructor(
         state = QuizState.WELCOME
     }
 
+    // generated players are placeholders only
     fun setQuizPlayers(numPlayers: Int){
         doesGeneratedPlayerPlay = false
-        generatedPlayerName = ""
+        generatedPlayerName = stringHandler.unknown()
         generatedPlayerLastPoints = 0
 
         val players = mutableListOf<QuizPlayer>()
         // if only one player is added, add a generated player
         if(numPlayers == 1){
             doesGeneratedPlayerPlay = true
-            generatedPlayerName = stringHandler.generatePlayerName()
             generatedPlayerLastPoints = 0
 
             players.add(QuizPlayerLocal(1, stringHandler.you()))
@@ -117,7 +117,8 @@ class QuizService @Inject constructor(
         quiz.setQuizType(type)
     }
 
-    fun reassignGeneratedPlayers(){
+    // must be called to actually init generated players
+    fun initGeneratedPlayers(){
         val players = mutableListOf<QuizPlayer>()
         quiz.players.forEach {
             if(it is QuizPlayerGenerated){
@@ -247,9 +248,15 @@ class QuizService @Inject constructor(
         }
     }
 
-    private fun startGame() : InformationPacket {
-        setStartQuizState()
+    private fun gameSetupInfo() : List<InformationItem> {
+        val info = mutableListOf<InformationItem>()
+        val selectedGameAndSettingsText = stringHandler.selectedGameAndSettingsString(extendedInfoAllowed, quiz.type.repeatAllowed, quiz.type.difficultyCompensation,
+            quiz.type.pointForTitle, quiz.type.pointForArtist, quiz.type.pointForDifficulty, quiz.type.songDurationSec, quiz.type.numRounds, quiz.type.typeNameStringKey)
+        info.add(Speech(selectedGameAndSettingsText))
+        return info
+    }
 
+    private fun startGamePlayFirstSong() : List<InformationItem> {
         state = if(quiz.type.repeatAllowed){
             QuizState.PLAY_SONG_REPEATABLE
         }
@@ -259,17 +266,10 @@ class QuizService @Inject constructor(
 
         val info = mutableListOf<InformationItem>()
 
-        val selectedGameAndSettingsText = stringHandler.selectedGameAndSettingsString(extendedInfoAllowed, quiz.type.repeatAllowed, quiz.type.difficultyCompensation,
-            quiz.type.pointForTitle, quiz.type.pointForArtist, quiz.type.pointForDifficulty, quiz.type.songDurationSec, quiz.type.numRounds, quiz.type.typeNameStringKey)
-        info.add(Speech(selectedGameAndSettingsText))
-
         if(doesGeneratedPlayerPlay){
             val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
             info.add(Speech(generatedPlayerText))
             info.add(LocalSound(DUEL_SOUND_NAME))
-        }
-
-        if(doesGeneratedPlayerPlay){
             info.add(Speech(stringHandler.firstTurnYouString(quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
         }
         else{
@@ -277,8 +277,7 @@ class QuizService @Inject constructor(
         }
 
         info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
-
-        return InformationPacket(info, true)
+        return info
     }
 
     private fun playSong(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
@@ -312,33 +311,6 @@ class QuizService @Inject constructor(
         }
     }
 
-    private fun playFirstSong() : InformationPacket {
-        state = if(quiz.type.repeatAllowed){
-            QuizState.PLAY_SONG_REPEATABLE
-        }
-        else{
-            QuizState.PLAY_SONG
-        }
-
-        val info = mutableListOf<InformationItem>()
-
-        if(doesGeneratedPlayerPlay){
-            val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
-            info.add(Speech(generatedPlayerText))
-            info.add(LocalSound(DUEL_SOUND_NAME))
-        }
-
-        if(doesGeneratedPlayerPlay){
-            info.add(Speech(stringHandler.firstTurnYouString(quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
-        }
-        else{
-            info.add(Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
-        }
-
-        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
-        return InformationPacket(info, true)
-    }
-
     private fun guessInformationBuilder() : List<InformationItem>{
         val info = mutableListOf<InformationItem>()
 
@@ -360,7 +332,14 @@ class QuizService @Inject constructor(
         info.add(GuessFeedback(guessString, guesses))
 
         if(doesGeneratedPlayerPlay){
-            info.add(Speech(stringHandler.generatedPlayerGuessInfo(generatedPlayerName, generatedPlayerLastPoints)))
+            val lastPlayerPoints = lastPlayerArtistTitlePoints + if(quiz.type.difficultyCompensation){ lastPlayerDifficultyPoints } else{ 0 }
+
+            if(generatedPlayerLastPoints == lastPlayerPoints){
+                info.add(Speech(stringHandler.generatedPlayerSameGuessInfo(generatedPlayerName, generatedPlayerLastPoints)))
+            }
+            else{
+                info.add(Speech(stringHandler.generatedPlayerGuessInfo(generatedPlayerName, generatedPlayerLastPoints)))
+            }
         }
 
         return info
@@ -370,16 +349,21 @@ class QuizService @Inject constructor(
         var resultText = ""
         var winnerName = ""
         var winnerPoints = 0
+        var numWinners = 0
         for(player in quiz.players){
             val currentPlayerPoints = player.getPoints(quiz.type.difficultyCompensation)
             resultText += stringHandler.playerScored(player.name, currentPlayerPoints) + " "
+
             if(currentPlayerPoints > winnerPoints){
                 winnerPoints = currentPlayerPoints
                 winnerName = player.name
+                numWinners = 1
             }
             else if(currentPlayerPoints == winnerPoints){
                 winnerName = ""
+                numWinners += 1
             }
+
         }
 
         resultText += when {
@@ -407,13 +391,16 @@ class QuizService @Inject constructor(
         }
 
         var winnerNames = ""
-        var numWinners = 0
+        var numSemicolons = 0
         // if actually there is a winner, find out their names
         if(winnerPoints > 0){
             for(player in quiz.players){
                 if(player.getPoints(quiz.type.difficultyCompensation) == winnerPoints){
-                    winnerNames += "${player.name}  "
-                    numWinners += 1
+                    winnerNames += player.name
+                    if(numSemicolons+1 < numWinners){
+                        winnerNames += ", "
+                        numSemicolons += 1
+                    }
                 }
             }
         }
@@ -425,8 +412,7 @@ class QuizService @Inject constructor(
         )
     }
 
-    private fun endGame(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
-    : InformationPacket {
+    private fun endGame(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
         state = QuizState.END_REPEAT
 
         return if(isRepeat){
@@ -441,10 +427,21 @@ class QuizService @Inject constructor(
         }
     }
 
-    private fun restartGame() : InformationPacket {
-        reassignGeneratedPlayers()
+    private fun startGame() : InformationPacket {
+        initGeneratedPlayers()
         setStartQuizState()
-        return playFirstSong()
+        val info = mutableListOf<InformationItem>()
+        info.addAll(gameSetupInfo())
+        info.addAll(startGamePlayFirstSong())
+        return InformationPacket(info, true)
+    }
+
+    private fun restartGame() : InformationPacket {
+        initGeneratedPlayers()
+        setStartQuizState()
+        val info = mutableListOf<InformationItem>()
+        info.addAll(startGamePlayFirstSong())
+        return InformationPacket(info, true)
     }
 
     private fun configureGame() : InformationPacket {

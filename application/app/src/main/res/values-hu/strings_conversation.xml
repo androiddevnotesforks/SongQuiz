@@ -7,6 +7,7 @@
 
     <string name="c_player">%1$s. játékos</string>
     <string name="c_you">A te játékosod</string>
+    <string name="c_drawing">sorsolás alatt…</string>
 
     <string name="c_ask_num_players">Hányan szeretnétek játszani? Mondj egy számot 1 és 4 között.</string>
     <string name="c_num_players_selected">%1$s játékos kiválasztva.</string>
@@ -18,7 +19,8 @@
     <string name="c_game_type_points">Egy dalhoz összesen %1$s kaphatsz.</string>
 
     <string name="c_generated_player_info">Ebben a játékban %1$s lesz az ellenfeled.</string>
-    <string name="c_generated_player_guess_info">%1$s %2$s pontot szerzett ezzel a dallal.</string>
+    <string name="c_generated_player_guess_info">%1$s %2$s pontot szerzett.</string>
+    <string name="c_generated_player_same_guess_info">%1$s szintén %2$s pontot szerzett.</string>
 
     <string name="c_starting_game">Indul a választott %1$s játék.</string>
 

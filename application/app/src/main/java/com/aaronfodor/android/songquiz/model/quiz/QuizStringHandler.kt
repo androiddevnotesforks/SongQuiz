@@ -35,6 +35,10 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_you)
     }
 
+    fun unknown() : String{
+        return context.getString(R.string.c_drawing)
+    }
+
     fun error() : String{
         return context.getString(R.string.c_error)
     }
@@ -236,6 +240,10 @@ class QuizStringHandler @Inject constructor(
 
     fun generatedPlayerGuessInfo(playerName: String, playerScore: Int) : String {
         return context.getString(R.string.c_generated_player_guess_info, playerName, playerScore.toString())
+    }
+
+    fun generatedPlayerSameGuessInfo(playerName: String, playerScore: Int) : String {
+        return context.getString(R.string.c_generated_player_same_guess_info, playerName, playerScore.toString())
     }
 
     fun possibleWords_1() : List<String>{ return context.resources.getStringArray(R.array.input_1).toList() }

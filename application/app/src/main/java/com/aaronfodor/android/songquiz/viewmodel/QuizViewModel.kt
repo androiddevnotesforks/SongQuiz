@@ -360,7 +360,6 @@ class QuizViewModel @Inject constructor(
             ttsState.postValue(TtsState.SPEAKING)
 
             for (information in infoList) {
-
                 if(!isActive){
                     return@launch
                 }
@@ -377,8 +376,6 @@ class QuizViewModel @Inject constructor(
                         playUrlSound(information.url)
                     }
                     is LocalSound -> {
-                        currentGuesses.postValue(listOf())
-                        endFeedback.postValue(ViewModelEndFeedback())
                         playLocalSound(information.fileName)
                     }
                     is ExitRequest -> {
@@ -404,7 +401,6 @@ class QuizViewModel @Inject constructor(
                 if(!isCurrentSuccessful){
                     isSuccessful = false
                 }
-
             }
 
             userInputState.postValue(UserInputState.ENABLED)
