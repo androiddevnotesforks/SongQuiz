@@ -26,3 +26,19 @@ Song Quiz guides you into the world of music. Play with more than 4 billion Spot
  	<img src="https://user-images.githubusercontent.com/37120889/125031567-1dce4500-e08d-11eb-94f6-8bfe6bb4e871.PNG" alt="Song Quiz8" height="240"/>
  	<img src="https://user-images.githubusercontent.com/37120889/125031568-1dce4500-e08d-11eb-93be-65c990725c16.PNG" alt="Song Quiz9" height="240"/>
 </p>
+
+# License
+
+    Copyright (c) 2022 Aaron Fodor
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+       http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

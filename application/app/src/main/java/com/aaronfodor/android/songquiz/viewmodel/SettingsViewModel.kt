@@ -1,13 +1,10 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
-import com.aaronfodor.android.songquiz.model.repository.AccountRepository
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,16 +14,11 @@ enum class SettingsUiState{
     READY, CACHE_CLEARED, PLAYLISTS_DELETED, DEFAULT_DB_RESTORED, ACCOUNT_LOGGED_OUT
 }
 
-enum class SettingsAccountState{
-    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT
-}
-
 @HiltViewModel
 class SettingsViewModel  @Inject constructor(
     val playlistsRepository: PlaylistsRepository,
-    val accountRepository: AccountRepository,
-    val accountService: AccountService
-) : ViewModel() {
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     /**
      * Settings state
@@ -35,19 +27,9 @@ class SettingsViewModel  @Inject constructor(
         MutableLiveData<SettingsUiState>()
     }
 
-    // subscribe to the service's MutableLiveData from the ViewModel with Transformations
-    val accountState = Transformations.map(accountService.accountState) { serviceAccountState ->
-        when(serviceAccountState){
-            AccountState.LOGGED_IN -> SettingsAccountState.LOGGED_IN
-            AccountState.INVALID_TOKEN -> SettingsAccountState.INVALID_TOKEN
-            AccountState.LOGGED_OUT -> SettingsAccountState.LOGGED_OUT
-            else -> {SettingsAccountState.LOGGED_OUT}
-        }
-    }
-
     fun getUserNameAndEmail() : Pair<String, String>{
-        val publicAccontInfo = accountService.getPublicAccountInfo()
-        return Pair(publicAccontInfo.name, publicAccontInfo.email)
+        val publicAccountInfo = accountService.getPublicAccountInfo()
+        return Pair(publicAccountInfo.name, publicAccountInfo.email)
     }
 
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
@@ -60,7 +42,6 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
-        accountRepository.deleteAccount()
         accountService.logout()
         uiState.postValue(SettingsUiState.ACCOUNT_LOGGED_OUT)
     }

@@ -1,19 +1,18 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsAddUiState{
-    LOADING, READY, AUTH_NEEDED
+    LOADING, READY
 }
 
 enum class PlaylistsAddNotification{
@@ -23,8 +22,8 @@ enum class PlaylistsAddNotification{
 @HiltViewModel
 class PlaylistsAddViewModel @Inject constructor(
     val repository: PlaylistsRepository,
-    val accountService: AccountService
-) : ViewModel() {
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     companion object{
         var notificationFromCaller = PlaylistsAddNotification.NONE
@@ -38,6 +37,7 @@ class PlaylistsAddViewModel @Inject constructor(
 
     val callerType = InfoPlaylistScreenCaller.ADD_PLAYLIST.name
     var lastSearchExpression = ""
+    var playlistIdsAlreadyAdded = mutableListOf<String>()
 
     val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
         MutableLiveData<ViewModelPlaylistSearchResult>()
@@ -51,8 +51,6 @@ class PlaylistsAddViewModel @Inject constructor(
         MutableLiveData<PlaylistsAddNotification>(getInitialNotification())
     }
 
-    var playlistIdsAlreadyAdded = mutableListOf<String>()
-
     init {
         viewModelScope.launch {
             uiState.value = PlaylistsAddUiState.READY
@@ -64,13 +62,12 @@ class PlaylistsAddViewModel @Inject constructor(
         searchResult.postValue(searchResult.value?.removeIds(playlistIdsAlreadyAdded))
     }
 
-    fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
-        lastSearchExpression = searchExpression
-        if(accountService.accountState.value != AccountState.LOGGED_IN){
-            uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
-            return@launch
-        }
+    fun searchPlaylist(searchExpression: String) = tryAuthenticateLaunch{
+        searchPlaylistByIdOrName(searchExpression)
+    }
 
+    private fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
+        lastSearchExpression = searchExpression
         uiState.postValue(PlaylistsAddUiState.LOADING)
         val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
         searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
@@ -81,7 +78,11 @@ class PlaylistsAddViewModel @Inject constructor(
         uiState.postValue(PlaylistsAddUiState.READY)
     }
 
-    fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
+    fun getNextBatch() = tryAuthenticateLaunch{
+        searchGetNextBatch()
+    }
+
+    private fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
         val currentResult = searchResult.value ?: return@launch
 
         uiState.postValue(PlaylistsAddUiState.LOADING)

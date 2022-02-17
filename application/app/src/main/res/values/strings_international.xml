@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "10/02/2022">
+    <!ENTITY appDate "16/02/2022">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY developerContact "arpadfodor01@gmail.com">
     <!ENTITY developerPage "https://github.com/aaronfodor">
@@ -14,8 +14,9 @@
     <string name="app_date" translatable="false">&appDate;</string>
     <string name="app_creator" translatable="false">&appCreator;</string>
     <string name="app_copyright" translatable="false">© &appDate; &appCreator;\n\n</string>
-    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE.md</string>
     <string name="privacy_page" translatable="false">&developerPage;/SongQuiz/blob/master/PRIVACY.md</string>
+    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE</string>
+    <string name="acknowledgments_page" translatable="false">&developerPage;/SongQuiz/blob/master/ACKNOWLEDGMENTS.md</string>
     <string name="developer_page" translatable="false">&storePage;</string>
     <string name="report_contact" translatable="false">&developerContact;</string>
     <string name="report_message_title" translatable="false">[%1$s][report]</string>
@@ -23,21 +24,6 @@
     <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
 
     <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
-
-    <string name="acknowledgments_text" translatable="false">
-        naobim,\n
-        Gordon Johnson,\n
-        OpenClipart-Vectors\n
-        (Pixabay)\n\n
-        wishforge.games\n
-        (Freeicons.io)\n\n
-        Freepik\n
-        (Flaticon.com)\n\n
-        Icon Fonts\n
-        (onlinewebfonts)\n\n
-        FoolBoyMedia\n
-        (freesound)\n\n
-    </string>
 
     <string name="current_per_round" translatable="false">%1$s/%2$s</string>
 
@@ -92,6 +78,7 @@
         <item>Marin</item>
         <item>Shanly</item>
         <item>Evelyn</item>
+        <item>Evelin</item>
         <item>Sophie</item>
         <item>Phanie</item>
         <item>Sebastian</item>
@@ -214,6 +201,7 @@
         <item>Zakaria</item>
         <item>Marie</item>
         <item>Álex</item>
+        <item>Alex</item>
         <item>Rui</item>
         <item>Avinash</item>
         <item>Aarati</item>

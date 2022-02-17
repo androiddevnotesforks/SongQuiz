@@ -1,6 +1,6 @@
 package com.aaronfodor.android.songquiz.model.repository
 
-import com.aaronfodor.android.songquiz.model.api.ApiService
+import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 @Singleton
 class PlaylistsRepository @Inject constructor(
     private val dao: PlaylistDAO,
-    private val apiService: ApiService
+    private val spotifyApiService: SpotifyApiService
 ) {
 
     fun getPlaylists() : List<Playlist>{
@@ -27,15 +27,17 @@ class PlaylistsRepository @Inject constructor(
 
     fun getPlaylistById(id: String) : Playlist{
         val dbPlaylists = dao.getById(id) ?: listOf()
+
         return if(dbPlaylists.isNotEmpty()){
             dbPlaylists[0].toPlaylist()
-        } else{
+        }
+        else{
             Playlist("")
         }
     }
 
     fun insertPlaylistById(id: String) : Boolean{
-        val result = apiService.getPlaylistById(id)
+        val result = spotifyApiService.getPlaylistById(id)
         if(result.id == ""){
             return false
         }
@@ -68,12 +70,12 @@ class PlaylistsRepository @Inject constructor(
     }
 
     fun downloadPlaylistById(id: String) : Playlist{
-        val apiPlaylist = apiService.getPlaylistById(id)
+        val apiPlaylist = spotifyApiService.getPlaylistById(id)
         return apiPlaylist.toPlaylist()
     }
 
     fun searchPlaylistByIdOrName(searchExpression: String, offset: Int = 0) : PlaylistSearchResult{
-        val rawResults = apiService.getPlaylistsByIdOrName(searchExpression, offset)
+        val rawResults = spotifyApiService.getPlaylistsByIdOrName(searchExpression, offset)
         return rawResults.toSearchResult(searchExpression)
     }
 
@@ -83,7 +85,7 @@ class PlaylistsRepository @Inject constructor(
             return currentResult
         }
 
-        val nextResults = apiService.getPlaylistsByIdOrName(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
+        val nextResults = spotifyApiService.getPlaylistsByIdOrName(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
         return PlaylistSearchResult(
             items = currentResult.items + nextResults.items,
             searchExpression = nextResults.searchExpression,

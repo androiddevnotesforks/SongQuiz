@@ -26,11 +26,11 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthRequestModule {
+class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
 
     private val binding: FragmentInfoPlaylistBinding by viewBinding()
 
-    private lateinit var viewModel: InfoPlaylistViewModel
+    override lateinit var viewModel: InfoPlaylistViewModel
 
     var imageSize = 0
 
@@ -42,7 +42,7 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
 
         val safeArgs: InfoPlaylistFragmentArgs by navArgs()
         viewModel.setCaller(safeArgs.callerAsString)
-        viewModel.setItemById(safeArgs.playlistId, forceLoad = false)
+        viewModel.setItem(safeArgs.playlistId, forceLoad = false)
     }
 
     override fun subscribeViewModel() {
@@ -58,9 +58,6 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
             when (state) {
                 InfoPlaylistUiState.CLOSE -> {
                     closeScreen()
-                }
-                InfoPlaylistUiState.AUTH_NEEDED -> {
-                    startAuthentication()
                 }
                 InfoPlaylistUiState.START_QUIZ -> {
                     showQuizScreen()
@@ -339,17 +336,6 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist), AuthR
             intent.putExtra(QuizActivity.PLAYLIST_KEY, it.id)
             startActivity(intent)
         }
-    }
-
-    override var authLauncherStarted = false
-    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
-        if(isAuthSuccess){
-            viewModel.startQuiz()
-        }
-        else{
-            viewModel.ready(InfoPlaylistUiState.READY_FALLBACK)
-        }
-        authLauncherStarted = false
     }
 
 }

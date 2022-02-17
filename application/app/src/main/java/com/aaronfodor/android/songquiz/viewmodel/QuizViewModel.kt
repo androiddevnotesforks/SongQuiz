@@ -5,8 +5,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.MediaPlayerService
 import com.aaronfodor.android.songquiz.model.SpeechRecognizerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
@@ -14,6 +14,7 @@ import com.aaronfodor.android.songquiz.model.quiz.*
 import com.aaronfodor.android.songquiz.model.quiz.GuessFeedback
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -42,8 +43,9 @@ class QuizViewModel @Inject constructor(
     var textToSpeechService: TextToSpeechService,
     var speechRecognizerService: SpeechRecognizerService,
     var mediaPlayerService: MediaPlayerService,
-    var repository: PlaylistsRepository
-) : ViewModel() {
+    var repository: PlaylistsRepository,
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     /**
      * User speech input current state

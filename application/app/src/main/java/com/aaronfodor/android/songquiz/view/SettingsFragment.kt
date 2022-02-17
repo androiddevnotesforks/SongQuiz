@@ -16,9 +16,9 @@ import com.aaronfodor.android.songquiz.model.database.ApplicationDB
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.viewmodel.SettingsAccountState
 import com.aaronfodor.android.songquiz.viewmodel.SettingsUiState
 import com.aaronfodor.android.songquiz.viewmodel.SettingsViewModel
+import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -160,15 +160,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
-        val accountStateObserver = Observer<SettingsAccountState> { accountState ->
+        val accountStateObserver = Observer<ViewModelAccountState> { accountState ->
             when(accountState){
-                SettingsAccountState.LOGGED_OUT -> {
+                ViewModelAccountState.LOGGED_OUT -> {
                     showLoggedOut()
                 }
-                SettingsAccountState.LOGGED_IN -> {
-                    showLoggedIn(viewModel.getUserNameAndEmail())
-                }
-                SettingsAccountState.INVALID_TOKEN -> {
+                ViewModelAccountState.LOGGED_IN -> {
                     showLoggedIn(viewModel.getUserNameAndEmail())
                 }
             }

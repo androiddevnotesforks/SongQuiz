@@ -44,7 +44,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     }
 
     private lateinit var binding: ActivityQuizBinding
-    private lateinit var viewModel: QuizViewModel
+    override lateinit var viewModel: QuizViewModel
 
     var imageSize = 0
 

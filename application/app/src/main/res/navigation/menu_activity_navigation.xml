@@ -12,10 +12,14 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_nav_home_to_nav_add"
-            app:destination="@id/nav_add" />
+            app:destination="@id/nav_add"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
         <action
             android:id="@+id/action_nav_home_to_nav_info_playlist"
-            app:destination="@id/nav_info_playlist" />
+            app:destination="@id/nav_info_playlist"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 
     <fragment
@@ -25,10 +29,14 @@
         tools:layout="@layout/fragment_playlists" >
         <action
             android:id="@+id/action_nav_play_to_nav_info_playlist"
-            app:destination="@id/nav_info_playlist" />
+            app:destination="@id/nav_info_playlist"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
         <action
             android:id="@+id/action_nav_play_to_nav_add"
-            app:destination="@id/nav_add" />
+            app:destination="@id/nav_add"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 
     <fragment
@@ -38,7 +46,9 @@
         tools:layout="@layout/fragment_playlist_add" >
         <action
             android:id="@+id/action_nav_add_to_nav_info_playlist"
-            app:destination="@id/nav_info_playlist" />
+            app:destination="@id/nav_info_playlist"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 
     <fragment
@@ -48,13 +58,15 @@
         tools:layout="@layout/fragment_favourites" >
         <action
             android:id="@+id/action_nav_favourites_to_nav_info_track"
-            app:destination="@id/nav_info_track" />
+            app:destination="@id/nav_info_track"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_statistics"
+        android:id="@+id/nav_profile"
         android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
-        android:label="@string/menu_statistics"
+        android:label="@string/menu_profile"
         tools:layout="@layout/fragment_playlists" />
 
     <fragment

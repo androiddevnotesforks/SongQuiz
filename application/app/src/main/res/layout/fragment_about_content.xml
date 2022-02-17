@@ -28,35 +28,13 @@
     <TextView
         style="@style/SubtitleText"
         android:gravity="center"
-        android:id="@+id/acknowledgements_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/about_text"/>
-
-    <TextView
-        style="@style/ParagraphText"
-        android:gravity="center"
-        android:id="@+id/acknowledgements_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_title" />
-
-    <TextView
-        style="@style/SubtitleText"
-        android:gravity="center"
         android:id="@+id/legal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/legal_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_text"/>
+        app:layout_constraintTop_toBottomOf="@+id/about_text"/>
 
     <TextView
         style="@style/ParagraphText"
@@ -110,6 +88,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/action4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <include
+        android:id="@+id/action6"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/action5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

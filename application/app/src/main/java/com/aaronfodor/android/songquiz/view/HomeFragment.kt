@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,11 +24,11 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, View.OnCreateContextMenuListener {
+class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMenuListener {
 
     private val binding: FragmentHomeBinding by viewBinding()
 
-    private lateinit var viewModel: HomeViewModel
+    override lateinit var viewModel: HomeViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,9 +115,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
                     binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 HomeUiState.READY -> {}
-                HomeUiState.AUTH_NEEDED -> {
-                    startAuthentication()
-                }
                 HomeUiState.START_QUIZ -> {
                     showQuizScreen()
                 }
@@ -208,7 +204,7 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
     }
 
     private fun playByIdSelected(id: String){
-        viewModel.startQuiz(id)
+        viewModel.play(id)
     }
 
     private fun deletePlaylist(name: String, id: String, dismissAction: () -> Unit) {
@@ -244,17 +240,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), AuthRequestModule, Vie
         val action = HomeFragmentDirections.actionNavHomeToNavAdd()
         navController.navigate(action)
         viewModel.ready()
-    }
-
-    override var authLauncherStarted = false
-    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
-        if(isAuthSuccess){
-            viewModel.startQuiz(viewModel.selectedPlaylistId)
-        }
-        else{
-            viewModel.ready()
-        }
-        authLauncherStarted = false
     }
 
 }

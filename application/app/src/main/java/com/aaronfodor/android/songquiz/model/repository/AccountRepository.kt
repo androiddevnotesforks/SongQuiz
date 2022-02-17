@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.model.repository
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
-import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -14,9 +13,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class AccountRepository @Inject constructor(
-    @ApplicationContext val context: Context,
-    private val apiService: ApiService
-) {
+    @ApplicationContext val context: Context
+){
 
     private val keyAccountId = context.getString(R.string.PREF_KEY_ACCOUNT_ID)
     private val keyAccountName = context.getString(R.string.PREF_KEY_ACCOUNT_NAME)
@@ -25,11 +23,6 @@ class AccountRepository @Inject constructor(
     private val keyAccountCountry = context.getString(R.string.PREF_KEY_ACCOUNT_COUNTRY)
     private val keyToken = context.getString(R.string.PREF_KEY_TOKEN)
     private val keyTokenExpireTime = context.getString(R.string.PREF_KEY_TOKEN_EXPIRE_TIME)
-
-    fun searchSelfAccount(token: String) : Account{
-        val apiAccount = apiService.getCurrentAccount(token)
-        return apiAccount.toAccount()
-    }
 
     fun getAccount() : Account{
         // get saved account info from preferences

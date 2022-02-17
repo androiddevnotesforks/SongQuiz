@@ -17,8 +17,8 @@
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/glVerticalMiddle"
-        app:layout_constraintGuide_percent="0.55"
+        android:id="@+id/glVertical"
+        app:layout_constraintGuide_percent="0.6"
         android:orientation="vertical"/>
 
     <ImageView
@@ -28,7 +28,7 @@
         android:src="@drawable/song_quiz_head"
         app:layout_constraintBottom_toBottomOf="@+id/kenBurnsView"
         app:layout_constraintEnd_toEndOf="@+id/kenBurnsView"
-        app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
+        app:layout_constraintStart_toStartOf="@+id/glVertical"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:importantForAccessibility="no" />

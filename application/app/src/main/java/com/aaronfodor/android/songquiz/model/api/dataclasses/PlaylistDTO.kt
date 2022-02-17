@@ -1,5 +1,5 @@
 /**
- * Spofity API
+ * Spotify API
  * Spotify API description
  *
  * OpenAPI spec version: 1.0.0
@@ -96,7 +96,9 @@ data class PlaylistFollowersDTO (
  * @param url
  */
 data class PlaylistImagesDTO (
-    val url: String? = null
+    val height: Int = 0,
+    val width: Int = 0,
+    val url: String = ""
 )
 
 /**

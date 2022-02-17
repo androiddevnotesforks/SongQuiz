@@ -1,13 +1,13 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,8 +33,8 @@ enum class InfoTrackScreenCaller{
 class InfoTrackViewModel  @Inject constructor(
     var repository: PlaylistsRepository,
     var textToSpeechService: TextToSpeechService,
-    val accountService: AccountService
-) : ViewModel() {
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     var infoScreenCaller = InfoTrackScreenCaller.UNSPECIFIED
         private set

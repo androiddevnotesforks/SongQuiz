@@ -27,11 +27,11 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestModule, View.OnCreateContextMenuListener {
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreateContextMenuListener {
 
     private val binding: FragmentPlaylistsBinding by viewBinding()
 
-    private lateinit var viewModel: PlaylistsViewModel
+    override lateinit var viewModel: PlaylistsViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,9 +121,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
                     binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
                 PlaylistsUiState.READY -> {}
-                PlaylistsUiState.AUTH_NEEDED -> {
-                    startAuthentication()
-                }
                 PlaylistsUiState.START_QUIZ -> {
                     showQuizScreen()
                 }
@@ -215,17 +212,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), AuthRequestM
         val action = PlaylistsFragmentDirections.actionNavPlayToNavAdd()
         navController.navigate(action)
         viewModel.ready()
-    }
-
-    override var authLauncherStarted = false
-    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
-        if(isAuthSuccess){
-            viewModel.startQuiz(viewModel.selectedPlaylistId)
-        }
-        else{
-            viewModel.ready()
-        }
-        authLauncherStarted = false
     }
 
 }

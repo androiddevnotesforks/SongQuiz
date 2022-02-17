@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.aaronfodor.android.songquiz.R
@@ -17,6 +18,7 @@ import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
 import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AuthActivity : AppActivity(keepScreenAlive = false) {
 
     private lateinit var binding: ActivityAuthBinding
-    private lateinit var viewModel: AuthViewModel
+    override lateinit var viewModel: AuthViewModel
 
     override var requiredPermissions: List<RequiredPermission> = listOf()
 
@@ -42,10 +44,16 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         val view = binding.root
         setContentView(view)
 
-        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         // When authentication is ready, does the activity should finish itself
         forResultAuthNeeded = intent.extras?.getBoolean(AuthRequestContract.FOR_RESULT_AUTH_SCREEN_KEY) ?: false
+
+        val drawableQuestion = ContextCompat.getDrawable(applicationContext, R.drawable.icon_question)
+        binding.loginHelp.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableQuestion, null)
+
+        val drawableInfo = ContextCompat.getDrawable(applicationContext, R.drawable.icon_info)
+        binding.whyLoginInfo.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableInfo, null)
     }
 
     override fun onBackPressed() {
@@ -61,23 +69,23 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         exitDialog.show()
     }
 
-    fun skipLoginTapped() {
+    private fun skipLoginTapped() {
         hideAuthActions()
         //showing the next screen
         showNextScreenCalled = false
-        showNextScreen(false)
+        showMenuActivity(false)
     }
 
-    fun loginInfoTapped(){
-        val warningDialog = AppDialog(this, getString(R.string.login_info_title),
-            getString(R.string.login_info_dialog), R.drawable.icon_warning)
+    private fun loginHelpTapped(){
+        val warningDialog = AppDialog(this, getString(R.string.login_help_title),
+            getString(R.string.login_help_dialog), R.drawable.icon_warning)
         warningDialog.setPositiveButton{}
         warningDialog.show()
     }
 
-    fun whyLoginTapped(){
-        val infoDialog = AppDialog(this, getString(R.string.why_login_title),
-            getString(R.string.why_login_dialog), R.drawable.icon_info)
+    private fun whyLoginTapped(){
+        val infoDialog = AppDialog(this, getString(R.string.login_why_title),
+            getString(R.string.login_why_dialog), R.drawable.icon_info)
         infoDialog.setPositiveButton{}
         infoDialog.show()
     }
@@ -94,11 +102,11 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
             skipLoginTapped()
         }
 
-        binding.btnLoginInfo.setOnClickListener {
-            loginInfoTapped()
+        binding.loginHelp.setOnClickListener {
+            loginHelpTapped()
         }
 
-        binding.btnWhyLogin.setOnClickListener {
+        binding.whyLoginInfo.setOnClickListener {
             whyLoginTapped()
         }
         
@@ -120,7 +128,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
                     login()
                 }
                 AuthUiState.SUCCESS -> {
-                    showNextScreen(true)
+                    showMenuActivity(true)
                 }
                 AuthUiState.EMPTY -> {}
             }
@@ -150,9 +158,9 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         }
         viewModel.notification.observe(this, notificationObserver)
 
-        val accountStateObserver = Observer<AuthAccountState> { accountState ->
-            if(accountState == AuthAccountState.LOGGED_IN){
-                showNextScreen(true)
+        val accountStateObserver = Observer<ViewModelAccountState> { accountState ->
+            if(accountState == ViewModelAccountState.LOGGED_IN && !viewModel.isAuthNeeded()){
+                showMenuActivity(true)
             }
             else{
                 login()
@@ -164,13 +172,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     override fun appearingAnimations() {}
 
     private fun showAuthActions(){
-        val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_top)
-        binding.tvTitle.startAnimation(topAnimation)
-        binding.tvTitle.visibility = View.VISIBLE
-
         val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom)
-        binding.AppIcon.startAnimation(bottomAnimation)
-        binding.AppIcon.visibility = View.VISIBLE
 
         binding.btnLogin.startAnimation(bottomAnimation)
         binding.btnLogin.visibility = View.VISIBLE
@@ -178,33 +180,27 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         binding.btnSkip.startAnimation(bottomAnimation)
         binding.btnSkip.visibility = View.VISIBLE
 
-        binding.btnLoginInfo.startAnimation(bottomAnimation)
-        binding.btnLoginInfo.visibility = View.VISIBLE
+        binding.loginHelp.startAnimation(bottomAnimation)
+        binding.loginHelp.visibility = View.VISIBLE
 
-        binding.btnWhyLogin.startAnimation(bottomAnimation)
-        binding.btnWhyLogin.visibility = View.VISIBLE
+        binding.whyLoginInfo.startAnimation(bottomAnimation)
+        binding.whyLoginInfo.visibility = View.VISIBLE
     }
 
     private fun hideAuthActions(){
-        val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_out_top)
-        binding.tvTitle.startAnimation(topAnimation)
-        binding.tvTitle.visibility = View.GONE
-
         val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom)
-        binding.AppIcon.startAnimation(bottomAnimation)
-        binding.AppIcon.visibility = View.GONE
 
         binding.btnLogin.startAnimation(bottomAnimation)
-        binding.btnLogin.visibility = View.GONE
+        binding.btnLogin.visibility = View.INVISIBLE
 
         binding.btnSkip.startAnimation(bottomAnimation)
-        binding.btnSkip.visibility = View.GONE
+        binding.btnSkip.visibility = View.INVISIBLE
 
-        binding.btnLoginInfo.startAnimation(bottomAnimation)
-        binding.btnLoginInfo.visibility = View.GONE
+        binding.loginHelp.startAnimation(bottomAnimation)
+        binding.loginHelp.visibility = View.INVISIBLE
 
-        binding.btnWhyLogin.startAnimation(bottomAnimation)
-        binding.btnWhyLogin.visibility = View.GONE
+        binding.whyLoginInfo.startAnimation(bottomAnimation)
+        binding.whyLoginInfo.visibility = View.INVISIBLE
     }
 
     override fun boardingDialog() {}
@@ -227,7 +223,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.processLoginResult(result.resultCode, result.data ?: Intent())
     }
 
-    private fun showNextScreen(isAuthenticated: Boolean){
+    private fun showMenuActivity(isAuthenticated: Boolean){
         if(showNextScreenCalled){
             return
         }
@@ -245,7 +241,6 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
         }
-
     }
 
 }

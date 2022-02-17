@@ -19,11 +19,11 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
 
     private val binding: FragmentAboutBinding by viewBinding()
 
-    private lateinit var viewModel: AboutViewModel
+    override lateinit var viewModel: AboutViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AboutViewModel::class.java)
+        viewModel = ViewModelProvider(this)[AboutViewModel::class.java]
 
         val appCreator = getString(R.string.app_creator)
         val appDate = getString(R.string.app_date)
@@ -52,16 +52,27 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.content.action2.fab.contentDescription = getText(R.string.app_license)
         binding.content.action2.tv.text = getText(R.string.app_license)
 
+        val acknowledgmentsOpenAction = {
+            val licensePageUri = Uri.parse(getString(R.string.acknowledgments_page))
+            val browserIntent = Intent(Intent.ACTION_VIEW, licensePageUri)
+            startActivity(browserIntent)
+        }
+        binding.content.action3.fab.setOnClickListener { acknowledgmentsOpenAction() }
+        binding.content.action3.tv.setOnClickListener { acknowledgmentsOpenAction() }
+        binding.content.action3.fab.setImageResource(R.drawable.icon_acknowledgments)
+        binding.content.action3.fab.contentDescription = getText(R.string.app_acknowledgments)
+        binding.content.action3.tv.text = getText(R.string.app_acknowledgments)
+
         val reviewAction = {
             val storePageUri = Uri.parse(getString(R.string.store_page, context?.packageName ?: ""))
             val storeIntent = Intent(Intent.ACTION_VIEW, storePageUri)
             startActivity(storeIntent)
         }
-        binding.content.action3.fab.setOnClickListener { reviewAction() }
-        binding.content.action3.tv.setOnClickListener { reviewAction() }
-        binding.content.action3.fab.setImageResource(R.drawable.icon_review)
-        binding.content.action3.fab.contentDescription = getText(R.string.review_app)
-        binding.content.action3.tv.text = getText(R.string.review_app)
+        binding.content.action4.fab.setOnClickListener { reviewAction() }
+        binding.content.action4.tv.setOnClickListener { reviewAction() }
+        binding.content.action4.fab.setImageResource(R.drawable.icon_review)
+        binding.content.action4.fab.contentDescription = getText(R.string.review_app)
+        binding.content.action4.tv.text = getText(R.string.review_app)
 
         val reportAction = {
             val reportIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -73,22 +84,22 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
             }
             startActivity(reportIntent)
         }
-        binding.content.action4.fab.setOnClickListener { reportAction() }
-        binding.content.action4.tv.setOnClickListener { reportAction() }
-        binding.content.action4.fab.setImageResource(R.drawable.icon_bug)
-        binding.content.action4.fab.contentDescription = getText(R.string.report)
-        binding.content.action4.tv.text = getText(R.string.report)
+        binding.content.action5.fab.setOnClickListener { reportAction() }
+        binding.content.action5.tv.setOnClickListener { reportAction() }
+        binding.content.action5.fab.setImageResource(R.drawable.icon_bug)
+        binding.content.action5.fab.contentDescription = getText(R.string.report)
+        binding.content.action5.tv.text = getText(R.string.report)
 
         val moreFromDeveloperAction = {
             val developerPageUri = Uri.parse(getString(R.string.developer_page))
             val browserIntent = Intent(Intent.ACTION_VIEW, developerPageUri)
             startActivity(browserIntent)
         }
-        binding.content.action5.fab.setOnClickListener { moreFromDeveloperAction() }
-        binding.content.action5.tv.setOnClickListener { moreFromDeveloperAction() }
-        binding.content.action5.fab.setImageResource(R.drawable.icon_more_apps)
-        binding.content.action5.fab.contentDescription = getText(R.string.more_from_developer)
-        binding.content.action5.tv.text = getText(R.string.more_from_developer)
+        binding.content.action6.fab.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.action6.tv.setOnClickListener { moreFromDeveloperAction() }
+        binding.content.action6.fab.setImageResource(R.drawable.icon_more_apps)
+        binding.content.action6.fab.contentDescription = getText(R.string.more_from_developer)
+        binding.content.action6.tv.text = getText(R.string.more_from_developer)
     }
 
     override fun subscribeViewModel() {
@@ -103,7 +114,6 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                         val appCopyright = getString(R.string.app_copyright)
 
                         var text = getString(R.string.app_name) + ". " + getString(R.string.about_text, BuildConfig.VERSION_NAME, appCreator, appDate) + " " +
-                                getString(R.string.acknowledgments_title) + ". " + getString(R.string.acknowledgments_text) + " " +
                                 getString(R.string.legal_title) + ". " + appCopyright
                         text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                         viewModel.speak(text)
@@ -131,6 +141,7 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         binding.content.action3.fab.startAnimation(leftAnimation)
         binding.content.action4.fab.startAnimation(leftAnimation)
         binding.content.action5.fab.startAnimation(leftAnimation)
+        binding.content.action6.fab.startAnimation(leftAnimation)
     }
 
     override fun unsubscribeViewModel() {

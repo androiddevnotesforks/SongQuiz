@@ -1,6 +1,6 @@
 package com.aaronfodor.android.songquiz
 
-import com.aaronfodor.android.songquiz.model.api.ApiService
+import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.api.dataclasses.ArtistDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
@@ -27,7 +27,7 @@ class PlaylistRepositoryTest{
     private val FAKE_DB_CONTENT = DbPlaylist(id = "1", name = "Best playlist")
 
     @Mock
-    private lateinit var mockApi: ApiService
+    private lateinit var mockSpotifyApi: SpotifyApiService
     @Mock
     private lateinit var mockDAO: PlaylistDAO
 
@@ -36,9 +36,9 @@ class PlaylistRepositoryTest{
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        mockApi = mock(ApiService::class.java)
+        mockSpotifyApi = mock(SpotifyApiService::class.java)
         mockDAO = mock(PlaylistDAO::class.java)
-        repo = PlaylistsRepository(mockDAO, mockApi)
+        repo = PlaylistsRepository(mockDAO, mockSpotifyApi)
     }
 
     @Test

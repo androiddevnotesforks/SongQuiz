@@ -1,9 +1,10 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,8 +15,9 @@ enum class TtsAboutState{
 
 @HiltViewModel
 class AboutViewModel  @Inject constructor(
-    var textToSpeechService: TextToSpeechService
-) : ViewModel() {
+    var textToSpeechService: TextToSpeechService,
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     /**
      * Is text to speech currently speaking
@@ -24,16 +26,17 @@ class AboutViewModel  @Inject constructor(
         MutableLiveData<TtsAboutState>()
     }
 
-    init { viewModelScope.launch {
-        if(textToSpeechService.isSpeaking()){
-            ttsState.value = TtsAboutState.SPEAKING
+    init {
+        viewModelScope.launch {
+            if(textToSpeechService.isSpeaking()){
+                ttsState.value = TtsAboutState.SPEAKING
+            }
+            else{
+                ttsState.value = TtsAboutState.ENABLED
+            }
+            subscribeTtsListeners()
         }
-        else{
-            ttsState.value = TtsAboutState.ENABLED
-        }
-
-        subscribeTtsListeners()
-    } }
+    }
 
     fun subscribeTtsListeners() = viewModelScope.launch {
         textToSpeechService.setCallbacks(

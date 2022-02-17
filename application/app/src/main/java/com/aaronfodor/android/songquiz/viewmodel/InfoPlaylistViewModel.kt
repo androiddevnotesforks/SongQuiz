@@ -1,23 +1,22 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getDifficulty
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class InfoPlaylistUiState{
-    LOADING, READY_COMPLETE, READY_FALLBACK, CLOSE, AUTH_NEEDED, START_QUIZ
+    LOADING, READY_COMPLETE, READY_FALLBACK, CLOSE, START_QUIZ
 }
 
 enum class InfoPlaylistUiNotification{
@@ -36,8 +35,8 @@ enum class InfoPlaylistScreenCaller{
 class InfoPlaylistViewModel  @Inject constructor(
     var repository: PlaylistsRepository,
     var textToSpeechService: TextToSpeechService,
-    val accountService: AccountService
-) : ViewModel() {
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     var infoScreenCaller = InfoPlaylistScreenCaller.UNSPECIFIED
         private set
@@ -109,7 +108,12 @@ class InfoPlaylistViewModel  @Inject constructor(
         textToSpeechService.stop()
     }
 
-    fun setItemById(playlistId: String, forceLoad: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+    fun setItem(playlistId: String, forceLoad: Boolean = false) = tryAuthenticateLaunch {
+        setItemById(playlistId, forceLoad)
+    }
+
+    private fun setItemById(playlistId: String, forceLoad: Boolean = false) = viewModelScope.launch(Dispatchers.IO) {
+
         if(item.value?.id == playlistId && !forceLoad){
             item.value?.let {
                 if(it.tracks.size > 0 || it.followers > 0 || it.getDifficulty() > 0){
@@ -148,8 +152,8 @@ class InfoPlaylistViewModel  @Inject constructor(
                     notification.postValue(InfoPlaylistUiNotification.ERROR_LOAD)
                 }
             }
-
         }
+
     }
 
     fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
@@ -189,11 +193,7 @@ class InfoPlaylistViewModel  @Inject constructor(
         uiState.value = vale
     }
 
-    fun startQuiz() = viewModelScope.launch {
-        if(accountService.accountState.value != AccountState.LOGGED_IN){
-            uiState.value = InfoPlaylistUiState.AUTH_NEEDED
-            return@launch
-        }
+    fun startQuiz() = mustAuthenticatedLaunch {
         uiState.value = InfoPlaylistUiState.START_QUIZ
     }
 

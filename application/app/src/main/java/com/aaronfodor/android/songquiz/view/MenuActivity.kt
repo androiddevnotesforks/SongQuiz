@@ -2,12 +2,12 @@ package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.navigateUp
@@ -15,6 +15,7 @@ import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivityMenu
 import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.aaronfodor.android.songquiz.viewmodel.MenuViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.MemoryCategory
 
@@ -24,6 +25,8 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override lateinit var activityDrawerLayout: DrawerLayout
     override lateinit var appBarConfiguration: AppBarConfiguration
     override lateinit var navController: NavController
+
+    override lateinit var viewModel: MenuViewModel
 
     override var requiredPermissions: List<RequiredPermission> = listOf()
 
@@ -39,13 +42,15 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         activityDrawerLayout = binding.drawerLayout
         // Each menu Id as a set of Ids - each should be considered as a top level destination, where the back button is not shown
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_play, R.id.nav_favourites, R.id.nav_statistics, R.id.nav_help, R.id.nav_about, R.id.nav_settings),
+            setOf(R.id.nav_home, R.id.nav_play, R.id.nav_favourites, R.id.nav_profile, R.id.nav_help, R.id.nav_about, R.id.nav_settings),
             activityDrawerLayout)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         setupNavigationMenu(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        viewModel = ViewModelProvider(this)[MenuViewModel::class.java]
     }
 
     private fun setupNavigationMenu(navController: NavController) {
@@ -91,7 +96,7 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
             navController.currentDestination?.id == R.id.nav_favourites -> {
                 navController.navigate(R.id.nav_home)
             }
-            navController.currentDestination?.id == R.id.nav_statistics -> {
+            navController.currentDestination?.id == R.id.nav_profile -> {
                 navController.navigate(R.id.nav_home)
             }
             navController.currentDestination?.id == R.id.nav_help -> {

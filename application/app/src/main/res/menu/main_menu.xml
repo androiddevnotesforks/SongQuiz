@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_group_primary"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/icon_home"
@@ -22,9 +24,14 @@
             android:icon="@drawable/icon_favourite"
             android:title="@string/menu_favourites" />
         <item
-            android:id="@+id/nav_statistics"
-            android:icon="@drawable/icon_statistics"
-            android:title="@string/menu_statistics" />
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/icon_profile"
+            android:title="@string/menu_profile" />
+    </group>
+
+    <group
+        android:id="@+id/menu_group_secondary"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/icon_question"

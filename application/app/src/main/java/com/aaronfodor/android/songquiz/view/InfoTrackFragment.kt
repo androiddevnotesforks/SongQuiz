@@ -25,7 +25,7 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
 
     private val binding: FragmentInfoTrackBinding by viewBinding()
 
-    private lateinit var viewModel: InfoTrackViewModel
+    override lateinit var viewModel: InfoTrackViewModel
 
     var imageSize = 0
 

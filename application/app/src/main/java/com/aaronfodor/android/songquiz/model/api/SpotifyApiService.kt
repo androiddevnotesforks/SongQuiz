@@ -15,7 +15,7 @@ import javax.inject.Singleton
  * Injected everywhere as a singleton
  */
 @Singleton
-open class ApiService @Inject constructor(
+open class SpotifyApiService @Inject constructor(
         val accountService: AccountService
 ) {
 
@@ -61,7 +61,7 @@ open class ApiService @Inject constructor(
 
         try {
             val token = accountService.getValidToken()
-            val dataCall = spotifyAPI.getPlaylistById(id, bearerTokenEncoder(token))
+            val dataCall = spotifyAPI.getPlaylistById(id, authHeader=bearerTokenEncoder(token))
             response = dataCall.execute().body() ?: PlaylistDTO(name = "", id = "")
         }
         catch (e: Exception) {

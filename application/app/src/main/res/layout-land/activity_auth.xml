@@ -8,9 +8,21 @@
     android:background="@drawable/icon_music_notes"
     tools:context=".view.AuthActivity">
 
+    <ImageView
+        android:id="@+id/ivLogo"
+        style="@style/MainImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/song_quiz"
+        app:layout_constraintBottom_toTopOf="@+id/btnSkip"
+        app:layout_constraintDimensionRatio="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/glVertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvTitle"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -18,84 +30,76 @@
         android:text="@string/app_name"
         android:textAppearance="@style/FancyText"
         android:textColor="@color/colorLight"
-        app:layout_constraintStart_toStartOf="@+id/glVertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/glHorizontal"/>
-
-    <ImageView
-        android:id="@+id/AppIcon"
-        android:visibility="invisible"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/song_quiz"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/glVertical"
-        app:layout_constraintStart_toStartOf="parent"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:importantForAccessibility="no"
-        app:layout_constraintDimensionRatio="1.0"/>
+        app:layout_constraintStart_toStartOf="@+id/glVertical"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        style="@style/LoadIndicatorProgressBar"
         android:id="@+id/loadIndicatorProgressBar"
+        style="@style/LoadIndicatorProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/glVertical"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnLogin"
         style="@style/AuthButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:text="@string/login_button"
         android:contentDescription="@string/login_button"
-        app:layout_constraintStart_toEndOf="@+id/btnLoginInfo"
+        app:layout_constraintStart_toEndOf="@+id/glVertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/glHorizontal"/>
+        app:layout_constraintBottom_toTopOf="@+id/loginHelp"/>
 
-    <ImageView
-        android:id="@+id/btnLoginInfo"
+    <TextView
+        android:id="@+id/loginHelp"
+        style="@style/ParagraphCenterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_medium"
-        android:visibility="gone"
-        android:contentDescription="@string/login_info_title"
-        android:src="@drawable/icon_warning"
-        app:layout_constraintStart_toStartOf="@+id/glVertical"
-        app:layout_constraintTop_toTopOf="@+id/btnLogin"
-        app:layout_constraintBottom_toBottomOf="@+id/btnLogin"/>
+        android:layout_margin="@dimen/margin_small"
+        android:contentDescription="@string/login_help_title"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:text="@string/login_help_title"
+        android:textColor="@color/colorLight"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="@+id/btnLogin" />
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnSkip"
         style="@style/AuthButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:text="@string/skip_button"
         android:contentDescription="@string/skip_button"
-        app:layout_constraintStart_toEndOf="@+id/btnWhyLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/glVertical"
+        app:layout_constraintBottom_toTopOf="@id/whyLoginInfo" />
 
-    <ImageView
-        android:id="@+id/btnWhyLogin"
+    <TextView
+        android:id="@+id/whyLoginInfo"
+        style="@style/ParagraphCenterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_medium"
-        android:visibility="gone"
-        android:contentDescription="@string/why_login_title"
-        android:src="@drawable/icon_info"
-        app:layout_constraintStart_toStartOf="@+id/glVertical"
-        app:layout_constraintTop_toTopOf="@+id/btnSkip"
-        app:layout_constraintBottom_toBottomOf="@+id/btnSkip"/>
+        android:layout_margin="@dimen/margin_small"
+        android:contentDescription="@string/login_why_title"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:text="@string/login_why_title"
+        android:textColor="@color/colorLight"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnSkip"
+        app:layout_constraintStart_toStartOf="@+id/btnSkip" />
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -103,12 +107,5 @@
         android:id="@+id/glVertical"
         app:layout_constraintGuide_percent="0.5"
         android:orientation="vertical"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/glHorizontal"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

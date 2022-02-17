@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="error_login_internet">Ellenőrizd az internetkapcsolatod, vagy próbálj bejelentkezni máshogy</string>
+    <string name="error_login_internet">Sikertelen hitelesítés</string>
     <string name="error_login_denied">Jelentkezz be a folytatáshoz</string>
     <string name="error_login">Hiba történt - kérlek próbáld újra</string>
 
     <string name="login_button">bejelentkezés</string>
     <string name="skip_button">most nem</string>
 
-    <string name="login_info_title">Bejelentkezési információ</string>
-    <string name="login_info_dialog">Tájékoztatunk, hogy jelenleg a Spotify Google gyorsbejelentkezés funkciója szünetel. Ha Spotify fiókodat Google fiókoddal hoztad létre, bejelentkezni a hagyományos módon, a Google email cím és jelszó megadásával tudsz.</string>
+    <string name="login_help_title">Nem sikerül bejelentkezni?</string>
+    <string name="login_help_dialog">Elsőként javasoljuk, hogy ellenőrizd az internetkapcsolatot.\n\nJelenleg a Spotify Google gyorsbejelentkezés funkciója nem érhető el. Ha Spotify fiókodat Google fiókoddal hoztad létre, bejelentkezni a hagyományos módon, a Google email cím és jelszó megadásával tudsz.</string>
 
-    <string name="why_login_title">Miért szükséges bejelentkezned</string>
-    <string name="why_login_dialog">A Spotify segítségével sokféle dalt érünk el. Ahhoz, hogy zenét tudjunk lejátszani Neked, be kell jelentkezned. Adataid a Spotify saját felületén adod meg – mi csak olyan felhasználói adatokhoz férünk hozzá, amelyekhez előzetesen hozzájárultál.</string>
+    <string name="login_why_title">Miért kérünk, hogy jelentkezz be</string>
+    <string name="login_why_dialog">A Spotify segítségével érjük el a dalokat és a lejátszási listákat. Ezért, hogy zenét tudjunk lejátszani Neked, be kell jelentkezned. Adataid a Spotify saját felületén adod meg – mi csak olyan adatokhoz férünk hozzá, amelyekhez előzetesen hozzájárultál.</string>
 </resources>

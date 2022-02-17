@@ -8,12 +8,15 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.aaronfodor.android.songquiz.R
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
+import com.aaronfodor.android.songquiz.viewmodel.utils.AuthNotification
+import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 data class RequiredPermission(
     val id: String,
@@ -25,11 +28,13 @@ data class RequiredPermission(
  * The base activity class of the app - can be inherited from
  */
 @AndroidEntryPoint
-abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActivity() {
+abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActivity(), AuthRequestModule {
 
     companion object{
         var systemPermissionDialogShowed = false
     }
+
+    abstract val viewModel: AppViewModel
 
     abstract var requiredPermissions: List<RequiredPermission>
     var permissionDialogShowed = false
@@ -49,6 +54,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         permissionCheck()
         setScreenFlags()
         subscribeViewModel()
+        subscribeViewModelAccountState()
         appearingAnimations()
         boardingDialog()
     }
@@ -136,11 +142,34 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         }
     }
 
+    abstract override fun onBackPressed()
+
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
     abstract fun boardingDialog()
     abstract fun unsubscribeViewModel()
 
-    abstract override fun onBackPressed()
+    private fun subscribeViewModelAccountState(){
+        // this observer is needed in order to propagate the information to the fragments
+        val accountStateObserver = Observer<ViewModelAccountState> { accountState -> }
+        viewModel.accountState.observe(this, accountStateObserver)
+
+        val authNotificationObserver = Observer<AuthNotification> { notification ->
+            when(notification){
+                AuthNotification.AUTH_NEEDED -> {
+                    startAuthentication()
+                    viewModel.authNotification.postValue(AuthNotification.NONE)
+                }
+                else -> {}
+            }
+        }
+        viewModel.authNotification.observe(this, authNotificationObserver)
+    }
+
+    override var authLauncherStarted = false
+    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
+        viewModel.authenticationReturned(isAuthSuccess)
+        authLauncherStarted = false
+    }
 
 }

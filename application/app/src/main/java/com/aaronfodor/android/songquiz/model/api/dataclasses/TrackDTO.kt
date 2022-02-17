@@ -1,5 +1,5 @@
 /**
- * Spofity API
+ * Spotify API
  * Spotify API description
  *
  * OpenAPI spec version: 1.0.0

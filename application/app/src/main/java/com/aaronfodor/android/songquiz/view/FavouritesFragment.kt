@@ -25,7 +25,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
 
     private val binding: FragmentFavouritesBinding by viewBinding()
 
-    private lateinit var viewModel: FavouritesViewModel
+    override lateinit var viewModel: FavouritesViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

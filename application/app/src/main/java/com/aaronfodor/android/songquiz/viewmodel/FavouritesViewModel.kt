@@ -1,12 +1,12 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,8 +23,8 @@ enum class FavouritesNotification{
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
     val repository: PlaylistsRepository,
-    val accountService: AccountService
-) : ViewModel() {
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     companion object{
         var notificationFromCaller = FavouritesNotification.NONE
@@ -37,6 +37,7 @@ class FavouritesViewModel @Inject constructor(
     }
 
     val callerType = InfoTrackScreenCaller.FAVOURITES.name
+
     val tracks : MutableLiveData<List<ViewModelPlaylist>> by lazy {
         MutableLiveData<List<ViewModelPlaylist>>()
     }

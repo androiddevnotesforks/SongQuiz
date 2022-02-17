@@ -13,25 +13,24 @@
 
     <string name="legal_title">Jogi információk</string>
 
-    <string name="acknowledgments_title">Köszönetnyilvánítás</string>
-
     <string name="more_from_developer">Továbbiak a fejlesztőtől</string>
     <string name="review_app">Alkalmazás értékelése</string>
     <string name="report">Hibabejelentés/javaslat új funkcióra</string>
     <string name="app_license">Licenszfeltételek</string>
+    <string name="app_acknowledgments">Köszönetnyilvánítás</string>
     <string name="app_privacy">Adatkezelési információk</string>
 
-    <string name="greeting_fallback">Szia!</string>
-    <string name="greeting_morning">Jó reggelt!</string>
-    <string name="greeting_afternoon">Szép délutánt!</string>
-    <string name="greeting_evening">Szép estét!</string>
-    <string name="greeting_night">Szép estét!</string>
+    <string name="greeting_fallback">Szia</string>
+    <string name="greeting_morning">Jó reggelt</string>
+    <string name="greeting_afternoon">Szép délutánt</string>
+    <string name="greeting_evening">Szép estét</string>
+    <string name="greeting_night">Szép estét</string>
 
     <string name="menu_home">Főképernyő</string>
     <string name="menu_play">Játék</string>
     <string name="menu_add">Hozzáadás</string>
     <string name="menu_favourites">Kedvencek</string>
-    <string name="menu_statistics">Statisztikák</string>
+    <string name="menu_profile">Profil</string>
     <string name="menu_help">Segítség</string>
     <string name="menu_about">Információk</string>
     <string name="menu_settings">Beállítások</string>

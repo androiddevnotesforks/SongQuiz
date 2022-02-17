@@ -12,7 +12,7 @@ class AuthRequestContract : ActivityResultContract<Unit, Boolean>() {
         const val IS_AUTH_SUCCESS_KEY = "is auth success"
     }
 
-    /** Create an intent that can be used for Activity.startActivityForResult  */
+    /** Create an intent that can be used for Activity.startActivityForResult */
     override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(context, AuthActivity::class.java).apply {
             putExtra(FOR_RESULT_AUTH_SCREEN_KEY, true)

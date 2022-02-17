@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="error_login_internet">Please check your internet connection or try a different log in method</string>
+    <string name="error_login_internet">Authentication failed</string>
     <string name="error_login_denied">Please log in to continue</string>
     <string name="error_login">An error occurred - please try again</string>
 
     <string name="login_button">login</string>
     <string name="skip_button">not now</string>
 
-    <string name="login_info_title">Login information</string>
-    <string name="login_info_dialog">Spotify\'s Google Express Sign-In feature is currently paused. If you created your Spotify account with your Google Account, you can sign in as usual by entering your Google email address and password.</string>
+    <string name="login_help_title">Trouble logging in?</string>
+    <string name="login_help_dialog">First, check your internet connection.\n\nSpotify\'s Google Express Sign-In feature is currently unavailable. If you created your Spotify account with your Google Account, you can sign in as usual by entering your Google email address and password.</string>
 
-    <string name="why_login_title">Why login is required</string>
-    <string name="why_login_dialog">We use Spotify to access a wide range of songs. We need you to be authenticated in order to play music for you. You enter your credentials on Spotify\'s own interface - we only access user information to which you have previously consented.</string>
+    <string name="login_why_title">Why we ask you to log in</string>
+    <string name="login_why_dialog">We use Spotify to access songs and playlists. We need you to be authenticated in order to play music for you. You enter your credentials on Spotify\'s own interface - we only access user information to which you have previously consented.</string>
 </resources>

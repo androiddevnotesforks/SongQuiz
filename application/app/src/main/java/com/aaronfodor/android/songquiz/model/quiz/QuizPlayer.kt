@@ -61,9 +61,12 @@ class QuizPlayerGenerated(
     id: Int,
     name: String,
     val avgDifficulty: Int = 33,
-    val avgTitleHitRatio: Double = 0.4,
-    val avgArtistHitRatio: Double = 0.6,
+    val avgTitleHitRatio: Double = 0.5,
+    val avgArtistHitRatio: Double = 0.5,
 ) : QuizPlayer(id, name){
+
+    private val minHitProbability = 0.1
+    private val maxHitProbability = 0.9
 
     fun calculateGuess(track: Track) : List<String> {
         val playerHits = mutableListOf<String>()
@@ -71,15 +74,15 @@ class QuizPlayerGenerated(
 
         var titleHitProbability = avgTitleHitRatio * diffWeight
         // give a slight change on very unfamiliar tracks
-        titleHitProbability = max(titleHitProbability, 0.02)
+        titleHitProbability = max(titleHitProbability, minHitProbability)
         // do not assure that a very popular song is always a hit
-        titleHitProbability = min(titleHitProbability, 0.98)
+        titleHitProbability = min(titleHitProbability, maxHitProbability)
 
         var artistHitProbability = avgArtistHitRatio * diffWeight
         // give a slight change on very unfamiliar tracks
-        artistHitProbability = max(artistHitProbability, 0.02)
+        artistHitProbability = max(artistHitProbability, minHitProbability)
         // do not assure that a very popular song is always a hit
-        artistHitProbability = min(artistHitProbability, 0.98)
+        artistHitProbability = min(artistHitProbability, maxHitProbability)
 
         // title hit
         if(Random.nextFloat() <= titleHitProbability){

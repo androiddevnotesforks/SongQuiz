@@ -22,11 +22,11 @@ import com.aaronfodor.android.songquiz.viewmodel.dataclasses.removeIds
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
 
-class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthRequestModule {
+class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
 
     private val binding: FragmentPlaylistAddBinding by viewBinding()
 
-    private lateinit var viewModel: PlaylistsAddViewModel
+    override lateinit var viewModel: PlaylistsAddViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,9 +102,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
                 PlaylistsAddUiState.LOADING -> {
                     binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                PlaylistsAddUiState.AUTH_NEEDED -> {
-                    startAuthentication()
-                }
                 PlaylistsAddUiState.READY -> {}
                 else -> {}
             }
@@ -162,13 +159,13 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         val inputDialog = AppDialogInput(this.requireContext(), getString(R.string.search_playlist),
             getString(R.string.search_playlist_description))
         inputDialog.setPositiveButton {
-            viewModel.searchPlaylistByIdOrName(it)
+            viewModel.searchPlaylist(it)
         }
         inputDialog.show()
     }
 
     private fun searchGetNextBatch(){
-        viewModel.searchGetNextBatch()
+        viewModel.getNextBatch()
     }
 
     private fun addPlaylist(id: String){
@@ -180,17 +177,6 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), AuthReq
         val action = PlaylistAddFragmentDirections.actionNavAddToNavInfoPlaylist(viewModel.callerType, id)
         navController.navigate(action)
         viewModel.ready()
-    }
-
-    override var authLauncherStarted = false
-    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
-        if(isAuthSuccess){
-            viewModel.searchPlaylistByIdOrName(viewModel.lastSearchExpression)
-        }
-        else{
-            viewModel.ready()
-        }
-        authLauncherStarted = false
     }
 
 }
