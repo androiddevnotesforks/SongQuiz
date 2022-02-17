@@ -5,7 +5,8 @@
     <dimen name="input_text_size">16sp</dimen>
     <dimen name="list_title_text_size">16sp</dimen>
     <dimen name="list_text_size">13sp</dimen>
-    <dimen name="standing_title_size">20sp</dimen>
-    <dimen name="standing_text_size">12sp</dimen>
+    <dimen name="feedback_big_size">22sp</dimen>
+    <dimen name="feedback_normal_size">12sp</dimen>
     <dimen name="shadow_radius">20</dimen>
+    <dimen name="shadow_padding">4sp</dimen>
 </resources>

@@ -7,8 +7,8 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/StandingScoreText"
-        android:id="@+id/tvScore"
+        style="@style/FeedbackNormalText"
+        android:id="@+id/tvName"
         android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,13 +18,15 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
-        style="@style/StandingNameText"
-        android:id="@+id/tvName"
+        android:layout_marginBottom="@dimen/standing_score_text_margin"
+        android:layout_marginTop="@dimen/standing_score_text_margin"
+        style="@style/FeedbackBigText"
+        android:id="@+id/tvScore"
         android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/tvScore"
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

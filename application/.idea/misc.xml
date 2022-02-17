@@ -79,7 +79,7 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/font/font_subtitle.xml" value="0.3257802479692176" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/font/font_title.xml" value="0.3257802479692176" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/activity_auth.xml" value="0.33" />
-        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/activity_quiz_content.xml" value="0.33" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/activity_quiz_content.xml" value="0.25" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/app_dialog.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/app_dialog_input.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_about.xml" value="0.3106796116504854" />
@@ -93,7 +93,7 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_menu.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_menu_content.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_quiz.xml" value="0.3009833262077811" />
-        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_quiz_content.xml" value="0.33" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/activity_quiz_content.xml" value="0.22" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/app_dialog.xml" value="0.33" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/app_dialog_input.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_about.xml" value="0.3009833262077811" />
@@ -118,8 +118,8 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/nav_menu_header.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/nav_menu_layout.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/playlist_item.xml" value="0.3009833262077811" />
-        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/standing_dashboard.xml" value="0.3009833262077811" />
-        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/standing_item.xml" value="0.33" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/standing_dashboard.xml" value="0.33" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/standing_item.xml" value="0.25" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/menu/main_menu.xml" value="0.5" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.331" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/mipmap-anydpi/ic_launcher_round.xml" value="0.331" />

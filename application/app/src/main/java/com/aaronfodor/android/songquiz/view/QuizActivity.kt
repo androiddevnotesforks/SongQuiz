@@ -376,7 +376,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             if(!state.isFinished && state.currentRound != 0 && state.numRounds != 0){
                 // if currently invisible, animate to appear
                 if(binding.content.standing.round.visibility == View.INVISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
+                    AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
                         binding.content.standing.round.startAnimation(it)
                     }
                 }
@@ -385,7 +385,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             else{
                 // if currently visible, animate to hide
                 if(binding.content.standing.round.visibility == View.VISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
+                    AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
                         binding.content.standing.round.startAnimation(it)
                     }
                 }
@@ -397,7 +397,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 if(state.players.size > index){
                     // if item is not visible, show it
                     if(item.standingItemLayout.visibility != View.VISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
+                        AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
                             item.standingItemLayout.startAnimation(it)
                             item.standingItemLayout.visibility = View.VISIBLE
                         }
@@ -427,7 +427,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 else{
                     // if item is not gone, hide it
                     if(item.standingItemLayout.visibility != View.GONE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
+                        AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
                             item.standingItemLayout.startAnimation(it)
                             item.standingItemLayout.visibility = View.GONE
                         }
@@ -458,7 +458,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                     // if item is not visible, show it
                     if(item.visibility != View.VISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
+                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
                             item.startAnimation(it)
                             item.visibility = View.VISIBLE
                         }
@@ -467,7 +467,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 else{
                     // if item is not invisible, hide it
                     if(item.visibility != View.INVISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
+                        AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
                             item.startAnimation(it)
                             item.visibility = View.INVISIBLE
                         }
@@ -494,7 +494,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                 // if item is not visible, show it
                 if(binding.content.endIndicator.visibility != View.VISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
+                    AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
                         binding.content.endIndicator.startAnimation(it)
                         binding.content.endIndicator.visibility = View.VISIBLE
                     }
@@ -503,7 +503,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             else{
                 // if item is not invisible, hide it
                 if(binding.content.endIndicator.visibility != View.INVISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
+                    AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
                         binding.content.endIndicator.startAnimation(it)
                         binding.content.endIndicator.visibility = View.INVISIBLE
                     }

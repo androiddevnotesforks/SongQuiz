@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="nav_header_subtitle">Do you know what you hear?</string>
+    <string name="nav_header_subtitle">Guess what you hear!</string>
 
     <string name="about_text">
         %1$s\n\n

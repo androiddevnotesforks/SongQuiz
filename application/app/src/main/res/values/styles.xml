@@ -105,8 +105,6 @@
     <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">6dp</item>
-        <item name="android:layout_marginStart">@dimen/margin_medium</item>
-        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:max">@integer/progressbar_max_value</item>
         <item name="android:progress">0</item>
         <item name="android:progressDrawable">@drawable/progressbar_time</item>
@@ -191,25 +189,22 @@
         <item name="android:elevation">@dimen/shadow_elevation</item>
     </style>
 
-    <style name="StandingScoreText">
+    <style name="ShadowedText">
         <item name="android:textColor">@color/colorIcon</item>
-        <item name="android:textSize">@dimen/standing_title_size</item>
-        <item name="android:fontFamily">@font/font_title</item>
-    </style>
-
-    <style name="StandingNameText">
-        <item name="android:textColor">@color/colorIcon</item>
-        <item name="android:textSize">@dimen/standing_text_size</item>
-        <item name="android:fontFamily">@font/font_paragraph</item>
-    </style>
-
-    <style name="QuizFeedbackText">
-        <item name="android:textColor">@color/colorText</item>
         <item name="android:shadowColor">@color/colorBackground</item>
         <item name="android:shadowDx">0</item>
         <item name="android:shadowDy">0</item>
         <item name="android:shadowRadius">@dimen/shadow_radius</item>
-        <item name="android:textSize">@dimen/paragraph_text_size</item>
+        <item name="android:padding">@dimen/shadow_padding</item>
+    </style>
+
+    <style name="FeedbackBigText" parent="ShadowedText">
+        <item name="android:textSize">@dimen/feedback_big_size</item>
+        <item name="android:fontFamily">@font/font_title</item>
+    </style>
+
+    <style name="FeedbackNormalText" parent="ShadowedText">
+        <item name="android:textSize">@dimen/feedback_normal_size</item>
         <item name="android:fontFamily">@font/font_paragraph</item>
     </style>
 

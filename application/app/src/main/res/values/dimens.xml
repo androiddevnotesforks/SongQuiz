@@ -42,9 +42,6 @@
     <dimen name="list_item_image_pixels">40dp</dimen>
     <dimen name="game_image_pixels">400dp</dimen>
 
-    <dimen name="standing_margin">4dp</dimen>
-    <dimen name="standing_padding">4dp</dimen>
-
     <dimen name="messagebox_corner_radius">14dp</dimen>
 
     <dimen name="dialog_margin">8dp</dimen>
@@ -53,5 +50,9 @@
     <dimen name="card_vertical_padding">20dp</dimen>
 
     <dimen name="drawable_padding">4dp</dimen>
+
+    <dimen name="standing_dashboard_correction_in_layout">-4sp</dimen>
+    <dimen name="standing_dashboard_margin">-8sp</dimen>
+    <dimen name="standing_score_text_margin">-14sp</dimen>
 
 </resources>

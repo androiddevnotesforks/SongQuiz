@@ -25,8 +25,8 @@
             <ImageView
                 style="@style/MainImage"
                 android:id="@+id/ivLogo"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:src="@drawable/song_quiz"
                 android:importantForAccessibility="no"
                 app:layout_constraintDimensionRatio="1.0"

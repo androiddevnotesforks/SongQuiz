@@ -10,7 +10,7 @@
     android:elevation="20dp">
 
     <TextView
-        style="@style/QuizFeedbackText"
+        style="@style/FeedbackNormalText"
         android:text=""
         android:id="@+id/guess1"
         android:layout_width="0dp"
@@ -26,7 +26,7 @@
         app:drawableLeftCompat="@drawable/icon_incorrect" />
 
     <TextView
-        style="@style/QuizFeedbackText"
+        style="@style/FeedbackNormalText"
         android:text=""
         android:id="@+id/guess2"
         android:layout_width="0dp"

@@ -2,19 +2,21 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginVertical="@dimen/standing_dashboard_margin"
+    android:layout_marginBottom="@dimen/standing_dashboard_margin"
     android:id="@+id/standing_dashboard_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/standing_margin"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/round_placeholder"
         android:visibility="invisible"
-        style="@style/StandingNameText"
+        android:maxLines="1"
+        style="@style/FeedbackNormalText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="bottom|start"/>
+        android:gravity="center|start"/>
 
     <include
         android:id="@+id/item_placeholder"
@@ -61,9 +63,10 @@
     <TextView
         android:id="@+id/round"
         android:visibility="invisible"
-        style="@style/StandingNameText"
+        android:maxLines="1"
+        style="@style/FeedbackNormalText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="bottom|end"/>
+        android:gravity="center|end"/>
 
 </LinearLayout>
