@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -22,58 +24,24 @@ import com.aaronfodor.android.songquiz.viewmodel.dataclasses.removeIds
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
 
-class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
+class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), ListableListener {
 
     private val binding: FragmentPlaylistAddBinding by viewBinding()
 
     override lateinit var viewModel: PlaylistsAddViewModel
 
+    // listable listener
+    override lateinit var primaryListableAction: ListableAction
+    override lateinit var secondaryListableAction: ListableAction
+    override lateinit var swipeListableAction: ListableAction
+    override fun lastListableReached() {
+        searchGetNextBatch()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[PlaylistsAddViewModel::class.java]
-
-        val addLambda: (Listable) -> Unit = { playlist -> addPlaylist(playlist.id) }
-        val addDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_add_circular)
-        val addText = getString(R.string.add)
-
-        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
-        val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
-        val infoText = getString(R.string.info)
-
-        val primaryAction = ListableAction(addLambda, addDrawable, addText)
-        val secondaryAction = ListableAction(infoLambda, infoDrawable, infoText)
-        val swipeAction = ListableAction({}, null, "")
-
-        val lastItemLambda: () -> Unit = { searchGetNextBatch() }
-
-        val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, lastItemLambda)
-        binding.list.RecyclerView.adapter = listAdapter
-
-        //swipe
-        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                viewModel.searchResult.value?.let {
-                    val idToRemove = it.items[position].id
-                    viewModel.searchResult.postValue(it.removeIds(listOf(idToRemove)))
-                    viewModel.notification.postValue(PlaylistsAddNotification.DISCARDED)
-                }
-            }
-        })
-        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
-
-        registerForContextMenu(binding.list.RecyclerView)
-
-        binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
-        binding.list.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
-        binding.list.tvEmpty.text = getText(R.string.empty_search_list)
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_search)
-        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+        setupRecyclerView()
     }
 
     override fun subscribeViewModel() {
@@ -87,7 +55,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
                     binding.list.tvEmpty.visibility = View.VISIBLE
                 }
                 else{
-                    binding.list.tvEmpty.visibility = View.GONE
+                    binding.list.tvEmpty.visibility = View.INVISIBLE
                 }
             }
         }
@@ -95,12 +63,12 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
 
         val uiStateObserver = Observer<PlaylistsAddUiState> { state ->
             if(state != PlaylistsAddUiState.LOADING){
-                binding.list.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.swipeRefreshLayout.isRefreshing = false
             }
 
             when(state){
                 PlaylistsAddUiState.LOADING -> {
-                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.swipeRefreshLayout.isRefreshing = true
                 }
                 PlaylistsAddUiState.READY -> {}
                 else -> {}
@@ -110,7 +78,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
                 binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.list.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.INVISIBLE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -177,6 +145,53 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add) {
         val action = PlaylistAddFragmentDirections.actionNavAddToNavInfoPlaylist(viewModel.callerType, id)
         navController.navigate(action)
         viewModel.ready()
+    }
+
+    private fun setupRecyclerView(){
+        val addLambda: (Listable) -> Unit = { playlist -> addPlaylist(playlist.id) }
+        val addDrawable = getDrawable(requireContext(), R.drawable.icon_add_circular)
+        val addText = getString(R.string.add)
+
+        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
+        val infoDrawable = getDrawable(requireContext(), R.drawable.icon_info)
+        val infoText = getString(R.string.info)
+
+        primaryListableAction = ListableAction(addLambda, addDrawable, addText)
+        secondaryListableAction = ListableAction(infoLambda, infoDrawable, infoText)
+        swipeListableAction = ListableAction({}, null, "")
+
+        val listAdapter = ListableAdapter()
+        listAdapter.listableListener = this
+        binding.list.RecyclerView.adapter = listAdapter
+        //swipe
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                viewModel.searchResult.value?.let {
+                    val idToRemove = it.items[position].id
+                    viewModel.searchResult.postValue(it.removeIds(listOf(idToRemove)))
+                    viewModel.notification.postValue(PlaylistsAddNotification.DISCARDED)
+                }
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
+        registerForContextMenu(binding.list.RecyclerView)
+
+        binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
+        binding.list.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
+        binding.list.tvEmpty.text = getText(R.string.empty_search_list)
+        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_search)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+
+        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.list.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.searchPlaylist(viewModel.lastSearchExpression)
+        }
     }
 
 }

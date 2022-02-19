@@ -438,7 +438,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.viewModelQuizState.observe(this, quizStateObserver)
 
-        val guessesToSet = listOf(binding.content.guess.guess1, binding.content.guess.guess2)
+        val guessesToSet = listOf(binding.content.feedback.guess1, binding.content.feedback.guess2)
         val currentGuessObserver = Observer<List<ViewModelGuessItem>> { guesses ->
             // last guesses
             guessesToSet.forEachIndexed { index, item ->
@@ -482,30 +482,30 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             // if valid end feedback observed
             if(feedback.numWinners >= 0){
                 if(feedback.numWinners == 0){
-                    binding.content.endIndicator.text = getString(R.string.c_next_time)
+                    binding.content.feedback.endIndicator.text = getString(R.string.c_next_time)
                     val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_luck)
-                    binding.content.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                    binding.content.feedback.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
                 }
                 else{
-                    binding.content.endIndicator.text = feedback.winnerNames
+                    binding.content.feedback.endIndicator.text = feedback.winnerNames
                     val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_celebration)
-                    binding.content.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                    binding.content.feedback.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
                 }
 
                 // if item is not visible, show it
-                if(binding.content.endIndicator.visibility != View.VISIBLE){
+                if(binding.content.feedback.endIndicator.visibility != View.VISIBLE){
                     AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
-                        binding.content.endIndicator.startAnimation(it)
-                        binding.content.endIndicator.visibility = View.VISIBLE
+                        binding.content.feedback.endIndicator.startAnimation(it)
+                        binding.content.feedback.endIndicator.visibility = View.VISIBLE
                     }
                 }
             }
             else{
                 // if item is not invisible, hide it
-                if(binding.content.endIndicator.visibility != View.INVISIBLE){
+                if(binding.content.feedback.endIndicator.visibility != View.INVISIBLE){
                     AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
-                        binding.content.endIndicator.startAnimation(it)
-                        binding.content.endIndicator.visibility = View.INVISIBLE
+                        binding.content.feedback.endIndicator.startAnimation(it)
+                        binding.content.feedback.endIndicator.visibility = View.INVISIBLE
                     }
                 }
             }

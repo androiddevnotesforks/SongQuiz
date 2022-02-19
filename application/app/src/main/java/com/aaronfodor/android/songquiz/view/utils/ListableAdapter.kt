@@ -17,7 +17,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.*
 import android.view.animation.AnimationUtils
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aaronfodor.android.songquiz.R
@@ -40,22 +39,58 @@ class ListableAction(val action: (Listable) -> Unit,
                      val text: String
 )
 
-class ListableAdapter(private val context: Context,
-                      private val onPrimaryAction: ListableAction,
-                      private val onSecondaryAction: ListableAction,
-                      private val onSwipeAction: ListableAction,
-                      private val onLastItemReached: () -> Unit) :
-        ListAdapter<Listable, ListableAdapter.ListableViewHolder>(ListableDiffCallback){
+interface ListableListener{
+    var primaryListableAction: ListableAction
+    var secondaryListableAction: ListableAction
+    var swipeListableAction: ListableAction
+    fun lastListableReached()
+}
+
+class ListableAdapter : ListAdapter<Listable, ListableAdapter.ListableViewHolder>(ListableComparator){
+
+    var listableListener: ListableListener? = null
+
+    /* Creates and inflates view and return ListableViewHolder. */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ListableViewHolder {
+        val itemBinding = ListableItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ListableViewHolder(itemBinding)
+    }
+
+    /* Get current playlist and use it to bind view. */
+    override fun onBindViewHolder(holder: ListableViewHolder, position: Int){
+        // last item reached, invoke callback
+        if(position == itemCount-1){
+            listableListener?.lastListableReached()
+        }
+
+        val item = getItem(position)
+        holder.bind(item)
+    }
+
+    private fun setAppearingAnimation(viewToAnimate: View){
+        val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.slide_in_left)
+        viewToAnimate.startAnimation(animation)
+    }
+
+    override fun onViewRecycled(holder: ListableViewHolder) {
+        super.onViewRecycled(holder)
+        Glide.with(holder.itemBinding.listableImage).clear(holder.itemBinding.listableImage)
+    }
+
+    override fun onViewAttachedToWindow(holder: ListableViewHolder) {
+        setAppearingAnimation(holder.itemView)
+        super.onViewAttachedToWindow(holder)
+    }
+
+    override fun onViewDetachedFromWindow(holder: ListableViewHolder) {
+        holder.itemView.clearAnimation()
+        super.onViewDetachedFromWindow(holder)
+    }
 
     /* ViewHolder for item, takes the view binding, the click behaviors, and the context. */
-    class ListableViewHolder(val itemBinding: ListableItemBinding,
-                             val context: Context,
-                             val onPrimaryAction: ListableAction,
-                             val onSecondaryAction: ListableAction,
-                             val onSwipeAction: ListableAction) :
-            RecyclerView.ViewHolder(itemBinding.root), View.OnCreateContextMenuListener {
+    inner class ListableViewHolder(val itemBinding: ListableItemBinding) : RecyclerView.ViewHolder(itemBinding.root), View.OnCreateContextMenuListener {
 
-        private val imageSize = context.resources.getDimension(R.dimen.list_item_image_pixels).toInt()
+        private val imageSize = itemBinding.root.context.resources.getDimension(R.dimen.list_item_image_pixels).toInt()
         private var onChange = MenuItem.OnMenuItemClickListener { false }
 
         init {
@@ -64,19 +99,19 @@ class ListableAdapter(private val context: Context,
 
         fun bind(item: Listable){
             itemBinding.listableItemLayout.setOnClickListener {
-                onPrimaryAction.action(item)
+                listableListener?.primaryListableAction?.action?.invoke(item)
             }
             itemBinding.primaryAction.setOnClickListener {
-                onPrimaryAction.action(item)
+                listableListener?.primaryListableAction?.action?.invoke(item)
             }
             itemBinding.secondaryAction.setOnClickListener {
-                onSecondaryAction.action(item)
+                listableListener?.secondaryListableAction?.action?.invoke(item)
             }
 
-            onPrimaryAction.icon?.let {
+            listableListener?.primaryListableAction?.icon?.let {
                 itemBinding.primaryAction.background = it
             }
-            onSecondaryAction.icon?.let {
+            listableListener?.secondaryListableAction?.icon?.let {
                 itemBinding.secondaryAction.background = it
             }
 
@@ -101,38 +136,37 @@ class ListableAdapter(private val context: Context,
 
             onChange = MenuItem.OnMenuItemClickListener {
                 when (it.title) {
-                    onPrimaryAction.text -> {
-                        onPrimaryAction.action(item)
+                    listableListener?.primaryListableAction?.text -> {
+                        listableListener?.primaryListableAction?.action?.invoke(item)
                         true
                     }
-                    onSecondaryAction.text -> {
-                        onSecondaryAction.action(item)
+                    listableListener?.secondaryListableAction?.text -> {
+                        listableListener?.secondaryListableAction?.action?.invoke(item)
                         true
                     }
-                    onSwipeAction.text -> {
-                        onSwipeAction.action(item)
+                    listableListener?.swipeListableAction?.text -> {
+                        listableListener?.swipeListableAction?.action?.invoke(item)
                         true
                     }
                     else -> {false}
                 }
             }
-
         }
 
         override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             menu?.let {
-                if(onPrimaryAction.text.isNotBlank()){
-                    val primary = it.add(onPrimaryAction.text)
+                if(listableListener?.primaryListableAction?.text?.isNotBlank() == true){
+                    val primary = it.add(listableListener?.primaryListableAction?.text)
                     primary.setOnMenuItemClickListener(onChange)
                 }
 
-                if(onSecondaryAction.text.isNotBlank()){
-                    val secondary = it.add(onSecondaryAction.text)
+                if(listableListener?.secondaryListableAction?.text?.isNotBlank() == true){
+                    val secondary = it.add(listableListener?.secondaryListableAction?.text)
                     secondary.setOnMenuItemClickListener(onChange)
                 }
 
-                if(onSwipeAction.text.isNotBlank()){
-                    val swipe = it.add(onSwipeAction.text)
+                if(listableListener?.swipeListableAction?.text?.isNotBlank() == true){
+                    val swipe = it.add(listableListener?.swipeListableAction?.text)
                     swipe.setOnMenuItemClickListener(onChange)
                 }
             }
@@ -140,57 +174,4 @@ class ListableAdapter(private val context: Context,
 
     }
 
-    /* Creates and inflates view and return ListableViewHolder. */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : ListableViewHolder{
-        val itemBinding = ListableItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListableViewHolder(itemBinding, context, onPrimaryAction, onSecondaryAction, onSwipeAction)
-    }
-
-    /* Get current playlist and use it to bind view. */
-    override fun onBindViewHolder(holder: ListableViewHolder, position: Int){
-        // last item reached, invoke callback
-        if(position == itemCount-1){
-            onLastItemReached()
-        }
-
-        val item = getItem(position)
-        holder.bind(item)
-    }
-
-    private fun setAppearingAnimation(viewToAnimate: View){
-        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        viewToAnimate.startAnimation(animation)
-    }
-
-    override fun onViewRecycled(holder: ListableViewHolder) {
-        super.onViewRecycled(holder)
-        Glide.with(holder.itemBinding.listableImage).clear(holder.itemBinding.listableImage)
-    }
-
-    override fun onViewAttachedToWindow(holder: ListableViewHolder) {
-        setAppearingAnimation(holder.itemView)
-        super.onViewAttachedToWindow(holder)
-    }
-
-    override fun onViewDetachedFromWindow(holder: ListableViewHolder) {
-        holder.itemView.clearAnimation()
-        super.onViewDetachedFromWindow(holder)
-    }
-
-}
-
-object ListableDiffCallback : DiffUtil.ItemCallback<Listable>(){
-    override fun areItemsTheSame(oldItem: Listable, newItem: Listable): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Listable, newItem: Listable): Boolean {
-        return (
-            oldItem.id == newItem.id &&
-            oldItem.title == newItem.title &&
-            oldItem.imageUri == newItem.imageUri &&
-            oldItem.content1 == newItem.content1 &&
-            oldItem.content2 == newItem.content2
-            )
-    }
 }

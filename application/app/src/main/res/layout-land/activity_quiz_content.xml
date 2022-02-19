@@ -121,34 +121,17 @@
         android:layout_marginBottom="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/guess"
+        app:layout_constraintBottom_toTopOf="@id/feedback"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <include
-        android:id="@+id/guess"
-        layout="@layout/guess_indicator"
+        android:id="@+id/feedback"
+        layout="@layout/feedback_dashboard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
         app:layout_constraintEnd_toEndOf="@+id/userSpeechButton"/>
-
-    <TextView
-        style="@style/FeedbackNormalText"
-        android:id="@+id/end_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:visibility="invisible"
-        android:adjustViewBounds="true"
-        android:gravity="center"
-        android:scaleType="fitCenter"
-        android:drawablePadding="@dimen/drawable_padding"
-        app:layout_constraintBottom_toBottomOf="@+id/guess"
-        app:layout_constraintTop_toTopOf="@+id/guess"
-        app:layout_constraintStart_toStartOf="@+id/guess"
-        app:layout_constraintEnd_toEndOf="@+id/guess"/>
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"

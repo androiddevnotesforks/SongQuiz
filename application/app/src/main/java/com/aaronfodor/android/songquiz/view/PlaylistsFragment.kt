@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,68 +27,22 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 
-class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreateContextMenuListener {
+class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreateContextMenuListener, ListableListener {
 
     private val binding: FragmentPlaylistsBinding by viewBinding()
 
     override lateinit var viewModel: PlaylistsViewModel
 
+    // listable listener
+    override lateinit var primaryListableAction: ListableAction
+    override lateinit var secondaryListableAction: ListableAction
+    override lateinit var swipeListableAction: ListableAction
+    override fun lastListableReached() {}
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[PlaylistsViewModel::class.java]
-
-        val startLambda: (Listable) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
-        val startDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_play_circular)
-        val startText = getString(R.string.play)
-
-        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
-        val infoDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_info)
-        val infoText = getString(R.string.info)
-
-        val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id, {}) }
-        val deleteDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_delete)
-        val deleteText = getString(R.string.delete)
-
-        val primaryAction = ListableAction(startLambda, startDrawable, startText)
-        val secondaryAction = ListableAction(infoLambda, infoDrawable, infoText)
-        val swipeAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
-
-        val listAdapter = ListableAdapter(this.requireContext(), primaryAction, secondaryAction, swipeAction, {})
-        binding.list.RecyclerView.adapter = listAdapter
-
-        //swipe
-        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
-        var itemTouchHelper: ItemTouchHelper? = null
-        itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                viewModel.playlists.value?.let {
-                    val playlist = it[position].toListable()
-                    deletePlaylist(playlist.title, playlist.id, dismissAction = {
-                        // bring back the swiped item
-                        itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
-                    })
-                }
-            }
-        })
-        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
-
-        registerForContextMenu(binding.list.RecyclerView)
-
-        binding.fabAddPlaylist.setOnClickListener {
-            viewModel.showAddPlaylistScreen()
-        }
-        binding.list.tvEmpty.setOnClickListener {
-            viewModel.showAddPlaylistScreen()
-        }
-        binding.list.tvEmpty.text = getText(R.string.empty_list_playlists)
-        val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
-        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+        setupRecyclerView()
     }
 
     override fun subscribeViewModel() {
@@ -103,22 +57,22 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
                 binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.list.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.INVISIBLE
             }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<PlaylistsUiState> { state ->
             if(state != PlaylistsUiState.READY){
-                binding.list.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.INVISIBLE
             }
             if(state != PlaylistsUiState.LOADING){
-                binding.list.loadIndicatorProgressBar.visibility = View.GONE
+                binding.list.swipeRefreshLayout.isRefreshing = false
             }
 
             when(state){
                 PlaylistsUiState.LOADING -> {
-                    binding.list.loadIndicatorProgressBar.visibility = View.VISIBLE
+                    binding.list.swipeRefreshLayout.isRefreshing = true
                 }
                 PlaylistsUiState.READY -> {}
                 PlaylistsUiState.START_QUIZ -> {
@@ -134,7 +88,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
                 binding.list.tvEmpty.visibility = View.VISIBLE
             }
             else{
-                binding.list.tvEmpty.visibility = View.GONE
+                binding.list.tvEmpty.visibility = View.INVISIBLE
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -212,6 +166,66 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
         val action = PlaylistsFragmentDirections.actionNavPlayToNavAdd()
         navController.navigate(action)
         viewModel.ready()
+    }
+
+    private fun setupRecyclerView() {
+        val startLambda: (Listable) -> Unit = { playlist -> playlistByIdSelected(playlist.id) }
+        val startDrawable = getDrawable(requireContext(), R.drawable.icon_play_circular)
+        val startText = getString(R.string.play)
+
+        val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }
+        val infoDrawable = getDrawable(requireContext(), R.drawable.icon_info)
+        val infoText = getString(R.string.info)
+
+        val deleteLambda: (Listable) -> Unit = { playlist -> deletePlaylist(playlist.title, playlist.id, {}) }
+        val deleteDrawable = getDrawable(requireContext(), R.drawable.icon_delete)
+        val deleteText = getString(R.string.delete)
+
+        primaryListableAction = ListableAction(startLambda, startDrawable, startText)
+        secondaryListableAction = ListableAction(infoLambda, infoDrawable, infoText)
+        swipeListableAction = ListableAction(deleteLambda, deleteDrawable, deleteText)
+
+        val listAdapter = ListableAdapter()
+        listAdapter.listableListener = this
+        binding.list.RecyclerView.adapter = listAdapter
+        //swipe
+        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+        var itemTouchHelper: ItemTouchHelper? = null
+        itemTouchHelper = ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                viewModel.playlists.value?.let {
+                    val playlist = it[position].toListable()
+                    deletePlaylist(playlist.title, playlist.id, dismissAction = {
+                        // bring back the swiped item
+                        itemTouchHelper?.attachToRecyclerView(null)
+                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
+                    })
+                }
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
+        registerForContextMenu(binding.list.RecyclerView)
+
+        binding.fabAddPlaylist.setOnClickListener {
+            viewModel.showAddPlaylistScreen()
+        }
+        binding.list.tvEmpty.setOnClickListener {
+            viewModel.showAddPlaylistScreen()
+        }
+        binding.list.tvEmpty.text = getText(R.string.empty_list_playlists)
+        val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
+        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+
+        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.list.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadData()
+        }
     }
 
 }
