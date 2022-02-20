@@ -13,11 +13,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsUiState{
-    LOADING, READY, START_QUIZ, SHOW_ADD_SCREEN
+    LOADING, READY
 }
 
 enum class PlaylistsNotification{
-    NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST
+    NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST, START_QUIZ, SHOW_ADD_SCREEN
 }
 
 @HiltViewModel
@@ -72,15 +72,11 @@ class PlaylistsViewModel @Inject constructor(
 
     fun startQuiz(playListId: String) = mustAuthenticatedLaunch {
         selectedPlaylistId = playListId
-        uiState.value = PlaylistsUiState.START_QUIZ
+        notification.postValue(PlaylistsNotification.START_QUIZ)
     }
 
     fun showAddPlaylistScreen() = viewModelScope.launch(Dispatchers.Default) {
-        uiState.postValue(PlaylistsUiState.SHOW_ADD_SCREEN)
-    }
-
-    fun ready() = viewModelScope.launch {
-        uiState.value = PlaylistsUiState.READY
+        notification.postValue(PlaylistsNotification.SHOW_ADD_SCREEN)
     }
 
 }

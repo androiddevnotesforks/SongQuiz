@@ -78,7 +78,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         val adRequest = AdRequest.Builder().build()
         binding.content.adQuiz.loadAd(adRequest)
 
-        viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
+        viewModel = ViewModelProvider(this)[QuizViewModel::class.java]
 
         val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
         viewModel.setPlaylistByIdAndSettings(playlistId, songDuration, repeatAllowed,
@@ -307,16 +307,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             val view = binding.content.svInfo
 
             if(info.isBlank() && binding.content.tvInfo.text.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_out_left).also {
-                    view.startAnimation(it)
-                    view.visibility = View.INVISIBLE
-                }
+                view.disappear(R.anim.slide_out_left)
             }
             else if(info.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_in_left).also {
-                    view.startAnimation(it)
-                    view.visibility = View.VISIBLE
-                }
+                view.appear(R.anim.slide_in_left, true)
             }
 
             binding.content.tvInfo.text = info
@@ -329,16 +323,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             val view = binding.content.svRecognition
 
             if(recognition.isBlank() && binding.content.tvRecognition.text.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_out_right).also {
-                    view.startAnimation(it)
-                    view.visibility = View.INVISIBLE
-                }
+                view.disappear(R.anim.slide_out_right)
             }
             else if(recognition.isNotBlank() && binding.content.tvRecognition.text.isBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_in_right).also {
-                    view.startAnimation(it)
-                    view.visibility = View.VISIBLE
-                }
+                view.appear(R.anim.slide_in_right, true)
             }
 
             binding.content.tvRecognition.text = recognition
@@ -368,40 +356,29 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         binding.content.standing.itemPlaceholder.standingItemLayout.visibility = View.INVISIBLE
         // list of real items
         val playerStandingsToSet = listOf(binding.content.standing.item1, binding.content.standing.item2, binding.content.standing.item3, binding.content.standing.item4)
-        val quizStateObserver = Observer<ViewModelQuizState> { state ->
+        val quizStandingObserver = Observer<ViewModelQuizState> { state ->
 
             val roundText = getString(R.string.current_per_round, state.currentRound.toString(), state.numRounds.toString())
-            binding.content.standing.round.text = roundText
-            binding.content.standing.roundPlaceholder.text = roundText
+            if(roundText != binding.content.standing.round.text){
+                binding.content.standing.round.text = roundText
+                binding.content.standing.round.changedAnimation().start()
+                binding.content.standing.roundPlaceholder.text = roundText
+            }
+
             if(!state.isFinished && state.currentRound != 0 && state.numRounds != 0){
                 // if currently invisible, animate to appear
-                if(binding.content.standing.round.visibility == View.INVISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
-                        binding.content.standing.round.startAnimation(it)
-                    }
-                }
-                binding.content.standing.round.visibility = View.VISIBLE
+                binding.content.standing.round.appear(R.anim.slide_in_top)
             }
             else{
                 // if currently visible, animate to hide
-                if(binding.content.standing.round.visibility == View.VISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
-                        binding.content.standing.round.startAnimation(it)
-                    }
-                }
-                binding.content.standing.round.visibility = View.INVISIBLE
+                binding.content.standing.round.disappear(R.anim.slide_out_top)
             }
 
             // player points
             playerStandingsToSet.forEachIndexed { index, item ->
                 if(state.players.size > index){
                     // if item is not visible, show it
-                    if(item.standingItemLayout.visibility != View.VISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_in_top).also {
-                            item.standingItemLayout.startAnimation(it)
-                            item.standingItemLayout.visibility = View.VISIBLE
-                        }
-                    }
+                    item.standingItemLayout.appear(R.anim.slide_in_top)
 
                     val currentPlayerData = state.players[index]
                     val scoreTextToSet = currentPlayerData.points.toString()
@@ -410,13 +387,18 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         item.tvScore.text = scoreTextToSet
                         item.tvScore.changedAnimation().start()
                     }
-                    item.tvName.text = currentPlayerData.name
+                    // if the name text has changed, set and animate it
+                    if(currentPlayerData.name != item.tvName.text){
+                        item.tvName.text = currentPlayerData.name
+                        item.tvName.changedAnimation().start()
+                    }
 
                     // if this is the current player and the quiz is not finished
                     if(state.currentPlayerIdx == index && !state.isFinished && state.numRounds > 0){
                         val color = getColor(R.color.colorActive)
                         item.tvScore.setTextColor(color)
                         item.tvName.setTextColor(color)
+                        item.tvName.textColors
                     }
                     else{
                         val color = getColor(R.color.colorIcon)
@@ -436,7 +418,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             }
 
         }
-        viewModel.viewModelQuizState.observe(this, quizStateObserver)
+        viewModel.viewModelQuizStanding.observe(this, quizStandingObserver)
 
         val guessesToSet = listOf(binding.content.feedback.guess1, binding.content.feedback.guess2)
         val currentGuessObserver = Observer<List<ViewModelGuessItem>> { guesses ->
@@ -455,23 +437,12 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         }
                     }
                     item.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-
                     // if item is not visible, show it
-                    if(item.visibility != View.VISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
-                            item.startAnimation(it)
-                            item.visibility = View.VISIBLE
-                        }
-                    }
+                    item.appear(R.anim.slide_in_bottom)
                 }
                 else{
                     // if item is not invisible, hide it
-                    if(item.visibility != View.INVISIBLE){
-                        AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
-                            item.startAnimation(it)
-                            item.visibility = View.INVISIBLE
-                        }
-                    }
+                    item.disappear(R.anim.slide_out_bottom)
                 }
             }
 
@@ -493,21 +464,11 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 }
 
                 // if item is not visible, show it
-                if(binding.content.feedback.endIndicator.visibility != View.VISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom).also {
-                        binding.content.feedback.endIndicator.startAnimation(it)
-                        binding.content.feedback.endIndicator.visibility = View.VISIBLE
-                    }
-                }
+                binding.content.feedback.endIndicator.appear(R.anim.slide_in_bottom)
             }
             else{
                 // if item is not invisible, hide it
-                if(binding.content.feedback.endIndicator.visibility != View.INVISIBLE){
-                    AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom).also {
-                        binding.content.feedback.endIndicator.startAnimation(it)
-                        binding.content.feedback.endIndicator.visibility = View.INVISIBLE
-                    }
-                }
+                binding.content.feedback.endIndicator.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.endFeedback.observe(this, endFeedbackObserver)

@@ -7,6 +7,8 @@
     </style>
 
     <style name="AppButton" parent="Theme.SongQuiz">
+        <item name="android:minWidth">@dimen/button_size</item>
+        <item name="android:minHeight">@dimen/button_size</item>
         <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:layout_marginTop">@dimen/margin_big</item>
@@ -21,6 +23,8 @@
     </style>
 
     <style name="AuthButton" parent="Theme.SongQuiz">
+        <item name="android:minWidth">@dimen/button_size</item>
+        <item name="android:minHeight">@dimen/button_size</item>
         <item name="android:layout_marginStart">@dimen/margin_big</item>
         <item name="android:layout_marginEnd">@dimen/margin_big</item>
         <item name="android:layout_marginTop">@dimen/margin_big</item>

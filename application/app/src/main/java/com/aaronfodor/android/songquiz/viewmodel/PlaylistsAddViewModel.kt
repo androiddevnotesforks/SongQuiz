@@ -111,8 +111,4 @@ class PlaylistsAddViewModel @Inject constructor(
         }
     }
 
-    fun ready() = viewModelScope.launch {
-        uiState.value = PlaylistsAddUiState.READY
-    }
-
 }

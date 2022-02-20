@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
@@ -52,10 +51,10 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
             (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(playlists.isEmpty() && (viewModel.uiState.value == HomeUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.playlists.observe(this, playlistsObserver)
@@ -70,12 +69,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
                     binding.list.swipeRefreshLayout.isRefreshing = true
                 }
                 HomeUiState.READY -> {}
-                HomeUiState.START_QUIZ -> {
-                    showQuizScreen()
-                }
-                HomeUiState.SHOW_ADD_SCREEN -> {
-                    showAddPlaylistsScreen()
-                }
                 else -> {}
             }
         }
@@ -94,6 +87,14 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
                 HomeNotification.NO_PLAYLISTS -> {
                     Snackbar.make(binding.root, getString(R.string.empty_list_playlists_random), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(HomeNotification.NONE)
+                }
+                HomeNotification.START_QUIZ -> {
+                    viewModel.notification.postValue(HomeNotification.NONE)
+                    showQuizScreen()
+                }
+                HomeNotification.SHOW_ADD_SCREEN -> {
+                    viewModel.notification.postValue(HomeNotification.NONE)
+                    showAddPlaylistsScreen()
                 }
                 HomeNotification.NONE -> {}
                 else -> {}
@@ -143,19 +144,25 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
     }
 
     override fun appearingAnimations() {
-        val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.tvGreet.startAnimation(bottomAnimation)
-        binding.actionRandom.startAnimation(bottomAnimation)
-        binding.list.tvEmpty.startAnimation(bottomAnimation)
+        binding.tvGreet.appear(R.anim.slide_in_bottom, true)
+        binding.actionRandom.appear(R.anim.slide_in_bottom, true)
+
+        if(binding.list.tvEmpty.visibility == View.VISIBLE){
+            binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+        }
     }
 
-    override fun unsubscribeViewModel() {}
+    override fun unsubscribeViewModel() {
+
+    }
 
     private fun showInfoScreen(id: String){
         val navController = NavHostFragment.findNavController(this)
-        val action = HomeFragmentDirections.actionNavHomeToNavInfoPlaylist(viewModel.callerType, id)
-        navController.navigate(action)
-        viewModel.ready()
+        // make sure that the current destination is the current fragment (filter duplicated calls)
+        if(navController.currentDestination == navController.findDestination(R.id.nav_home)){
+            val action = HomeFragmentDirections.actionNavHomeToNavInfoPlaylist(viewModel.callerType, id)
+            navController.navigate(action)
+        }
     }
 
     private fun playByIdSelected(id: String){
@@ -178,8 +185,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
     }
 
     private fun showQuizScreen(){
-        viewModel.ready()
-
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
             param(FirebaseAnalytics.Param.ITEM_ID, viewModel.selectedPlaylistId)
@@ -192,9 +197,11 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
 
     private fun showAddPlaylistsScreen(){
         val navController = NavHostFragment.findNavController(this)
-        val action = HomeFragmentDirections.actionNavHomeToNavAdd()
-        navController.navigate(action)
-        viewModel.ready()
+        // make sure that the current destination is the current fragment (filter duplicated calls)
+        if(navController.currentDestination == navController.findDestination(R.id.nav_home)){
+            val action = HomeFragmentDirections.actionNavHomeToNavAdd()
+            navController.navigate(action)
+        }
     }
 
     private fun setupRecyclerView() {

@@ -142,14 +142,9 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_game_type_selected, quizTypeName, numRounds.toString()) + " " + infoString
     }
 
-    fun firstTurnString(currentPlayerName: String, quizTypeNameStringKey: Int, currentRoundIndex: Int) : String{
+    fun firstTurnString(quizTypeNameStringKey: Int) : String{
         val quizTypeName = context.resources.getStringArray(quizTypeNameStringKey)[0]
-        return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_player_turn, currentPlayerName, currentRoundIndex.toString())
-    }
-
-    fun firstTurnYouString(quizTypeNameStringKey: Int, currentRoundIndex: Int) : String{
-        val quizTypeName = context.resources.getStringArray(quizTypeNameStringKey)[0]
-        return context.getString(R.string.c_starting_game, quizTypeName) + " " + context.getString(R.string.c_your_turn, currentRoundIndex.toString())
+        return context.getString(R.string.c_starting_game, quizTypeName)
     }
 
     fun guessFeedbackString(lastPlayerArtistTitlePoints: Int, lastSongTitleHit: Boolean, lastSongArtistHit: Boolean,

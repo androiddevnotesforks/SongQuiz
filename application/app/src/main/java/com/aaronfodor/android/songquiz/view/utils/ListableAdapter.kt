@@ -67,18 +67,13 @@ class ListableAdapter : ListAdapter<Listable, ListableAdapter.ListableViewHolder
         holder.bind(item)
     }
 
-    private fun setAppearingAnimation(viewToAnimate: View){
-        val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.slide_in_left)
-        viewToAnimate.startAnimation(animation)
-    }
-
     override fun onViewRecycled(holder: ListableViewHolder) {
         super.onViewRecycled(holder)
         Glide.with(holder.itemBinding.listableImage).clear(holder.itemBinding.listableImage)
     }
 
     override fun onViewAttachedToWindow(holder: ListableViewHolder) {
-        setAppearingAnimation(holder.itemView)
+        holder.itemView.appear(R.anim.slide_in_left, true)
         super.onViewAttachedToWindow(holder)
     }
 

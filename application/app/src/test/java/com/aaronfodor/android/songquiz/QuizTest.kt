@@ -1,8 +1,6 @@
 package com.aaronfodor.android.songquiz
 
-import com.aaronfodor.android.songquiz.model.quiz.MediumQuiz
-import com.aaronfodor.android.songquiz.model.quiz.Quiz
-import com.aaronfodor.android.songquiz.model.quiz.ShortQuiz
+import com.aaronfodor.android.songquiz.model.quiz.*
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -28,7 +26,13 @@ class QuizTest{
         val quizType = ShortQuiz(0, false, false)
         quiz = Quiz()
         quiz.type = quizType
-        quiz.numPlayers = numPlayers
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
         quiz.startState()
         // When
         for(i in 0 until (numPlayers*quiz.type.numRounds)){
@@ -46,7 +50,13 @@ class QuizTest{
         val numPlayers = 2
         val quizType = ShortQuiz(0, false, false)
         quiz = Quiz()
-        quiz.numPlayers = numPlayers
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
         quiz.type = quizType
         quiz.startState()
         // When
@@ -65,16 +75,24 @@ class QuizTest{
         val numPlayers = 4
         val quizType = MediumQuiz(0, false, false)
         quiz = Quiz()
-        quiz.numPlayers = numPlayers
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
         quiz.type = quizType
         quiz.startState()
         // When
         for(i in 0 until (numPlayers*quiz.type.numRounds)){
             if(quiz.currentPlayerIdx % 2 == 0){
                 quiz.recordResult(10, 10, 0)
+                quiz.toNextTurn()
             }
             else{
                 quiz.recordResult(0, 0, 0)
+                quiz.toNextTurn()
             }
         }
         // Then

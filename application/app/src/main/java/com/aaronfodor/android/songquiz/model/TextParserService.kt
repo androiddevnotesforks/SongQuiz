@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class TextParserService @Inject constructor() {
 
     companion object{
-        val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", ";", "?", "!", ".", "(", ")", "/", "_", "+", "=", "&", "@", ":").toTypedArray()
+        val CHARS_TO_SEPARATE_BY = listOf(" ", "-", ",", ";", "?", "!", ".", "(", ")", "/", "_", "+", "=", "&", "@", ":", "'", "\"").toTypedArray()
     }
 
     private val removeAccentRegex = "\\p{InCombiningDiacriticalMarks}+".toRegex()

@@ -5,7 +5,7 @@ class Quiz {
     var type: QuizType = UndefinedQuiz()
     // gameplay specific, should be reset to start new game
     var currentRound: Int = 0
-    var currentPlayerIdx: Int = 0
+    var currentPlayerIdx: Int = -1
     var currentTrackIndex: Int = 0
     var players: List<QuizPlayer> = listOf()
     var isFinished = false
@@ -33,8 +33,11 @@ class Quiz {
     }
 
     fun recordResult(artistPoint: Int, titlePoint: Int, difficultyCompensationPoint: Int){
-        currentTrackIndex++
         players[currentPlayerIdx].recordGuess(artistPoint, titlePoint, difficultyCompensationPoint)
+        currentTrackIndex++
+    }
+
+    fun toNextTurn(){
         currentPlayerIdx++
         if(currentPlayerIdx >= players.size){
             currentPlayerIdx = 0

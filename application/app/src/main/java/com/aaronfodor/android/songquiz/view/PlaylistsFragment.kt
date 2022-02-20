@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
@@ -54,17 +53,17 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
             (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(playlists.isEmpty() && (viewModel.uiState.value == PlaylistsUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<PlaylistsUiState> { state ->
             if(state != PlaylistsUiState.READY){
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
             if(state != PlaylistsUiState.LOADING){
                 binding.list.swipeRefreshLayout.isRefreshing = false
@@ -75,20 +74,14 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
                     binding.list.swipeRefreshLayout.isRefreshing = true
                 }
                 PlaylistsUiState.READY -> {}
-                PlaylistsUiState.START_QUIZ -> {
-                    showQuizScreen()
-                }
-                PlaylistsUiState.SHOW_ADD_SCREEN -> {
-                    showAddPlaylistsScreen()
-                }
                 else -> {}
             }
 
             if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -103,6 +96,14 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
                     Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(PlaylistsNotification.NONE)
                 }
+                PlaylistsNotification.START_QUIZ -> {
+                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                    showQuizScreen()
+                }
+                PlaylistsNotification.SHOW_ADD_SCREEN -> {
+                    viewModel.notification.postValue(PlaylistsNotification.NONE)
+                    showAddPlaylistsScreen()
+                }
                 PlaylistsNotification.NONE -> {}
                 else -> {}
             }
@@ -111,21 +112,22 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
     }
 
     override fun appearingAnimations() {
-        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-        binding.fabAddPlaylist.startAnimation(rightAnimation)
-        binding.fabAddPlaylist.visibility = View.VISIBLE
+        binding.fabAddPlaylist.appear(R.anim.slide_in_right, true)
 
-        val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.list.tvEmpty.startAnimation(bottomAnimation)
+        if(binding.list.tvEmpty.visibility == View.VISIBLE){
+            binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+        }
     }
 
     override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
         val navController = NavHostFragment.findNavController(this)
-        val action = PlaylistsFragmentDirections.actionNavPlayToNavInfoPlaylist(viewModel.callerType, id)
-        navController.navigate(action)
-        viewModel.ready()
+        // make sure that the current destination is the current fragment (filter duplicated calls)
+        if(navController.currentDestination == navController.findDestination(R.id.nav_play)){
+            val action = PlaylistsFragmentDirections.actionNavPlayToNavInfoPlaylist(viewModel.callerType, id)
+            navController.navigate(action)
+        }
     }
 
     private fun playlistByIdSelected(id: String){
@@ -149,8 +151,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
     }
 
     private fun showQuizScreen(){
-        viewModel.ready()
-
         // Log start game event
         Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
             param(FirebaseAnalytics.Param.ITEM_ID, viewModel.selectedPlaylistId)
@@ -163,9 +163,11 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
 
     private fun showAddPlaylistsScreen(){
         val navController = NavHostFragment.findNavController(this)
-        val action = PlaylistsFragmentDirections.actionNavPlayToNavAdd()
-        navController.navigate(action)
-        viewModel.ready()
+        // make sure that the current destination is the current fragment (filter duplicated calls)
+        if(navController.currentDestination == navController.findDestination(R.id.nav_play)){
+            val action = PlaylistsFragmentDirections.actionNavPlayToNavAdd()
+            navController.navigate(action)
+        }
     }
 
     private fun setupRecyclerView() {

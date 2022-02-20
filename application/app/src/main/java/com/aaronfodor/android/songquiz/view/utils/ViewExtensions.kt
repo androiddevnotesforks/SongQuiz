@@ -16,6 +16,7 @@ package com.aaronfodor.android.songquiz.view.utils
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
 fun View.tappableInfiniteAnimation() : ObjectAnimator {
@@ -49,4 +50,20 @@ fun View.changedAnimation() : ObjectAnimator {
     animation.repeatCount = 1 // because it should go back to the original state
     animation.repeatMode = ObjectAnimator.REVERSE
     return animation
+}
+
+fun View.appear(animationRes: Int, forceAnimation: Boolean = false){
+    if(this.visibility != View.VISIBLE || forceAnimation){
+        val animation = AnimationUtils.loadAnimation(context, animationRes)
+        this.startAnimation(animation)
+        this.visibility = View.VISIBLE
+    }
+}
+
+fun View.disappear(animationRes: Int, forceAnimation: Boolean = false){
+    if(this.visibility == View.VISIBLE || forceAnimation){
+        val animation = AnimationUtils.loadAnimation(context, animationRes)
+        this.startAnimation(animation)
+        this.visibility = View.INVISIBLE
+    }
 }

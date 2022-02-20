@@ -69,8 +69,4 @@ class FavouritesViewModel @Inject constructor(
         tracks.postValue(newList)
     }
 
-    fun ready() = viewModelScope.launch {
-        uiState.value = FavouritesUiState.READY
-    }
-
 }

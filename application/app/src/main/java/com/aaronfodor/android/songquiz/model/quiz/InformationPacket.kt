@@ -27,8 +27,6 @@ class LocalSound(
     val fileName: String
 ) : InformationItem()
 
-class ExitRequest() : InformationItem()
-
 data class GuessItem(
     val truth: String,
     val guess: String,
@@ -45,6 +43,9 @@ class EndFeedback(
     val winnerNames: String,
     val numWinners: Int
 ) : InformationItem()
+
+class NotifyGetNextInfo() : InformationItem()
+class ExitRequest() : InformationItem()
 
 /**
  * contents: list of InformationItems

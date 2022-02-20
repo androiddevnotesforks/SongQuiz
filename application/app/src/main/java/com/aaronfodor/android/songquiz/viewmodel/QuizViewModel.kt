@@ -124,7 +124,7 @@ class QuizViewModel @Inject constructor(
     /**
      * Quiz UI state
      */
-    val viewModelQuizState: MutableLiveData<ViewModelQuizState> by lazy {
+    val viewModelQuizStanding: MutableLiveData<ViewModelQuizState> by lazy {
         MutableLiveData<ViewModelQuizState>()
     }
 
@@ -182,7 +182,7 @@ class QuizViewModel @Inject constructor(
     fun clearState() = viewModelScope.launch {
         stopActions()
         quizService.setClearQuizState()
-        viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
+        viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
     }
 
     fun setPlaylistByIdAndSettings(playlistId: String, songDuration: Int, repeatAllowed: Boolean,
@@ -226,7 +226,7 @@ class QuizViewModel @Inject constructor(
             }
         }
 
-        viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
+        viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
     }
 
     private suspend fun speakToUser(text: String) : Boolean{
@@ -353,15 +353,19 @@ class QuizViewModel @Inject constructor(
             }
 
             val response = quizService.getCurrentInfo()
-            val infoList = response.contents
+            val infoList = response.contents.toMutableList()
             immediateAnswerNeeded = response.immediateAnswerNeeded
             isSuccessful = true
 
-            viewModelQuizState.postValue(quizService.getQuizState().toViewModelQuizState())
+            viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.SPEAKING)
 
-            for (information in infoList) {
+            var i = 0
+            while(i < infoList.size) {
+                val information = infoList[i]
+                i++
+
                 if(!isActive){
                     return@launch
                 }
@@ -380,12 +384,6 @@ class QuizViewModel @Inject constructor(
                     is LocalSound -> {
                         playLocalSound(information.fileName)
                     }
-                    is ExitRequest -> {
-                        currentGuesses.postValue(listOf())
-                        endFeedback.postValue(ViewModelEndFeedback())
-                        uiState.postValue(QuizUiState.EXIT)
-                        true
-                    }
                     is GuessFeedback -> {
                         currentGuesses.postValue(information.items.toViewModelGuessItemList())
                         endFeedback.postValue(ViewModelEndFeedback())
@@ -396,6 +394,19 @@ class QuizViewModel @Inject constructor(
                         currentGuesses.postValue(listOf())
                         endFeedback.postValue(information.toViewModelEndFeedback())
                         speakToUser(information.speech)
+                        true
+                    }
+                    is NotifyGetNextInfo -> {
+                        val informationPacket = quizService.getCurrentInfo()
+                        infoList.addAll(informationPacket.contents)
+                        immediateAnswerNeeded = informationPacket.immediateAnswerNeeded
+                        viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
+                        true
+                    }
+                    is ExitRequest -> {
+                        currentGuesses.postValue(listOf())
+                        endFeedback.postValue(ViewModelEndFeedback())
+                        uiState.postValue(QuizUiState.EXIT)
                         true
                     }
                 }

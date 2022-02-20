@@ -12,6 +12,7 @@ import com.aaronfodor.android.songquiz.BuildConfig
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentAboutBinding
 import com.aaronfodor.android.songquiz.view.utils.AppFragment
+import com.aaronfodor.android.songquiz.view.utils.appear
 import com.aaronfodor.android.songquiz.viewmodel.AboutViewModel
 import com.aaronfodor.android.songquiz.viewmodel.TtsAboutState
 
@@ -131,17 +132,13 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     }
 
     override fun appearingAnimations() {
-        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-        binding.fabSpeak.startAnimation(rightAnimation)
-        binding.fabSpeak.visibility = View.VISIBLE
-
-        val leftAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-        binding.content.action1.fab.startAnimation(leftAnimation)
-        binding.content.action2.fab.startAnimation(leftAnimation)
-        binding.content.action3.fab.startAnimation(leftAnimation)
-        binding.content.action4.fab.startAnimation(leftAnimation)
-        binding.content.action5.fab.startAnimation(leftAnimation)
-        binding.content.action6.fab.startAnimation(leftAnimation)
+        binding.fabSpeak.appear(R.anim.slide_in_right, true)
+        binding.content.action1.fab.appear(R.anim.slide_in_left, true)
+        binding.content.action2.fab.appear(R.anim.slide_in_left, true)
+        binding.content.action3.fab.appear(R.anim.slide_in_left, true)
+        binding.content.action4.fab.appear(R.anim.slide_in_left, true)
+        binding.content.action5.fab.appear(R.anim.slide_in_left, true)
+        binding.content.action6.fab.appear(R.anim.slide_in_left, true)
     }
 
     override fun unsubscribeViewModel() {

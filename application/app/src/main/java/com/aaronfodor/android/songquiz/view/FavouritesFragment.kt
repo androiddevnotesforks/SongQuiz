@@ -2,7 +2,6 @@ package com.aaronfodor.android.songquiz.view
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
@@ -49,17 +48,17 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
             (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(tracks.isEmpty() && (viewModel.uiState.value == FavouritesUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.tracks.observe(this, tracksObserver)
 
         val uiStateObserver = Observer<FavouritesUiState> { state ->
             if(state != FavouritesUiState.READY){
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
             if(state != FavouritesUiState.LOADING){
                 binding.list.swipeRefreshLayout.isRefreshing = false
@@ -70,16 +69,16 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
                     binding.list.swipeRefreshLayout.isRefreshing = true
                 }
                 FavouritesUiState.READY -> {
-                    binding.list.tvEmpty.visibility = View.VISIBLE
+                    binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
                 }
                 else -> {}
             }
 
             if(viewModel.tracks.value.isNullOrEmpty() && (state == FavouritesUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -102,8 +101,9 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
     }
 
     override fun appearingAnimations() {
-        val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.list.tvEmpty.startAnimation(bottomAnimation)
+        if(binding.list.tvEmpty.visibility == View.VISIBLE){
+            binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+        }
     }
 
     override fun unsubscribeViewModel() {}
@@ -112,7 +112,6 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         val navController = NavHostFragment.findNavController(this)
         val action = FavouritesFragmentDirections.actionNavFavouritesToNavInfoTrack(viewModel.callerType, id)
         navController.navigate(action)
-        viewModel.ready()
     }
 
     private fun deleteTrack(name: String, id: String, dismissAction: () -> Unit) {
@@ -155,11 +154,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return true
             }
 

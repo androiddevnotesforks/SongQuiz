@@ -52,10 +52,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
                 (binding.list.RecyclerView.adapter as ListableAdapter).submitList(result.items.map { it.toListable() })
 
                 if(result.items.isEmpty() && (viewModel.uiState.value == PlaylistsAddUiState.READY)){
-                    binding.list.tvEmpty.visibility = View.VISIBLE
+                    binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
                 }
                 else{
-                    binding.list.tvEmpty.visibility = View.INVISIBLE
+                    binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
                 }
             }
         }
@@ -75,10 +75,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
             }
 
             if(viewModel.searchResult.value?.items.isNullOrEmpty() && (state == PlaylistsAddUiState.READY)){
-                binding.list.tvEmpty.visibility = View.VISIBLE
+                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
             }
             else{
-                binding.list.tvEmpty.visibility = View.INVISIBLE
+                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
@@ -113,12 +113,11 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
     }
 
     override fun appearingAnimations() {
-        val rightAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-        binding.fabSearch.startAnimation(rightAnimation)
-        binding.fabSearch.visibility = View.VISIBLE
+        binding.fabSearch.appear(R.anim.slide_in_right, true)
 
-        val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_in_bottom)
-        binding.list.tvEmpty.startAnimation(bottomAnimation)
+        if(binding.list.tvEmpty.visibility == View.VISIBLE){
+            binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+        }
     }
 
     override fun unsubscribeViewModel() {}
@@ -142,9 +141,10 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
 
     private fun showInfoScreen(id: String){
         val navController = NavHostFragment.findNavController(this)
-        val action = PlaylistAddFragmentDirections.actionNavAddToNavInfoPlaylist(viewModel.callerType, id)
-        navController.navigate(action)
-        viewModel.ready()
+        if(navController.currentDestination == navController.findDestination(R.id.nav_add)){
+            val action = PlaylistAddFragmentDirections.actionNavAddToNavInfoPlaylist(viewModel.callerType, id)
+            navController.navigate(action)
+        }
     }
 
     private fun setupRecyclerView(){
@@ -185,7 +185,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
         binding.fabSearch.setOnClickListener{ showSearchExpressionDialog() }
         binding.list.tvEmpty.setOnClickListener { showSearchExpressionDialog() }
         binding.list.tvEmpty.text = getText(R.string.empty_search_list)
-        val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon_search)
+        val drawable = getDrawable(requireContext(), R.drawable.icon_search)
         binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
         binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))

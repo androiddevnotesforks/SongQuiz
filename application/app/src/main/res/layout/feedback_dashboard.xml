@@ -54,6 +54,7 @@
 
     <TextView
         style="@style/FeedbackNormalText"
+        android:text=""
         android:id="@+id/end_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
         android:gravity="center"
         android:scaleType="fitCenter"
         android:drawablePadding="@dimen/drawable_padding"
+        app:drawableLeftCompat="@drawable/icon_celebration"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

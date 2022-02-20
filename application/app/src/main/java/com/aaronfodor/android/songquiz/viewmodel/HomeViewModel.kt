@@ -14,11 +14,11 @@ import java.time.LocalTime
 import javax.inject.Inject
 
 enum class HomeUiState{
-    LOADING, READY, START_QUIZ, SHOW_ADD_SCREEN
+    LOADING, READY
 }
 
 enum class HomeNotification{
-    NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST, NO_PLAYLISTS
+    NONE, ERROR_DELETE_PLAYLIST, SUCCESS_DELETE_PLAYLIST, NO_PLAYLISTS, START_QUIZ, SHOW_ADD_SCREEN
 }
 
 enum class PartOfTheDay{
@@ -81,7 +81,7 @@ class HomeViewModel @Inject constructor(
 
     private fun startQuiz(playListId: String) = viewModelScope.launch {
         selectedPlaylistId = playListId
-        uiState.value = HomeUiState.START_QUIZ
+        notification.postValue(HomeNotification.START_QUIZ)
     }
 
     fun startRandomQuiz() = viewModelScope.launch {
@@ -97,11 +97,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showAddPlaylistScreen() = viewModelScope.launch(Dispatchers.Default) {
-        uiState.postValue(HomeUiState.SHOW_ADD_SCREEN)
-    }
-
-    fun ready() = viewModelScope.launch {
-        uiState.value = HomeUiState.READY
+        notification.postValue(HomeNotification.SHOW_ADD_SCREEN)
     }
 
     fun getPartOfTheDay() : PartOfTheDay{

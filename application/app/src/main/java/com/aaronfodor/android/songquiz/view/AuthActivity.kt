@@ -13,10 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityAuthBinding
-import com.aaronfodor.android.songquiz.view.utils.AppActivity
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.google.android.material.snackbar.Snackbar
@@ -172,35 +169,17 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     override fun appearingAnimations() {}
 
     private fun showAuthActions(){
-        val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom)
-
-        binding.btnLogin.startAnimation(bottomAnimation)
-        binding.btnLogin.visibility = View.VISIBLE
-
-        binding.btnSkip.startAnimation(bottomAnimation)
-        binding.btnSkip.visibility = View.VISIBLE
-
-        binding.loginHelp.startAnimation(bottomAnimation)
-        binding.loginHelp.visibility = View.VISIBLE
-
-        binding.whyLoginInfo.startAnimation(bottomAnimation)
-        binding.whyLoginInfo.visibility = View.VISIBLE
+        binding.btnLogin.appear(R.anim.slide_in_bottom, true)
+        binding.btnSkip.appear(R.anim.slide_in_bottom, true)
+        binding.loginHelp.appear(R.anim.slide_in_bottom, true)
+        binding.whyLoginInfo.appear(R.anim.slide_in_bottom, true)
     }
 
     private fun hideAuthActions(){
-        val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom)
-
-        binding.btnLogin.startAnimation(bottomAnimation)
-        binding.btnLogin.visibility = View.INVISIBLE
-
-        binding.btnSkip.startAnimation(bottomAnimation)
-        binding.btnSkip.visibility = View.INVISIBLE
-
-        binding.loginHelp.startAnimation(bottomAnimation)
-        binding.loginHelp.visibility = View.INVISIBLE
-
-        binding.whyLoginInfo.startAnimation(bottomAnimation)
-        binding.whyLoginInfo.visibility = View.INVISIBLE
+        binding.btnLogin.disappear(R.anim.slide_out_bottom)
+        binding.btnSkip.disappear(R.anim.slide_out_bottom)
+        binding.loginHelp.disappear(R.anim.slide_out_bottom)
+        binding.whyLoginInfo.disappear(R.anim.slide_out_bottom)
     }
 
     override fun boardingDialog() {}

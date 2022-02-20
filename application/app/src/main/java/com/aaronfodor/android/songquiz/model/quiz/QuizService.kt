@@ -14,10 +14,15 @@ enum class QuizState{
     GAME_TYPE_NOT_UNDERSTOOD,
     GAME_TYPE_INVALID,
     START_GAME,
+    START_GAME_GENERATED_PLAYER_INFO,
+    START_GAME_FIRST_TURN,
     PLAY_SONG,
-    PLAY_SONG_REPEATABLE,
+    GUESS_FEEDBACK,
+    PARSE_GUESS,
+    NEXT_TURN,
+    REPEAT_SONG,
     END,
-    END_REPEAT,
+    REPEAT_END,
     RESTART_GAME,
     CONFIGURE_GAME,
     EXIT_GAME
@@ -90,7 +95,7 @@ class QuizService @Inject constructor(
     }
 
     // generated players are placeholders only
-    fun setQuizPlayers(numPlayers: Int){
+    private fun setQuizPlayers(numPlayers: Int){
         doesGeneratedPlayerPlay = false
         generatedPlayerName = stringHandler.unknown()
         generatedPlayerLastPoints = 0
@@ -113,12 +118,12 @@ class QuizService @Inject constructor(
         quiz.setQuizPlayers(players)
     }
 
-    fun setQuizType(type: QuizType){
+    private fun setQuizType(type: QuizType){
         quiz.setQuizType(type)
     }
 
-    // must be called to actually init generated players
-    fun initGeneratedPlayers(){
+    // must be called to actually setup generated players
+    private fun initGeneratedPlayers(){
         val players = mutableListOf<QuizPlayer>()
         quiz.players.forEach {
             if(it is QuizPlayerGenerated){
@@ -132,7 +137,7 @@ class QuizService @Inject constructor(
         quiz.players = players
     }
 
-    fun setStartQuizState(){
+    private fun setupStartQuizState(){
         lastSaidByUser = ""
         playlist.tracks.shuffle()
         quiz.startState()
@@ -165,11 +170,16 @@ class QuizService @Inject constructor(
             QuizState.GAME_TYPE_ASK -> askGameType()
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> askGameType(true, RepeatCause.NOT_UNDERSTOOD)
             QuizState.GAME_TYPE_INVALID -> askGameType(true, RepeatCause.INVALID_INPUT)
-            QuizState.START_GAME -> startGame()
+            QuizState.START_GAME -> gameSetupThanNotify()
+            QuizState.START_GAME_GENERATED_PLAYER_INFO -> generatedPlayerInfoThanNotify()
+            QuizState.START_GAME_FIRST_TURN -> firstTurnThanNotify()
             QuizState.PLAY_SONG -> playSong()
-            QuizState.PLAY_SONG_REPEATABLE -> playSong(true)
+            QuizState.GUESS_FEEDBACK -> guessFeedbackThanNotify()
+            QuizState.PARSE_GUESS -> repeatSong()
+            QuizState.NEXT_TURN -> nextTurnThanNotify()
+            QuizState.REPEAT_SONG -> repeatSong()
             QuizState.END -> endGame()
-            QuizState.END_REPEAT -> endGame(true)
+            QuizState.REPEAT_END -> endGame(true)
             QuizState.RESTART_GAME -> restartGame()
             QuizState.CONFIGURE_GAME -> configureGame()
             QuizState.EXIT_GAME -> exitGame()
@@ -178,8 +188,7 @@ class QuizService @Inject constructor(
         return response
     }
 
-    private fun welcomeAndAskNumPlayers(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
-    : InformationPacket {
+    private fun welcomeAndAskNumPlayers(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
         if(playlist.tracks.size < MIN_NUM_TRACKS){
             return InformationPacket(listOf(
                 Speech(stringHandler.welcome()),
@@ -215,8 +224,7 @@ class QuizService @Inject constructor(
         }
     }
 
-    private fun askGameType(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING)
-    : InformationPacket {
+    private fun askGameType(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
         if(isRepeat){
             var reasonText = ""
 
@@ -256,59 +264,85 @@ class QuizService @Inject constructor(
         return info
     }
 
-    private fun startGamePlayFirstSong() : List<InformationItem> {
-        state = if(quiz.type.repeatAllowed){
-            QuizState.PLAY_SONG_REPEATABLE
+    private fun gameSetupThanNotify() : InformationPacket {
+        state = QuizState.START_GAME_GENERATED_PLAYER_INFO
+
+        val info = mutableListOf<InformationItem>()
+        info.addAll(gameSetupInfo())
+        info.add(NotifyGetNextInfo())
+        return InformationPacket(info, false)
+    }
+
+    private fun generatedPlayerInfoThanNotify() : InformationPacket {
+        state = QuizState.START_GAME_FIRST_TURN
+
+        val info = mutableListOf<InformationItem>()
+        if(doesGeneratedPlayerPlay){
+            initGeneratedPlayers()
+            val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
+            info.add(Speech(generatedPlayerText))
+            info.add(LocalSound(DUEL_SOUND_NAME))
+        }
+        info.add(NotifyGetNextInfo())
+        return InformationPacket(info, false)
+    }
+
+    private fun firstTurnThanNotify() : InformationPacket {
+        setupStartQuizState()
+        state = QuizState.PLAY_SONG
+
+        val info = mutableListOf<InformationItem>()
+        info.add(Speech(stringHandler.firstTurnString(quiz.type.typeNameStringKey)))
+        info.add(NotifyGetNextInfo())
+        return InformationPacket(info, true)
+    }
+
+    private fun guessFeedbackThanNotify() : InformationPacket {
+        state = QuizState.NEXT_TURN
+
+        val info = mutableListOf<InformationItem>()
+        info.addAll(guessInformationBuilder())
+        info.add(NotifyGetNextInfo())
+        return InformationPacket(info, false)
+    }
+
+    private fun nextTurnThanNotify() : InformationPacket {
+        if(!doesGeneratedPlayerPlay){
+            quiz.toNextTurn()
+        }
+
+        state = if(quiz.isFinished){
+            QuizState.END
         }
         else{
             QuizState.PLAY_SONG
         }
 
         val info = mutableListOf<InformationItem>()
-
-        if(doesGeneratedPlayerPlay){
-            val generatedPlayerText = stringHandler.generatedPlayerInfo(generatedPlayerName)
-            info.add(Speech(generatedPlayerText))
-            info.add(LocalSound(DUEL_SOUND_NAME))
-            info.add(Speech(stringHandler.firstTurnYouString(quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
-        }
-        else{
-            info.add(Speech(stringHandler.firstTurnString(quiz.getCurrentPlayer().name, quiz.type.typeNameStringKey, quiz.getCurrentRoundIndex())))
-        }
-
-        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
-        return info
+        info.add(NotifyGetNextInfo())
+        return InformationPacket(info, false)
     }
 
-    private fun playSong(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
-        state = if(quiz.type.repeatAllowed){
-            QuizState.PLAY_SONG_REPEATABLE
+    private fun playSong() : InformationPacket {
+        val currentPlayer = quiz.getCurrentPlayer()
+        state = QuizState.PARSE_GUESS
+
+        val info = mutableListOf<InformationItem>()
+        if(doesGeneratedPlayerPlay){
+            info.add(Speech(stringHandler.yourTurn(quiz.getCurrentRoundIndex())))
         }
         else{
-            QuizState.PLAY_SONG
+            info.add(Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())))
         }
+        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
+        return InformationPacket(info, true)
+    }
 
-        if(isRepeat){
-            return InformationPacket(listOf(
-                Speech(stringHandler.repeatSong()),
-                SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
-            ), true)
-        }
-        else{
-            val info = mutableListOf<InformationItem>()
-            info.addAll(guessInformationBuilder())
-            val currentPlayer = quiz.getCurrentPlayer()
-
-            if(doesGeneratedPlayerPlay){
-                info.add(Speech(stringHandler.yourTurn(quiz.getCurrentRoundIndex())))
-            }
-            else{
-                info.add(Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())))
-            }
-
-            info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
-            return InformationPacket(info, true)
-        }
+    private fun repeatSong() : InformationPacket {
+        return InformationPacket(listOf(
+            Speech(stringHandler.repeatSong()),
+            SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
+        ), true)
     }
 
     private fun guessInformationBuilder() : List<InformationItem>{
@@ -413,35 +447,21 @@ class QuizService @Inject constructor(
     }
 
     private fun endGame(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
-        state = QuizState.END_REPEAT
+        state = QuizState.REPEAT_END
 
         return if(isRepeat){
             InformationPacket(endGameInformationBuilder(), true)
         }
         else{
             val info = mutableListOf<InformationItem>()
-            info.addAll(guessInformationBuilder())
             info.add(Speech(stringHandler.endGame()))
             info.addAll(endGameInformationBuilder())
             InformationPacket(info, true)
         }
     }
 
-    private fun startGame() : InformationPacket {
-        initGeneratedPlayers()
-        setStartQuizState()
-        val info = mutableListOf<InformationItem>()
-        info.addAll(gameSetupInfo())
-        info.addAll(startGamePlayFirstSong())
-        return InformationPacket(info, true)
-    }
-
     private fun restartGame() : InformationPacket {
-        initGeneratedPlayers()
-        setStartQuizState()
-        val info = mutableListOf<InformationItem>()
-        info.addAll(startGamePlayFirstSong())
-        return InformationPacket(info, true)
+        return generatedPlayerInfoThanNotify()
     }
 
     private fun configureGame() : InformationPacket {
@@ -469,9 +489,9 @@ class QuizService @Inject constructor(
             QuizState.GAME_TYPE_NOT_UNDERSTOOD -> parseGameType(probableSpeeches)
             QuizState.GAME_TYPE_INVALID -> parseGameType(probableSpeeches)
             QuizState.START_GAME -> parseGuess(probableSpeeches)
-            QuizState.PLAY_SONG -> parseGuess(probableSpeeches)
-            QuizState.PLAY_SONG_REPEATABLE -> parseGuess(probableSpeeches)
-            QuizState.END_REPEAT -> parseAfterFinishedCommand(probableSpeeches)
+            QuizState.PARSE_GUESS -> parseGuess(probableSpeeches)
+            QuizState.REPEAT_SONG -> parseGuess(probableSpeeches)
+            QuizState.REPEAT_END -> parseAfterFinishedCommand(probableSpeeches)
             else -> false
         }
         return speakToUserNeeded
@@ -588,11 +608,13 @@ class QuizService @Inject constructor(
 
         val playerHits = textParser.searchForWordOccurrences(probableSpeeches, possibleHitWords, false)
 
+        // by default, after the parsed guess, proceed to next turn
+        state = QuizState.GUESS_FEEDBACK
         // if repeat allowed
         if(quiz.type.repeatAllowed){
             // if only the extra command has been identified, execute it
             if(playerHits.size == 1 && playerHits.contains(KeyGuess.REPEAT.value)){
-                state = QuizState.PLAY_SONG_REPEATABLE
+                state = QuizState.REPEAT_SONG
                 return true
             }
         }
@@ -635,6 +657,9 @@ class QuizService @Inject constructor(
         lastPlayerAllPoints += lastPlayerArtistTitlePoints + lastPlayerDifficultyPoints
 
         quiz.recordResult(artistPoint, titlePoint, difficultyCompensationPoint)
+        if(doesGeneratedPlayerPlay){
+            quiz.toNextTurn()
+        }
 
         // generated player guessing
         while(doesGeneratedPlayerPlay && (quiz.getCurrentPlayer() is QuizPlayerGenerated)){
@@ -656,22 +681,13 @@ class QuizService @Inject constructor(
             }
 
             quiz.recordResult(generatedArtistPoint, generatedTitlePoint, difficultyCompensationPoint)
+            quiz.toNextTurn()
+
             generatedPlayerLastPoints = generatedTitlePoint + generatedArtistPoint
             if(quiz.type.difficultyCompensation){
                 generatedPlayerLastPoints += difficultyCompensationPoint
             }
 
-            if(quiz.isFinished){
-                state = QuizState.END
-                return true
-            }
-        }
-
-        state = if(quiz.isFinished){
-            QuizState.END
-        }
-        else{
-            QuizState.PLAY_SONG
         }
 
         return true
