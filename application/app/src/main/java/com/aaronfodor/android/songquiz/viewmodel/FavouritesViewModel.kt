@@ -52,8 +52,9 @@ class FavouritesViewModel @Inject constructor(
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(FavouritesUiState.LOADING)
-        tracks.postValue(repository.getPlaylists().map { it.toViewModelPlaylist() })
+        val loadedTracks = repository.getPlaylists()
         uiState.postValue(FavouritesUiState.READY)
+        tracks.postValue(loadedTracks.map { it.toViewModelPlaylist() })
     }
 
     fun deleteTrack(id: String) = viewModelScope.launch(Dispatchers.IO) {

@@ -20,7 +20,8 @@ enum class AccountState{
 data class PublicAccountInfo(
     val id: String,
     val name: String,
-    val email: String
+    val email: String,
+    val isFirstLoadAfterLogin: Boolean
 )
 
 /**
@@ -32,10 +33,17 @@ class AccountService @Inject constructor(
     val repository: AccountRepository
 ){
 
-    private var account= Account("")
+    companion object{
+        const val DEFAULTS_ACCOUNT_ID = "default"
+    }
+
+    private var account = Account("")
 
     private val clientId = context.getString(R.string.spotifyClientId)
     private val spotifyRedirectURI = context.getString(R.string.com_spotify_sdk_redirect_uri)
+
+    // for setting the defaults
+    var setDefaultsMode = false
 
     /**
      * Used for fallback token requests on behalf of the app. Works when client secret is available.
@@ -93,7 +101,8 @@ class AccountService @Inject constructor(
             uri = account.uri,
             country = account.country,
             token = token,
-            tokenExpireTime = tokenExpireTime
+            tokenExpireTime = tokenExpireTime,
+            isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
         )
         account = accountToSet
         accountState.postValue(AccountState.LOGGED_IN)
@@ -126,8 +135,24 @@ class AccountService @Inject constructor(
         accountState.postValue(AccountState.LOGGED_OUT)
     }
 
-    fun getPublicAccountInfo() : PublicAccountInfo{
-        return PublicAccountInfo(account.id, account.name, account.email)
+    fun getPublicInfo() : PublicAccountInfo{
+        return PublicAccountInfo(account.id, account.name, account.email, account.isFirstLoadAfterLogin)
+    }
+
+    fun getAccountId() : String{
+        val id = if(setDefaultsMode){
+            AccountService.DEFAULTS_ACCOUNT_ID
+        }
+        else{
+            account.id
+        }
+
+        return id
+    }
+
+    fun firstLoadFinishedAfterLogin(){
+        repository.firstLoadFinishedAfterLogin()
+        account.isFirstLoadAfterLogin = false
     }
 
 }

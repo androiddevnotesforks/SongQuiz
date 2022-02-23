@@ -40,7 +40,7 @@
     <string name="disabled">Letiltva</string>
 
     <string name="playlists_deleted">Listák törölve</string>
-    <string name="default_db_restored">Alapértelmezett adatok visszaállítva</string>
+    <string name="defaults_restored">Alapértelmezett adatok visszaállítva</string>
     <string name="cache_cleared">Gyorsítótár törölve</string>
     <string name="account_forgot">Sikeres kijelentkezés</string>
 </resources>

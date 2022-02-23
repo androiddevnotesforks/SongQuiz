@@ -101,4 +101,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="@string/PREF_KEY_DEBUG_CATEGORY"
+        app:title="Debug mode settings"
+        app:isPreferenceVisible="false">
+
+        <Preference
+            app:key="@string/PREF_KEY_SETUP_DEFAULT_PLAYLISTS"
+            app:title="Set default playlists mode"
+            app:summary="" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

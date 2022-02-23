@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class SettingsUiState{
-    READY, CACHE_CLEARED, PLAYLISTS_DELETED, DEFAULT_DB_RESTORED, ACCOUNT_LOGGED_OUT
+    READY, CACHE_CLEARED, PLAYLISTS_DELETED, DEFAULT_PLAYLISTS_RESTORED, ACCOUNT_LOGGED_OUT
 }
 
 @HiltViewModel
@@ -28,17 +28,13 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun getUserNameAndEmail() : Pair<String, String>{
-        val publicAccountInfo = accountService.getPublicAccountInfo()
+        val publicAccountInfo = accountService.getPublicInfo()
         return Pair(publicAccountInfo.name, publicAccountInfo.email)
     }
 
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
         playlistsRepository.deleteAllPlaylists()
         uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
-    }
-
-    fun restoredDefaultDB() = viewModelScope.launch {
-        uiState.value = SettingsUiState.DEFAULT_DB_RESTORED
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
@@ -52,6 +48,21 @@ class SettingsViewModel  @Inject constructor(
 
     fun cacheCleared() = viewModelScope.launch {
         uiState.value = SettingsUiState.CACHE_CLEARED
+    }
+
+    fun restoreDefaultPlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        // rollback to default database content
+        playlistsRepository.restoreDefaultPlaylists()
+        uiState.postValue(SettingsUiState.DEFAULT_PLAYLISTS_RESTORED)
+    }
+
+    fun changeDefaultPlaylistsMode(){
+        val newMode = !accountService.setDefaultsMode
+        accountService.setDefaultsMode = newMode
+    }
+
+    fun getDefaultPlaylistsMode() : Boolean{
+        return accountService.setDefaultsMode
     }
 
 }

@@ -63,7 +63,7 @@ class AuthViewModel @Inject constructor(accountService: AccountService, private 
         when (response.type) {
             // success
             AuthorizationResponse.Type.TOKEN -> {
-                val account = apiService.getCurrentAccount(token).toAccount()
+                val account = apiService.getCurrentAccount(token).toAccount(accountService.getPublicInfo().isFirstLoadAfterLogin)
                 val accountToSet = Account(
                     id = account.id,
                     name = account.name,
@@ -71,7 +71,8 @@ class AuthViewModel @Inject constructor(accountService: AccountService, private 
                     uri = account.uri,
                     country = account.country,
                     token = token,
-                    tokenExpireTime = tokenExpireTime
+                    tokenExpireTime = tokenExpireTime,
+                    isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
                 )
                 accountService.setAccount(accountToSet)
                 uiState.postValue(AuthUiState.SUCCESS)

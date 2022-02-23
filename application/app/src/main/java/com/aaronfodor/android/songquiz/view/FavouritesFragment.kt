@@ -68,9 +68,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
                 FavouritesUiState.LOADING -> {
                     binding.list.swipeRefreshLayout.isRefreshing = true
                 }
-                FavouritesUiState.READY -> {
-                    binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
-                }
+                FavouritesUiState.READY -> {}
                 else -> {}
             }
 

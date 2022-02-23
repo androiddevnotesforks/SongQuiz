@@ -8,11 +8,11 @@ class ViewModelTrack (
     val name: String = "",
     val artists: List<String> = arrayListOf(),
     val album: String = "",
+    val imageUri: String = "",
     val durationMs: Int = 0,
     val uri: String = "",
     val popularity: Int = 0,
-    val previewUri: String = "",
-    val type: String = "",
+    val previewUrl: String = ""
 )
 
 fun Track.toViewModelTrack() : ViewModelTrack {
@@ -21,11 +21,11 @@ fun Track.toViewModelTrack() : ViewModelTrack {
         name = this.name,
         artists = this.artists,
         album = this.album,
+        imageUri = this.imageUri,
         durationMs = this.durationMs,
         uri = this.uri,
         popularity = this.popularity,
-        previewUri = this.previewUri,
-        type = this.type
+        previewUrl = this.previewUrl
     )
 }
 
@@ -35,11 +35,11 @@ fun ViewModelTrack.toTrack() : Track {
         name = this.name,
         artists = this.artists,
         album = this.album,
+        imageUri = this.imageUri,
         durationMs = this.durationMs,
         uri = this.uri,
         popularity = this.popularity,
-        previewUri = this.previewUri,
-        type = this.type
+        previewUrl = this.previewUrl
     )
 }
 
@@ -49,6 +49,6 @@ fun ViewModelTrack.toListable() : Listable {
         title = this.name,
         content1 = this.artists.toString(),
         content2 = this.popularity.toString(),
-        imageUri = this.previewUri
+        imageUri = this.imageUri
     )
 }

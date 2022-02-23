@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Injected everywhere as a singleton
+ * Injected anywhere as a singleton
  */
 @Singleton
 class TextParserService @Inject constructor() {

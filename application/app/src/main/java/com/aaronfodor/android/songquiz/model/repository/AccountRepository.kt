@@ -23,6 +23,7 @@ class AccountRepository @Inject constructor(
     private val keyAccountCountry = context.getString(R.string.PREF_KEY_ACCOUNT_COUNTRY)
     private val keyToken = context.getString(R.string.PREF_KEY_TOKEN)
     private val keyTokenExpireTime = context.getString(R.string.PREF_KEY_TOKEN_EXPIRE_TIME)
+    private val keyIsFirstLoadAfterLogin = context.getString(R.string.PREF_KEY_IS_FIRST_LOAD_AFTER_LOGIN)
 
     fun getAccount() : Account{
         // get saved account info from preferences
@@ -35,13 +36,14 @@ class AccountRepository @Inject constructor(
         val accountCountry = sharedPreferences.getString(keyAccountCountry, "") ?: ""
         val token = sharedPreferences.getString(keyToken, "") ?: ""
         val tokenExpireTime = sharedPreferences.getString(keyTokenExpireTime, "") ?: ""
+        val isFirstLoadAfterLogin = sharedPreferences.getBoolean(keyIsFirstLoadAfterLogin, true)
 
         var tokenExpireTimeLong = 0L
         if(tokenExpireTime.isNotBlank()){
             tokenExpireTimeLong = tokenExpireTime.toLong()
         }
 
-        return Account(accountId, accountName, accountEmail, accountUri, accountCountry, token, tokenExpireTimeLong)
+        return Account(accountId, accountName, accountEmail, accountUri, accountCountry, token, tokenExpireTimeLong, isFirstLoadAfterLogin)
     }
 
     fun updateAccount(account: Account){
@@ -66,6 +68,15 @@ class AccountRepository @Inject constructor(
         }
     }
 
+    fun firstLoadFinishedAfterLogin(){
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        with(sharedPreferences.edit()){
+            remove(keyIsFirstLoadAfterLogin)
+            putBoolean(keyIsFirstLoadAfterLogin, false)
+            apply()
+        }
+    }
+
     fun deleteAccount(){
         // delete account info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -84,6 +95,8 @@ class AccountRepository @Inject constructor(
             putString(keyToken, "")
             remove(keyTokenExpireTime)
             putString(keyTokenExpireTime, "")
+            remove(keyIsFirstLoadAfterLogin)
+            putBoolean(keyIsFirstLoadAfterLogin, true)
             apply()
         }
     }

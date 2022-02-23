@@ -12,7 +12,6 @@ class ViewModelPlaylist (
     val owner: String = "",
     val previewImageUri: String = "",
     val followers: Int = 0,
-    val type: String = "",
     val uri: String = "",
     val primary_color: String = "",
     val tracks: MutableList<ViewModelTrack> = arrayListOf()
@@ -29,9 +28,8 @@ fun Playlist.toViewModelPlaylist() : ViewModelPlaylist {
         name = this.name,
         description = this.description,
         owner = this.owner,
-        previewImageUri = this.previewImageUri,
+        previewImageUri = this.imageUri,
         followers = this.followers,
-        type = this.type,
         uri = this.uri,
         primary_color = this.primary_color,
         tracks = convertedTracks
@@ -49,9 +47,8 @@ fun ViewModelPlaylist.toPlaylist() : Playlist {
         name = this.name,
         description = this.description,
         owner = this.owner,
-        previewImageUri = this.previewImageUri,
+        imageUri = this.previewImageUri,
         followers = this.followers,
-        type = this.type,
         uri = this.uri,
         primary_color = this.primary_color,
         tracks = convertedTracks

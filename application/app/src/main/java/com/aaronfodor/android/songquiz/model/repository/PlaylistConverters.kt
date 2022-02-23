@@ -3,20 +3,20 @@ package com.aaronfodor.android.songquiz.model.repository
 import androidx.core.text.HtmlCompat
 import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.PlaylistsDTO
-import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
 
-fun Playlist.toDbPlaylist() : DbPlaylist {
+fun Playlist.toDbPlaylist(accountId: String, timestampUTC: String) : DbPlaylist {
     return DbPlaylist(
         id = this.id,
+        accountId = accountId,
+        timestampUTC = timestampUTC,
         name = this.name,
         description = this.description,
         owner = this.owner,
-        previewImageUri = this.previewImageUri,
-        type = this.type,
+        imageUri = this.imageUri,
         uri = this.uri
     )
 }
@@ -27,8 +27,7 @@ fun DbPlaylist.toPlaylist() : Playlist {
         name = this.name,
         description = this.description,
         owner = this.owner,
-        previewImageUri = this.previewImageUri,
-        type = this.type,
+        imageUri = this.imageUri,
         uri = this.uri,
         tracks = arrayListOf()
     )
@@ -48,9 +47,9 @@ fun PlaylistDTO.toPlaylist() : Playlist {
         }
     }
 
-    var previewUri = ""
+    var imageUri = ""
     if(!this.images.isNullOrEmpty()){
-        previewUri = this.images.random().url ?: ""
+        imageUri = this.images.random().url ?: ""
     }
 
     return Playlist(
@@ -58,33 +57,12 @@ fun PlaylistDTO.toPlaylist() : Playlist {
         name = this.name,
         description = HtmlCompat.fromHtml(this.description ?: "", 0).toString(),
         owner = this.owner?.display_name ?: "",
-        previewImageUri = previewUri,
+        imageUri = imageUri,
         followers = this.followers?.total ?: 0,
         type = this.type ?: "",
         uri = this.uri ?: "",
         primary_color = this.primary_color ?: "",
         tracks = tracks
-    )
-}
-
-fun TrackDTO.toTrack() : Track{
-    val artists = mutableListOf<String>()
-    this.artists?.let {
-        for(artist in it){
-            artists.add(artist.name)
-        }
-    }
-
-    return Track(
-        id = this.id,
-        name = this.name,
-        artists = artists,
-        album = this.album?.name?: "",
-        durationMs = this.duration_ms,
-        uri = this.uri ?: "",
-        popularity = this.popularity ?: 0,
-        previewUri = this.preview_url ?: "",
-        type = this.type ?: ""
     )
 }
 

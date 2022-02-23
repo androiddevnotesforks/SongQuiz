@@ -19,11 +19,12 @@
     <dimen name="button_corner_radius">5dp</dimen>
     <dimen name="button_stroke">4dp</dimen>
 
-    <dimen name="margin_big">24dp</dimen>
-    <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
-    <dimen name="padding_big">25dp</dimen>
-    <dimen name="padding_medium">15dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_big">24dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_big">16dp</dimen>
 
     <dimen name="input_field_corner_radius">5dp</dimen>
     <dimen name="input_field_stroke">2dp</dimen>

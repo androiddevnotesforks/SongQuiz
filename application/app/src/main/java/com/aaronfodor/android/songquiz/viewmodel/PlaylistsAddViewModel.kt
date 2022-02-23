@@ -70,12 +70,12 @@ class PlaylistsAddViewModel @Inject constructor(
         lastSearchExpression = searchExpression
         uiState.postValue(PlaylistsAddUiState.LOADING)
         val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
+        uiState.postValue(PlaylistsAddUiState.READY)
         searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
         if(result.items.isEmpty()){
             notification.postValue(PlaylistsAddNotification.NOT_FOUND)
         }
-        uiState.postValue(PlaylistsAddUiState.READY)
     }
 
     fun getNextBatch() = tryAuthenticateLaunch{
@@ -87,8 +87,8 @@ class PlaylistsAddViewModel @Inject constructor(
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
         val searchBatch = repository.searchGetNextBatch(currentResult.toPlaylistSearchResult()).toViewModelPlaylistSearchResult()
-        searchResult.postValue(searchBatch.removeIds(playlistIdsAlreadyAdded))
         uiState.postValue(PlaylistsAddUiState.READY)
+        searchResult.postValue(searchBatch.removeIds(playlistIdsAlreadyAdded))
     }
 
     fun addPlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {

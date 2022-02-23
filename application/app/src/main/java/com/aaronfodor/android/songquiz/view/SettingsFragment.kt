@@ -7,10 +7,7 @@ import android.provider.Settings
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
-import androidx.preference.SeekBarPreference
+import androidx.preference.*
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.database.ApplicationDB
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
@@ -20,6 +17,7 @@ import com.aaronfodor.android.songquiz.viewmodel.SettingsUiState
 import com.aaronfodor.android.songquiz.viewmodel.SettingsViewModel
 import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.bumptech.glide.Glide
+import com.aaronfodor.android.songquiz.BuildConfig
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -48,9 +46,12 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
     private var keyRestoreDefaultDb = ""
-
     // boarding flag key
     private var keyOnboardingQuizShowed = ""
+
+    // for settings in debug mode
+    private var keyDebugCategory = ""
+    private var keySetupDefaultPlaylists = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,6 +71,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
         // boarding flag keys
         keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+
+        // for settings in debug mode
+        keyDebugCategory = getString(R.string.PREF_KEY_DEBUG_CATEGORY)
+        keySetupDefaultPlaylists = getString(R.string.PREF_KEY_SETUP_DEFAULT_PLAYLISTS)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -92,7 +97,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         val restoreDefaultDbPref = findPreference<Preference>(keyRestoreDefaultDb)?.setOnPreferenceClickListener {
-            showRestoreDefaultDbDialog()
+            showRestoreDefaultPlaylistsDialog()
             true
         }
 
@@ -138,6 +143,26 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             this.startActivity(intent)
             true
         }
+
+        // options only visible in debug mode
+        if(BuildConfig.DEBUG) {
+            findPreference<PreferenceCategory>(keyDebugCategory)?.let{ it ->
+                it.isVisible = true
+                it.isSelectable = true
+            }
+
+            // options visible in debug mode
+            findPreference<Preference>(keySetupDefaultPlaylists)?.let{ preference ->
+                preference.summary = viewModel.getDefaultPlaylistsMode().toString()
+
+                preference.setOnPreferenceClickListener {
+                    viewModel.changeDefaultPlaylistsMode()
+                    it.summary = viewModel.getDefaultPlaylistsMode().toString()
+                    true
+                }
+            }
+        }
+
     }
 
     private fun subscribeViewModel() {
@@ -149,7 +174,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 SettingsUiState.PLAYLISTS_DELETED -> {
                     showInfo(state)
                 }
-                SettingsUiState.DEFAULT_DB_RESTORED -> {
+                SettingsUiState.DEFAULT_PLAYLISTS_RESTORED -> {
                     showInfo(state)
                 }
                 SettingsUiState.ACCOUNT_LOGGED_OUT -> {
@@ -235,20 +260,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         dialog.show()
     }
 
-    private fun showRestoreDefaultDbDialog() {
-        val dialog = AppDialog(requireContext(), getString(R.string.restore_default_db),
-            getString(R.string.restore_default_db_description), R.drawable.icon_restore)
+    private fun showRestoreDefaultPlaylistsDialog() {
+        val dialog = AppDialog(requireContext(), getString(R.string.restore_default_playlists),
+            getString(R.string.restore_default_playlists_description), R.drawable.icon_restore)
         dialog.setPositiveButton {
+            viewModel.restoreDefaultPlaylists()
+            // delete Glide local disk cache too; blocks main thread so schedule on an IO dispatcher
             CoroutineScope(Dispatchers.IO).launch {
-                // copy default database content to current database
-                val assetManager = requireContext().assets
-                val defaultDbStream = assetManager.open(ApplicationDB.DEFAULT_DB_FILE_PATH)
-                val currentDbStream = requireContext().getDatabasePath(ApplicationDB.APPLICATION_DB_NAME).outputStream()
-                defaultDbStream.copyTo(currentDbStream)
-                // delete Glide local disk cache too; blocks main thread so schedule on an IO dispatcher
                 Glide.get(requireContext()).clearDiskCache()
-                // notify viewModel
-                viewModel.restoredDefaultDB()
             }
         }
         dialog.show()
@@ -308,8 +327,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             SettingsUiState.PLAYLISTS_DELETED -> {
                 getString(R.string.playlists_deleted)
             }
-            SettingsUiState.DEFAULT_DB_RESTORED -> {
-                getString(R.string.default_db_restored)
+            SettingsUiState.DEFAULT_PLAYLISTS_RESTORED -> {
+                getString(R.string.defaults_restored)
             }
             SettingsUiState.ACCOUNT_LOGGED_OUT -> {
                 getString(R.string.account_forgot)

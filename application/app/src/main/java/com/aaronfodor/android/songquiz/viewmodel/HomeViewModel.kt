@@ -58,8 +58,9 @@ class HomeViewModel @Inject constructor(
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(HomeUiState.LOADING)
-        playlists.postValue(repository.getPlaylists().map { it.toViewModelPlaylist() })
+        val loadedPlaylists = repository.getPlaylists()
         uiState.postValue(HomeUiState.READY)
+        playlists.postValue(loadedPlaylists.map { it.toViewModelPlaylist() })
     }
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {

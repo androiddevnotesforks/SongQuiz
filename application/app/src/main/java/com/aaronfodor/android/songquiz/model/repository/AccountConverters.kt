@@ -3,7 +3,7 @@ package com.aaronfodor.android.songquiz.model.repository
 import com.aaronfodor.android.songquiz.model.api.dataclasses.AccountDTO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
 
-fun AccountDTO.toAccount() : Account {
+fun AccountDTO.toAccount(isFirstLoadAfterLogin: Boolean) : Account {
     return Account(
         id = this.id,
         name = this.display_name,
@@ -11,6 +11,7 @@ fun AccountDTO.toAccount() : Account {
         uri = this.uri,
         country = this.country,
         token = "",
-        tokenExpireTime = 0L
+        tokenExpireTime = 0L,
+        isFirstLoadAfterLogin = isFirstLoadAfterLogin
     )
 }

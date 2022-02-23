@@ -334,14 +334,14 @@ class QuizService @Inject constructor(
         else{
             info.add(Speech(stringHandler.playerTurn(currentPlayer.name, quiz.getCurrentRoundIndex())))
         }
-        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri))
+        info.add(SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUrl))
         return InformationPacket(info, true)
     }
 
     private fun repeatSong() : InformationPacket {
         return InformationPacket(listOf(
             Speech(stringHandler.repeatSong()),
-            SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUri)
+            SoundURL(playlist.tracks[quiz.currentTrackIndex].previewUrl)
         ), true)
     }
 

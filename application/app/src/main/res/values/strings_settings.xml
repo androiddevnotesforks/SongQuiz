@@ -40,7 +40,7 @@
     <string name="disabled">Disabled</string>
 
     <string name="playlists_deleted">Playlists successfully deleted</string>
-    <string name="default_db_restored">Defaults restored</string>
+    <string name="defaults_restored">Defaults restored</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="account_forgot">Logged out successfully</string>
 </resources>

@@ -19,6 +19,9 @@
 
     <string name="PREF_KEY_ONBOARDING_QUIZ_SHOWED" translatable="false">onboarding_quiz_showed</string>
 
+    <string name="PREF_KEY_DEBUG_CATEGORY" translatable="false">debug_category</string>
+    <string name="PREF_KEY_SETUP_DEFAULT_PLAYLISTS" translatable="false">setup_default_playlists</string>
+
     <string name="PREF_KEY_ACCOUNT_ID" translatable="false">account_id</string>
     <string name="PREF_KEY_ACCOUNT_NAME" translatable="false">account_name</string>
     <string name="PREF_KEY_ACCOUNT_EMAIL" translatable="false">account_email</string>
@@ -26,4 +29,5 @@
     <string name="PREF_KEY_ACCOUNT_COUNTRY" translatable="false">account_country</string>
     <string name="PREF_KEY_TOKEN" translatable="false">token</string>
     <string name="PREF_KEY_TOKEN_EXPIRE_TIME" translatable="false">token_expire_time</string>
+    <string name="PREF_KEY_IS_FIRST_LOAD_AFTER_LOGIN" translatable="false">is_first_load_after_login</string>
 </resources>

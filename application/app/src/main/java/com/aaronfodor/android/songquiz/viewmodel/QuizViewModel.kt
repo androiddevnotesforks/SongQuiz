@@ -217,8 +217,8 @@ class QuizViewModel @Inject constructor(
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
                 uiState.postValue(QuizUiState.READY_TO_START)
-                playlistImageUri.postValue(playlist.previewImageUri)
-                // update playlist in the repository
+                playlistImageUri.postValue(playlist.imageUri)
+                // insert/update playlist in the repository
                 repository.insertPlaylist(playlist)
             }
             else{
