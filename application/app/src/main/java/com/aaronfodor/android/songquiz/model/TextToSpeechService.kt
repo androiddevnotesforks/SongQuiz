@@ -27,28 +27,28 @@ class TextToSpeechService  @Inject constructor(
     var errorCallback: () -> Unit = {}
 
     init {
-        init(Locale.getDefault().isO3Language)
+        init(Locale.getDefault())
     }
 
     /**
      * Initialize text to speech
      * Set text to speech listener
      */
-    fun init(languageISO3: String){
+    fun init(currentLocale: Locale){
         stop()
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 textToSpeech?.let {
-                    val ttsLanguage = when (languageISO3.uppercase()) {
-                        "GBR" -> {
-                            Locale("GBR")
+                    val ttsLanguage = when (currentLocale.language) {
+                        "en" -> {
+                            currentLocale
                         }
-                        "HUN" -> {
+                        "hu" -> {
                             Locale("HUN")
                         }
-                        // fallback to British English
+                        // fallback to English
                         else -> {
-                            Locale.UK
+                            Locale.ENGLISH
                         }
                     }
 
@@ -58,9 +58,9 @@ class TextToSpeechService  @Inject constructor(
                         languageAvailable == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE){
                         it.language = ttsLanguage
                     }
-                    // fallback to British English
+                    // fallback to English
                     else{
-                        it.language = Locale.UK
+                        it.language = Locale.ENGLISH
                     }
                 }
             }

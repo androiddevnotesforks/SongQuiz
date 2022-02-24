@@ -38,27 +38,27 @@ class SpeechRecognizerService @Inject constructor(
     var errorCallback: (String) -> Unit = {}
 
     init {
-        init(Locale.getDefault().isO3Language)
+        init(Locale.getDefault())
     }
 
     /**
      * Initialize speech recognizer
      */
-    fun init(languageISO3: String){
+    fun init(currentLocale: Locale){
         stopListening()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(this)
 
-        languageBCP47 = when (languageISO3.uppercase()) {
-            "GBR" -> {
-                "en-GB"
+        languageBCP47 = when (currentLocale.language) {
+            "en" -> {
+                "en"
             }
-            "HUN" -> {
-                "hu-HU"
+            "hu" -> {
+                "hu"
             }
-            // fallback to British English
+            // fallback to English
             else -> {
-                "en-GB"
+                "en"
             }
         }
     }
