@@ -70,6 +70,11 @@
         <item name="android:minHeight">@dimen/button_size</item>
     </style>
 
+    <style name="SecondaryActionGameImageButton" parent="ActionGameImageButton">
+        <item name="android:minWidth">@dimen/secondary_button_size</item>
+        <item name="android:minHeight">@dimen/secondary_button_size</item>
+    </style>
+
     <style name="ListItemImageButton" parent="AppButton">
         <item name="android:layout_margin">@dimen/list_item_margin</item>
         <item name="android:layout_width">@dimen/list_item_button_size</item>
@@ -167,6 +172,7 @@
         <item name="android:textSize">@dimen/input_text_size</item>
         <item name="android:hint">@string/type_here</item>
         <item name="android:maxLines">3</item>
+        <item name="android:maxLength">160</item>
         <item name="android:gravity">center</item>
     </style>
 

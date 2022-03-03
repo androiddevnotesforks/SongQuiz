@@ -13,6 +13,7 @@ import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.quiz.*
 import com.aaronfodor.android.songquiz.model.quiz.GuessFeedback
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.model.repository.TracksRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,8 +34,12 @@ enum class TtsState{
     DISABLED, ENABLED, SPEAKING
 }
 
-enum class QuizUiState{
-    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, EXIT
+enum class AddToFavouritesState{
+    HIDDEN, VISIBLE_SONG_NOT_IN_FAVOURITES, VISIBLE_SONG_IN_FAVOURITES
+}
+
+enum class QuizNotification{
+    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, ADDED_TO_FAVOURITES, REMOVED_FROM_FAVOURITES, EXIT
 }
 
 @HiltViewModel
@@ -43,7 +48,8 @@ class QuizViewModel @Inject constructor(
     var textToSpeechService: TextToSpeechService,
     var speechRecognizerService: SpeechRecognizerService,
     var mediaPlayerService: MediaPlayerService,
-    var repository: PlaylistsRepository,
+    var playlistsRepository: PlaylistsRepository,
+    var favouritesRepository: TracksRepository,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -73,10 +79,17 @@ class QuizViewModel @Inject constructor(
     }
 
     /**
-     * Quiz state
+     * Add to favourites state
      */
-    val uiState: MutableLiveData<QuizUiState> by lazy {
-        MutableLiveData<QuizUiState>()
+    val addToFavouritesState: MutableLiveData<AddToFavouritesState> by lazy {
+        MutableLiveData<AddToFavouritesState>()
+    }
+
+    /**
+     * Quiz notification
+     */
+    val notification: MutableLiveData<QuizNotification> by lazy {
+        MutableLiveData<QuizNotification>()
     }
 
     /**
@@ -148,6 +161,16 @@ class QuizViewModel @Inject constructor(
     var numProgressBarSteps = 0
 
     /**
+     * Already added favourite Ids
+     */
+    val alreadyAddedFavouriteIds = mutableListOf<String>()
+
+    /**
+     * Current track
+     */
+    var currentTrack: ViewModelTrack? = null
+
+    /**
      * The possibly long-running task to notify the user
      */
     private var infoToUserJob: Job? = null
@@ -169,7 +192,7 @@ class QuizViewModel @Inject constructor(
         playlistImageUri.value = ""
         userInputState.value = UserInputState.DISABLED
         ttsState.value = TtsState.ENABLED
-        uiState.value = QuizUiState.EMPTY
+        notification.value = QuizNotification.EMPTY
         // discard possible long running remaining jobs (emitting/getting information to/from user)
         infoToUserJob?.cancel()
         getUserInputJob?.cancel()
@@ -181,6 +204,7 @@ class QuizViewModel @Inject constructor(
 
     fun clearState() = viewModelScope.launch {
         stopActions()
+        trackPlayFinished()
         quizService.setClearQuizState()
         viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
     }
@@ -189,9 +213,13 @@ class QuizViewModel @Inject constructor(
                                    difficultyCompensation: Boolean, extendedInfoAllowed: Boolean)
     = viewModelScope.launch(Dispatchers.IO) {
 
+        // set already added favourite Ids
+        alreadyAddedFavouriteIds.clear()
+        alreadyAddedFavouriteIds.addAll(favouritesRepository.getTracks().map { it.id })
+
         if(quizService.playlist.id == playlistId){
             // prevent activity to reset view model state every time when onCreate is called
-            if(uiState.value != QuizUiState.EMPTY){
+            if(notification.value != QuizNotification.EMPTY){
                 return@launch
             }
 
@@ -199,15 +227,15 @@ class QuizViewModel @Inject constructor(
             // ready to start
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.ENABLED)
-            uiState.postValue(QuizUiState.READY_TO_START)
+            notification.postValue(QuizNotification.READY_TO_START)
         }
         else{
             // loading state
-            uiState.postValue(QuizUiState.LOADING)
+            notification.postValue(QuizNotification.LOADING)
             userInputState.postValue(UserInputState.DISABLED)
             ttsState.postValue(TtsState.DISABLED)
 
-            val playlist = repository.downloadPlaylistById(playlistId)
+            val playlist = playlistsRepository.downloadPlaylistById(playlistId)
 
             // successfully downloaded
             if(playlist.id == playlistId){
@@ -216,13 +244,13 @@ class QuizViewModel @Inject constructor(
                 // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
-                uiState.postValue(QuizUiState.READY_TO_START)
+                notification.postValue(QuizNotification.READY_TO_START)
                 playlistImageUri.postValue(playlist.imageUri)
                 // insert/update playlist in the repository
-                repository.insertPlaylist(playlist)
+                playlistsRepository.insertPlaylist(playlist)
             }
             else{
-                uiState.postValue(QuizUiState.ERROR_PLAYLIST_LOAD)
+                notification.postValue(QuizNotification.ERROR_PLAYLIST_LOAD)
             }
         }
 
@@ -242,7 +270,7 @@ class QuizViewModel @Inject constructor(
                 cont.resume(true)
             }
             val error = {
-                uiState.postValue(QuizUiState.ERROR_SPEAK_TO_USER)
+                notification.postValue(QuizNotification.ERROR_SPEAK_TO_USER)
                 userInputState.postValue(UserInputState.ENABLED)
                 ttsState.postValue(TtsState.ENABLED)
                 isSuccess = false
@@ -258,7 +286,6 @@ class QuizViewModel @Inject constructor(
 
     private suspend fun playUrlSound(soundUri: String) : Boolean{
         var isSuccess = false
-
         var timer: CountDownTimer? = null
 
         suspendCoroutine<Boolean> { cont ->
@@ -289,20 +316,21 @@ class QuizViewModel @Inject constructor(
 
             val started = {
                 timer?.start()
+                trackPlayStarted()
                 isSuccess = false
             }
             val finished = {
                 timer?.cancel()
-                timer?.onFinish()
                 timer = null
+                trackPlayFinished()
                 isSuccess = true
             }
             val error = {
                 timer?.cancel()
-                timer?.onFinish()
                 timer = null
+                trackPlayFinished()
                 isSuccess = false
-                uiState.postValue(QuizUiState.ERROR_PLAY_SONG)
+                notification.postValue(QuizNotification.ERROR_PLAY_SONG)
                 userInputState.postValue(UserInputState.ENABLED)
                 ttsState.postValue(TtsState.ENABLED)
             }
@@ -341,10 +369,10 @@ class QuizViewModel @Inject constructor(
 
         infoToUserJob = viewModelScope.launch(Dispatchers.IO) {
 
-            if(uiState.value == QuizUiState.READY_TO_START){
-                uiState.postValue(QuizUiState.PLAY)
+            if(notification.value == QuizNotification.READY_TO_START){
+                notification.postValue(QuizNotification.PLAY)
             }
-            if (userInputState.value == UserInputState.RECORDING || uiState.value == QuizUiState.EMPTY) {
+            if (userInputState.value == UserInputState.RECORDING || notification.value == QuizNotification.EMPTY) {
                 return@launch
             }
 
@@ -406,7 +434,7 @@ class QuizViewModel @Inject constructor(
                     is ExitRequest -> {
                         currentGuesses.postValue(listOf())
                         endFeedback.postValue(ViewModelEndFeedback())
-                        uiState.postValue(QuizUiState.EXIT)
+                        notification.postValue(QuizNotification.EXIT)
                         true
                     }
                 }
@@ -429,7 +457,7 @@ class QuizViewModel @Inject constructor(
 
     fun getUserInput(){
         getUserInputJob = viewModelScope.launch(Dispatchers.Main) {
-            if (ttsState.value == TtsState.SPEAKING || uiState.value == QuizUiState.EMPTY) {
+            if (ttsState.value == TtsState.SPEAKING || notification.value == QuizNotification.EMPTY) {
                 return@launch
             }
 
@@ -532,12 +560,57 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    fun empty() = viewModelScope.launch {
-        uiState.value = QuizUiState.EMPTY
+    fun cancelUserInputJob() = viewModelScope.launch {
+        // cancel user input job
+        getUserInputJob?.cancel()
+        speechRecognizerService.stopListening()
+        userInputState.postValue(UserInputState.ENABLED)
+        ttsState.postValue(TtsState.ENABLED)
     }
 
-    fun play() = viewModelScope.launch {
-        uiState.value = QuizUiState.PLAY
+    fun explicitUserInput(text: String) = viewModelScope.launch {
+        recognition.postValue(text)
+        userInputState.postValue(UserInputState.ENABLED)
+        ttsState.postValue(TtsState.ENABLED)
+        // update state
+        val speakToUserNeeded = quizService.userInput(arrayListOf(text))
+        if (speakToUserNeeded) {
+            infoToUser()
+        }
+    }
+
+    private fun trackPlayStarted() = viewModelScope.launch {
+        currentTrack = quizService.getCurrentTrack().toViewModelTrack()
+
+        if(alreadyAddedFavouriteIds.contains(currentTrack?.id)){
+            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
+        }
+        else{
+            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
+        }
+    }
+
+    private fun trackPlayFinished() = viewModelScope.launch {
+        currentTrack = null
+        addToFavouritesState.postValue(AddToFavouritesState.HIDDEN)
+    }
+
+    fun addCurrentTrackToFavourites() = viewModelScope.launch(Dispatchers.IO){
+        currentTrack?.let {
+            favouritesRepository.insertTrack(it.toTrack())
+            alreadyAddedFavouriteIds.add(it.id)
+            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
+            notification.postValue(QuizNotification.ADDED_TO_FAVOURITES)
+        }
+    }
+
+    fun removeCurrentTrackFromFavourites() = viewModelScope.launch(Dispatchers.IO){
+        currentTrack?.let {
+            favouritesRepository.deleteTrackById(it.id)
+            alreadyAddedFavouriteIds.remove(it.id)
+            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
+            notification.postValue(QuizNotification.REMOVED_FROM_FAVOURITES)
+        }
     }
 
 }

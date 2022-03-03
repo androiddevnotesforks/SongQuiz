@@ -3,9 +3,10 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
+import com.aaronfodor.android.songquiz.model.MediaPlayerService
+import com.aaronfodor.android.songquiz.model.repository.TracksRepository
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelTrack
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelTrack
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,12 +18,17 @@ enum class FavouritesUiState{
 }
 
 enum class FavouritesNotification{
-    NONE, ERROR_DELETE_TRACK, SUCCESS_DELETE_TRACK
+    NONE, ERROR_DELETE_TRACK, SUCCESS_DELETE_TRACK, ERROR_PLAY_SONG
+}
+
+enum class MediaPlayerFavouritesState{
+    PLAYING, STOPPED
 }
 
 @HiltViewModel
 class FavouritesViewModel @Inject constructor(
-    val repository: PlaylistsRepository,
+    val repository: TracksRepository,
+    val mediaPlayerService: MediaPlayerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -38,8 +44,8 @@ class FavouritesViewModel @Inject constructor(
 
     val callerType = InfoTrackScreenCaller.FAVOURITES.name
 
-    val tracks : MutableLiveData<List<ViewModelPlaylist>> by lazy {
-        MutableLiveData<List<ViewModelPlaylist>>()
+    val tracks : MutableLiveData<List<ViewModelTrack>> by lazy {
+        MutableLiveData<List<ViewModelTrack>>()
     }
 
     val uiState: MutableLiveData<FavouritesUiState> by lazy {
@@ -50,15 +56,55 @@ class FavouritesViewModel @Inject constructor(
         MutableLiveData<FavouritesNotification>(getInitialNotification())
     }
 
+    /**
+     * Is media player currently playing
+     */
+    val mediaPlayerState: MutableLiveData<MediaPlayerFavouritesState> by lazy {
+        MutableLiveData<MediaPlayerFavouritesState>()
+    }
+
+    init {
+        subscribeMediaPlayerListeners()
+    }
+
+    fun subscribeMediaPlayerListeners() = viewModelScope.launch {
+        mediaPlayerService.setCallbacks(
+            started = {
+                mediaPlayerState.postValue(MediaPlayerFavouritesState.PLAYING)
+            },
+            finished = {
+                mediaPlayerState.postValue(MediaPlayerFavouritesState.STOPPED)
+            },
+            error = {
+                mediaPlayerState.postValue(MediaPlayerFavouritesState.STOPPED)
+            }
+        )
+
+        if(mediaPlayerService.isPlaying()){
+            mediaPlayerState.postValue(MediaPlayerFavouritesState.PLAYING)
+        }
+        else{
+            mediaPlayerState.postValue(MediaPlayerFavouritesState.STOPPED)
+        }
+    }
+
+    fun unsubscribeMediaPlayerListeners() = viewModelScope.launch {
+        mediaPlayerService.setCallbacks(
+            started = {},
+            finished = {},
+            error = {}
+        )
+    }
+
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(FavouritesUiState.LOADING)
-        val loadedTracks = repository.getPlaylists()
+        val loadedTracks = repository.getTracks()
         uiState.postValue(FavouritesUiState.READY)
-        tracks.postValue(loadedTracks.map { it.toViewModelPlaylist() })
+        tracks.postValue(loadedTracks.map { it.toViewModelTrack() })
     }
 
     fun deleteTrack(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        val success = repository.deletePlaylistById(id)
+        val success = repository.deleteTrackById(id)
         if(success){
             notification.postValue(FavouritesNotification.SUCCESS_DELETE_TRACK)
         }
@@ -66,8 +112,39 @@ class FavouritesViewModel @Inject constructor(
             notification.postValue(FavouritesNotification.ERROR_DELETE_TRACK)
         }
 
-        val newList = repository.getPlaylists().map { it.toViewModelPlaylist() }
+        val newList = repository.getTracks().map { it.toViewModelTrack() }
         tracks.postValue(newList)
+    }
+
+    fun playSong(trackId: String) = viewModelScope.launch(Dispatchers.IO) {
+        val track = repository.getTrackById(trackId)
+        playUrlSound(track.previewUrl)
+    }
+
+    fun stopSong() = viewModelScope.launch {
+        mediaPlayerService.stop()
+    }
+
+    private fun playUrlSound(soundUri: String) : Boolean{
+        var isSuccess = false
+
+        val started = {
+            isSuccess = false
+            mediaPlayerState.postValue(MediaPlayerFavouritesState.PLAYING)
+        }
+        val finished = {
+            isSuccess = true
+            mediaPlayerState.postValue(MediaPlayerFavouritesState.STOPPED)
+        }
+        val error = {
+            isSuccess = false
+            mediaPlayerState.postValue(MediaPlayerFavouritesState.STOPPED)
+            notification.postValue(FavouritesNotification.ERROR_PLAY_SONG)
+        }
+
+        mediaPlayerService.playUrlSound(soundUri, started, finished, error)
+
+        return isSuccess
     }
 
 }

@@ -19,6 +19,8 @@
     <dimen name="button_corner_radius">5dp</dimen>
     <dimen name="button_stroke">4dp</dimen>
 
+    <dimen name="secondary_button_size">42dp</dimen>
+
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_big">24dp</dimen>

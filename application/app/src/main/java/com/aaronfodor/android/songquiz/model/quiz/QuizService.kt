@@ -2,6 +2,7 @@ package com.aaronfodor.android.songquiz.model.quiz
 
 import com.aaronfodor.android.songquiz.model.TextParserService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -719,6 +720,10 @@ class QuizService @Inject constructor(
         }
 
         return true
+    }
+
+    fun getCurrentTrack() : Track {
+        return playlist.tracks[quiz.currentTrackIndex]
     }
 
 }

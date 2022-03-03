@@ -13,10 +13,8 @@
 
 package com.aaronfodor.android.songquiz.view.utils
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aaronfodor.android.songquiz.R

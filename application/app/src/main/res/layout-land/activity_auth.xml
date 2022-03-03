@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/icon_music_notes"
+    android:background="@drawable/music_notes"
     tools:context=".view.AuthActivity">
 
     <ImageView

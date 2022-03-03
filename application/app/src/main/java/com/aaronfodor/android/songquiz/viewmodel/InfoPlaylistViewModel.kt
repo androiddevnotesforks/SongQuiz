@@ -90,6 +90,13 @@ class InfoPlaylistViewModel  @Inject constructor(
                 ttsState.postValue(TtsInfoPlaylistState.ENABLED)
             }
         )
+
+        if(textToSpeechService.isSpeaking()){
+            ttsState.postValue(TtsInfoPlaylistState.SPEAKING)
+        }
+        else{
+            ttsState.postValue(TtsInfoPlaylistState.ENABLED)
+        }
     }
 
     fun unsubscribeTtsListeners() = viewModelScope.launch {

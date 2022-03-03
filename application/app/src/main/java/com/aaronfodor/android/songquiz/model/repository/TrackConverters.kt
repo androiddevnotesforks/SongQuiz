@@ -48,11 +48,30 @@ fun TrackDTO.toTrack() : Track{
         }
     }
 
+    var imageUri = ""
+    this.album?.images?.let {
+        var imageDim = 0
+        val maxImageDim = 680
+
+        for(image in it){
+            if(imageUri.isBlank() && image.url.isNotBlank()){
+                imageUri = image.url
+                imageDim = image.height
+            }
+
+            if((image.height in imageDim until maxImageDim) && image.url.isNotBlank()){
+                imageUri = image.url
+                imageDim = image.height
+            }
+        }
+    }
+
     return Track(
         id = this.id,
         name = this.name,
         artists = artists,
         album = this.album?.name?: "",
+        imageUri = imageUri,
         durationMs = this.duration_ms,
         uri = this.uri ?: "",
         popularity = this.popularity ?: 0,

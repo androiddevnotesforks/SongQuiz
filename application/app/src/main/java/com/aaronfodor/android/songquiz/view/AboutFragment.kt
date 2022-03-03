@@ -108,8 +108,8 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
         val ttsStateObserver = Observer<TtsAboutState> { state ->
             when(state){
                 TtsAboutState.ENABLED -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
-                    binding.fabSpeak.setOnClickListener {
+                    binding.fabMain.setImageResource(R.drawable.icon_sound_on)
+                    binding.fabMain.setOnClickListener {
                         val appDate = getString(R.string.app_date)
                         val appCreator = getString(R.string.app_creator)
                         val appCopyright = getString(R.string.app_copyright)
@@ -121,8 +121,8 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
                     }
                 }
                 TtsAboutState.SPEAKING -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_off)
-                    binding.fabSpeak.setOnClickListener {
+                    binding.fabMain.setImageResource(R.drawable.icon_sound_off)
+                    binding.fabMain.setOnClickListener {
                         viewModel.stopSpeaking()
                     }
                 }
@@ -132,7 +132,7 @@ class AboutFragment : AppFragment(R.layout.fragment_about) {
     }
 
     override fun appearingAnimations() {
-        binding.fabSpeak.appear(R.anim.slide_in_right, true)
+        binding.fabMain.appear(R.anim.slide_in_right, true)
         binding.content.action1.fab.appear(R.anim.slide_in_left, true)
         binding.content.action2.fab.appear(R.anim.slide_in_left, true)
         binding.content.action3.fab.appear(R.anim.slide_in_left, true)

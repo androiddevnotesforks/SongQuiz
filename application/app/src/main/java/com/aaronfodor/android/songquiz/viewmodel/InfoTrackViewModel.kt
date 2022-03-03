@@ -3,10 +3,11 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.MediaPlayerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
-import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
+import com.aaronfodor.android.songquiz.model.repository.TracksRepository
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelTrack
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelTrack
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,11 @@ enum class InfoTrackUiState{
 }
 
 enum class InfoTrackUiNotification{
-    NONE, ERROR_LOAD, ERROR_DELETE_ITEM, SUCCESS_DELETE_ITEM
+    NONE, ERROR_LOAD, ERROR_DELETE_ITEM, SUCCESS_DELETE_ITEM, ERROR_PLAY_SONG
+}
+
+enum class MediaPlayerInfoTrackState{
+    PLAYING, STOPPED
 }
 
 enum class TtsInfoTrackState{
@@ -31,8 +36,9 @@ enum class InfoTrackScreenCaller{
 
 @HiltViewModel
 class InfoTrackViewModel  @Inject constructor(
-    var repository: PlaylistsRepository,
-    var textToSpeechService: TextToSpeechService,
+    val repository: TracksRepository,
+    val textToSpeechService: TextToSpeechService,
+    val mediaPlayerService: MediaPlayerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -58,10 +64,17 @@ class InfoTrackViewModel  @Inject constructor(
     }
 
     /**
+     * Is media player currently playing
+     */
+    val mediaPlayerState: MutableLiveData<MediaPlayerInfoTrackState> by lazy {
+        MutableLiveData<MediaPlayerInfoTrackState>()
+    }
+
+    /**
      * Item to show
      */
-    val item: MutableLiveData<ViewModelPlaylist> by lazy {
-        MutableLiveData<ViewModelPlaylist>()
+    val item: MutableLiveData<ViewModelTrack> by lazy {
+        MutableLiveData<ViewModelTrack>()
     }
 
     init {
@@ -72,7 +85,16 @@ class InfoTrackViewModel  @Inject constructor(
             else{
                 ttsState.value = TtsInfoTrackState.ENABLED
             }
+
+            if(mediaPlayerService.isPlaying()){
+                mediaPlayerState.value = MediaPlayerInfoTrackState.PLAYING
+            }
+            else{
+                mediaPlayerState.value = MediaPlayerInfoTrackState.STOPPED
+            }
+
             subscribeTtsListeners()
+            subscribeMediaPlayerListeners()
         }
     }
 
@@ -88,10 +110,46 @@ class InfoTrackViewModel  @Inject constructor(
                 ttsState.postValue(TtsInfoTrackState.ENABLED)
             }
         )
+
+        if(textToSpeechService.isSpeaking()){
+            ttsState.postValue(TtsInfoTrackState.SPEAKING)
+        }
+        else{
+            ttsState.postValue(TtsInfoTrackState.ENABLED)
+        }
     }
 
     fun unsubscribeTtsListeners() = viewModelScope.launch {
         textToSpeechService.setCallbacks(
+            started = {},
+            finished = {},
+            error = {}
+        )
+    }
+
+    fun subscribeMediaPlayerListeners() = viewModelScope.launch {
+        mediaPlayerService.setCallbacks(
+            started = {
+                mediaPlayerState.postValue(MediaPlayerInfoTrackState.PLAYING)
+            },
+            finished = {
+                mediaPlayerState.postValue(MediaPlayerInfoTrackState.STOPPED)
+            },
+            error = {
+                mediaPlayerState.postValue(MediaPlayerInfoTrackState.STOPPED)
+            }
+        )
+
+        if(mediaPlayerService.isPlaying()){
+            mediaPlayerState.postValue(MediaPlayerInfoTrackState.PLAYING)
+        }
+        else{
+            mediaPlayerState.postValue(MediaPlayerInfoTrackState.STOPPED)
+        }
+    }
+
+    fun unsubscribeMediaPlayerListeners() = viewModelScope.launch {
+        mediaPlayerService.setCallbacks(
             started = {},
             finished = {},
             error = {}
@@ -115,10 +173,10 @@ class InfoTrackViewModel  @Inject constructor(
             // loading state
             uiState.postValue(InfoTrackUiState.LOADING)
 
-            val track = repository.getPlaylistById(trackId)
+            val track = repository.getTrackById(trackId)
             // load from disk
             if(track.id == trackId){
-                item.postValue(track.toViewModelPlaylist())
+                item.postValue(track.toViewModelTrack())
             }
             // cannot load from disk either
             else{
@@ -131,7 +189,7 @@ class InfoTrackViewModel  @Inject constructor(
 
     fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
         item.value?.let {
-            val success = repository.deletePlaylistById(it.id)
+            val success = repository.deleteTrackById(it.id)
             if(success){
                 notification.postValue(InfoTrackUiNotification.SUCCESS_DELETE_ITEM)
             }
@@ -145,6 +203,38 @@ class InfoTrackViewModel  @Inject constructor(
 
     fun ready() = viewModelScope.launch {
         uiState.value = InfoTrackUiState.READY
+    }
+
+    fun playSong() = viewModelScope.launch {
+        item.value?.let {
+            playUrlSound(it.previewUrl)
+        }
+    }
+
+    fun stopSong() = viewModelScope.launch {
+        mediaPlayerService.stop()
+    }
+
+    private fun playUrlSound(soundUri: String) : Boolean{
+        var isSuccess = false
+
+        val started = {
+            isSuccess = false
+            mediaPlayerState.postValue(MediaPlayerInfoTrackState.PLAYING)
+        }
+        val finished = {
+            isSuccess = true
+            mediaPlayerState.postValue(MediaPlayerInfoTrackState.STOPPED)
+        }
+        val error = {
+            isSuccess = false
+            mediaPlayerState.postValue(MediaPlayerInfoTrackState.STOPPED)
+            notification.postValue(InfoTrackUiNotification.ERROR_PLAY_SONG)
+        }
+
+        mediaPlayerService.playUrlSound(soundUri, started, finished, error)
+
+        return isSuccess
     }
 
 }

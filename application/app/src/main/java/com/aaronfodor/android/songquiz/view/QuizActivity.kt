@@ -50,6 +50,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     var userInputButtonAnimation: ObjectAnimator? = null
     var ttsButtonAnimation: ObjectAnimator? = null
+    var favouritesButtonAnimation: ObjectAnimator? = null
+    var typeInputButtonAnimation: ObjectAnimator? = null
 
     override var requiredPermissions: List<RequiredPermission> = listOf()
 
@@ -145,6 +147,32 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     userInputButtonAnimation?.start()
                 }
             }
+
+            when(state){
+                UserInputState.RECORDING, UserInputState.ENABLED -> {
+                    binding.content.typeInputButton.let {
+                        it.setOnClickListener {
+                            viewModel.cancelUserInputJob()
+                            showTypeInputDialog()
+                        }
+                        it.appear(R.anim.slide_in_bottom)
+
+                        typeInputButtonAnimation?.cancel()
+                        typeInputButtonAnimation = it.tappableInfiniteAnimation()
+                        typeInputButtonAnimation?.start()
+                    }
+                }
+                else -> {
+                    binding.content.typeInputButton.let {
+                        it.setOnClickListener {}
+                        it.disappear(R.anim.slide_out_bottom)
+
+                        typeInputButtonAnimation?.cancel()
+                        typeInputButtonAnimation = it.tappableEndAnimation()
+                        typeInputButtonAnimation?.start()
+                    }
+                }
+            }
         }
         viewModel.userInputState.observe(this, userInputStateObserver)
 
@@ -213,38 +241,93 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
 
-        val uiStateObserver = Observer<QuizUiState> { state ->
+        val addToFavouritesButtonStateObserver = Observer<AddToFavouritesState> { state ->
+            when(state){
+                AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {
+                            viewModel.addCurrentTrackToFavourites()
+                        }
 
-            if(state != QuizUiState.LOADING){
+                        it.setImageResource(R.drawable.icon_favourite)
+                        it.appear(R.anim.slide_in_top)
+
+                        favouritesButtonAnimation?.cancel()
+                        favouritesButtonAnimation = it.tappableInfiniteAnimation()
+                        favouritesButtonAnimation?.start()
+                    }
+                }
+                AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {
+                            viewModel.removeCurrentTrackFromFavourites()
+                        }
+
+                        it.setImageResource(R.drawable.icon_favourite_active)
+                        it.appear(R.anim.slide_in_top)
+
+                        favouritesButtonAnimation?.cancel()
+                        favouritesButtonAnimation = it.tappableInfiniteAnimation()
+                        favouritesButtonAnimation?.start()
+                    }
+                }
+                else -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {}
+                        it.disappear(R.anim.slide_out_top)
+
+                        favouritesButtonAnimation?.cancel()
+                        favouritesButtonAnimation = it.tappableEndAnimation()
+                        favouritesButtonAnimation?.start()
+                    }
+                }
+            }
+        }
+        viewModel.addToFavouritesState.observe(this, addToFavouritesButtonStateObserver)
+
+        val notificationObserver = Observer<QuizNotification> { state ->
+
+            if(state != QuizNotification.LOADING){
                 binding.content.loadIndicatorProgressBar.visibility = View.GONE
             }
 
             when(state){
-                QuizUiState.LOADING -> {
+                QuizNotification.LOADING -> {
                     binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
                 }
-                QuizUiState.READY_TO_START -> {
+                QuizNotification.READY_TO_START -> {
                     viewModel.info.value = getString(R.string.ready_to_start)
                 }
-                QuizUiState.ERROR_PLAYLIST_LOAD -> {
+                QuizNotification.ERROR_PLAYLIST_LOAD -> {
                     viewModel.info.value = getString(R.string.error_playlist_load_description)
-                    showInfo(QuizUiState.ERROR_PLAYLIST_LOAD)
+                    showInfo(QuizNotification.ERROR_PLAYLIST_LOAD)
+                    viewModel.notification.postValue(QuizNotification.EMPTY)
                 }
-                QuizUiState.ERROR_PLAY_SONG -> {
+                QuizNotification.ERROR_PLAY_SONG -> {
                     viewModel.info.value = getString(R.string.error_play_song_description)
-                    showInfo(QuizUiState.ERROR_PLAY_SONG)
+                    showInfo(QuizNotification.ERROR_PLAY_SONG)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
                 }
-                QuizUiState.ERROR_SPEAK_TO_USER -> {
+                QuizNotification.ERROR_SPEAK_TO_USER -> {
                     viewModel.info.value = getString(R.string.error_speak_to_user_description)
-                    showInfo(QuizUiState.ERROR_SPEAK_TO_USER)
+                    showInfo(QuizNotification.ERROR_SPEAK_TO_USER)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
                 }
-                QuizUiState.EXIT -> {
+                QuizNotification.ADDED_TO_FAVOURITES -> {
+                    showInfo(QuizNotification.ADDED_TO_FAVOURITES)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.REMOVED_FROM_FAVOURITES -> {
+                    showInfo(QuizNotification.REMOVED_FROM_FAVOURITES)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.EXIT -> {
                     navigateToMainMenu()
                 }
                 else -> {}
             }
         }
-        viewModel.uiState.observe(this, uiStateObserver)
+        viewModel.notification.observe(this, notificationObserver)
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
@@ -515,32 +598,35 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
     }
 
-    private fun showInfo(infoType: QuizUiState){
-
+    private fun showInfo(infoType: QuizNotification){
         when(infoType){
-            QuizUiState.ERROR_PLAYLIST_LOAD -> {
+            QuizNotification.ERROR_PLAYLIST_LOAD -> {
                 val message = getString(R.string.error_listable_load)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
             }
-            QuizUiState.ERROR_PLAY_SONG -> {
+            QuizNotification.ERROR_PLAY_SONG -> {
                 val message = getString(R.string.error_play_song)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.play()
             }
-            QuizUiState.ERROR_SPEAK_TO_USER -> {
+            QuizNotification.ERROR_SPEAK_TO_USER -> {
                 val message = getString(R.string.error_speak_to_user)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.play()
+            }
+            QuizNotification.ADDED_TO_FAVOURITES -> {
+                val message = getString(R.string.added_to_favourites)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+            QuizNotification.REMOVED_FROM_FAVOURITES -> {
+                val message = getString(R.string.removed_from_favourites)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
             else -> {}
         }
-
     }
 
     private fun playlistColorSetter(colorInt: Int){
         val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
-        val playlistColor = if(darkness < 0.35){
+        val playlistColor = if(darkness < 0.25){
             // color is too light, replace with the accent
             getColor(R.color.colorAccent)
         }
@@ -554,6 +640,14 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         gradientDrawable.cornerRadius = 0F
         binding.root.background = gradientDrawable
         this.window.statusBarColor = playlistColor
+    }
+
+    private fun showTypeInputDialog() {
+        val inputDialog = AppDialogInput(this, getString(R.string.type_input), getString(R.string.type_input_description))
+        inputDialog.setPositiveButton {
+            viewModel.explicitUserInput(it)
+        }
+        inputDialog.show()
     }
 
 }

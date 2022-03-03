@@ -50,7 +50,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
         android:visibility="invisible"
-        android:id="@+id/fabSpeak"
+        android:id="@+id/fabMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

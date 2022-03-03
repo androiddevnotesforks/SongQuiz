@@ -20,10 +20,19 @@
     <string name="clear_cache_description">Biztosan törölni szeretnéd a képek gyorsítótárát? Ez csökkenti a memóriahasználatot, de megnövelheti a hálózati forgalmat.</string>
 
     <string name="delete_all_playlists">Összes lista törlése</string>
-    <string name="delete_all_playlists_description">Biztosan törölni szeretnéd az összes felvett listát? Ez a Spotify-on nem befolyásol semmit, a listákat később újra felveheted.</string>
+    <string name="delete_all_playlists_description">Biztosan törölni szeretnéd az összes felvett listádat? Ez a Spotify-on nem befolyásol semmit, a listákat később újra felveheted.</string>
+
+    <string name="delete_all_favourites">Összes kedvenc törlése</string>
+    <string name="delete_all_favourites_description">Biztosan törölni szeretnéd az összes felvett kedvencedet? Ez a Spotify-on nem befolyásol semmit, a dalokat később újra kedvenceidhez adhatod.</string>
 
     <string name="restore_default_playlists">Alapértelmezett listák visszaállítása</string>
     <string name="restore_default_playlists_description">Biztosan törölni szeretnéd a lokális lejátszási listáid, majd visszaállítani az alapértelmezetteket? Ez a Spotify-on nem befolyásol semmit.</string>
+
+    <string name="search_playlist">Lista keresése</string>
+    <string name="search_playlist_description">Írd be a keresett lista nevét vagy Spotify azonosítóját.</string>
+
+    <string name="type_input">Szövegbevitel</string>
+    <string name="type_input_description">Írd be a kívánt szöveget.</string>
 
     <string name="exit_title">Kilépés</string>
     <string name="exit_dialog">Biztosan ki szeretnél lépni?</string>

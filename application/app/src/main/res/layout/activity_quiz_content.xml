@@ -122,6 +122,18 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/SecondaryActionGameImageButton"
+        android:id="@+id/addToFavouritesButton"
+        android:src="@drawable/icon_favourite"
+        android:contentDescription="@string/content_description_add_to_favourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/ttsSpeechButton"
+        app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/ttsSpeechButton"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ActionGameImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
@@ -131,6 +143,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/feedback"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/SecondaryActionGameImageButton"
+        android:id="@+id/typeInputButton"
+        android:src="@drawable/icon_keyboard"
+        android:contentDescription="@string/content_description_type_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/userSpeechButton"
+        app:layout_constraintStart_toStartOf="@+id/userSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/userSpeechButton"/>
 
     <include
         android:id="@+id/feedback"

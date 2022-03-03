@@ -47,8 +47,20 @@ fun ViewModelTrack.toListable() : Listable {
     return Listable(
         id = this.id,
         title = this.name,
-        content1 = this.artists.toString(),
-        content2 = this.popularity.toString(),
+        content1 = this.artists.toPrettyString(),
+        content2 = this.album,
         imageUri = this.imageUri
     )
 }
+
+fun List<String>.toPrettyString() : String {
+    var text = ""
+    for(i in 0 until this.size){
+        text += this[i]
+        if(i != this.lastIndex){
+            text += ", "
+        }
+    }
+    return text
+}
+

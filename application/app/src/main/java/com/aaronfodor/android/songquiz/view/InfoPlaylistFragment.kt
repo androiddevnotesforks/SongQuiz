@@ -70,7 +70,7 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
 
         val itemObserver = Observer<ViewModelPlaylist> { item ->
 
-            if(item.previewImageUri.isEmpty()){
+            if(item.imageUri.isEmpty()){
                 binding.ivLogo.setImageResource(R.drawable.icon_album)
             }
             else{
@@ -84,7 +84,7 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
                     .error(R.drawable.icon_album)
 
                 Glide.with(this)
-                    .load(item.previewImageUri)
+                    .load(item.imageUri)
                     .transition(DrawableTransitionOptions.with(DrawableCrossFadeFactory()))
                     .apply(options)
                     .into(binding.ivLogo)
@@ -130,13 +130,10 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
                         viewModel.startQuiz()
                     }
                     val playContentDescription = getString(R.string.play)
-                    binding.content.action1.fab.visibility = View.VISIBLE
-                    binding.content.action1.tv.visibility = View.VISIBLE
-                    binding.content.action1.fab.setImageResource(R.drawable.icon_play)
-                    binding.content.action1.fab.contentDescription = playContentDescription
-                    binding.content.action1.tv.text = playContentDescription
-                    binding.content.action1.fab.setOnClickListener { play() }
-                    binding.content.action1.tv.setOnClickListener { play() }
+                    binding.fabMain.visibility = View.VISIBLE
+                    binding.fabMain.setImageResource(R.drawable.icon_start_game)
+                    binding.fabMain.contentDescription = playContentDescription
+                    binding.fabMain.setOnClickListener { play() }
 
                     val viewOnSpotify = {
                         val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, item.id))
@@ -170,13 +167,10 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
                         viewModel.addItem()
                     }
                     val contentDescription = getString(R.string.content_description_add)
-                    binding.content.action1.fab.visibility = View.VISIBLE
-                    binding.content.action1.tv.visibility = View.VISIBLE
-                    binding.content.action1.fab.setImageResource(R.drawable.icon_add)
-                    binding.content.action1.fab.contentDescription = contentDescription
-                    binding.content.action1.tv.text = contentDescription
-                    binding.content.action1.fab.setOnClickListener { addPlaylist() }
-                    binding.content.action1.tv.setOnClickListener { addPlaylist() }
+                    binding.fabMain.visibility = View.VISIBLE
+                    binding.fabMain.setImageResource(R.drawable.icon_add)
+                    binding.fabMain.contentDescription = contentDescription
+                    binding.fabMain.setOnClickListener { addPlaylist() }
 
                     val play = {
                         viewModel.startQuiz()
@@ -184,7 +178,7 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
                     val playContentDescription = getString(R.string.play)
                     binding.content.action2.fab.visibility = View.VISIBLE
                     binding.content.action2.tv.visibility = View.VISIBLE
-                    binding.content.action2.fab.setImageResource(R.drawable.icon_play)
+                    binding.content.action2.fab.setImageResource(R.drawable.icon_start_game)
                     binding.content.action2.fab.contentDescription = playContentDescription
                     binding.content.action2.tv.text = playContentDescription
                     binding.content.action2.fab.setOnClickListener { play() }
@@ -231,30 +225,37 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
         val ttsStateObserver = Observer<TtsInfoPlaylistState> { state ->
             when(state){
                 TtsInfoPlaylistState.ENABLED -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
-                    binding.fabSpeak.setOnClickListener {
+                    val readLambda = {
                         val item = viewModel.item.value
                         item?.let {
-
                             val textSongsFollowers = if(viewModel.uiState.value == InfoPlaylistUiState.READY_COMPLETE){
                                 getString(R.string.songs_followers_difficulty, item.tracks.size.toString(), item.followers.toString(), item.getDifficulty().toString())
                             }
-                            else{
-                                ""
-                            }
+                            else{ "" }
 
-                            var text = item.name + ". " + getString(R.string.owner_text, item.owner) + ". " +
-                                    item.description + ". " + textSongsFollowers
+                            var text = item.name + ". " + getString(R.string.owner_text, item.owner) + ". " + item.description + ". " + textSongsFollowers
                             text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                             viewModel.speak(text)
                         }
                     }
+                    val readContentDescription = getString(R.string.read_aloud)
+
+                    binding.content.action1.tv.text = readContentDescription
+                    binding.content.action1.tv.setOnClickListener { readLambda() }
+
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_sound_on)
+                    binding.content.action1.fab.contentDescription = readContentDescription
+                    binding.content.action1.fab.setOnClickListener { readLambda() }
                 }
                 TtsInfoPlaylistState.SPEAKING -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_off)
-                    binding.fabSpeak.setOnClickListener {
-                        viewModel.stopSpeaking()
-                    }
+                    val stopContentDescription = getString(R.string.stop)
+
+                    binding.content.action1.tv.text = stopContentDescription
+                    binding.content.action1.tv.setOnClickListener { viewModel.stopSpeaking() }
+
+                    binding.content.action1.tv.text = stopContentDescription
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_sound_off)
+                    binding.content.action1.fab.setOnClickListener { viewModel.stopSpeaking() }
                 }
             }
         }
@@ -309,7 +310,7 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
     }
 
     override fun appearingAnimations() {
-        binding.fabSpeak.appear(R.anim.slide_in_right, true)
+        binding.fabMain.appear(R.anim.slide_in_right, true)
         binding.content.action1.fab.appear(R.anim.slide_in_left, true)
         binding.content.action2.fab.appear(R.anim.slide_in_left, true)
         binding.content.action3.fab.appear(R.anim.slide_in_left, true)

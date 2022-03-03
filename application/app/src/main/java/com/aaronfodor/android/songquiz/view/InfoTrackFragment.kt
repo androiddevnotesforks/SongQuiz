@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -14,7 +13,8 @@ import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentInfoTrackBinding
 import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelTrack
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toPrettyString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -60,9 +60,9 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
-        val playlistObserver = Observer<ViewModelPlaylist> { item ->
+        val trackObserver = Observer<ViewModelTrack> { item ->
 
-            if(item.previewImageUri.isEmpty()){
+            if(item.imageUri.isEmpty()){
                 binding.ivLogo.setImageResource(R.drawable.icon_album)
             }
             else{
@@ -76,7 +76,7 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
                     .error(R.drawable.icon_album)
 
                 Glide.with(this)
-                    .load(item.previewImageUri)
+                    .load(item.imageUri)
                     .transition(DrawableTransitionOptions.with(DrawableCrossFadeFactory()))
                     .apply(options)
                     .into(binding.ivLogo)
@@ -90,30 +90,21 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
                 binding.content.title.visibility = View.GONE
             }
 
-            binding.content.content.text = item.description
-            if(item.owner.isNotBlank()){
+            getString(R.string.artist_text, item.artists.toPrettyString())
+
+            binding.content.content.text = detailsText(item, true)
+            if(binding.content.content.text.isNotBlank()){
                 binding.content.content.visibility = View.VISIBLE
             }
             else{
                 binding.content.content.visibility = View.GONE
             }
 
-
             when (viewModel.infoScreenCaller) {
-
                 InfoTrackScreenCaller.FAVOURITES -> {
-                    val listen = {}
-                    val playContentDescription = getString(R.string.listen)
-                    binding.content.action1.fab.visibility = View.VISIBLE
-                    binding.content.action1.tv.visibility = View.VISIBLE
-                    binding.content.action1.fab.setImageResource(R.drawable.icon_play)
-                    binding.content.action1.fab.contentDescription = playContentDescription
-                    binding.content.action1.tv.text = playContentDescription
-                    binding.content.action1.fab.setOnClickListener { listen() }
-                    binding.content.action1.tv.setOnClickListener { listen() }
 
                     val viewOnSpotify = {
-                        val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_playlist, item.id))
+                        val spotifyPageUri = Uri.parse(getString(R.string.spotify_open_track, item.id))
                         val spotifyPageIntent = Intent(Intent.ACTION_VIEW, spotifyPageUri)
                         startActivity(spotifyPageIntent)
                     }
@@ -155,35 +146,59 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
                     binding.content.action3.fab.setOnClickListener {}
                     binding.content.action3.tv.setOnClickListener {}
                 }
-
             }
 
         }
-        viewModel.item.observe(this, playlistObserver)
+        viewModel.item.observe(this, trackObserver)
 
         viewModel.subscribeTtsListeners()
         val ttsStateObserver = Observer<TtsInfoTrackState> { state ->
             when(state){
                 TtsInfoTrackState.ENABLED -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_on)
-                    binding.fabSpeak.setOnClickListener {
+                    val readLambda = {
                         val item = viewModel.item.value
                         item?.let {
-                            var text = item.name + ". " + getString(R.string.owner_text, item.owner) + ". " + item.description + ". "
+                            var text = item.name + ". " + detailsText(item, false)
                             text = text.replace("\n\n", ".\n\n").replace("..", ".").replace(" . ", " ")
                             viewModel.speak(text)
                         }
                     }
+                    val readContentDescription = getString(R.string.read_aloud)
+
+                    binding.content.action1.tv.text = readContentDescription
+                    binding.content.action1.tv.setOnClickListener { readLambda() }
+
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_sound_on)
+                    binding.content.action1.fab.contentDescription = readContentDescription
+                    binding.content.action1.fab.setOnClickListener { readLambda() }
                 }
                 TtsInfoTrackState.SPEAKING -> {
-                    binding.fabSpeak.setImageResource(R.drawable.icon_sound_off)
-                    binding.fabSpeak.setOnClickListener {
-                        viewModel.stopSpeaking()
-                    }
+                    val stopContentDescription = getString(R.string.stop)
+
+                    binding.content.action1.tv.text = stopContentDescription
+                    binding.content.action1.tv.setOnClickListener { viewModel.stopSpeaking() }
+
+                    binding.content.action1.tv.text = stopContentDescription
+                    binding.content.action1.fab.setImageResource(R.drawable.icon_sound_off)
+                    binding.content.action1.fab.setOnClickListener { viewModel.stopSpeaking() }
                 }
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
+
+        viewModel.subscribeMediaPlayerListeners()
+        val mediaPlayerStateObserver = Observer<MediaPlayerInfoTrackState> { state ->
+            when(state){
+                MediaPlayerInfoTrackState.PLAYING -> {
+                    mediaPlayerPlayState()
+                }
+                MediaPlayerInfoTrackState.STOPPED -> {
+                    mediaPlayerStoppedState()
+                }
+                else -> {}
+            }
+        }
+        viewModel.mediaPlayerState.observe(this, mediaPlayerStateObserver)
 
         val notificationObserver = Observer<InfoTrackUiNotification> { notification ->
             when(notification){
@@ -199,11 +214,46 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
                     Snackbar.make(binding.root, getString(R.string.success_listable_delete), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(InfoTrackUiNotification.NONE)
                 }
+                InfoTrackUiNotification.ERROR_PLAY_SONG -> {
+                    Snackbar.make(binding.root, getString(R.string.error_play_song_description), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(InfoTrackUiNotification.NONE)
+                }
                 InfoTrackUiNotification.NONE -> {}
                 else -> {}
             }
         }
         viewModel.notification.observe(this, notificationObserver)
+    }
+
+    private fun mediaPlayerPlayState(){
+        val stopContentDescription = getString(R.string.stop)
+        binding.fabMain.setImageResource(R.drawable.icon_stop)
+        binding.fabMain.contentDescription = stopContentDescription
+        binding.fabMain.setOnClickListener { viewModel.stopSong() }
+    }
+
+    private fun mediaPlayerStoppedState(){
+        val listenContentDescription = getString(R.string.listen)
+        binding.fabMain.setImageResource(R.drawable.icon_play)
+        binding.fabMain.contentDescription = listenContentDescription
+        binding.fabMain.setOnClickListener { viewModel.playSong() }
+    }
+
+    private fun detailsText(item: ViewModelTrack, createForDisplay: Boolean = false) : String {
+        val sentenceSeparator = if(createForDisplay){
+            "\n\n"
+        }
+        else{
+            ". "
+        }
+
+        // millis -> sec
+        val durationSec = item.durationMs/1000
+        val minutes = durationSec / 60
+        val seconds = durationSec % 60
+
+        return getString(R.string.artist_text, item.artists.toPrettyString()) + sentenceSeparator +
+            getString(R.string.track_info, item.album, minutes.toString(), seconds.toString(), item.popularity.toString())
     }
 
     private fun deleteItem(name: String) {
@@ -222,7 +272,7 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
     }
 
     override fun appearingAnimations() {
-        binding.fabSpeak.appear(R.anim.slide_in_right, true)
+        binding.fabMain.appear(R.anim.slide_in_right, true)
         binding.content.action1.fab.appear(R.anim.slide_in_left, true)
         binding.content.action2.fab.appear(R.anim.slide_in_left, true)
         binding.content.action3.fab.appear(R.anim.slide_in_left, true)
@@ -230,6 +280,7 @@ class InfoTrackFragment : AppFragment(R.layout.fragment_info_track) {
 
     override fun unsubscribeViewModel() {
         viewModel.unsubscribeTtsListeners()
+        viewModel.unsubscribeMediaPlayerListeners()
     }
 
 }

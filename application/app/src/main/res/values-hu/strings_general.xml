@@ -49,6 +49,8 @@
     <string name="error_play_song_description">Nem sikerült a dal lejátszása. Kérlek ellenőrizd az internetkapcsolatot.</string>
     <string name="error_speak_to_user">Nem sikerült a felhasználóhoz beszélni</string>
     <string name="error_speak_to_user_description">Nem sikerült a felhasználóhoz beszélni. Kérlek bizonyosodj meg róla, hogy az eszközöd támogatja a text-to-speech funkciót.</string>
+    <string name="added_to_favourites">Kedvenceidhez adva</string>
+    <string name="removed_from_favourites">Eltávolítva a kedvenceid közül</string>
 
     <string name="recognition_error_audio">Szövegbemeneti hiba. Kérlek próbáld újra.</string>
     <string name="recognition_error_client">Kliensoldali hiba. Kérlek próbáld újra.</string>

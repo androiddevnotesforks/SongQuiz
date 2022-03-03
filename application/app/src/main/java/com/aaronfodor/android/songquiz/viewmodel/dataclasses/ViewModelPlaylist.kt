@@ -10,7 +10,7 @@ class ViewModelPlaylist (
     val name: String = "",
     val description: String = "",
     val owner: String = "",
-    val previewImageUri: String = "",
+    val imageUri: String = "",
     val followers: Int = 0,
     val uri: String = "",
     val primary_color: String = "",
@@ -28,7 +28,7 @@ fun Playlist.toViewModelPlaylist() : ViewModelPlaylist {
         name = this.name,
         description = this.description,
         owner = this.owner,
-        previewImageUri = this.imageUri,
+        imageUri = this.imageUri,
         followers = this.followers,
         uri = this.uri,
         primary_color = this.primary_color,
@@ -47,7 +47,7 @@ fun ViewModelPlaylist.toPlaylist() : Playlist {
         name = this.name,
         description = this.description,
         owner = this.owner,
-        imageUri = this.previewImageUri,
+        imageUri = this.imageUri,
         followers = this.followers,
         uri = this.uri,
         primary_color = this.primary_color,
@@ -61,7 +61,7 @@ fun ViewModelPlaylist.toListable() : Listable {
         title = this.name,
         content1 = this.owner,
         content2 = this.description,
-        imageUri = this.previewImageUri
+        imageUri = this.imageUri
     )
 }
 

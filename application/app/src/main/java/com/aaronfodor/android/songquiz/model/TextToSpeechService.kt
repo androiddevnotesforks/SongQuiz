@@ -10,11 +10,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Injected everywhere as a singleton
+ * Injected anywhere as a singleton
  */
 @Singleton
 class TextToSpeechService  @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    val languageService: LanguageService
 ) : UtteranceProgressListener(){
 
     var requestCounter = 0
@@ -26,31 +27,19 @@ class TextToSpeechService  @Inject constructor(
     var finishedCallback: () -> Unit = {}
     var errorCallback: () -> Unit = {}
 
-    init {
-        init(Locale.getDefault())
-    }
+    init { init() }
 
     /**
      * Initialize text to speech
      * Set text to speech listener
      */
-    fun init(currentLocale: Locale){
+    fun init(){
         stop()
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 textToSpeech?.let {
-                    val ttsLanguage = when (currentLocale.language) {
-                        "en" -> {
-                            currentLocale
-                        }
-                        "hu" -> {
-                            Locale("HUN")
-                        }
-                        // fallback to English
-                        else -> {
-                            Locale.ENGLISH
-                        }
-                    }
+
+                    val ttsLanguage = languageService.getLanguageLocale()
 
                     val languageAvailable = it.isLanguageAvailable(ttsLanguage)
                     if(languageAvailable == TextToSpeech.LANG_COUNTRY_AVAILABLE ||
@@ -62,6 +51,7 @@ class TextToSpeechService  @Inject constructor(
                     else{
                         it.language = Locale.ENGLISH
                     }
+
                 }
             }
         }

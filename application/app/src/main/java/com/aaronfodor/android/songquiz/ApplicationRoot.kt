@@ -23,9 +23,8 @@ class ApplicationRoot : Application() {
 
     private val localeChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val locale = Locale.getDefault()
-            textToSpeechService.init(locale)
-            speechRecognizerService.init(locale)
+            textToSpeechService.init()
+            speechRecognizerService.init()
         }
     }
 

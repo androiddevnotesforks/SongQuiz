@@ -3,6 +3,8 @@
 <resources>
     <string name="content_description_get_information">Get information</string>
     <string name="content_description_user_input">User input</string>
+    <string name="content_description_add_to_favourites">Add to favourites</string>
+    <string name="content_description_type_input">Type input</string>
     <string name="content_description_search">Search</string>
     <string name="content_description_add_playlist">Add playlist</string>
     <string name="content_description_play">Play</string>

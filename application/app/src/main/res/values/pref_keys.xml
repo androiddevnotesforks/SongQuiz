@@ -15,6 +15,7 @@
 
     <string name="SETTINGS_KEY_CLEAR_CACHE" translatable="false">clear_cache</string>
     <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS" translatable="false">delete_all_playlists</string>
+    <string name="SETTINGS_KEY_DELETE_ALL_FAVOURITES" translatable="false">delete_all_favourites</string>
     <string name="SETTINGS_KEY_RESTORE_DEFAULT_DB" translatable="false">restore_default_db</string>
 
     <string name="PREF_KEY_ONBOARDING_QUIZ_SHOWED" translatable="false">onboarding_quiz_showed</string>

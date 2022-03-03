@@ -13,7 +13,7 @@ import com.aaronfodor.android.songquiz.model.database.ApplicationDB
 import com.aaronfodor.android.songquiz.view.utils.AppDialog
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestModule
 import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.viewmodel.SettingsUiState
+import com.aaronfodor.android.songquiz.viewmodel.SettingsNotification
 import com.aaronfodor.android.songquiz.viewmodel.SettingsViewModel
 import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.bumptech.glide.Glide
@@ -45,6 +45,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyOnboarding = ""
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
+    private var keyDeleteFavourites = ""
     private var keyRestoreDefaultDb = ""
     // boarding flag key
     private var keyOnboardingQuizShowed = ""
@@ -68,6 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyOnboarding = getString(R.string.SETTINGS_KEY_ONBOARDING)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
+        keyDeleteFavourites = getString(R.string.SETTINGS_KEY_DELETE_ALL_FAVOURITES)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
         // boarding flag keys
         keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
@@ -93,6 +95,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val deletePlaylistsPref = findPreference<Preference>(keyDeletePlaylists)?.setOnPreferenceClickListener {
             showDeletePlaylistsDialog()
+            true
+        }
+
+        val deleteFavouritesPref = findPreference<Preference>(keyDeleteFavourites)?.setOnPreferenceClickListener {
+            showDeleteFavouritesDialog()
             true
         }
 
@@ -166,24 +173,32 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     }
 
     private fun subscribeViewModel() {
-        val uiStateObserver = Observer<SettingsUiState> { state ->
+        val notificationObserver = Observer<SettingsNotification> { state ->
             when(state){
-                SettingsUiState.CACHE_CLEARED -> {
-                    showInfo(state)
+                SettingsNotification.CACHE_CLEARED -> {
+                    Snackbar.make(this.requireView(), getString(R.string.cache_cleared), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
                 }
-                SettingsUiState.PLAYLISTS_DELETED -> {
-                    showInfo(state)
+                SettingsNotification.PLAYLISTS_DELETED -> {
+                    Snackbar.make(this.requireView(), getString(R.string.playlists_deleted), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
                 }
-                SettingsUiState.DEFAULT_PLAYLISTS_RESTORED -> {
-                    showInfo(state)
+                SettingsNotification.FAVOURITES_DELETED -> {
+                    Snackbar.make(this.requireView(), getString(R.string.favourites_deleted), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
                 }
-                SettingsUiState.ACCOUNT_LOGGED_OUT -> {
-                    showInfo(state)
+                SettingsNotification.DEFAULT_PLAYLISTS_RESTORED -> {
+                    Snackbar.make(this.requireView(), getString(R.string.defaults_restored), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
+                }
+                SettingsNotification.ACCOUNT_LOGGED_OUT -> {
+                    Snackbar.make(this.requireView(), getString(R.string.account_forgot), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
                 }
                 else -> {}
             }
         }
-        viewModel.uiState.observe(this, uiStateObserver)
+        viewModel.notification.observe(this, notificationObserver)
 
         val accountStateObserver = Observer<ViewModelAccountState> { accountState ->
             when(accountState){
@@ -260,6 +275,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         dialog.show()
     }
 
+    private fun showDeleteFavouritesDialog() {
+        val dialog = AppDialog(requireContext(), getString(R.string.delete_all_favourites),
+            getString(R.string.delete_all_favourites_description), R.drawable.icon_delete)
+        dialog.setPositiveButton {
+            // delete favourites
+            viewModel.deleteFavourites()
+            // delete Glide local disk cache too; blocks main thread so schedule on an IO dispatcher
+            CoroutineScope(Dispatchers.IO).launch {
+                Glide.get(requireContext()).clearDiskCache()
+            }
+        }
+        dialog.show()
+    }
+
     private fun showRestoreDefaultPlaylistsDialog() {
         val dialog = AppDialog(requireContext(), getString(R.string.restore_default_playlists),
             getString(R.string.restore_default_playlists_description), R.drawable.icon_restore)
@@ -317,28 +346,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 apply()
             }
         }
-    }
-
-    private fun showInfo(infoType: SettingsUiState){
-        val message = when(infoType){
-            SettingsUiState.CACHE_CLEARED -> {
-                getString(R.string.cache_cleared)
-            }
-            SettingsUiState.PLAYLISTS_DELETED -> {
-                getString(R.string.playlists_deleted)
-            }
-            SettingsUiState.DEFAULT_PLAYLISTS_RESTORED -> {
-                getString(R.string.defaults_restored)
-            }
-            SettingsUiState.ACCOUNT_LOGGED_OUT -> {
-                getString(R.string.account_forgot)
-            }
-            else -> {
-                ""
-            }
-        }
-        Snackbar.make(this.requireView(), message, Snackbar.LENGTH_LONG).show()
-        viewModel.ready()
     }
 
     override var authLauncherStarted = false

@@ -50,9 +50,8 @@ open class SpotifyApiService @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
         }
-        finally {
-            return response
-        }
+        finally {}
+        return response
     }
 
     // must be open for mock testing
@@ -67,9 +66,8 @@ open class SpotifyApiService @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
         }
-        finally {
-            return response
-        }
+        finally {}
+        return response
     }
 
     fun getPlaylistsByName(name: String, offset: Int) : PlaylistsDTO {
@@ -85,9 +83,8 @@ open class SpotifyApiService @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
         }
-        finally {
-            return response
-        }
+        finally {}
+        return response
     }
 
     fun getPlaylistsByIdOrName(searchExpression: String, offset: Int) : PlaylistsDTO{
@@ -108,9 +105,8 @@ open class SpotifyApiService @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
         }
-        finally {
-            return response
-        }
+        finally {}
+        return response
     }
 
     fun getCurrentAccount(accessToken: String) : AccountDTO{
@@ -132,9 +128,8 @@ open class SpotifyApiService @Inject constructor(
         catch (e: Exception) {
             e.printStackTrace()
         }
-        finally {
-            return response
-        }
+        finally {}
+        return response
     }
 
 }

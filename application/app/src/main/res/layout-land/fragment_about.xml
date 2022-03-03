@@ -8,10 +8,23 @@
     android:layout_height="match_parent"
     tools:context=".view.AboutFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ImageView
+        style="@style/MainImage"
+        android:id="@+id/ivLogo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/song_quiz"
+        android:importantForAccessibility="no"
+        app:layout_constraintDimensionRatio="1.0"
+        android:layout_marginStart="0dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@+id/ivLogo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,24 +35,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                style="@style/MainImage"
-                android:id="@+id/ivLogo"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/song_quiz"
-                android:importantForAccessibility="no"
-                app:layout_constraintDimensionRatio="1.0"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
             <include
                 android:id="@+id/content"
                 layout="@layout/fragment_about_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/ivLogo"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -50,7 +51,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
         android:visibility="invisible"
-        android:id="@+id/fabSpeak"
+        android:id="@+id/fabMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

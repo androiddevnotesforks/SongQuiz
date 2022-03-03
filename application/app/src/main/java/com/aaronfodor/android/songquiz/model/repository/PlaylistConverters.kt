@@ -48,8 +48,20 @@ fun PlaylistDTO.toPlaylist() : Playlist {
     }
 
     var imageUri = ""
-    if(!this.images.isNullOrEmpty()){
-        imageUri = this.images.random().url ?: ""
+    var imageDim = 0
+    val maxImageDim = 680
+    this.images?.let {
+        for(image in it){
+            if(imageUri.isBlank() && image.url.isNotBlank()){
+                imageUri = image.url
+                imageDim = image.height
+            }
+
+            if((image.height in imageDim until maxImageDim) && image.url.isNotBlank()){
+                imageUri = image.url
+                imageDim = image.height
+            }
+        }
     }
 
     return Playlist(

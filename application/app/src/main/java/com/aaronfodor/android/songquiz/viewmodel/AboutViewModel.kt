@@ -50,6 +50,13 @@ class AboutViewModel  @Inject constructor(
                 ttsState.postValue(TtsAboutState.ENABLED)
             }
         )
+
+        if(textToSpeechService.isSpeaking()){
+            ttsState.postValue(TtsAboutState.SPEAKING)
+        }
+        else{
+            ttsState.postValue(TtsAboutState.ENABLED)
+        }
     }
 
     fun unsubscribeTtsListeners() = viewModelScope.launch {

@@ -206,7 +206,7 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
 
     private fun setupRecyclerView() {
         val startLambda: (Listable) -> Unit = { playlist -> playByIdSelected(playlist.id) }
-        val startDrawable = getDrawable(requireContext(), R.drawable.icon_play_circular)
+        val startDrawable = getDrawable(requireContext(), R.drawable.icon_start_game)
         val startText = getString(R.string.play)
 
         val infoLambda: (Listable) -> Unit = { playlist -> showInfoScreen(playlist.id) }

@@ -14,10 +14,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.FragmentFavouritesBinding
 import com.aaronfodor.android.songquiz.view.utils.*
-import com.aaronfodor.android.songquiz.viewmodel.FavouritesNotification
-import com.aaronfodor.android.songquiz.viewmodel.FavouritesUiState
-import com.aaronfodor.android.songquiz.viewmodel.FavouritesViewModel
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
+import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelTrack
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
 
@@ -43,7 +41,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         // needed to trigger refresh when UI is shown again
         viewModel.loadData()
 
-        val tracksObserver = Observer<List<ViewModelPlaylist>> { tracks ->
+        val tracksObserver = Observer<List<ViewModelTrack>> { tracks ->
             val newList = tracks.map { it.toListable() }
             (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
@@ -81,6 +79,20 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
+        viewModel.subscribeMediaPlayerListeners()
+        val mediaPlayerStateObserver = Observer<MediaPlayerFavouritesState> { state ->
+            when(state){
+                MediaPlayerFavouritesState.PLAYING -> {
+                    mediaPlayerPlayState()
+                }
+                MediaPlayerFavouritesState.STOPPED -> {
+                    mediaPlayerStoppedState()
+                }
+                else -> {}
+            }
+        }
+        viewModel.mediaPlayerState.observe(this, mediaPlayerStateObserver)
+
         val notificationObserver = Observer<FavouritesNotification> { notification ->
             when(notification){
                 FavouritesNotification.SUCCESS_DELETE_TRACK -> {
@@ -89,6 +101,10 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
                 }
                 FavouritesNotification.ERROR_DELETE_TRACK -> {
                     Snackbar.make(binding.root, getString(R.string.error_listable_delete), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(FavouritesNotification.NONE)
+                }
+                FavouritesNotification.ERROR_PLAY_SONG -> {
+                    Snackbar.make(binding.root, getString(R.string.error_play_song_description), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(FavouritesNotification.NONE)
                 }
                 FavouritesNotification.NONE -> {}
@@ -103,8 +119,6 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
             binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
         }
     }
-
-    override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
         val navController = NavHostFragment.findNavController(this)
@@ -128,8 +142,9 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
     }
 
     private fun setupRecyclerView() {
-        val listenLambda: (Listable) -> Unit = { track -> }
-        val listenDrawable = getDrawable(requireContext(), R.drawable.icon_play)
+
+        val listenLambda: (Listable) -> Unit = { track -> viewModel.playSong(track.id) }
+        val listenDrawable = getDrawable(requireContext(), R.drawable.icon_play_circular)
         val listenText = getString(R.string.listen)
 
         val infoLambda: (Listable) -> Unit = { track -> showInfoScreen(track.id) }
@@ -179,6 +194,22 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         binding.list.swipeRefreshLayout.setOnRefreshListener {
             viewModel.loadData()
         }
+    }
+
+    private fun mediaPlayerPlayState(){
+        binding.fabStop.setOnClickListener {
+            viewModel.stopSong()
+        }
+        binding.fabStop.appear(R.anim.slide_in_bottom)
+    }
+
+    private fun mediaPlayerStoppedState(){
+        binding.fabStop.setOnClickListener {}
+        binding.fabStop.disappear(R.anim.slide_out_bottom)
+    }
+
+    override fun unsubscribeViewModel() {
+        viewModel.unsubscribeMediaPlayerListeners()
     }
 
 }

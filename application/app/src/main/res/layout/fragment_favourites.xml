@@ -17,4 +17,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        style="@style/FAB"
+        android:visibility="invisible"
+        android:id="@+id/fabStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/icon_stop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/stop" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

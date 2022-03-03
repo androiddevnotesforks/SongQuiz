@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "24/02/2022">
+    <!ENTITY appDate "03/03/2022">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY developerContact "arpadfodor01@gmail.com">
     <!ENTITY developerPage "https://github.com/aaronfodor">
@@ -22,6 +22,7 @@
     <string name="report_message_title" translatable="false">[%1$s][report]</string>
     <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
     <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
+    <string name="spotify_open_track" translatable="false">https://open.spotify.com/track/%1$s</string>
 
     <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
 
@@ -183,7 +184,7 @@
         <item>Ola</item>
         <item>Sade</item>
         <item>Taraji</item>
-        <item>Nijaij</item>
+        <item>Niraij</item>
         <item>Saanvi</item>
         <item>Arjun</item>
         <item>Aditi</item>

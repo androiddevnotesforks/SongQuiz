@@ -20,6 +20,8 @@ import android.view.animation.AnimationUtils
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 
 fun View.tappableInfiniteAnimation() : ObjectAnimator {
+    this.tappableEndAnimation().start()
+
     val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1.1f)
     val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.1f)
     val animation = ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY)

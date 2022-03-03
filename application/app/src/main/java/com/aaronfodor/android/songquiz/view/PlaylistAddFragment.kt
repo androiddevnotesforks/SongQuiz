@@ -2,8 +2,6 @@ package com.aaronfodor.android.songquiz.view
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.lifecycle.Observer
