@@ -8,9 +8,9 @@ import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
-import com.aaronfodor.android.songquiz.model.repository.toDbPlaylist
-import com.aaronfodor.android.songquiz.model.repository.toPlaylist
-import com.aaronfodor.android.songquiz.model.repository.toTrack
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toDbPlaylist
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toPlaylist
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toTrack
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before

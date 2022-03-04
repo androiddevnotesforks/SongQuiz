@@ -65,9 +65,9 @@
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/nav_help"

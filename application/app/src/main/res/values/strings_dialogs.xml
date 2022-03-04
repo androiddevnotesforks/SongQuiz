@@ -25,8 +25,11 @@
     <string name="delete_all_favourites">Delete all favourites</string>
     <string name="delete_all_favourites_description">Are you sure you want to delete all of your favourites? This will not affect tracks on Spotify, and you can add them to your favourites again.</string>
 
+    <string name="delete_profile_stats">Delete profile statistics</string>
+    <string name="delete_profile_stats_description">Are you sure you want to remove your profile scores and achievements?</string>
+
     <string name="restore_default_playlists">Restore default playlists</string>
-    <string name="restore_default_playlists_description">Are you sure you want to delete your local playlists and restore the defaults? This will not affect anything on Spotify.</string>
+    <string name="restore_default_playlists_description">Are you sure you want to delete your local playlists and restore defaults? This will not affect anything on Spotify.</string>
 
     <string name="search_playlist">Search playlist</string>
     <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>

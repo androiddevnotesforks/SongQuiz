@@ -17,9 +17,10 @@
     <string name="settings_title_clear_cache">Gyorsítótár törlése</string>
     <string name="settings_title_delete_all_playlists">Listák törlése</string>
     <string name="settings_title_delete_all_favourites">Kedvenceid törlése</string>
-    <string name="settings_title_restore_default_db">Alapértelmezett adatok visszaállítása</string>
+    <string name="settings_title_delete_profile_stats">Profilstatisztikád törlése</string>
+    <string name="settings_title_restore_default_playlists">Alapértelmezett listák visszaállítása</string>
 
-    <string name="settings_summary_log_in">Koppints a Spotify bejelentkezéshez</string>
+    <string name="settings_summary_log_in">Koppints a bejelentkezéshez</string>
     <string name="settings_summary_log_out">Koppints a kijelentkezéshez</string>
     <string name="settings_summary_song_duration">Egy dal lejátszási hossza másodpercben</string>
     <string name="settings_summary_onboarding">Koppints a használati tippek ismételt megjelenítéséhez</string>
@@ -29,7 +30,8 @@
     <string name="settings_summary_clear_cache">Memóriahasználat csökkentése a gyorsítótár törlésével</string>
     <string name="settings_summary_delete_all_playlists">Az összes felvett lista törlése</string>
     <string name="settings_summary_delete_all_favourites">Az összes felvett kedvenced törlése</string>
-    <string name="settings_summary_restore_default_db">A lokális adatok törlése, majd az alapértelmezettek visszaállítása</string>
+    <string name="settings_summary_delete_profile_stats">Profilodhoz kapcsolódó pontok és eredmények törlése</string>
+    <string name="settings_summary_restore_default_playlists">Az összes felvett lista törlése, majd az alapértelmezettek visszaállítása</string>
     <string name="settings_title_extended_quiz_info_enabled">Bőbeszédű</string>
     <string name="settings_title_extended_quiz_info_disabled">Szűkszavú</string>
 
@@ -43,6 +45,7 @@
 
     <string name="playlists_deleted">Listák törölve</string>
     <string name="favourites_deleted">Kedvencek törölve</string>
+    <string name="profile_stats_deleted">Profilstatisztikád törölve</string>
     <string name="defaults_restored">Alapértelmezett adatok visszaállítva</string>
     <string name="cache_cleared">Gyorsítótár törölve</string>
     <string name="account_forgot">Sikeres kijelentkezés</string>

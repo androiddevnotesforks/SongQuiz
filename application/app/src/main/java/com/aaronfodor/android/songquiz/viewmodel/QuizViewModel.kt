@@ -163,7 +163,7 @@ class QuizViewModel @Inject constructor(
     /**
      * Already added favourite Ids
      */
-    val alreadyAddedFavouriteIds = mutableListOf<String>()
+    private val alreadyAddedFavouriteIds = mutableListOf<String>()
 
     /**
      * Current track
@@ -579,14 +579,16 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun trackPlayStarted() = viewModelScope.launch {
+    private fun trackPlayStarted() = viewModelScope.launch(Dispatchers.IO){
         currentTrack = quizService.getCurrentTrack().toViewModelTrack()
-
-        if(alreadyAddedFavouriteIds.contains(currentTrack?.id)){
-            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
-        }
-        else{
-            addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
+        currentTrack?.let {
+            if(alreadyAddedFavouriteIds.contains(it.id)){
+                addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
+                favouritesRepository.updateTrack(it.toTrack())
+            }
+            else{
+                addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
+            }
         }
     }
 

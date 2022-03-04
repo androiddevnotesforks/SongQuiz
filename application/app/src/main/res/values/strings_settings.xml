@@ -17,9 +17,10 @@
     <string name="settings_title_clear_cache">Clear cache</string>
     <string name="settings_title_delete_all_playlists">Delete all playlists</string>
     <string name="settings_title_delete_all_favourites">Delete all favourites</string>
-    <string name="settings_title_restore_default_db">Restore defaults</string>
+    <string name="settings_title_delete_profile_stats">Delete profile statistics</string>
+    <string name="settings_title_restore_default_playlists">Restore default playlists</string>
 
-    <string name="settings_summary_log_in">Tap to log in with Spotify</string>
+    <string name="settings_summary_log_in">Tap to log in</string>
     <string name="settings_summary_log_out">Tap to log out</string>
     <string name="settings_summary_song_duration">Play one song for that many seconds</string>
     <string name="settings_summary_onboarding">Tap to see usage hints again</string>
@@ -29,7 +30,8 @@
     <string name="settings_summary_clear_cache">Reduce memory usage by clearing image cache</string>
     <string name="settings_summary_delete_all_playlists">Remove all items from your playlists</string>
     <string name="settings_summary_delete_all_favourites">Remove all items from your favourites</string>
-    <string name="settings_summary_restore_default_db">Remove all local data and restore defaults</string>
+    <string name="settings_summary_delete_profile_stats">Remove your profile scores and achievements</string>
+    <string name="settings_summary_restore_default_playlists">Delete current playlists and restore defaults</string>
     <string name="settings_title_extended_quiz_info_enabled">Verbose</string>
     <string name="settings_title_extended_quiz_info_disabled">Short-spoken</string>
 
@@ -43,6 +45,7 @@
 
     <string name="playlists_deleted">Playlists successfully deleted</string>
     <string name="favourites_deleted">Favourites successfully deleted</string>
+    <string name="profile_stats_deleted">Profile statistics successfully deleted</string>
     <string name="defaults_restored">Defaults restored</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="account_forgot">Logged out successfully</string>

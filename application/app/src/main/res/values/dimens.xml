@@ -42,7 +42,10 @@
     <dimen name="list_item_small_margin">0dp</dimen>
     <dimen name="list_item_small_padding">0dp</dimen>
 
+    <dimen name="profile_image_size">120dp</dimen>
+
     <dimen name="list_item_image_pixels">40dp</dimen>
+    <dimen name="profile_image_pixels">120dp</dimen>
     <dimen name="game_image_pixels">400dp</dimen>
 
     <dimen name="messagebox_corner_radius">14dp</dimen>

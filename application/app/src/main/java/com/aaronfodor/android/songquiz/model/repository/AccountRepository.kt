@@ -20,6 +20,7 @@ class AccountRepository @Inject constructor(
     private val keyAccountName = context.getString(R.string.PREF_KEY_ACCOUNT_NAME)
     private val keyAccountEmail = context.getString(R.string.PREF_KEY_ACCOUNT_EMAIL)
     private val keyAccountUri = context.getString(R.string.PREF_KEY_ACCOUNT_URI)
+    private val keyAccountImageUri = context.getString(R.string.PREF_KEY_ACCOUNT_IMAGE_URI)
     private val keyAccountCountry = context.getString(R.string.PREF_KEY_ACCOUNT_COUNTRY)
     private val keyToken = context.getString(R.string.PREF_KEY_TOKEN)
     private val keyTokenExpireTime = context.getString(R.string.PREF_KEY_TOKEN_EXPIRE_TIME)
@@ -33,6 +34,7 @@ class AccountRepository @Inject constructor(
         val accountName = sharedPreferences.getString(keyAccountName, "") ?: ""
         val accountEmail = sharedPreferences.getString(keyAccountEmail, "") ?: ""
         val accountUri = sharedPreferences.getString(keyAccountUri, "") ?: ""
+        val accountImageUri = sharedPreferences.getString(keyAccountImageUri, "") ?: ""
         val accountCountry = sharedPreferences.getString(keyAccountCountry, "") ?: ""
         val token = sharedPreferences.getString(keyToken, "") ?: ""
         val tokenExpireTime = sharedPreferences.getString(keyTokenExpireTime, "") ?: ""
@@ -43,7 +45,7 @@ class AccountRepository @Inject constructor(
             tokenExpireTimeLong = tokenExpireTime.toLong()
         }
 
-        return Account(accountId, accountName, accountEmail, accountUri, accountCountry, token, tokenExpireTimeLong, isFirstLoadAfterLogin)
+        return Account(accountId, accountName, accountEmail, accountCountry, accountUri, accountImageUri, token, tokenExpireTimeLong, isFirstLoadAfterLogin)
     }
 
     fun updateAccount(account: Account){
@@ -58,6 +60,8 @@ class AccountRepository @Inject constructor(
             putString(keyAccountEmail, account.email)
             remove(keyAccountUri)
             putString(keyAccountUri, account.uri)
+            remove(keyAccountImageUri)
+            putString(keyAccountImageUri, account.imageUri)
             remove(keyAccountCountry)
             putString(keyAccountCountry, account.country)
             remove(keyToken)
@@ -89,6 +93,8 @@ class AccountRepository @Inject constructor(
             putString(keyAccountEmail, "")
             remove(keyAccountUri)
             putString(keyAccountUri, "")
+            remove(keyAccountImageUri)
+            putString(keyAccountImageUri, "")
             remove(keyAccountCountry)
             putString(keyAccountCountry, "")
             remove(keyToken)

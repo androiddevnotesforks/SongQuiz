@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
 import com.aaronfodor.android.songquiz.model.repository.TracksRepository
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,13 +13,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class SettingsNotification{
-    NONE, CACHE_CLEARED, PLAYLISTS_DELETED, FAVOURITES_DELETED, DEFAULT_PLAYLISTS_RESTORED, ACCOUNT_LOGGED_OUT
+    NONE, CACHE_CLEARED, PLAYLISTS_DELETED, FAVOURITES_DELETED, PROFILE_STATS_DELETED, DEFAULT_PLAYLISTS_RESTORED, ACCOUNT_LOGGED_OUT
 }
 
 @HiltViewModel
 class SettingsViewModel  @Inject constructor(
     private val playlistsRepository: PlaylistsRepository,
     private val tracksRepository: TracksRepository,
+    private val profileRepository: ProfileRepository,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -34,6 +36,10 @@ class SettingsViewModel  @Inject constructor(
         return Pair(publicAccountInfo.name, publicAccountInfo.email)
     }
 
+    fun cacheCleared() = viewModelScope.launch {
+        notification.value = SettingsNotification.CACHE_CLEARED
+    }
+
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
         playlistsRepository.deleteAllPlaylists()
         notification.postValue(SettingsNotification.PLAYLISTS_DELETED)
@@ -44,19 +50,20 @@ class SettingsViewModel  @Inject constructor(
         notification.postValue(SettingsNotification.FAVOURITES_DELETED)
     }
 
-    fun logout() = viewModelScope.launch(Dispatchers.IO) {
-        accountService.logout()
-        notification.postValue(SettingsNotification.ACCOUNT_LOGGED_OUT)
-    }
-
-    fun cacheCleared() = viewModelScope.launch {
-        notification.value = SettingsNotification.CACHE_CLEARED
+    fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
+        profileRepository.deleteCurrentProfile()
+        notification.postValue(SettingsNotification.PROFILE_STATS_DELETED)
     }
 
     fun restoreDefaultPlaylists() = viewModelScope.launch(Dispatchers.IO) {
         // rollback to default database content
         playlistsRepository.restoreDefaultPlaylists()
         notification.postValue(SettingsNotification.DEFAULT_PLAYLISTS_RESTORED)
+    }
+
+    fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        accountService.logout()
+        notification.postValue(SettingsNotification.ACCOUNT_LOGGED_OUT)
     }
 
     // for debug mode

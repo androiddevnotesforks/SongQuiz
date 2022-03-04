@@ -55,9 +55,6 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         viewModel.tracks.observe(this, tracksObserver)
 
         val uiStateObserver = Observer<FavouritesUiState> { state ->
-            if(state != FavouritesUiState.READY){
-                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
-            }
             if(state != FavouritesUiState.LOADING){
                 binding.list.swipeRefreshLayout.isRefreshing = false
             }
@@ -68,13 +65,6 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
                 }
                 FavouritesUiState.READY -> {}
                 else -> {}
-            }
-
-            if(viewModel.tracks.value.isNullOrEmpty() && (state == FavouritesUiState.READY)){
-                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
-            }
-            else{
-                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)

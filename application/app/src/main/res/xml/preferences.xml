@@ -85,15 +85,21 @@
             app:selectable="true"/>
 
         <Preference
+            app:key="@string/SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS"
+            app:title="@string/settings_title_restore_default_playlists"
+            app:summary="@string/settings_summary_restore_default_playlists"
+            app:selectable="true"/>
+
+        <Preference
             app:key="@string/SETTINGS_KEY_DELETE_ALL_FAVOURITES"
             app:title="@string/settings_title_delete_all_favourites"
             app:summary="@string/settings_summary_delete_all_favourites"
             app:selectable="true"/>
 
         <Preference
-            app:key="@string/SETTINGS_KEY_RESTORE_DEFAULT_DB"
-            app:title="@string/settings_title_restore_default_db"
-            app:summary="@string/settings_summary_restore_default_db"
+            app:key="@string/SETTINGS_KEY_DELETE_PROFILE_STATS"
+            app:title="@string/settings_title_delete_profile_stats"
+            app:summary="@string/settings_summary_delete_profile_stats"
             app:selectable="true"/>
 
     </PreferenceCategory>

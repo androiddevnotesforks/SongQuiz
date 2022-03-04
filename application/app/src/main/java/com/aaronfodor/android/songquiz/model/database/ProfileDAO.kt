@@ -9,14 +9,14 @@ interface ProfileDAO {
     @Query("SELECT * FROM ${ApplicationDB.PROFILE_TABLE_NAME}")
     fun getAll(): List<DbProfile>?
 
-    @Query("SELECT * FROM ${ApplicationDB.PROFILE_TABLE_NAME} WHERE id=:accountId ")
-    fun getById(accountId: String): List<DbProfile>?
+    @Query("SELECT * FROM ${ApplicationDB.PROFILE_TABLE_NAME} WHERE id=:id ")
+    fun getById(id: String): List<DbProfile>?
 
     @Query("DELETE FROM ${ApplicationDB.PROFILE_TABLE_NAME}")
     fun deleteAll()
 
-    @Query("DELETE FROM ${ApplicationDB.PROFILE_TABLE_NAME} WHERE id=:accountId ")
-    fun delete(accountId: String)
+    @Query("DELETE FROM ${ApplicationDB.PROFILE_TABLE_NAME} WHERE id=:id ")
+    fun delete(id: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg item: DbProfile)

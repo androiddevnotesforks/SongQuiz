@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.repository.AccountRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PublicAccountInfo
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toPublicAccountInfo
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -16,13 +18,6 @@ import javax.inject.Singleton
 enum class AccountState{
     LOGGED_IN, LOGGED_OUT, NONE
 }
-
-data class PublicAccountInfo(
-    val id: String,
-    val name: String,
-    val email: String,
-    val isFirstLoadAfterLogin: Boolean
-)
 
 /**
  * Injected everywhere as a singleton
@@ -79,7 +74,6 @@ class AccountService @Inject constructor(
     }
 
     fun setAccount(accountToSet: Account){
-
         if(accountToSet.id.isNotBlank()){
             account = accountToSet
             repository.updateAccount(accountToSet)
@@ -135,8 +129,8 @@ class AccountService @Inject constructor(
         accountState.postValue(AccountState.LOGGED_OUT)
     }
 
-    fun getPublicInfo() : PublicAccountInfo{
-        return PublicAccountInfo(account.id, account.name, account.email, account.isFirstLoadAfterLogin)
+    fun getPublicInfo() : PublicAccountInfo {
+        return account.toPublicAccountInfo()
     }
 
     fun getAccountId() : String{

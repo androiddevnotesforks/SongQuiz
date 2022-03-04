@@ -23,8 +23,8 @@ fun Track.toViewModelTrack() : ViewModelTrack {
         album = this.album,
         imageUri = this.imageUri,
         durationMs = this.durationMs,
-        uri = this.uri,
         popularity = this.popularity,
+        uri = this.uri,
         previewUrl = this.previewUrl
     )
 }
@@ -37,8 +37,8 @@ fun ViewModelTrack.toTrack() : Track {
         album = this.album,
         imageUri = this.imageUri,
         durationMs = this.durationMs,
-        uri = this.uri,
         popularity = this.popularity,
+        uri = this.uri,
         previewUrl = this.previewUrl
     )
 }

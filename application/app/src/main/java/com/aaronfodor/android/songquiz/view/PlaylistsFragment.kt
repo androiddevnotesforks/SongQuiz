@@ -62,9 +62,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<PlaylistsUiState> { state ->
-            if(state != PlaylistsUiState.READY){
-                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
-            }
             if(state != PlaylistsUiState.LOADING){
                 binding.list.swipeRefreshLayout.isRefreshing = false
             }
@@ -75,13 +72,6 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
                 }
                 PlaylistsUiState.READY -> {}
                 else -> {}
-            }
-
-            if(viewModel.playlists.value.isNullOrEmpty() && (state == PlaylistsUiState.READY)){
-                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
-            }
-            else{
-                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)

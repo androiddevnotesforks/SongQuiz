@@ -9,6 +9,9 @@ interface PlaylistDAO {
     @Query("SELECT * FROM ${ApplicationDB.PLAYLIST_TABLE_NAME} WHERE accountId=:accountId ")
     fun getAll(accountId: String): List<DbPlaylist>?
 
+    @Query("SELECT * FROM ${ApplicationDB.PLAYLIST_TABLE_NAME} WHERE accountId=:accountId ORDER BY rowid DESC LIMIT :numItems")
+    fun getLastN(accountId: String, numItems: Int): List<DbPlaylist>?
+
     @Query("SELECT * FROM ${ApplicationDB.PLAYLIST_TABLE_NAME} WHERE id=:playlistId AND accountId=:accountId ")
     fun getById(playlistId: String, accountId: String): List<DbPlaylist>?
 

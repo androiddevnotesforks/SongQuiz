@@ -111,6 +111,16 @@
         <item name="android:elevation">@dimen/shadow_elevation</item>
     </style>
 
+    <style name="ProfileImage" parent="MainImage">
+        <item name="android:layout_marginStart">@dimen/list_item_margin</item>
+        <item name="android:layout_marginTop">@dimen/list_item_margin</item>
+        <item name="android:layout_marginBottom">@dimen/list_item_margin</item>
+        <item name="android:layout_marginEnd">@dimen/list_item_margin</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="android:background">@drawable/image_shadow</item>
+        <item name="android:elevation">@dimen/shadow_elevation</item>
+    </style>
+
     <style name="SongPlayProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">6dp</item>

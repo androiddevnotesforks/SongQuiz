@@ -5,8 +5,7 @@ import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.TimeService
 import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +21,6 @@ class PlaylistsRepository @Inject constructor(
 ) {
 
     fun getPlaylists() : List<Playlist>{
-
         // if logged out, show defaults
         val dbPlaylists = if(accountService.accountState.value == AccountState.LOGGED_OUT){
             dao.getAll(AccountService.DEFAULTS_ACCOUNT_ID) ?: listOf()
@@ -53,7 +51,6 @@ class PlaylistsRepository @Inject constructor(
         }
         return playlists.reversed()
     }
-
 
     fun getPlaylistById(id: String) : Playlist{
         val dbPlaylists = dao.getById(id, accountService.getAccountId()) ?: listOf()

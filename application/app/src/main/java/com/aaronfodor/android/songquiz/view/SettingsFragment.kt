@@ -46,6 +46,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
     private var keyDeleteFavourites = ""
+    private var keyDeleteProfileStats = ""
     private var keyRestoreDefaultDb = ""
     // boarding flag key
     private var keyOnboardingQuizShowed = ""
@@ -70,7 +71,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyDeleteFavourites = getString(R.string.SETTINGS_KEY_DELETE_ALL_FAVOURITES)
-        keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_DB)
+        keyDeleteProfileStats = getString(R.string.SETTINGS_KEY_DELETE_PROFILE_STATS)
+        keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS)
         // boarding flag keys
         keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
 
@@ -100,6 +102,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val deleteFavouritesPref = findPreference<Preference>(keyDeleteFavourites)?.setOnPreferenceClickListener {
             showDeleteFavouritesDialog()
+            true
+        }
+
+        val deleteProfileStatsPref = findPreference<Preference>(keyDeleteProfileStats)?.setOnPreferenceClickListener {
+            showDeleteProfileStatsDialog()
             true
         }
 
@@ -187,6 +194,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     Snackbar.make(this.requireView(), getString(R.string.favourites_deleted), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(SettingsNotification.NONE)
                 }
+                SettingsNotification.PROFILE_STATS_DELETED -> {
+                    Snackbar.make(this.requireView(), getString(R.string.profile_stats_deleted), Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(SettingsNotification.NONE)
+                }
                 SettingsNotification.DEFAULT_PLAYLISTS_RESTORED -> {
                     Snackbar.make(this.requireView(), getString(R.string.defaults_restored), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(SettingsNotification.NONE)
@@ -220,7 +231,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     private fun showLogoutDialog() {
         val dialog = AppDialog(requireContext(), getString(R.string.logout),
-            getString(R.string.logout_description), R.drawable.icon_warning)
+            getString(R.string.logout_description), R.drawable.icon_logout)
         dialog.setPositiveButton {
             viewModel.logout()
         }
@@ -285,6 +296,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             CoroutineScope(Dispatchers.IO).launch {
                 Glide.get(requireContext()).clearDiskCache()
             }
+        }
+        dialog.show()
+    }
+
+    private fun showDeleteProfileStatsDialog() {
+        val dialog = AppDialog(requireContext(), getString(R.string.delete_profile_stats),
+            getString(R.string.delete_profile_stats_description), R.drawable.icon_delete)
+        dialog.setPositiveButton {
+            // delete profile stats
+            viewModel.deleteProfileStats()
         }
         dialog.show()
     }

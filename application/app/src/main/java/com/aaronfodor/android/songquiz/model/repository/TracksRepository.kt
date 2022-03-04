@@ -5,6 +5,8 @@ import com.aaronfodor.android.songquiz.model.AccountState
 import com.aaronfodor.android.songquiz.model.TimeService
 import com.aaronfodor.android.songquiz.model.database.TrackDAO
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toDbTrack
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toTrack
 import javax.inject.Inject
 import javax.inject.Singleton
 

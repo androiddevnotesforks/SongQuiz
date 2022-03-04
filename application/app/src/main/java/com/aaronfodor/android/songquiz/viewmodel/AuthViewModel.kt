@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
 import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
-import com.aaronfodor.android.songquiz.model.repository.toAccount
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toAccount
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -68,8 +68,9 @@ class AuthViewModel @Inject constructor(accountService: AccountService, private 
                     id = account.id,
                     name = account.name,
                     email = account.email,
-                    uri = account.uri,
                     country = account.country,
+                    uri = account.uri,
+                    imageUri = account.imageUri,
                     token = token,
                     tokenExpireTime = tokenExpireTime,
                     isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
