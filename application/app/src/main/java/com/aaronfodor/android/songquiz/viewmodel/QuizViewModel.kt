@@ -209,10 +209,15 @@ class QuizViewModel @Inject constructor(
         viewModelQuizStanding.postValue(quizService.getQuizState().toViewModelQuizState())
     }
 
-    fun setPlaylistByIdAndSettings(playlistId: String, songDuration: Int, repeatAllowed: Boolean,
+    fun setPlaylistAndSettings(playlistId: String, songDuration: Int, repeatAllowed: Boolean,
+                               difficultyCompensation: Boolean, extendedInfoAllowed: Boolean)
+    = mustAuthenticatedLaunch {
+        setPlaylistByIdAndSettings(playlistId, songDuration, repeatAllowed, difficultyCompensation, extendedInfoAllowed)
+    }
+
+    private fun setPlaylistByIdAndSettings(playlistId: String, songDuration: Int, repeatAllowed: Boolean,
                                    difficultyCompensation: Boolean, extendedInfoAllowed: Boolean)
     = viewModelScope.launch(Dispatchers.IO) {
-
         // set already added favourite Ids
         alreadyAddedFavouriteIds.clear()
         alreadyAddedFavouriteIds.addAll(favouritesRepository.getTracks().map { it.id })

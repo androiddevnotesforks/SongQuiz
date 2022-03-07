@@ -115,19 +115,24 @@ class PlaylistsRepository @Inject constructor(
     }
 
     fun searchPlaylistByIdOrName(searchExpression: String, offset: Int = 0) : PlaylistSearchResult{
-        val rawResults = spotifyApiService.getPlaylistsByIdOrName(searchExpression, offset)
+        val rawResults = spotifyApiService.getPlaylistsByIdOrNameOrUserId(searchExpression, offset)
         return rawResults.toSearchResult(searchExpression)
     }
 
     fun searchGetNextBatch(currentResult: PlaylistSearchResult) : PlaylistSearchResult{
         val offset = currentResult.offset + currentResult.limit
+        // the end is already reached
         if(offset > currentResult.total){
             return currentResult
         }
 
-        val nextResults = spotifyApiService.getPlaylistsByIdOrName(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
+        val nextResults = spotifyApiService.getPlaylistsByIdOrNameOrUserId(currentResult.searchExpression, offset).toSearchResult(currentResult.searchExpression)
+        val currentIds = currentResult.items.map { it.id }
+        // remove those that are already in the current list
+        val newItems = nextResults.items.filterNot { currentIds.contains(it.id) }
+
         return PlaylistSearchResult(
-            items = currentResult.items + nextResults.items,
+            items = currentResult.items + newItems,
             searchExpression = nextResults.searchExpression,
             // maxOf needed, as Spotify API retrieves 0s after the 1000th offset
             limit = maxOf(nextResults.limit, currentResult.limit),

@@ -67,7 +67,7 @@ open class SpotifyApiService @Inject constructor(
             e.printStackTrace()
         }
         finally {}
-        return response
+        return response ?: PlaylistDTO(name = "", id = "")
     }
 
     fun getPlaylistsByName(name: String, offset: Int) : PlaylistsDTO {
@@ -75,7 +75,7 @@ open class SpotifyApiService @Inject constructor(
 
         try {
             val token = accountService.getValidToken()
-            val dataCall = spotifyAPI.getPlaylistsByName(name=name, authHeader=bearerTokenEncoder(token), offset=offset)
+            val dataCall = spotifyAPI.getPlaylistsByName(name=name, offset=offset, authHeader=bearerTokenEncoder(token))
             dataCall.execute().body()?.let {
                 response = it.playlists
             }
@@ -84,10 +84,27 @@ open class SpotifyApiService @Inject constructor(
             e.printStackTrace()
         }
         finally {}
-        return response
+        return response ?: PlaylistsDTO()
     }
 
-    fun getPlaylistsByIdOrName(searchExpression: String, offset: Int) : PlaylistsDTO{
+    fun getPlaylistsByUserId(userId: String, offset: Int) : PlaylistsDTO {
+        var response = PlaylistsDTO(items = arrayOf())
+
+        try {
+            val token = accountService.getValidToken()
+            val dataCall = spotifyAPI.getPlaylistsByUserId(userId=userId, offset=offset, authHeader=bearerTokenEncoder(token))
+            dataCall.execute().body()?.let {
+                response = it.playlists
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        finally {}
+        return response ?: PlaylistsDTO()
+    }
+
+    fun getPlaylistsByIdOrNameOrUserId(searchExpression: String, offset: Int) : PlaylistsDTO{
         var response = PlaylistsDTO(items = arrayOf())
 
         try {
@@ -100,6 +117,10 @@ open class SpotifyApiService @Inject constructor(
             // name search
             if(response.items.isEmpty()){
                 response = getPlaylistsByName(searchExpression, offset)
+            }
+            // user search
+            if(response.items.isEmpty()){
+                response = getPlaylistsByUserId(searchExpression, offset)
             }
         }
         catch (e: Exception) {

@@ -15,6 +15,7 @@ interface SpotifyAPI {
         const val API_URL = "${API_BASE_URL}v1/"
         const val GET_SEARCH = "${API_URL}search"
         const val GET_PLAYLIST = "${API_URL}playlists/"
+        const val GET_USER_PLAYLISTS = "${API_URL}users/"
         const val GET_ACCOUNT = "${API_URL}me"
     }
 
@@ -32,6 +33,14 @@ interface SpotifyAPI {
         @Path("playlist_id") id: String,
         @Header("Authorization") authHeader: String
     ): Call<PlaylistDTO>
+
+    @GET("${GET_USER_PLAYLISTS}{user_id}/playlists")
+    fun getPlaylistsByUserId(
+        @Path("user_id") userId: String,
+        @Query("limit") limit: Int = 50,
+        @Query("offset") offset: Int,
+        @Header("Authorization") authHeader: String
+    ): Call<PlaylistsResponseDTO>
 
     @GET(GET_ACCOUNT)
     fun getAccount(

@@ -157,8 +157,8 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         val authNotificationObserver = Observer<AuthNotification> { notification ->
             when(notification){
                 AuthNotification.AUTH_NEEDED -> {
-                    startAuthentication()
                     viewModel.authNotification.postValue(AuthNotification.NONE)
+                    startAuthentication()
                 }
                 else -> {}
             }

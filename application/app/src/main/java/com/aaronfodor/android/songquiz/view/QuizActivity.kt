@@ -41,6 +41,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     companion object{
         const val PLAYLIST_KEY = "playlist key"
+        const val PLAYLIST_FALLBACK_ID = "invalid id"
     }
 
     private lateinit var binding: ActivityQuizBinding
@@ -50,7 +51,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     var userInputButtonAnimation: ObjectAnimator? = null
     var ttsButtonAnimation: ObjectAnimator? = null
-    var favouritesButtonAnimation: ObjectAnimator? = null
     var typeInputButtonAnimation: ObjectAnimator? = null
 
     override var requiredPermissions: List<RequiredPermission> = listOf()
@@ -82,11 +82,38 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
         viewModel = ViewModelProvider(this)[QuizViewModel::class.java]
 
-        val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
-        viewModel.setPlaylistByIdAndSettings(playlistId, songDuration, repeatAllowed,
-                                            difficultyCompensation, extendedInfoAllowed)
+        // try to see whether explicit intent can be parsed
+        var playlistId = parseExplicitIntent()
+        if(playlistId.isBlank()){
+            // if not, parse implicit intent
+            playlistId = parseImplicitIntent()
+        }
+        if(playlistId.isBlank()){
+            // if still no playlist Id, revert to a fallback Id
+            playlistId = PLAYLIST_FALLBACK_ID
+        }
+
+        viewModel.setPlaylistAndSettings(playlistId, songDuration, repeatAllowed, difficultyCompensation, extendedInfoAllowed)
         viewModel.numProgressBarSteps = resources.getInteger(R.integer.progressbar_max_value)
         imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
+    }
+
+    private fun parseExplicitIntent(): String {
+        return intent.extras?.getString(PLAYLIST_KEY) ?: ""
+    }
+
+    private fun parseImplicitIntent() : String{
+        var playlistId = ""
+
+        if(intent.type == "text/plain"){
+            var text = intent.clipData?.getItemAt(0)?.text.toString()
+            text = text.removePrefix("https://open.spotify.com/playlist/")
+            text = text.replaceAfter("?", "")
+            text = text.replace("?", "")
+            playlistId = text
+        }
+
+        return playlistId
     }
 
     override fun onBackPressed() {
@@ -156,23 +183,27 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                             showTypeInputDialog()
                         }
                         it.appear(R.anim.slide_in_bottom)
-
-                        typeInputButtonAnimation?.cancel()
-                        typeInputButtonAnimation = it.tappableInfiniteAnimation()
-                        typeInputButtonAnimation?.start()
                     }
                 }
                 else -> {
                     binding.content.typeInputButton.let {
                         it.setOnClickListener {}
                         it.disappear(R.anim.slide_out_bottom)
-
-                        typeInputButtonAnimation?.cancel()
-                        typeInputButtonAnimation = it.tappableEndAnimation()
-                        typeInputButtonAnimation?.start()
                     }
                 }
             }
+
+            if(state == UserInputState.ENABLED){
+                typeInputButtonAnimation?.cancel()
+                typeInputButtonAnimation = binding.content.typeInputButton.tappableInfiniteAnimation()
+                typeInputButtonAnimation?.start()
+            }
+            else{
+                typeInputButtonAnimation?.cancel()
+                typeInputButtonAnimation = binding.content.typeInputButton.tappableEndAnimation()
+                typeInputButtonAnimation?.start()
+            }
+
         }
         viewModel.userInputState.observe(this, userInputStateObserver)
 
@@ -251,10 +282,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                         it.setImageResource(R.drawable.icon_favourite)
                         it.appear(R.anim.slide_in_top)
-
-                        favouritesButtonAnimation?.cancel()
-                        favouritesButtonAnimation = it.tappableInfiniteAnimation()
-                        favouritesButtonAnimation?.start()
                     }
                 }
                 AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES -> {
@@ -265,20 +292,12 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
                         it.setImageResource(R.drawable.icon_favourite_active)
                         it.appear(R.anim.slide_in_top)
-
-                        favouritesButtonAnimation?.cancel()
-                        favouritesButtonAnimation = it.tappableInfiniteAnimation()
-                        favouritesButtonAnimation?.start()
                     }
                 }
                 else -> {
                     binding.content.addToFavouritesButton.let {
                         it.setOnClickListener {}
                         it.disappear(R.anim.slide_out_top)
-
-                        favouritesButtonAnimation?.cancel()
-                        favouritesButtonAnimation = it.tappableEndAnimation()
-                        favouritesButtonAnimation?.start()
                     }
                 }
             }
@@ -286,7 +305,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         viewModel.addToFavouritesState.observe(this, addToFavouritesButtonStateObserver)
 
         val notificationObserver = Observer<QuizNotification> { state ->
-
             if(state != QuizNotification.LOADING){
                 binding.content.loadIndicatorProgressBar.visibility = View.GONE
             }
@@ -528,7 +546,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     item.disappear(R.anim.slide_out_bottom)
                 }
             }
-
         }
         viewModel.currentGuesses.observe(this, currentGuessObserver)
 
