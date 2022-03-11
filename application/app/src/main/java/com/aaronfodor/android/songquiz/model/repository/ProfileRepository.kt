@@ -49,17 +49,55 @@ class ProfileRepository @Inject constructor(
         }
     }
 
-    fun recordCurrentProfileGameResults(){
+    fun recordCurrentProfileGameResults(isMultiPlayerGame: Boolean, isVictory: Boolean, isTie: Boolean,
+                                        titleHits: Long, artistHits: Long, numSongs: Long,
+                                        totalSongLength: Long, totalSongDifficulty: Long, totalNumPlayers: Long){
         val profile = getCurrentProfile()
         val currentPublicAccount = accountService.getPublicInfo()
 
         if(currentPublicAccount.id == AccountService.DEFAULTS_ACCOUNT_ID){
             return
         }
-        // apply change
-        val updatedProfile = profile
-        // update
-        updateProfile(updatedProfile)
+
+        if(isMultiPlayerGame){
+            profile.multi_NumGamesPlayed += 1
+
+            if(isVictory){
+                profile.multi_TotalWins += 1
+            }
+            else{
+                profile.multi_TotalTies += 1
+            }
+
+            profile.multi_TotalTitleHits += titleHits
+            profile.multi_TotalArtistHits += artistHits
+            profile.multi_TotalNumSongs += numSongs
+            profile.multi_TotalSongLength += totalSongLength
+            profile.multi_TotalSongDifficulty += totalSongDifficulty
+            profile.multi_TotalNumPlayers += totalNumPlayers
+        }
+        else{
+            profile.single_NumGamesPlayed += 1
+
+            when {
+                isVictory -> {
+                    profile.single_TotalWins += 1
+                }
+                isTie -> {
+                    profile.single_TotalTies += 1
+                }
+                else -> {}
+            }
+
+            profile.single_TotalTitleHits += titleHits
+            profile.single_TotalArtistHits += artistHits
+            profile.single_TotalNumSongs += numSongs
+            profile.single_TotalSongLength += totalSongLength
+            profile.single_TotalSongDifficulty += totalSongDifficulty
+        }
+
+        // apply change - update
+        updateProfile(profile)
     }
 
     private fun insertCurrentProfile(profile: Profile) : Boolean{

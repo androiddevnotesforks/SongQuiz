@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="stats_single_player">Egyjátékos</string>
+    <string name="stats_multiplayer">Többjátékos</string>
+
+    <string name="stats_total_play">Játékok száma</string>
+    <string name="stats_total_win">Győzelmek</string>
+    <string name="stats_total_tie">Döntetlenek</string>
+    <string name="stats_total_songs">Dalok száma</string>
+    <string name="stats_total_artist_hits">Előadó találat</string>
+    <string name="stats_total_title_hits">Cím találat</string>
+    <string name="stats_avg_song_length">Átlagos dalhosszúság</string>
+    <string name="stats_avg_song_difficulty">Átlagos dal nehézség</string>
+    <string name="stats_avg_num_players">Átlagos játékosszám</string>
+
+    <string name="stats_percentage">%1$s%%</string>
+    <string name="stats_sec">%1$s mp</string>
+    <string name="stats_xp">%1$s XP</string>
+
+    <string name="stats_spoken">Jelenleg %1$s az összpontszámod. Eddig %2$s játékot játszottál %3$s módban, és %4$s játékot %5$s módban.</string>
+    <string name="stats_login">Kérlek jelentkezz be</string>
+</resources>

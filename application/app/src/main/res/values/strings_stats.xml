@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="stats_single_player">Single player</string>
+    <string name="stats_multiplayer">Multiplayer</string>
+
+    <string name="stats_total_play">Games played</string>
+    <string name="stats_total_win">Wins</string>
+    <string name="stats_total_tie">Ties</string>
+    <string name="stats_total_songs">Number of songs</string>
+    <string name="stats_total_artist_hits">Artist hits</string>
+    <string name="stats_total_title_hits">Title hits</string>
+    <string name="stats_avg_song_length">Average song length</string>
+    <string name="stats_avg_song_difficulty">Average song difficulty</string>
+    <string name="stats_avg_num_players">Average number of players</string>
+
+    <string name="stats_percentage">%1$s%%</string>
+    <string name="stats_sec">%1$s sec</string>
+    <string name="stats_xp">%1$s XP</string>
+
+    <string name="stats_spoken">You have %1$s XP so far. You have played %2$s games in %3$s mode, and %4$s games in %5$s mode.</string>
+    <string name="stats_login">Please log in</string>
+</resources>

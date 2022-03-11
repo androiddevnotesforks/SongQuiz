@@ -203,7 +203,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                     viewModel.notification.postValue(SettingsNotification.NONE)
                 }
                 SettingsNotification.ACCOUNT_LOGGED_OUT -> {
-                    Snackbar.make(this.requireView(), getString(R.string.account_forgot), Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(this.requireView(), getString(R.string.account_logged_out), Snackbar.LENGTH_LONG).show()
                     viewModel.notification.postValue(SettingsNotification.NONE)
                 }
                 else -> {}

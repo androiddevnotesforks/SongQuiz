@@ -36,7 +36,7 @@ class LoginSpotifyActivity : LoginActivity() {
 
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_AUTH_RESPONSE, bundle)
-        Log.i(LoginSpotifyActivity.javaClass.simpleName,
+        Log.i(LoginSpotifyActivity::class.java.simpleName,
             String.format("Spotify auth completed. The response is in EXTRA with key $RESPONSE_KEY"))
 
         setResult(Activity.RESULT_OK, resultIntent)

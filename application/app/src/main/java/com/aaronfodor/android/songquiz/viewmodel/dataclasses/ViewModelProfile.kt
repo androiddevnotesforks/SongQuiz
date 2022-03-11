@@ -1,6 +1,7 @@
 package com.aaronfodor.android.songquiz.viewmodel.dataclasses
 
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Profile
+import com.aaronfodor.android.songquiz.safeArithmetic
 
 class ViewModelProfile (
     var id: String = "",
@@ -11,7 +12,7 @@ class ViewModelProfile (
     var imageUri: String = "",
     var uri: String = "",
     // stats
-    // single
+    // single player
     var single_NumGamesPlayed: Long = 0L,
     var single_TotalWins: Long = 0L,
     var single_TotalTies: Long = 0L,
@@ -31,6 +32,18 @@ class ViewModelProfile (
     var multi_TotalSongDifficulty: Long = 0L,
     var multi_TotalNumPlayers: Long = 0L
 )
+
+fun ViewModelProfile.getTotalXP() : Long {
+    val singleHitPercentage = safeArithmetic { (this.single_TotalArtistHits + this.single_TotalTitleHits) / 2.0 * this.single_TotalNumSongs }
+    val singleDifficultyPercentage = safeArithmetic{ (this.single_TotalSongDifficulty / this.single_TotalNumSongs) / 100.0 }
+    val singlePlayerXP = this.single_TotalNumSongs * (1 + singleHitPercentage) * (1 + singleDifficultyPercentage)
+
+    val multiHitPercentage = safeArithmetic { (this.multi_TotalArtistHits + this.multi_TotalTitleHits) / 2.0 * this.multi_TotalNumSongs }
+    val multiDifficultyPercentage = safeArithmetic { (this.multi_TotalSongDifficulty / this.multi_TotalNumSongs) / 100.0 }
+    val multiPlayerXP = this.multi_TotalNumSongs * (1 + multiHitPercentage) * (1 + multiDifficultyPercentage)
+
+    return (singlePlayerXP + multiPlayerXP).toLong()
+}
 
 fun Profile.toViewModelProfile() : ViewModelProfile {
     return ViewModelProfile(

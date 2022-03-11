@@ -1,8 +1,10 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
 import com.aaronfodor.android.songquiz.model.TextParserService
+import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
+import com.aaronfodor.android.songquiz.safeArithmetic
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -39,7 +41,8 @@ enum class RepeatCause{
 @ViewModelScoped
 class QuizService @Inject constructor(
     stringService: QuizStringHandler,
-    textParserService: TextParserService
+    textParserService: TextParserService,
+    profileRepository: ProfileRepository
 ){
 
     companion object{
@@ -50,12 +53,14 @@ class QuizService @Inject constructor(
         const val DUEL_SOUND_NAME = "duel.wav"
     }
 
+    private val stringHandler = stringService
+    private val textParser = textParserService
+    private val profileRepository = profileRepository
+
     var state = QuizState.WELCOME
     var lastSaidByUser = ""
     var playlist = Playlist("")
     var quiz = Quiz()
-    private val stringHandler = stringService
-    private val textParser = textParserService
 
     var songDurationSec = 0
     var difficultyCompensation = true
@@ -76,6 +81,14 @@ class QuizService @Inject constructor(
     var lastSongPopularity = 0
     var lastSongTitleHit = false
     var lastSongArtistHit = false
+
+    var isPlayerVictory = false
+    var isTie = false
+    var titleHits = 0
+    var artistHits = 0
+    var numSongs = 0
+    var totalSongLength = 0
+    var totalSongDifficulty = 0
 
     fun getQuizState() : Quiz{
         return quiz
@@ -107,8 +120,11 @@ class QuizService @Inject constructor(
             doesGeneratedPlayerPlay = true
             generatedPlayerLastPoints = 0
 
+            val avgDifficulty = 33
+            val avgTitleHitRatio = 0.5
+            val avgArtistHitRatio = 0.5
             players.add(QuizPlayerLocal(1, stringHandler.you()))
-            players.add(QuizPlayerGenerated(2, generatedPlayerName))
+            players.add(QuizPlayerGenerated(2, generatedPlayerName, avgDifficulty, avgTitleHitRatio, avgArtistHitRatio))
         }
         // if multiple local players are needed, just add them
         else{
@@ -125,11 +141,26 @@ class QuizService @Inject constructor(
 
     // must be called to actually setup generated players
     private fun initGeneratedPlayers(){
+        val profile = profileRepository.getCurrentProfile()
+        var avgDifficulty = safeArithmetic { (profile.single_TotalSongDifficulty.toDouble() / profile.single_TotalNumSongs.toDouble()) }.toInt()
+        var avgTitleHitRatio = safeArithmetic { profile.single_TotalTitleHits.toDouble() / profile.single_TotalNumSongs.toDouble() }
+        var avgArtistHitRatio = safeArithmetic { profile.single_TotalArtistHits.toDouble() / profile.single_TotalNumSongs.toDouble() }
+
+        if(avgDifficulty == 0){
+            avgDifficulty = 33
+        }
+        if(avgTitleHitRatio == 0.0){
+            avgTitleHitRatio = 0.5
+        }
+        if(avgArtistHitRatio == 0.0){
+            avgArtistHitRatio = 0.5
+        }
+
         val players = mutableListOf<QuizPlayer>()
         quiz.players.forEach {
             if(it is QuizPlayerGenerated){
                 generatedPlayerName = stringHandler.generatePlayerName()
-                players.add(QuizPlayerGenerated(it.id, generatedPlayerName))
+                players.add(QuizPlayerGenerated(it.id, generatedPlayerName, avgDifficulty, avgTitleHitRatio, avgArtistHitRatio))
             }
             else{
                 players.add(it)
@@ -139,7 +170,16 @@ class QuizService @Inject constructor(
     }
 
     private fun setupStartQuizState(){
+        // reset flags
+        isPlayerVictory = false
+        isTie = false
+        titleHits = 0
+        artistHits = 0
+        numSongs = 0
+        totalSongLength = 0
+        totalSongDifficulty = 0
         lastSaidByUser = ""
+
         playlist.tracks.shuffle()
         quiz.startState()
         state = QuizState.START_GAME
@@ -380,7 +420,7 @@ class QuizService @Inject constructor(
         return info
     }
 
-    private fun endGameInformationBuilder() : List<InformationItem>{
+    private fun endGameInformationBuilderAndSetFlags() : List<InformationItem>{
         var resultText = ""
         var winnerName = ""
         var winnerPoints = 0
@@ -412,15 +452,18 @@ class QuizService @Inject constructor(
                         stringHandler.winnerGeneratedPlayer(winnerName)
                     }
                     else{
+                        isPlayerVictory = true
                         stringHandler.winnerIsYou()
                     }
                 }
                 else{
+                    isPlayerVictory = true
                     stringHandler.winnerPlayer(winnerName)
                 }
 
             }
             else -> {
+                isTie = true
                 stringHandler.winnerTie()
             }
         }
@@ -451,12 +494,26 @@ class QuizService @Inject constructor(
         state = QuizState.REPEAT_END
 
         return if(isRepeat){
-            InformationPacket(endGameInformationBuilder(), true)
+            InformationPacket(endGameInformationBuilderAndSetFlags(), true)
         }
         else{
             val info = mutableListOf<InformationItem>()
             info.add(Speech(stringHandler.endGame()))
-            info.addAll(endGameInformationBuilder())
+            info.addAll(endGameInformationBuilderAndSetFlags())
+
+            // record results to the repository
+            profileRepository.recordCurrentProfileGameResults(
+                isMultiPlayerGame = !doesGeneratedPlayerPlay,
+                isVictory = isPlayerVictory,
+                isTie = isTie,
+                titleHits = titleHits.toLong(),
+                artistHits = artistHits.toLong(),
+                numSongs = numSongs.toLong(),
+                totalSongLength = totalSongLength.toLong(),
+                totalSongDifficulty = totalSongDifficulty.toLong(),
+                totalNumPlayers = quiz.players.size.toLong()
+            )
+
             InformationPacket(info, true)
         }
     }
@@ -624,9 +681,14 @@ class QuizService @Inject constructor(
         var artistPoint = 0
         var difficultyCompensationPoint = 0
 
+        numSongs += 1
+        totalSongLength += songDurationSec
+        totalSongDifficulty += (calculateCompensationRatio(currentTrack.popularity) * 100).toInt()
+
         if(playerHits.contains(KeyGuess.TITLE.value)){
             titlePoint = quiz.type.pointForTitle
             lastSongTitleHit = true
+            titleHits += 1
         }
         else{
             lastSongTitleHit = false
@@ -635,6 +697,7 @@ class QuizService @Inject constructor(
         if(playerHits.contains(KeyGuess.ARTIST.value)){
             artistPoint = quiz.type.pointForArtist
             lastSongArtistHit = true
+            artistHits += 1
         }
         else{
             lastSongArtistHit = false

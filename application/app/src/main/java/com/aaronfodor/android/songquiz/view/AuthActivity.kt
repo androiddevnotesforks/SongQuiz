@@ -6,7 +6,6 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer

@@ -60,9 +60,9 @@ class QuizPlayerLocal(
 class QuizPlayerGenerated(
     id: Int,
     name: String,
-    val avgDifficulty: Int = 33,
-    val avgTitleHitRatio: Double = 0.5,
-    val avgArtistHitRatio: Double = 0.5,
+    val avgDifficulty: Int,
+    val avgTitleHitRatio: Double,
+    val avgArtistHitRatio: Double,
 ) : QuizPlayer(id, name){
 
     private val minHitProbability = 0.1

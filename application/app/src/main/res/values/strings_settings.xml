@@ -48,5 +48,5 @@
     <string name="profile_stats_deleted">Profile statistics successfully deleted</string>
     <string name="defaults_restored">Defaults restored</string>
     <string name="cache_cleared">Cache cleared</string>
-    <string name="account_forgot">Logged out successfully</string>
+    <string name="account_logged_out">Logged out successfully</string>
 </resources>
