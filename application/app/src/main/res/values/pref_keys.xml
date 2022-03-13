@@ -19,6 +19,7 @@
     <string name="SETTINGS_KEY_DELETE_PROFILE_STATS" translatable="false">delete_profile_stats</string>
     <string name="SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS" translatable="false">restore_default_playlists</string>
 
+    <string name="PREF_KEY_BOARDING_SHOWED" translatable="false">boarding_showed</string>
     <string name="PREF_KEY_BOARDING_QUIZ_SHOWED" translatable="false">boarding_quiz_showed</string>
 
     <string name="PREF_KEY_DEBUG_CATEGORY" translatable="false">debug_category</string>

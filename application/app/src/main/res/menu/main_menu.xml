@@ -21,7 +21,7 @@
             android:title="@string/menu_add" />
         <item
             android:id="@+id/nav_favourites"
-            android:icon="@drawable/icon_favourite_active"
+            android:icon="@drawable/icon_favourite"
             android:title="@string/menu_favourites" />
         <item
             android:id="@+id/nav_profile"

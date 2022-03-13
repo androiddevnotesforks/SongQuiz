@@ -2,7 +2,7 @@
 
 <resources>
     <string name="owner_text">készítette: %1$s</string>
-    <string name="songs_followers_difficulty">Ez a lista %1$s lejátszható dalt tartalmaz, és %2$s követővel rendelkezik.\n\nÁtlagos nehézség: %3$s%%.\n\n</string>
+    <string name="songs_followers_difficulty">Ez a lista %1$s lejátszható dalt tartalmaz, és %2$s követővel rendelkezik.\n\nÁtlagos nehézség: %3$s%%\n\n</string>
 
     <string name="artist_text">előadó: %1$s</string>
     <string name="track_info">Ez a szám az alábbi albumon szerepel: %1$s \n\nA dal teljes hossza %2$s perc %3$s másodperc \n\nA szám népszerűsége %4$s%%\n\n</string>
@@ -16,6 +16,7 @@
     <string name="stop">Megállítás</string>
     <string name="read_aloud">Felolvasás</string>
     <string name="random_play">Koppints ide egy játék indításához véletlen listán</string>
+    <string name="recommended_for_you">Neked ajánlott</string>
 
     <string name="empty_list_playlists">Koppints egy lista felvételéhez</string>
     <string name="empty_search_list">Koppints a listák kereséséhez</string>

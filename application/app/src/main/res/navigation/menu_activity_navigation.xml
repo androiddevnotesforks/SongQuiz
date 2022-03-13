@@ -71,9 +71,15 @@
 
     <fragment
         android:id="@+id/nav_help"
-        android:name="com.aaronfodor.android.songquiz.view.PlaylistsFragment"
+        android:name="com.aaronfodor.android.songquiz.view.HelpFragment"
         android:label="@string/menu_help"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_help">
+        <action
+            android:id="@+id/action_nav_help_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_about"
@@ -84,7 +90,13 @@
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.aaronfodor.android.songquiz.view.SettingsFragment"
-        android:label="@string/menu_settings"/>
+        android:label="@string/menu_settings">
+        <action
+            android:id="@+id/action_nav_settings_to_nav_help"
+            app:destination="@id/nav_help"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_info_playlist"

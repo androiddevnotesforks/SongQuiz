@@ -9,6 +9,10 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
@@ -148,6 +152,7 @@ dependencies {
 
     // boarding
     implementation 'uk.co.samuelwall:material-tap-target-prompt:3.3.0'
+    implementation 'com.github.AppIntro:AppIntro:6.2.0'
 
     // DI
     implementation "com.google.dagger:hilt-android:$hilt_version"

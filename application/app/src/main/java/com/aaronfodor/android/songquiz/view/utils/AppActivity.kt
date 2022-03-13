@@ -56,7 +56,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         subscribeViewModel()
         subscribeViewModelAccountState()
         appearingAnimations()
-        boardingDialog()
+        boardingCheck()
     }
 
     override fun onPause() {
@@ -146,7 +146,8 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
-    abstract fun boardingDialog()
+    abstract fun boardingCheck()
+
     abstract fun unsubscribeViewModel()
 
     private fun subscribeViewModelAccountState(){

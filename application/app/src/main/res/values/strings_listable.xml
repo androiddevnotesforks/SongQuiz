@@ -2,7 +2,7 @@
 
 <resources>
     <string name="owner_text">by %1$s</string>
-    <string name="songs_followers_difficulty">This playlist has %1$s playable songs with %2$s followers.\n\nAverage difficulty: %3$s%%.\n\n</string>
+    <string name="songs_followers_difficulty">This playlist has %1$s playable songs with %2$s followers.\n\nAverage difficulty: %3$s%%\n\n</string>
 
     <string name="artist_text">by %1$s</string>
     <string name="track_info">It is on the following album: %1$s \n\nThe total duration is %2$s minute(s) %3$s second(s) \n\nThis song has %4$s%% popularity\n\n</string>
@@ -16,6 +16,7 @@
     <string name="stop">Stop</string>
     <string name="read_aloud">Read aloud</string>
     <string name="random_play">Tap here to play on a random playlist</string>
+    <string name="recommended_for_you">Recommended for you</string>
 
     <string name="empty_list_playlists">Tap to add playlists</string>
     <string name="empty_search_list">Tap to search for playlists</string>

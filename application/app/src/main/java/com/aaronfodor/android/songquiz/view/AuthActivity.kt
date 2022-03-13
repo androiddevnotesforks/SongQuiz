@@ -165,7 +165,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         binding.whyLoginInfo.disappear(R.anim.slide_out_bottom)
     }
 
-    override fun boardingDialog() {}
+    override fun boardingCheck() {}
     override fun unsubscribeViewModel() {}
 
     private fun login(){

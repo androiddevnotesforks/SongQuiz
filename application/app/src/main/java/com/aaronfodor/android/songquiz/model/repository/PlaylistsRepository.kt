@@ -52,6 +52,38 @@ class PlaylistsRepository @Inject constructor(
         return playlists.reversed()
     }
 
+    fun getLastNPlaylists(number: Int) : List<Playlist>{
+        // if logged out, show defaults
+        val dbPlaylists = if(accountService.accountState.value == AccountState.LOGGED_OUT){
+            dao.getLastN(AccountService.DEFAULTS_ACCOUNT_ID, number) ?: listOf()
+        }
+        // if logged in, load playlists
+        else{
+            var loadedPlaylists = dao.getLastN(accountService.getAccountId(), number) ?: listOf()
+            val isFirstLoadAfterLogin = accountService.getPublicInfo().isFirstLoadAfterLogin
+
+            // if this is the first load after login, and there are no playlists
+            if(isFirstLoadAfterLogin && loadedPlaylists.isEmpty()){
+                // set defaults to user
+                restoreDefaultPlaylists()
+                loadedPlaylists = dao.getLastN(accountService.getAccountId(), number) ?: listOf()
+            }
+
+            if(isFirstLoadAfterLogin){
+                // first load after login has finished
+                accountService.firstLoadFinishedAfterLogin()
+            }
+
+            loadedPlaylists
+        }
+
+        val playlists = mutableListOf<Playlist>()
+        for(item in dbPlaylists){
+            playlists.add(item.toPlaylist())
+        }
+        return playlists
+    }
+
     fun getPlaylistById(id: String) : Playlist{
         val dbPlaylists = dao.getById(id, accountService.getAccountId()) ?: listOf()
 

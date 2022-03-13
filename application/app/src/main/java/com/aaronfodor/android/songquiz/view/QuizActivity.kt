@@ -585,7 +585,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun boardingDialog(){
+    override fun boardingCheck(){
         val keyBoardingFlag = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
         // get saved info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -595,15 +595,15 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             MaterialTapTargetSequence().addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.userSpeechButton)
-                .setPrimaryText(getString(R.string.onboarding_quiz_user_input))
+                .setPrimaryText(getString(R.string.boarding_quiz_user_input))
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
                 .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
                 .setFocalColour(getColor(R.color.colorOnboardingFocal))
                 .create()
-        ).addPrompt(
+            ).addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.ttsSpeechButton)
-                .setPrimaryText(getString(R.string.onboarding_quiz_speech))
+                .setPrimaryText("${getString(R.string.boarding_quiz_speech)} ${getString(R.string.boarding_tap_to_start)}")
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
                 .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
                 .setFocalColour(getColor(R.color.colorOnboardingFocal))
@@ -618,7 +618,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         }
                     }
                 .create()
-        ).show()
+            ).show()
         }
     }
 
@@ -649,18 +649,12 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     }
 
     private fun playlistColorSetter(colorInt: Int){
-        val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
-        val playlistColor = if(darkness < 0.25){
-            // color is too light, replace with the accent
-            getColor(R.color.colorAccent)
-        }
-        else{
-            colorInt
-        }
-
         val backgroundColor = getColor(R.color.colorBackground)
-        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(playlistColor, backgroundColor))
+        val playlistColor = colorInt
+
+        //val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
+
+        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(playlistColor, backgroundColor))
         gradientDrawable.cornerRadius = 0F
         binding.root.background = gradientDrawable
         this.window.statusBarColor = playlistColor

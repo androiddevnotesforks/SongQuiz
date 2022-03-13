@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="boarding1_title">Üdvözöllek…</string>
+    <string name="boarding1_content">Musicat vagyok. Hadd mutassam be, hogyan használd a Song Quiz-t!</string>
+
+    <string name="boarding2_title">Mi a lényeg?</string>
+    <string name="boarding2_content">Ez egy kvízjáték, ahol ki kell találnod a címet és az előadót egy dalrészlet alapján.</string>
+
+    <string name="boarding3_title">Kivel játszol?</string>
+    <string name="boarding3_content">Többjátékos módban többen játszhattok egyazon eszközön. Ha az egyjátékos módot választod, egy távoli ellenféllel játszol.</string>
+
+    <string name="boarding4_title">Játékmenet</string>
+    <string name="boarding4_content">A játék beszédalapú felületen zajlik, de gépelésre is van lehetőséged.</string>
+
+    <string name="boarding5_title">Mikor hallgass</string>
+    <string name="boarding_quiz_speech">A hangszóró hangalapú információt jelez. Ha aktív, az alkalmazás épp beszél hozzád, vagy zenét játszik le.</string>
+
+    <string name="boarding6_title">Mikor beszélj</string>
+    <string name="boarding_quiz_user_input">A mikrofon a felhasználói beviteli állapotot jelzi. Mikor hullámformát mutat, az alkalmazás épp hallgat téged.</string>
+
+    <string name="boarding7_title">Mikor gépelj</string>
+    <string name="boarding7_content">Alternatív megoldásként szöveget is írhatsz be a billentyűzet ikonra koppintva szöveges bevitel helyett.</string>
+
+    <string name="boarding8_title">Tetszik ez a dallam?</string>
+    <string name="boarding8_content">Egy dal hallgatása közben a kedvenc ikonra koppintva hozzáadhatod azt kedvenceidhez. A menüben találod kedvenceid listáját.</string>
+
+    <string name="boarding9_title">Lejátszási listáid</string>
+    <string name="boarding9_content">Ha a lejátszási listák ikonra koppintasz, láthatod a hozzáadott listáidat (a legutóbb használt legfelül). Koppints bármely listára a játék indításához.</string>
+
+    <string name="boarding10_title">Adj hozzá tetszőleges lejátszási listát!</string>
+    <string name="boarding10_content">Bármilyen lejátszási listát felvehetsz a Spotify-ról, ami elegendő dalt tartalmaz. Csak koppints a Hozzáadás gombra, majd keress a lista neve vagy Spotify azonosítója alapján. Megjegyzés: privát lejátszási listákat csak egyedi azonosítójuk alapján lehet megtalálni.</string>
+
+    <string name="boarding11_title">…Kész is vagyunk!</string>
+    <string name="boarding11_content">Számos testreszabási lehetőséget találsz a beállításoknál, és a statisztikáid is figyelemmel kísérheted. Ha segítségre van szükséged, mindig megtalálsz a Segítség menüpontra koppintva. Jó szórakozást!</string>
+
+    <string name="boarding_tap_to_start">Koppints a játék indításához.</string>
+</resources>

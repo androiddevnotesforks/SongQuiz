@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.*
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.model.database.ApplicationDB
@@ -42,14 +43,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private var keySeasonalThemes = ""
     private var keyLanguage = ""
     private var keySpeech = ""
-    private var keyOnboarding = ""
+    private var keyBoarding = ""
     private var keyClearCache = ""
     private var keyDeletePlaylists = ""
     private var keyDeleteFavourites = ""
     private var keyDeleteProfileStats = ""
     private var keyRestoreDefaultDb = ""
     // boarding flag key
-    private var keyOnboardingQuizShowed = ""
+    private var keyBoardingShowed = ""
+    private var keyBoardingQuizShowed = ""
 
     // for settings in debug mode
     private var keyDebugCategory = ""
@@ -67,14 +69,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
         keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
         keySpeech = getString(R.string.SETTINGS_KEY_SPEECH)
-        keyOnboarding = getString(R.string.SETTINGS_KEY_BOARDING)
+        keyBoarding = getString(R.string.SETTINGS_KEY_BOARDING)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyDeleteFavourites = getString(R.string.SETTINGS_KEY_DELETE_ALL_FAVOURITES)
         keyDeleteProfileStats = getString(R.string.SETTINGS_KEY_DELETE_PROFILE_STATS)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS)
         // boarding flag keys
-        keyOnboardingQuizShowed = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
+        keyBoardingShowed = getString(R.string.PREF_KEY_BOARDING_SHOWED)
+        keyBoardingQuizShowed = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
 
         // for settings in debug mode
         keyDebugCategory = getString(R.string.PREF_KEY_DEBUG_CATEGORY)
@@ -138,23 +141,25 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             true
         }
 
-        val onboardingPref = findPreference<Preference>(keyOnboarding)?.setOnPreferenceClickListener {
-            // clear onboarding flags
+        val boardingPref = findPreference<Preference>(keyBoarding)?.setOnPreferenceClickListener {
+            // clear boarding flags
             val sharedPreferences = context?.let {
                 PreferenceManager.getDefaultSharedPreferences(it)
             }
 
             sharedPreferences?.let {
                 with(it.edit()){
-                    remove(keyOnboardingQuizShowed)
-                    putBoolean(keyOnboardingQuizShowed, false)
+                    remove(keyBoardingShowed)
+                    putBoolean(keyBoardingShowed, false)
+                    apply()
+
+                    remove(keyBoardingQuizShowed)
+                    putBoolean(keyBoardingQuizShowed, false)
                     apply()
                 }
             }
 
-            // "restart" start MenuActivity
-            val intent = Intent(requireContext(), MenuActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            this.startActivity(intent)
+            showHelpScreen()
             true
         }
 
@@ -366,6 +371,15 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 // persist changes
                 apply()
             }
+        }
+    }
+
+    private fun showHelpScreen(){
+        val navController = NavHostFragment.findNavController(this)
+        // make sure that the current destination is the current fragment (filter duplicated calls)
+        if(navController.currentDestination == navController.findDestination(R.id.nav_settings)){
+            val action = SettingsFragmentDirections.actionNavSettingsToNavHelp()
+            navController.navigate(action)
         }
     }
 

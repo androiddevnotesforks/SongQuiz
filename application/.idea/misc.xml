@@ -79,6 +79,9 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/icon_waveform.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/image_shadow.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/message_box.xml" value="0.197" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/music_notes.xml" value="0.255" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/onboarding_gradient1.xml" value="0.255" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/onboarding_gradient2.xml" value="0.255" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/progressbar_time.xml" value="0.197" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/drawable/standing_indicator.xml" value="0.344" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/font/font_fancy.xml" value="0.3257802479692176" />
@@ -91,6 +94,7 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/app_dialog_input.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_about.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_about2.xml" value="0.3106796116504854" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_boarding_intro.xml" value="0.31040564373897706" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_home.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_info.xml" value="0.3106796116504854" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout-land/fragment_info_playlist.xml" value="0.3106796116504854" />
@@ -108,7 +112,9 @@
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_about.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_about2.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_about_content.xml" value="0.3009833262077811" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_boarding_intro.xml" value="0.30085470085470084" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_favourites.xml" value="0.3009833262077811" />
+        <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_help.xml" value="0.30085470085470084" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_home.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_info.xml" value="0.3009833262077811" />
         <entry key="..\:/Dev/Git/Project/Song Quiz/SongQuiz/application/app/src/main/res/layout/fragment_info_content.xml" value="0.3009833262077811" />

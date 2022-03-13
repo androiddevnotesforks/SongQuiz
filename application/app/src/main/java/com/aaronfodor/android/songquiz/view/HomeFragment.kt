@@ -44,25 +44,27 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
 
         val playlistsObserver = Observer<List<ViewModelPlaylist>> { playlists ->
             val newList = playlists.map { it.toListable() }
-            (binding.list.RecyclerView.adapter as ListableAdapter).submitList(newList)
+            (binding.RecyclerView.adapter as ListableAdapter).submitList(newList)
 
             if(playlists.isEmpty() && (viewModel.uiState.value == HomeUiState.READY)){
-                binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+                binding.tvEmpty.appear(R.anim.slide_in_bottom)
+                binding.tvRecommended.disappear(R.anim.slide_out_bottom)
             }
             else{
-                binding.list.tvEmpty.disappear(R.anim.slide_out_bottom)
+                binding.tvEmpty.disappear(R.anim.slide_out_bottom)
+                binding.tvRecommended.appear(R.anim.slide_in_bottom)
             }
         }
         viewModel.playlists.observe(this, playlistsObserver)
 
         val uiStateObserver = Observer<HomeUiState> { state ->
             if(state != HomeUiState.LOADING){
-                binding.list.swipeRefreshLayout.isRefreshing = false
+                binding.swipeRefreshLayout?.isRefreshing = false
             }
 
             when(state){
                 HomeUiState.LOADING -> {
-                    binding.list.swipeRefreshLayout.isRefreshing = true
+                    binding.swipeRefreshLayout?.isRefreshing = true
                 }
                 HomeUiState.READY -> {}
                 else -> {}
@@ -137,20 +139,21 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
         binding.actionRandom.text = randomPlayText
         binding.actionRandom.setOnClickListener { randomPlay() }
 
+        binding.tvRecommended.text = getString(R.string.recommended_for_you)
     }
 
     override fun appearingAnimations() {
         binding.tvGreet.appear(R.anim.slide_in_bottom, true)
         binding.actionRandom.appear(R.anim.slide_in_bottom, true)
+        binding.tvRecommended.appear(R.anim.slide_in_bottom, true)
 
-        if(binding.list.tvEmpty.visibility == View.VISIBLE){
-            binding.list.tvEmpty.appear(R.anim.slide_in_bottom)
+        if(binding.tvEmpty.visibility == View.VISIBLE){
+            binding.tvEmpty.appear(R.anim.slide_in_bottom)
+            binding.tvRecommended.disappear(R.anim.slide_out_bottom)
         }
     }
 
-    override fun unsubscribeViewModel() {
-
-    }
+    override fun unsubscribeViewModel() {}
 
     private fun showInfoScreen(id: String){
         val navController = NavHostFragment.findNavController(this)
@@ -214,9 +217,9 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
 
         val listAdapter = ListableAdapter()
         listAdapter.listableListener = this
-        binding.list.RecyclerView.adapter = listAdapter
+        binding.RecyclerView.adapter = listAdapter
         //swipe
-        binding.list.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
+        binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         var itemTouchHelper: ItemTouchHelper? = null
         itemTouchHelper = ItemTouchHelper(object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -235,26 +238,26 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
                     deletePlaylist(playlist.title, playlist.id, dismissAction = {
                         // bring back the swiped item
                         itemTouchHelper?.attachToRecyclerView(null)
-                        itemTouchHelper?.attachToRecyclerView(binding.list.RecyclerView)
+                        itemTouchHelper?.attachToRecyclerView(binding.RecyclerView)
                     })
                 }
             }
         })
-        itemTouchHelper.attachToRecyclerView(binding.list.RecyclerView)
-        registerForContextMenu(binding.list.RecyclerView)
+        itemTouchHelper.attachToRecyclerView(binding.RecyclerView)
+        registerForContextMenu(binding.RecyclerView)
 
         // because it is already in a scrollview, make it non-scrollable
-        binding.list.RecyclerView.isNestedScrollingEnabled = false
+        binding.RecyclerView.isNestedScrollingEnabled = false
 
-        binding.list.tvEmpty.setOnClickListener {
+        binding.tvEmpty.setOnClickListener {
             viewModel.showAddPlaylistScreen()
         }
-        binding.list.tvEmpty.text = getText(R.string.empty_list_playlists)
+        binding.tvEmpty.text = getText(R.string.empty_list_playlists)
         val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
-        binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+        binding.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
-        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
-        binding.list.swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout?.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.swipeRefreshLayout?.setOnRefreshListener {
             viewModel.loadData()
         }
     }

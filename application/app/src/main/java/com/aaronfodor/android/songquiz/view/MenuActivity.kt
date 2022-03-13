@@ -1,6 +1,7 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.navigateUp
+import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivityMenu
@@ -62,7 +64,24 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun boardingDialog(){}
+    override fun boardingCheck(){
+        val keyBoardingFlag = getString(R.string.PREF_KEY_BOARDING_SHOWED)
+        // get saved info from preferences
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val boardingFlag = sharedPreferences.getBoolean(keyBoardingFlag, false)
+
+        if(!boardingFlag){
+            // persist showed flag to preferences
+            with(sharedPreferences.edit()){
+                remove(keyBoardingFlag)
+                putBoolean(keyBoardingFlag, true)
+                apply()
+            }
+
+            val intent = Intent(this, BoardingActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
     override fun onResume() {
         super.onResume()

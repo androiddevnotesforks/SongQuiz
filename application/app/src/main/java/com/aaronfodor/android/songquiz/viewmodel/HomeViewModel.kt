@@ -43,6 +43,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    val numPlaylistsToGet = 10
     val callerType = InfoPlaylistScreenCaller.HOME.name
     var selectedPlaylistId = ""
 
@@ -60,7 +61,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadData() = viewModelScope.launch(Dispatchers.IO) {
         uiState.postValue(HomeUiState.LOADING)
-        val loadedPlaylists = repository.getPlaylists()
+        val loadedPlaylists = repository.getLastNPlaylists(numPlaylistsToGet)
         uiState.postValue(HomeUiState.READY)
         playlists.postValue(loadedPlaylists.map { it.toViewModelPlaylist() })
     }
@@ -75,7 +76,7 @@ class HomeViewModel @Inject constructor(
             notification.postValue(HomeNotification.ERROR_DELETE_PLAYLIST)
         }
 
-        val newList = repository.getPlaylists().map { it.toViewModelPlaylist() }
+        val newList = repository.getLastNPlaylists(numPlaylistsToGet).map { it.toViewModelPlaylist() }
         playlists.postValue(newList)
     }
 
@@ -89,8 +90,8 @@ class HomeViewModel @Inject constructor(
         notification.postValue(HomeNotification.START_QUIZ)
     }
 
-    fun startRandomQuiz() = viewModelScope.launch {
-        val playlistsToPickFrom = playlists.value ?: listOf()
+    fun startRandomQuiz() = viewModelScope.launch(Dispatchers.IO){
+        val playlistsToPickFrom = repository.getPlaylists().map { it.toViewModelPlaylist() }
 
         if(playlistsToPickFrom.isNotEmpty()){
             val selectedPlaylist = playlistsToPickFrom.random()
