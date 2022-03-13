@@ -1,15 +1,13 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
+import android.app.Activity
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.MediaPlayerService
-import com.aaronfodor.android.songquiz.model.SpeechRecognizerService
-import com.aaronfodor.android.songquiz.model.TextToSpeechService
+import com.aaronfodor.android.songquiz.model.*
 import com.aaronfodor.android.songquiz.model.quiz.*
 import com.aaronfodor.android.songquiz.model.quiz.GuessFeedback
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
@@ -38,6 +36,10 @@ enum class AddToFavouritesState{
     HIDDEN, VISIBLE_SONG_NOT_IN_FAVOURITES, VISIBLE_SONG_IN_FAVOURITES
 }
 
+enum class AdState{
+    SHOW, HIDE
+}
+
 enum class QuizNotification{
     EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, ADDED_TO_FAVOURITES, REMOVED_FROM_FAVOURITES, EXIT
 }
@@ -48,6 +50,8 @@ class QuizViewModel @Inject constructor(
     var textToSpeechService: TextToSpeechService,
     var speechRecognizerService: SpeechRecognizerService,
     var mediaPlayerService: MediaPlayerService,
+    var adService: AdvertisementService,
+    val loggerService: LoggerService,
     var playlistsRepository: PlaylistsRepository,
     var favouritesRepository: TracksRepository,
     accountService: AccountService
@@ -76,6 +80,13 @@ class QuizViewModel @Inject constructor(
      */
     val ttsState: MutableLiveData<TtsState> by lazy {
         MutableLiveData<TtsState>()
+    }
+
+    /**
+     * Ad state
+     */
+    val adState: MutableLiveData<AdState> by lazy {
+        MutableLiveData<AdState>()
     }
 
     /**
@@ -246,6 +257,8 @@ class QuizViewModel @Inject constructor(
             if(playlist.id == playlistId){
                 quizService.setQuizPlaylistAndSettings(playlist, songDuration, repeatAllowed,
                     difficultyCompensation, extendedInfoAllowed)
+                //show ad
+                adState.postValue(AdState.SHOW)
                 // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
@@ -587,6 +600,7 @@ class QuizViewModel @Inject constructor(
     private fun trackPlayStarted() = viewModelScope.launch(Dispatchers.IO){
         currentTrack = quizService.getCurrentTrack().toViewModelTrack()
         currentTrack?.let {
+            loggerService.logGamePlayTrack(it.id)
             if(alreadyAddedFavouriteIds.contains(it.id)){
                 addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
                 favouritesRepository.updateTrack(it.toTrack())
@@ -605,6 +619,7 @@ class QuizViewModel @Inject constructor(
     fun addCurrentTrackToFavourites() = viewModelScope.launch(Dispatchers.IO){
         currentTrack?.let {
             favouritesRepository.insertTrack(it.toTrack())
+            loggerService.logAddTrack(it.id)
             alreadyAddedFavouriteIds.add(it.id)
             addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
             notification.postValue(QuizNotification.ADDED_TO_FAVOURITES)
@@ -614,10 +629,16 @@ class QuizViewModel @Inject constructor(
     fun removeCurrentTrackFromFavourites() = viewModelScope.launch(Dispatchers.IO){
         currentTrack?.let {
             favouritesRepository.deleteTrackById(it.id)
+            loggerService.logDeleteTrack(it.id)
             alreadyAddedFavouriteIds.remove(it.id)
             addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
             notification.postValue(QuizNotification.REMOVED_FROM_FAVOURITES)
         }
+    }
+
+    fun showInterstitialAd(activity: Activity){
+        loggerService.logShowInterstitialAd()
+        adService.showInterstitialAd(activity)
     }
 
 }

@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.MediaPlayerService
 import com.aaronfodor.android.songquiz.model.repository.TracksRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelTrack
@@ -29,6 +30,7 @@ enum class MediaPlayerFavouritesState{
 class FavouritesViewModel @Inject constructor(
     val repository: TracksRepository,
     val mediaPlayerService: MediaPlayerService,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -105,6 +107,7 @@ class FavouritesViewModel @Inject constructor(
 
     fun deleteTrack(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deleteTrackById(id)
+        loggerService.logDeleteTrack(id)
         if(success){
             notification.postValue(FavouritesNotification.SUCCESS_DELETE_TRACK)
         }

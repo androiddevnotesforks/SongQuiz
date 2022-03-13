@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
@@ -28,6 +29,7 @@ enum class PartOfTheDay{
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val repository: PlaylistsRepository,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -65,6 +67,7 @@ class HomeViewModel @Inject constructor(
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deletePlaylistById(id)
+        loggerService.logDeletePlaylist(id)
         if(success){
             notification.postValue(HomeNotification.SUCCESS_DELETE_PLAYLIST)
         }
@@ -82,6 +85,7 @@ class HomeViewModel @Inject constructor(
 
     private fun startQuiz(playListId: String) = viewModelScope.launch {
         selectedPlaylistId = playListId
+        loggerService.logShowQuizScreen(playListId)
         notification.postValue(HomeNotification.START_QUIZ)
     }
 

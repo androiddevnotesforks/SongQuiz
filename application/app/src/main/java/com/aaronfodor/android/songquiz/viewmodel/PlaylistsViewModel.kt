@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toViewModelPlaylist
@@ -23,6 +24,7 @@ enum class PlaylistsNotification{
 @HiltViewModel
 class PlaylistsViewModel @Inject constructor(
     val repository: PlaylistsRepository,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -60,6 +62,7 @@ class PlaylistsViewModel @Inject constructor(
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deletePlaylistById(id)
+        loggerService.logDeletePlaylist(id)
         if(success){
             notification.postValue(PlaylistsNotification.SUCCESS_DELETE_PLAYLIST)
         }
@@ -73,6 +76,7 @@ class PlaylistsViewModel @Inject constructor(
 
     fun startQuiz(playListId: String) = mustAuthenticatedLaunch {
         selectedPlaylistId = playListId
+        loggerService.logShowQuizScreen(playListId)
         notification.postValue(PlaylistsNotification.START_QUIZ)
     }
 

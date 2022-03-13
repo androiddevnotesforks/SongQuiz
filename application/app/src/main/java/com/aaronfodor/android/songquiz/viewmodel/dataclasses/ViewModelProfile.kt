@@ -34,13 +34,13 @@ class ViewModelProfile (
 )
 
 fun ViewModelProfile.getTotalXP() : Long {
-    val singleHitPercentage = safeArithmetic { (this.single_TotalArtistHits + this.single_TotalTitleHits) / 2.0 * this.single_TotalNumSongs }
+    val singleHitPercentage = safeArithmetic { (this.single_TotalArtistHits + this.single_TotalTitleHits) / (2.0 * this.single_TotalNumSongs) }
     val singleDifficultyPercentage = safeArithmetic{ (this.single_TotalSongDifficulty / this.single_TotalNumSongs) / 100.0 }
-    val singlePlayerXP = this.single_TotalNumSongs * (1 + singleHitPercentage) * (1 + singleDifficultyPercentage)
+    val singlePlayerXP = this.single_TotalNumSongs + (singleHitPercentage * this.single_TotalNumSongs) + (singleDifficultyPercentage * this.single_TotalNumSongs)
 
-    val multiHitPercentage = safeArithmetic { (this.multi_TotalArtistHits + this.multi_TotalTitleHits) / 2.0 * this.multi_TotalNumSongs }
+    val multiHitPercentage = safeArithmetic { (this.multi_TotalArtistHits + this.multi_TotalTitleHits) / (2.0 * this.multi_TotalNumSongs) }
     val multiDifficultyPercentage = safeArithmetic { (this.multi_TotalSongDifficulty / this.multi_TotalNumSongs) / 100.0 }
-    val multiPlayerXP = this.multi_TotalNumSongs * (1 + multiHitPercentage) * (1 + multiDifficultyPercentage)
+    val multiPlayerXP = this.multi_TotalNumSongs + (multiHitPercentage * this.multi_TotalNumSongs) + (multiDifficultyPercentage * this.multi_TotalNumSongs)
 
     return (singlePlayerXP + multiPlayerXP).toLong()
 }

@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
@@ -35,6 +36,7 @@ enum class InfoPlaylistScreenCaller{
 class InfoPlaylistViewModel  @Inject constructor(
     var repository: PlaylistsRepository,
     var textToSpeechService: TextToSpeechService,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -141,9 +143,7 @@ class InfoPlaylistViewModel  @Inject constructor(
             if(downloadedPlaylist.id == playlistId){
                 ready(InfoPlaylistUiState.READY_COMPLETE)
                 item.postValue(downloadedPlaylist.toViewModelPlaylist())
-                if(infoScreenCaller == InfoPlaylistScreenCaller.PLAY){
-                    repository.updatePlaylist(downloadedPlaylist)
-                }
+                repository.updatePlaylist(downloadedPlaylist)
             }
             // cannot download
             else{
@@ -168,6 +168,7 @@ class InfoPlaylistViewModel  @Inject constructor(
             if(infoScreenCaller == InfoPlaylistScreenCaller.PLAY || infoScreenCaller == InfoPlaylistScreenCaller.HOME){
 
                 val success = repository.deletePlaylistById(it.id)
+                loggerService.logDeletePlaylist(it.id)
                 if(success){
                     notification.postValue(InfoPlaylistUiNotification.SUCCESS_DELETE_ITEM)
                 }
@@ -185,6 +186,7 @@ class InfoPlaylistViewModel  @Inject constructor(
             uiState.postValue(InfoPlaylistUiState.LOADING)
 
             val success = repository.insertPlaylist(it.toPlaylist())
+            loggerService.logAddPlaylist(it.id)
             if(success){
                 notification.postValue(InfoPlaylistUiNotification.SUCCESS_ADD_ITEM)
             }
@@ -201,6 +203,9 @@ class InfoPlaylistViewModel  @Inject constructor(
     }
 
     fun startQuiz() = mustAuthenticatedLaunch {
+        item.value?.let {
+            loggerService.logShowQuizScreen(it.id)
+        }
         uiState.value = InfoPlaylistUiState.START_QUIZ
     }
 

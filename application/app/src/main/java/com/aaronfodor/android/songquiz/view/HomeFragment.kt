@@ -19,10 +19,6 @@ import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelPlaylist
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.toListable
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 
 class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMenuListener, ListableListener {
 
@@ -185,11 +181,6 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
     }
 
     private fun showQuizScreen(){
-        // Log start game event
-        Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
-            param(FirebaseAnalytics.Param.ITEM_ID, viewModel.selectedPlaylistId)
-        }
-
         val intent = Intent(this.requireContext(), QuizActivity::class.java)
         intent.putExtra(QuizActivity.PLAYLIST_KEY, viewModel.selectedPlaylistId)
         startActivity(intent)

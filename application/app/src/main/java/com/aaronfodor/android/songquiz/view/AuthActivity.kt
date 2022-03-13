@@ -46,10 +46,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         forResultAuthNeeded = intent.extras?.getBoolean(AuthRequestContract.FOR_RESULT_AUTH_SCREEN_KEY) ?: false
 
         val drawableQuestion = ContextCompat.getDrawable(applicationContext, R.drawable.icon_question)
-        binding.loginHelp.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableQuestion, null)
-
-        val drawableInfo = ContextCompat.getDrawable(applicationContext, R.drawable.icon_info)
-        binding.whyLoginInfo.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableInfo, null)
+        binding.whyLoginInfo.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableQuestion, null)
     }
 
     override fun onBackPressed() {
@@ -72,16 +69,9 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         showMenuActivity(false)
     }
 
-    private fun loginHelpTapped(){
-        val warningDialog = AppDialog(this, getString(R.string.login_help_title),
-            getString(R.string.login_help_dialog), R.drawable.icon_warning)
-        warningDialog.setPositiveButton{}
-        warningDialog.show()
-    }
-
     private fun whyLoginTapped(){
         val infoDialog = AppDialog(this, getString(R.string.login_why_title),
-            getString(R.string.login_why_dialog), R.drawable.icon_info)
+            getString(R.string.login_why_dialog), R.drawable.icon_question)
         infoDialog.setPositiveButton{}
         infoDialog.show()
     }
@@ -96,10 +86,6 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
         binding.btnSkip.setOnClickListener {
             skipLoginTapped()
-        }
-
-        binding.loginHelp.setOnClickListener {
-            loginHelpTapped()
         }
 
         binding.whyLoginInfo.setOnClickListener {
@@ -170,14 +156,12 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
     private fun showAuthActions(){
         binding.btnLogin.appear(R.anim.slide_in_bottom, true)
         binding.btnSkip.appear(R.anim.slide_in_bottom, true)
-        binding.loginHelp.appear(R.anim.slide_in_bottom, true)
         binding.whyLoginInfo.appear(R.anim.slide_in_bottom, true)
     }
 
     private fun hideAuthActions(){
         binding.btnLogin.disappear(R.anim.slide_out_bottom)
         binding.btnSkip.disappear(R.anim.slide_out_bottom)
-        binding.loginHelp.disappear(R.anim.slide_out_bottom)
         binding.whyLoginInfo.disappear(R.anim.slide_out_bottom)
     }
 

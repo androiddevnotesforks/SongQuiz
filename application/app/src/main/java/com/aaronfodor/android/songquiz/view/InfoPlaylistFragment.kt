@@ -20,10 +20,6 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.analytics.ktx.logEvent
-import com.google.firebase.ktx.Firebase
 
 class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
 
@@ -323,11 +319,6 @@ class InfoPlaylistFragment : AppFragment(R.layout.fragment_info_playlist) {
     private fun showQuizScreen(){
         viewModel.ready(InfoPlaylistUiState.READY_FALLBACK)
         viewModel.item.value?.let {
-            // Log start game event
-            Firebase.analytics.logEvent(FirebaseAnalytics.Event.LEVEL_START){
-                param(FirebaseAnalytics.Param.ITEM_ID, it.id)
-            }
-
             val intent = Intent(this.requireContext(), QuizActivity::class.java)
             intent.putExtra(QuizActivity.PLAYLIST_KEY, it.id)
             startActivity(intent)

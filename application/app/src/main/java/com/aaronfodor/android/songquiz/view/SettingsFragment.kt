@@ -67,14 +67,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         keySeasonalThemes = getString(R.string.SETTINGS_KEY_SEASONAL_THEMES)
         keyLanguage = getString(R.string.SETTINGS_KEY_LANGUAGE)
         keySpeech = getString(R.string.SETTINGS_KEY_SPEECH)
-        keyOnboarding = getString(R.string.SETTINGS_KEY_ONBOARDING)
+        keyOnboarding = getString(R.string.SETTINGS_KEY_BOARDING)
         keyClearCache = getString(R.string.SETTINGS_KEY_CLEAR_CACHE)
         keyDeletePlaylists = getString(R.string.SETTINGS_KEY_DELETE_ALL_PLAYLISTS)
         keyDeleteFavourites = getString(R.string.SETTINGS_KEY_DELETE_ALL_FAVOURITES)
         keyDeleteProfileStats = getString(R.string.SETTINGS_KEY_DELETE_PROFILE_STATS)
         keyRestoreDefaultDb = getString(R.string.SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS)
         // boarding flag keys
-        keyOnboardingQuizShowed = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+        keyOnboardingQuizShowed = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
 
         // for settings in debug mode
         keyDebugCategory = getString(R.string.PREF_KEY_DEBUG_CATEGORY)

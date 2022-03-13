@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
 import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
@@ -22,6 +23,7 @@ enum class PlaylistsAddNotification{
 @HiltViewModel
 class PlaylistsAddViewModel @Inject constructor(
     val repository: PlaylistsRepository,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -70,6 +72,7 @@ class PlaylistsAddViewModel @Inject constructor(
         lastSearchExpression = searchExpression
         uiState.postValue(PlaylistsAddUiState.LOADING)
         val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
+        loggerService.logSearchPlaylist(searchExpression)
         uiState.postValue(PlaylistsAddUiState.READY)
         searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
@@ -98,7 +101,9 @@ class PlaylistsAddViewModel @Inject constructor(
         }
 
         val success = searchResult.value?.items?.let {
-            repository.insertPlaylist(it.first{ item -> item.id == id }.toPlaylist())
+            val playlistToInsert = it.first{ item -> item.id == id }
+            loggerService.logAddPlaylist(playlistToInsert.id)
+            repository.insertPlaylist(playlistToInsert.toPlaylist())
         } ?: false
 
         if(success){

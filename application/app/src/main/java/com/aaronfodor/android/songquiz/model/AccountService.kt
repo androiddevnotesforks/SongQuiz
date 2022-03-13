@@ -63,7 +63,6 @@ class AccountService @Inject constructor(
     fun getAuthRequest() : AuthorizationRequest{
         if(accountState.value == AccountState.LOGGED_OUT){
             // force the logged out dialog
-            AuthorizationClient.clearCookies(context)
         }
         val builder = AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.TOKEN, spotifyRedirectURI)
         return builder.setScopes(arrayOf("user-read-email")).setShowDialog(false).build()
@@ -123,7 +122,6 @@ class AccountService @Inject constructor(
     }
 
     fun logout(){
-        AuthorizationClient.clearCookies(context)
         repository.deleteAccount()
         account = Account("")
         accountState.postValue(AccountState.LOGGED_OUT)

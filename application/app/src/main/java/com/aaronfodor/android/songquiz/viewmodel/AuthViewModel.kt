@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.toAccount
@@ -24,7 +25,11 @@ enum class AuthNotification{
 }
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(accountService: AccountService, private val apiService: SpotifyApiService) : AppViewModel(accountService) {
+class AuthViewModel @Inject constructor(
+    accountService: AccountService,
+    private val apiService: SpotifyApiService,
+    private val loggerService: LoggerService
+    ) : AppViewModel(accountService) {
 
     /**
      * Login state
@@ -76,6 +81,7 @@ class AuthViewModel @Inject constructor(accountService: AccountService, private 
                     isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
                 )
                 accountService.setAccount(accountToSet)
+                loggerService.logTokenRefresh()
                 uiState.postValue(AuthUiState.SUCCESS)
             }
             AuthorizationResponse.Type.ERROR -> {

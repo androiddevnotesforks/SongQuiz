@@ -11,7 +11,7 @@
     <string name="SETTINGS_KEY_SEASONAL_THEMES" translatable="false">seasonal_themes</string>
     <string name="SETTINGS_KEY_LANGUAGE" translatable="false">language</string>
     <string name="SETTINGS_KEY_SPEECH" translatable="false">speech</string>
-    <string name="SETTINGS_KEY_ONBOARDING" translatable="false">onboarding</string>
+    <string name="SETTINGS_KEY_BOARDING" translatable="false">boarding</string>
 
     <string name="SETTINGS_KEY_CLEAR_CACHE" translatable="false">clear_cache</string>
     <string name="SETTINGS_KEY_DELETE_ALL_PLAYLISTS" translatable="false">delete_all_playlists</string>
@@ -19,7 +19,7 @@
     <string name="SETTINGS_KEY_DELETE_PROFILE_STATS" translatable="false">delete_profile_stats</string>
     <string name="SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS" translatable="false">restore_default_playlists</string>
 
-    <string name="PREF_KEY_ONBOARDING_QUIZ_SHOWED" translatable="false">onboarding_quiz_showed</string>
+    <string name="PREF_KEY_BOARDING_QUIZ_SHOWED" translatable="false">boarding_quiz_showed</string>
 
     <string name="PREF_KEY_DEBUG_CATEGORY" translatable="false">debug_category</string>
     <string name="PREF_KEY_SETUP_DEFAULT_PLAYLISTS" translatable="false">setup_default_playlists</string>

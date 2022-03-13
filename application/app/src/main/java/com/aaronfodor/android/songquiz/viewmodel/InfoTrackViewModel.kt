@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.MediaPlayerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.TracksRepository
@@ -39,6 +40,7 @@ class InfoTrackViewModel  @Inject constructor(
     val repository: TracksRepository,
     val textToSpeechService: TextToSpeechService,
     val mediaPlayerService: MediaPlayerService,
+    val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -190,6 +192,7 @@ class InfoTrackViewModel  @Inject constructor(
     fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
         item.value?.let {
             val success = repository.deleteTrackById(it.id)
+            loggerService.logDeleteTrack(it.id)
             if(success){
                 notification.postValue(InfoTrackUiNotification.SUCCESS_DELETE_ITEM)
             }

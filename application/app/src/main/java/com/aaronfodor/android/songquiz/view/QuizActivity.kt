@@ -32,7 +32,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
@@ -75,10 +74,6 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), this.resources.getBoolean(R.bool.repeat_default))
         val difficultyCompensation = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_DIFFICULTY_COMPENSATION), this.resources.getBoolean(R.bool.difficulty_compensation_default))
         val extendedInfoAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_EXTENDED_QUIZ_INFO), this.resources.getBoolean(R.bool.extended_quiz_info_default))
-
-        // load ad
-        val adRequest = AdRequest.Builder().build()
-        binding.content.adQuiz.loadAd(adRequest)
 
         viewModel = ViewModelProvider(this)[QuizViewModel::class.java]
 
@@ -271,6 +266,18 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
+
+        val adStateObserver = Observer<AdState> { state ->
+            when(state){
+                AdState.HIDE -> {}
+                AdState.SHOW -> {
+                    viewModel.showInterstitialAd(this)
+                    viewModel.adState.postValue(AdState.HIDE)
+                }
+                else -> {}
+            }
+        }
+        viewModel.adState.observe(this, adStateObserver)
 
         val addToFavouritesButtonStateObserver = Observer<AddToFavouritesState> { state ->
             when(state){
@@ -579,12 +586,12 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
     override fun unsubscribeViewModel() {}
 
     override fun boardingDialog(){
-        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+        val keyBoardingFlag = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
         // get saved info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+        val boardingFlag = sharedPreferences.getBoolean(keyBoardingFlag, false)
 
-        if(!onboardingFlag){
+        if(!boardingFlag){
             MaterialTapTargetSequence().addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.userSpeechButton)
@@ -604,8 +611,8 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
                             // persist showed flag to preferences
                             with(sharedPreferences.edit()){
-                                remove(keyOnboardingFlag)
-                                putBoolean(keyOnboardingFlag, true)
+                                remove(keyBoardingFlag)
+                                putBoolean(keyBoardingFlag, true)
                                 apply()
                             }
                         }

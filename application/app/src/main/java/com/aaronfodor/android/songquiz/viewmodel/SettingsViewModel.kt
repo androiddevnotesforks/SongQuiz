@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
 import com.aaronfodor.android.songquiz.model.repository.TracksRepository
@@ -21,6 +22,7 @@ class SettingsViewModel  @Inject constructor(
     private val playlistsRepository: PlaylistsRepository,
     private val tracksRepository: TracksRepository,
     private val profileRepository: ProfileRepository,
+    private val loggerService: LoggerService,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -41,27 +43,32 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeletePlaylists()
         playlistsRepository.deleteAllPlaylists()
         notification.postValue(SettingsNotification.PLAYLISTS_DELETED)
     }
 
     fun deleteFavourites() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeleteFavourites()
         tracksRepository.deleteAllTracks()
         notification.postValue(SettingsNotification.FAVOURITES_DELETED)
     }
 
     fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeleteProfileStats()
         profileRepository.deleteCurrentProfile()
         notification.postValue(SettingsNotification.PROFILE_STATS_DELETED)
     }
 
     fun restoreDefaultPlaylists() = viewModelScope.launch(Dispatchers.IO) {
         // rollback to default database content
+        loggerService.logRestoreDefaultPlaylists()
         playlistsRepository.restoreDefaultPlaylists()
         notification.postValue(SettingsNotification.DEFAULT_PLAYLISTS_RESTORED)
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logLogout()
         accountService.logout()
         notification.postValue(SettingsNotification.ACCOUNT_LOGGED_OUT)
     }

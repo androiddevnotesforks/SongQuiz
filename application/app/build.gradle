@@ -20,6 +20,9 @@ android {
         versionCode 16
         versionName "v1.2.0"
 
+        // spotify auth lib scheme and host of the redirect URI that the app is using for in app authorizing
+        manifestPlaceholders = [redirectSchemeName: "spotify-sdk", redirectHostName: "auth"]
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -60,7 +63,7 @@ android {
             resValue "string", "spotifyClientSec", ""
             // production ad values
             resValue "string", "adMobAppId", "ca-app-pub-5281333576177335~3104405139"
-            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/1408180087"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/6311584294"
         }
         debug {
             debuggable true
@@ -72,7 +75,7 @@ android {
             resValue "string", "spotifyClientSec", ""
             // test ad values
             resValue "string", "adMobAppId", "ca-app-pub-3940256099942544~3347511713"
-            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/6300978111"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/1033173712"
         }
     }
 
@@ -110,6 +113,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Navigation library
     def nav_version = "2.4.1"
@@ -120,7 +124,7 @@ dependencies {
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.6'
 
     // DB
-    def room_version = '2.4.1'
+    def room_version = '2.4.2'
     implementation "androidx.room:room-runtime:${room_version}"
     kapt "androidx.room:room-compiler:${room_version}"
 
@@ -133,7 +137,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // Spotify auth Maven dependency
-    implementation 'com.spotify.android:auth:1.2.6'
+    implementation 'com.spotify.android:auth:2.0.0'
 
     // settings
     def preference_version = "1.2.0"
@@ -142,7 +146,7 @@ dependencies {
     // images
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-    // onboarding
+    // boarding
     implementation 'uk.co.samuelwall:material-tap-target-prompt:3.3.0'
 
     // DI
@@ -165,5 +169,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // debugImplementation because LeakCanary should only run in debug builds
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
 }

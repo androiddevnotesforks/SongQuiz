@@ -3,6 +3,7 @@ package com.aaronfodor.android.songquiz.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.TextToSpeechService
 import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelProfile
@@ -24,6 +25,7 @@ enum class TtsProfileState{
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     val repository: ProfileRepository,
+    val loggerService: LoggerService,
     accountService: AccountService,
     val textToSpeechService: TextToSpeechService,
 ) : AppViewModel(accountService) {
@@ -100,11 +102,13 @@ class ProfileViewModel @Inject constructor(
 
     fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteCurrentProfile()
+        loggerService.logDeleteProfileStats()
         notification.postValue(ProfileNotification.PROFILE_STATS_DELETED)
         loadData()
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logLogout()
         accountService.logout()
         currentProfile.postValue(ViewModelProfile())
         notification.postValue(ProfileNotification.LOGGED_OUT)

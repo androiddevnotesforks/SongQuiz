@@ -63,7 +63,7 @@
             app:summary="@string/settings_summary_color_mode" />
 
         <Preference
-            app:key="@string/SETTINGS_KEY_ONBOARDING"
+            app:key="@string/SETTINGS_KEY_BOARDING"
             app:title="@string/settings_title_onboarding"
             app:summary="@string/settings_summary_onboarding" />
 

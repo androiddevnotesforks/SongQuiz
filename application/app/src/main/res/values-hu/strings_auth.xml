@@ -8,9 +8,6 @@
     <string name="login_button">bejelentkezés</string>
     <string name="skip_button">most nem</string>
 
-    <string name="login_help_title">Nem sikerül bejelentkezni?</string>
-    <string name="login_help_dialog">Elsőként javasoljuk, hogy ellenőrizd az internetkapcsolatot.\n\nJelenleg a Spotify Google gyorsbejelentkezés funkciója nem érhető el. Ha Spotify fiókodat Google fiókoddal hoztad létre, bejelentkezni a hagyományos módon, a Google email cím és jelszó megadásával tudsz.</string>
-
     <string name="login_why_title">Miért kérünk, hogy jelentkezz be</string>
     <string name="login_why_dialog">A Spotify segítségével érjük el a dalokat és a lejátszási listákat. Ezért, hogy zenét tudjunk lejátszani Neked, be kell jelentkezned. Adataid a Spotify saját felületén adod meg – mi csak olyan adatokhoz férünk hozzá, amelyekhez előzetesen hozzájárultál.</string>
 </resources>

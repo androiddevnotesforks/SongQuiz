@@ -1,5 +1,6 @@
 package com.aaronfodor.android.songquiz.model.quiz
 
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.TextParserService
 import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
@@ -40,9 +41,10 @@ enum class RepeatCause{
  */
 @ViewModelScoped
 class QuizService @Inject constructor(
-    stringService: QuizStringHandler,
-    textParserService: TextParserService,
-    profileRepository: ProfileRepository
+    private val stringHandler: QuizStringHandler,
+    private val textParser: TextParserService,
+    private val profileRepository: ProfileRepository,
+    private val loggerService: LoggerService
 ){
 
     companion object{
@@ -52,10 +54,6 @@ class QuizService @Inject constructor(
         const val END_SOUND_NAME = "end.wav"
         const val DUEL_SOUND_NAME = "duel.wav"
     }
-
-    private val stringHandler = stringService
-    private val textParser = textParserService
-    private val profileRepository = profileRepository
 
     var state = QuizState.WELCOME
     var lastSaidByUser = ""
@@ -330,6 +328,7 @@ class QuizService @Inject constructor(
 
     private fun firstTurnThanNotify() : InformationPacket {
         setupStartQuizState()
+        loggerService.logStartGame(playlist.id)
         state = QuizState.PLAY_SONG
 
         val info = mutableListOf<InformationItem>()
@@ -501,6 +500,7 @@ class QuizService @Inject constructor(
             info.add(Speech(stringHandler.endGame()))
             info.addAll(endGameInformationBuilderAndSetFlags())
 
+            loggerService.logEndGame(playlist.id)
             // record results to the repository
             profileRepository.recordCurrentProfileGameResults(
                 isMultiPlayerGame = !doesGeneratedPlayerPlay,
