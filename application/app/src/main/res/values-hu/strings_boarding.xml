@@ -2,7 +2,7 @@
 
 <resources>
     <string name="boarding1_title">Üdvözöllek…</string>
-    <string name="boarding1_content">Musicat vagyok. Hadd mutassam be, hogyan használd a Song Quiz-t!</string>
+    <string name="boarding1_content">%1$s vagyok. Hadd mutassam be, hogyan használd a %2$s-t!</string>
 
     <string name="boarding2_title">Mi a lényeg?</string>
     <string name="boarding2_content">Ez egy kvízjáték, ahol ki kell találnod a címet és az előadót egy dalrészlet alapján.</string>

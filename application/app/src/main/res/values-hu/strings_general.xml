@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="nav_header_subtitle">Tudod mit hallasz?</string>
+    <string name="nav_header_subtitle">Találd ki, mit hallasz!</string>
 
     <string name="about_text">
         %1$s\n\n
@@ -51,6 +51,7 @@
     <string name="error_speak_to_user_description">Nem sikerült a felhasználóhoz beszélni. Kérlek bizonyosodj meg róla, hogy az eszközöd támogatja a text-to-speech funkciót.</string>
     <string name="added_to_favourites">Kedvenceidhez adva</string>
     <string name="removed_from_favourites">Eltávolítva a kedvenceid közül</string>
+    <string name="reward_granted">Jutalom XP-t kaptál!</string>
 
     <string name="recognition_error_audio">Szövegbemeneti hiba. Kérlek próbáld újra.</string>
     <string name="recognition_error_client">Kliensoldali hiba. Kérlek próbáld újra.</string>

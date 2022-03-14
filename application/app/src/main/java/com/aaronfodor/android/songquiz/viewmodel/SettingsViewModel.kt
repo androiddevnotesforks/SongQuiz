@@ -43,32 +43,32 @@ class SettingsViewModel  @Inject constructor(
     }
 
     fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
-        loggerService.logDeletePlaylists()
+        loggerService.logDeletePlaylists(this::class.simpleName)
         playlistsRepository.deleteAllPlaylists()
         notification.postValue(SettingsNotification.PLAYLISTS_DELETED)
     }
 
     fun deleteFavourites() = viewModelScope.launch(Dispatchers.IO) {
-        loggerService.logDeleteFavourites()
+        loggerService.logDeleteFavourites(this::class.simpleName)
         tracksRepository.deleteAllTracks()
         notification.postValue(SettingsNotification.FAVOURITES_DELETED)
     }
 
     fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
-        loggerService.logDeleteProfileStats()
+        loggerService.logDeleteProfileStats(this::class.simpleName)
         profileRepository.deleteCurrentProfile()
         notification.postValue(SettingsNotification.PROFILE_STATS_DELETED)
     }
 
     fun restoreDefaultPlaylists() = viewModelScope.launch(Dispatchers.IO) {
         // rollback to default database content
-        loggerService.logRestoreDefaultPlaylists()
+        loggerService.logRestoreDefaultPlaylists(this::class.simpleName)
         playlistsRepository.restoreDefaultPlaylists()
         notification.postValue(SettingsNotification.DEFAULT_PLAYLISTS_RESTORED)
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
-        loggerService.logLogout()
+        loggerService.logLogout(this::class.simpleName)
         accountService.logout()
         notification.postValue(SettingsNotification.ACCOUNT_LOGGED_OUT)
     }

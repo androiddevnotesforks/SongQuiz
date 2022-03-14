@@ -102,13 +102,13 @@ class ProfileViewModel @Inject constructor(
 
     fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
         repository.deleteCurrentProfile()
-        loggerService.logDeleteProfileStats()
+        loggerService.logDeleteProfileStats(this::class.simpleName)
         notification.postValue(ProfileNotification.PROFILE_STATS_DELETED)
         loadData()
     }
 
     fun logout() = viewModelScope.launch(Dispatchers.IO) {
-        loggerService.logLogout()
+        loggerService.logLogout(this::class.simpleName)
         accountService.logout()
         currentProfile.postValue(ViewModelProfile())
         notification.postValue(ProfileNotification.LOGGED_OUT)

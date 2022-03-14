@@ -192,7 +192,7 @@ class InfoTrackViewModel  @Inject constructor(
     fun deleteItem() = viewModelScope.launch(Dispatchers.IO) {
         item.value?.let {
             val success = repository.deleteTrackById(it.id)
-            loggerService.logDeleteTrack(it.id)
+            loggerService.logDeleteTrack(this::class.simpleName, it.id)
             if(success){
                 notification.postValue(InfoTrackUiNotification.SUCCESS_DELETE_ITEM)
             }

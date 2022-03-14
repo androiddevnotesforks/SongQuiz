@@ -41,6 +41,7 @@ fun Profile.toDbProfile(timestampUTC: String) : DbProfile {
         multi_TotalSongLength = this.multi_TotalSongLength,
         multi_TotalSongDifficulty = this.multi_TotalSongDifficulty,
         multi_TotalNumPlayers = this.multi_TotalNumPlayers,
+        totalReward = this.totalReward
     )
 }
 
@@ -70,6 +71,7 @@ fun DbProfile.toProfile() : Profile {
         multi_TotalSongLength = this.multi_TotalSongLength,
         multi_TotalSongDifficulty = this.multi_TotalSongDifficulty,
         multi_TotalNumPlayers = this.multi_TotalNumPlayers,
+        totalReward = this.totalReward
     )
 }
 

@@ -168,7 +168,7 @@ class InfoPlaylistViewModel  @Inject constructor(
             if(infoScreenCaller == InfoPlaylistScreenCaller.PLAY || infoScreenCaller == InfoPlaylistScreenCaller.HOME){
 
                 val success = repository.deletePlaylistById(it.id)
-                loggerService.logDeletePlaylist(it.id)
+                loggerService.logDeletePlaylist(this::class.simpleName, it.id)
                 if(success){
                     notification.postValue(InfoPlaylistUiNotification.SUCCESS_DELETE_ITEM)
                 }
@@ -186,7 +186,7 @@ class InfoPlaylistViewModel  @Inject constructor(
             uiState.postValue(InfoPlaylistUiState.LOADING)
 
             val success = repository.insertPlaylist(it.toPlaylist())
-            loggerService.logAddPlaylist(it.id)
+            loggerService.logAddPlaylist(this::class.simpleName, it.id)
             if(success){
                 notification.postValue(InfoPlaylistUiNotification.SUCCESS_ADD_ITEM)
             }
@@ -204,7 +204,7 @@ class InfoPlaylistViewModel  @Inject constructor(
 
     fun startQuiz() = mustAuthenticatedLaunch {
         item.value?.let {
-            loggerService.logShowQuizScreen(it.id)
+            loggerService.logShowQuizScreen(this::class.simpleName, it.id)
         }
         uiState.value = InfoPlaylistUiState.START_QUIZ
     }

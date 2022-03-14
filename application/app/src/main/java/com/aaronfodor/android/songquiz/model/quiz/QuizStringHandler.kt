@@ -100,7 +100,7 @@ class QuizStringHandler @Inject constructor(
         return context.getString(R.string.c_end_game)
     }
 
-    fun playAgainPossible() : String{
+    fun endGamePossibilities() : String{
         return context.getString(R.string.c_play_again_possible)
     }
 

@@ -35,5 +35,7 @@ data class DbProfile(
     var multi_TotalNumSongs: Long = 0L,
     var multi_TotalSongLength: Long = 0L,
     var multi_TotalSongDifficulty: Long = 0L,
-    var multi_TotalNumPlayers: Long = 0L
+    var multi_TotalNumPlayers: Long = 0L,
+    // reward
+    var totalReward: Long = 0L
 )

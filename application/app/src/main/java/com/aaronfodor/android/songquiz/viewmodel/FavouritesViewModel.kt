@@ -107,7 +107,7 @@ class FavouritesViewModel @Inject constructor(
 
     fun deleteTrack(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deleteTrackById(id)
-        loggerService.logDeleteTrack(id)
+        loggerService.logDeleteTrack(this::class.simpleName, id)
         if(success){
             notification.postValue(FavouritesNotification.SUCCESS_DELETE_TRACK)
         }

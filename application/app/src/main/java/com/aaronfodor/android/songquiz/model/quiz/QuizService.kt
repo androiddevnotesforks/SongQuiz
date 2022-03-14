@@ -328,7 +328,7 @@ class QuizService @Inject constructor(
 
     private fun firstTurnThanNotify() : InformationPacket {
         setupStartQuizState()
-        loggerService.logStartGame(playlist.id)
+        loggerService.logStartGame(this::class.simpleName, playlist.id)
         state = QuizState.PLAY_SONG
 
         val info = mutableListOf<InformationItem>()
@@ -419,7 +419,7 @@ class QuizService @Inject constructor(
         return info
     }
 
-    private fun endGameInformationBuilderAndSetFlags() : List<InformationItem>{
+    private fun endGameInformationBuilderAndSetFlags(isRepeat: Boolean) : List<InformationItem>{
         var resultText = ""
         var winnerName = ""
         var winnerPoints = 0
@@ -482,25 +482,29 @@ class QuizService @Inject constructor(
             }
         }
 
-        return listOf(
-            EndFeedback(resultText, winnerNames, numWinners),
-            LocalSound(END_SOUND_NAME),
-            Speech(stringHandler.playAgainPossible())
-        )
+        val information = mutableListOf<InformationItem>()
+        information.add(EndFeedback(resultText, winnerNames, numWinners))
+        information.add(LocalSound(END_SOUND_NAME))
+        if(!isRepeat){
+            information.add(Advertisement())
+        }
+        information.add(Speech(stringHandler.endGamePossibilities()))
+
+        return information
     }
 
     private fun endGame(isRepeat: Boolean = false, cause: RepeatCause = RepeatCause.NOTHING) : InformationPacket {
         state = QuizState.REPEAT_END
 
         return if(isRepeat){
-            InformationPacket(endGameInformationBuilderAndSetFlags(), true)
+            InformationPacket(endGameInformationBuilderAndSetFlags(isRepeat), true)
         }
         else{
             val info = mutableListOf<InformationItem>()
             info.add(Speech(stringHandler.endGame()))
-            info.addAll(endGameInformationBuilderAndSetFlags())
+            info.addAll(endGameInformationBuilderAndSetFlags(isRepeat))
 
-            loggerService.logEndGame(playlist.id)
+            loggerService.logEndGame(this::class.simpleName, playlist.id)
             // record results to the repository
             profileRepository.recordCurrentProfileGameResults(
                 isMultiPlayerGame = !doesGeneratedPlayerPlay,
@@ -787,6 +791,10 @@ class QuizService @Inject constructor(
 
     fun getCurrentTrack() : Track {
         return playlist.tracks[quiz.currentTrackIndex]
+    }
+
+    fun addReward(){
+        profileRepository.recordReward()
     }
 
 }

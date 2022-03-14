@@ -67,7 +67,7 @@ android {
             resValue "string", "spotifyClientSec", ""
             // production ad values
             resValue "string", "adMobAppId", "ca-app-pub-5281333576177335~3104405139"
-            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/6311584294"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-5281333576177335/5130649971"
         }
         debug {
             debuggable true
@@ -79,7 +79,7 @@ android {
             resValue "string", "spotifyClientSec", ""
             // test ad values
             resValue "string", "adMobAppId", "ca-app-pub-3940256099942544~3347511713"
-            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/1033173712"
+            resValue "string", "adMobQuizAdId", "ca-app-pub-3940256099942544/5354046379"
         }
     }
 

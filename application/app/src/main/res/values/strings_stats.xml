@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <string name="stats_reward">Reward</string>
     <string name="stats_single_player">Single player</string>
     <string name="stats_multiplayer">Multiplayer</string>
 

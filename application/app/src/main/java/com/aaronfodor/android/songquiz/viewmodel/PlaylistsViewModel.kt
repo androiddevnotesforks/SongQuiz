@@ -62,7 +62,7 @@ class PlaylistsViewModel @Inject constructor(
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deletePlaylistById(id)
-        loggerService.logDeletePlaylist(id)
+        loggerService.logDeletePlaylist(this::class.simpleName, id)
         if(success){
             notification.postValue(PlaylistsNotification.SUCCESS_DELETE_PLAYLIST)
         }
@@ -76,7 +76,7 @@ class PlaylistsViewModel @Inject constructor(
 
     fun startQuiz(playListId: String) = mustAuthenticatedLaunch {
         selectedPlaylistId = playListId
-        loggerService.logShowQuizScreen(playListId)
+        loggerService.logShowQuizScreen(this::class.simpleName, playListId)
         notification.postValue(PlaylistsNotification.START_QUIZ)
     }
 

@@ -51,6 +51,7 @@
     <string name="error_speak_to_user_description">Cannot speak to user. Please make sure your device supports text-to-speech.</string>
     <string name="added_to_favourites">Added to your favourites</string>
     <string name="removed_from_favourites">Removed from your favourites</string>
+    <string name="reward_granted">Reward XP granted!</string>
 
     <string name="recognition_error_audio">Audio recording error. Please try again.</string>
     <string name="recognition_error_client">Client side error. Please try again.</string>

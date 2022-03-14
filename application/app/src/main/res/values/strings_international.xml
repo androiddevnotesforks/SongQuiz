@@ -10,6 +10,7 @@
     ]>
 
 <resources>
+    <string name="mascot_name" translatable="false">Melody</string>
     <string name="app_name" translatable="false">&appName;</string>
     <string name="app_date" translatable="false">&appDate;</string>
     <string name="app_creator" translatable="false">&appCreator;</string>
@@ -156,7 +157,7 @@
         <item>Marvin</item>
         <item>Stefanos</item>
         <item>Armen</item>
-        <item>Adityarrr</item>
+        <item>Adityar</item>
         <item>Sihang</item>
         <item>Kuan</item>
         <item>Feng</item>

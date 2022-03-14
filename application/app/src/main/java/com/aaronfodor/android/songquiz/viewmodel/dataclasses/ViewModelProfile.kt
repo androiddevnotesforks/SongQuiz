@@ -30,19 +30,27 @@ class ViewModelProfile (
     var multi_TotalNumSongs: Long = 0L,
     var multi_TotalSongLength: Long = 0L,
     var multi_TotalSongDifficulty: Long = 0L,
-    var multi_TotalNumPlayers: Long = 0L
+    var multi_TotalNumPlayers: Long = 0L,
+    // reward
+    var totalReward: Long = 0L
 )
 
-fun ViewModelProfile.getTotalXP() : Long {
+fun ViewModelProfile.getSingleXP() : Long {
     val singleHitPercentage = safeArithmetic { (this.single_TotalArtistHits + this.single_TotalTitleHits) / (2.0 * this.single_TotalNumSongs) }
     val singleDifficultyPercentage = safeArithmetic{ (this.single_TotalSongDifficulty / this.single_TotalNumSongs) / 100.0 }
     val singlePlayerXP = this.single_TotalNumSongs + (singleHitPercentage * this.single_TotalNumSongs) + (singleDifficultyPercentage * this.single_TotalNumSongs)
+    return singlePlayerXP.toLong()
+}
 
+fun ViewModelProfile.getMultiXP() : Long {
     val multiHitPercentage = safeArithmetic { (this.multi_TotalArtistHits + this.multi_TotalTitleHits) / (2.0 * this.multi_TotalNumSongs) }
     val multiDifficultyPercentage = safeArithmetic { (this.multi_TotalSongDifficulty / this.multi_TotalNumSongs) / 100.0 }
     val multiPlayerXP = this.multi_TotalNumSongs + (multiHitPercentage * this.multi_TotalNumSongs) + (multiDifficultyPercentage * this.multi_TotalNumSongs)
+    return multiPlayerXP.toLong()
+}
 
-    return (singlePlayerXP + multiPlayerXP).toLong()
+fun ViewModelProfile.getTotalXP() : Long {
+    return this.getSingleXP() + this.getMultiXP() + this.totalReward
 }
 
 fun Profile.toViewModelProfile() : ViewModelProfile {
@@ -71,6 +79,7 @@ fun Profile.toViewModelProfile() : ViewModelProfile {
         multi_TotalSongLength = this.multi_TotalSongLength,
         multi_TotalSongDifficulty = this.multi_TotalSongDifficulty,
         multi_TotalNumPlayers = this.multi_TotalNumPlayers,
+        totalReward = this.totalReward
     )
 }
 
@@ -100,5 +109,6 @@ fun ViewModelProfile.toProfile() : Profile {
         multi_TotalSongLength = this.multi_TotalSongLength,
         multi_TotalSongDifficulty = this.multi_TotalSongDifficulty,
         multi_TotalNumPlayers = this.multi_TotalNumPlayers,
+        totalReward = this.totalReward
     )
 }

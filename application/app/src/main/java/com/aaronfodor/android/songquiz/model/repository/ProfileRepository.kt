@@ -100,6 +100,19 @@ class ProfileRepository @Inject constructor(
         updateProfile(profile)
     }
 
+    fun recordReward(){
+        val profile = getCurrentProfile()
+        val currentPublicAccount = accountService.getPublicInfo()
+
+        if(currentPublicAccount.id == AccountService.DEFAULTS_ACCOUNT_ID){
+            return
+        }
+
+        profile.totalReward += 1
+        // apply change - update
+        updateProfile(profile)
+    }
+
     private fun insertCurrentProfile(profile: Profile) : Boolean{
         return if(profile.id == accountService.getAccountId()){
             val toInsert = profile.toDbProfile(timeService.getTimestampUTC())

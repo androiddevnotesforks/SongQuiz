@@ -68,7 +68,7 @@ class HomeViewModel @Inject constructor(
 
     fun deletePlaylist(id: String) = viewModelScope.launch(Dispatchers.IO) {
         val success = repository.deletePlaylistById(id)
-        loggerService.logDeletePlaylist(id)
+        loggerService.logDeletePlaylist(this::class.simpleName, id)
         if(success){
             notification.postValue(HomeNotification.SUCCESS_DELETE_PLAYLIST)
         }
@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
 
     private fun startQuiz(playListId: String) = viewModelScope.launch {
         selectedPlaylistId = playListId
-        loggerService.logShowQuizScreen(playListId)
+        loggerService.logShowQuizScreen(this::class.simpleName, playListId)
         notification.postValue(HomeNotification.START_QUIZ)
     }
 

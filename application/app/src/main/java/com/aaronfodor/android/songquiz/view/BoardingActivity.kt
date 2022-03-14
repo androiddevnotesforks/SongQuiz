@@ -30,11 +30,14 @@ class BoardingActivity : AppIntro() {
         // color transition flag
         isColorTransitionsEnabled = true
 
+        val mascotName = getString(R.string.mascot_name)
+        val appName = getString(R.string.app_name)
+
         // Call addSlide passing your Fragments.
         // You can use AppIntroFragment to use a pre-built fragment
         addSlide(BoardingIntroFragment.createInstance(
             title = getString(R.string.boarding1_title),
-            description = getString(R.string.boarding1_content),
+            description = getString(R.string.boarding1_content, mascotName, appName),
             imageDrawable = R.drawable.song_quiz,
             backgroundColorRes = R.color.colorAccent,
             titleColorRes = R.color.colorText,

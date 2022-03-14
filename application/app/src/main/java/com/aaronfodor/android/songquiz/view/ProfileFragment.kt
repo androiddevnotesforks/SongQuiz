@@ -12,6 +12,8 @@ import com.aaronfodor.android.songquiz.safeArithmetic
 import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelProfile
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getMultiXP
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getSingleXP
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.getTotalXP
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -40,11 +42,13 @@ class ProfileFragment : AppFragment(R.layout.fragment_profile), AuthRequestModul
 
         val profileObserver = Observer<ViewModelProfile> { profile ->
             if(profile.id.isBlank()){
-                binding.content.root.visibility = View.INVISIBLE
+                binding.content.root.visibility = View.GONE
+                binding.profileImage.visibility = View.GONE
                 binding.tvLogin.appear(R.anim.slide_in_bottom)
             }
             else{
                 binding.content.root.visibility = View.VISIBLE
+                binding.profileImage.visibility = View.VISIBLE
                 binding.tvLogin.disappear(R.anim.slide_out_bottom)
             }
 
@@ -73,6 +77,19 @@ class ProfileFragment : AppFragment(R.layout.fragment_profile), AuthRequestModul
 
             // total XP
             binding.content.totalXp.text = getString(R.string.stats_xp, profile.getTotalXP().toString())
+
+            // XPs
+            val textSingle = getString(R.string.stats_single_player)
+            binding.content.totalSingle.name.text = getString(R.string.stats_xp, textSingle)
+            binding.content.totalSingle.score.text = profile.getSingleXP().toString()
+
+            val textMulti = getString(R.string.stats_multiplayer)
+            binding.content.totalMulti.name.text = getString(R.string.stats_xp, textMulti)
+            binding.content.totalMulti.score.text = profile.getMultiXP().toString()
+
+            val textReward = getString(R.string.stats_reward)
+            binding.content.totalReward.name.text = getString(R.string.stats_xp, textReward)
+            binding.content.totalReward.score.text = profile.totalReward.toString()
 
             // single player stats
             binding.content.singleStat1.name.text = getString(R.string.stats_total_play)

@@ -41,19 +41,19 @@ enum class AdState{
 }
 
 enum class QuizNotification{
-    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, ADDED_TO_FAVOURITES, REMOVED_FROM_FAVOURITES, EXIT
+    EMPTY, LOADING, ERROR_PLAYLIST_LOAD, READY_TO_START, PLAY, ERROR_PLAY_SONG, ERROR_SPEAK_TO_USER, ADDED_TO_FAVOURITES, REMOVED_FROM_FAVOURITES, REWARD_GRANTED, EXIT
 }
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
-    var quizService: QuizService,
-    var textToSpeechService: TextToSpeechService,
-    var speechRecognizerService: SpeechRecognizerService,
-    var mediaPlayerService: MediaPlayerService,
-    var adService: AdvertisementService,
+    val quizService: QuizService,
+    val textToSpeechService: TextToSpeechService,
+    val speechRecognizerService: SpeechRecognizerService,
+    val mediaPlayerService: MediaPlayerService,
+    val adService: AdvertisementService,
     val loggerService: LoggerService,
-    var playlistsRepository: PlaylistsRepository,
-    var favouritesRepository: TracksRepository,
+    val playlistsRepository: PlaylistsRepository,
+    val favouritesRepository: TracksRepository,
     accountService: AccountService
 ) : AppViewModel(accountService) {
 
@@ -257,8 +257,6 @@ class QuizViewModel @Inject constructor(
             if(playlist.id == playlistId){
                 quizService.setQuizPlaylistAndSettings(playlist, songDuration, repeatAllowed,
                     difficultyCompensation, extendedInfoAllowed)
-                //show ad
-                adState.postValue(AdState.SHOW)
                 // ready to start
                 userInputState.postValue(UserInputState.DISABLED)
                 ttsState.postValue(TtsState.ENABLED)
@@ -442,6 +440,9 @@ class QuizViewModel @Inject constructor(
                         speakToUser(information.speech)
                         true
                     }
+                    is Advertisement -> {
+                        showAd()
+                    }
                     is NotifyGetNextInfo -> {
                         val informationPacket = quizService.getCurrentInfo()
                         infoList.addAll(informationPacket.contents)
@@ -600,7 +601,7 @@ class QuizViewModel @Inject constructor(
     private fun trackPlayStarted() = viewModelScope.launch(Dispatchers.IO){
         currentTrack = quizService.getCurrentTrack().toViewModelTrack()
         currentTrack?.let {
-            loggerService.logGamePlayTrack(it.id)
+            loggerService.logGamePlayTrack(this::class.simpleName, it.id)
             if(alreadyAddedFavouriteIds.contains(it.id)){
                 addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
                 favouritesRepository.updateTrack(it.toTrack())
@@ -619,7 +620,7 @@ class QuizViewModel @Inject constructor(
     fun addCurrentTrackToFavourites() = viewModelScope.launch(Dispatchers.IO){
         currentTrack?.let {
             favouritesRepository.insertTrack(it.toTrack())
-            loggerService.logAddTrack(it.id)
+            loggerService.logAddTrack(this::class.simpleName, it.id)
             alreadyAddedFavouriteIds.add(it.id)
             addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES)
             notification.postValue(QuizNotification.ADDED_TO_FAVOURITES)
@@ -629,16 +630,53 @@ class QuizViewModel @Inject constructor(
     fun removeCurrentTrackFromFavourites() = viewModelScope.launch(Dispatchers.IO){
         currentTrack?.let {
             favouritesRepository.deleteTrackById(it.id)
-            loggerService.logDeleteTrack(it.id)
+            loggerService.logDeleteTrack(this::class.simpleName, it.id)
             alreadyAddedFavouriteIds.remove(it.id)
             addToFavouritesState.postValue(AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES)
             notification.postValue(QuizNotification.REMOVED_FROM_FAVOURITES)
         }
     }
 
-    fun showInterstitialAd(activity: Activity){
-        loggerService.logShowInterstitialAd()
-        adService.showInterstitialAd(activity)
+    var isAdShowStarted = false
+    var rewardInfoNeeded = false
+
+    private suspend fun showAd() : Boolean {
+        var isSuccess = false
+
+        suspendCoroutine<Boolean> { cont ->
+            val finished = {
+                isSuccess = true
+                isAdShowStarted = false
+                if(rewardInfoNeeded){
+                    rewardInfoNeeded = false
+                    notification.postValue(QuizNotification.REWARD_GRANTED)
+                }
+                cont.resume(true)
+            }
+
+            val reward = { amount: Int ->
+                viewModelScope.launch(Dispatchers.IO){
+                    quizService.addReward()
+                    rewardInfoNeeded = true
+                }
+                Unit
+            }
+
+            adService.setRewardedInterstitialAdCallbacks(finishedAction = finished, rewardAction = reward)
+            // request showing the ad
+            adState.postValue(AdState.SHOW)
+        }
+
+        return isSuccess
+    }
+
+    fun showRewardedInterstitialAd(activity: Activity){
+        // show the ad, if showing is not started yet
+        if(!isAdShowStarted){
+            isAdShowStarted = true
+            loggerService.logShowRewardedInterstitialAd(this::class.simpleName)
+            adService.showRewardedInterstitialAd(activity)
+        }
     }
 
 }

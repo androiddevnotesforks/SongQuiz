@@ -1,5 +1,6 @@
 package com.aaronfodor.android.songquiz.model
 
+import android.util.Log
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
@@ -30,116 +31,153 @@ class LoggerService  @Inject constructor(
         const val RESTORE_DEFAULTS_EVENT = "restore defaults"
         const val LOGOUT_EVENT = "logout"
         const val TOKEN_REFRESH_EVENT = "token refresh"
-        const val SHOW_INTERSTITIAL_AD_EVENT = "show interstitial ad"
+        const val SHOW_REWARDED_INTERSTITIAL_AD_EVENT = "show rewarded interstitial ad"
 
         const val PARAM_ACCOUNT_ID = "account id"
         const val PARAM_PLAYLIST_ID = "playlist id"
         const val PARAM_TRACK_ID = "track id"
         const val PARAM_SONG_URI = "song uri"
         const val PARAM_SEARCH_EXPRESSION = "search expression"
+        const val PARAM_TAG = "tag class"
     }
 
-    fun logStartGame(playlistId: String){
+    fun d(tag: String?, msg: String?){
+        Log.println(Log.DEBUG, tag, msg ?: "")
+    }
+
+    fun logStartGame(tag: String?, playlistId: String){
+        d(tag, "logStartGame")
         Firebase.analytics.logEvent(START_GAME_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_PLAYLIST_ID, playlistId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logGamePlayTrack(soundUri: String){
+    fun logGamePlayTrack(tag: String?, soundUri: String){
+        d(tag, "logGamePlayTrack")
         Firebase.analytics.logEvent(GAME_PLAY_TRACK_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_SONG_URI, soundUri)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logEndGame(playlistId: String){
+    fun logEndGame(tag: String?, playlistId: String){
+        d(tag, "logEndGame")
         Firebase.analytics.logEvent(END_GAME_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_PLAYLIST_ID, playlistId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logShowQuizScreen(playlistId: String){
+    fun logShowQuizScreen(tag: String?, playlistId: String){
+        d(tag, "logShowQuizScreen")
         Firebase.analytics.logEvent(SHOW_QUIZ_SCREEN_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_PLAYLIST_ID, playlistId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logSearchPlaylist(searchExpression: String){
+    fun logSearchPlaylist(tag: String?, searchExpression: String){
+        d(tag, "logSearchPlaylist")
         Firebase.analytics.logEvent(SEARCH_PLAYLIST_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_SEARCH_EXPRESSION, searchExpression)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logAddPlaylist(playlistId: String){
+    fun logAddPlaylist(tag: String?, playlistId: String){
+        d(tag, "logAddPlaylist")
         Firebase.analytics.logEvent(ADD_PLAYLIST_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_PLAYLIST_ID, playlistId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logDeletePlaylist(playlistId: String){
+    fun logDeletePlaylist(tag: String?, playlistId: String){
+        d(tag, "logDeletePlaylist")
         Firebase.analytics.logEvent(DELETE_PLAYLIST_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_PLAYLIST_ID, playlistId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logAddTrack(trackId: String){
+    fun logAddTrack(tag: String?, trackId: String){
+        d(tag, "logAddTrack")
         Firebase.analytics.logEvent(ADD_TRACK_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_TRACK_ID, trackId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logDeleteTrack(trackId: String){
+    fun logDeleteTrack(tag: String?, trackId: String){
+        d(tag, "logDeleteTrack")
         Firebase.analytics.logEvent(DELETE_TRACK_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_TRACK_ID, trackId)
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logDeleteProfileStats(){
+    fun logDeleteProfileStats(tag: String?){
+        d(tag, "logDeleteProfileStats")
         Firebase.analytics.logEvent(DELETE_PROFILE_STATS_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logDeletePlaylists(){
+    fun logDeletePlaylists(tag: String?){
+        d(tag, "logDeletePlaylists")
         Firebase.analytics.logEvent(DELETE_PLAYLISTS_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logDeleteFavourites(){
+    fun logDeleteFavourites(tag: String?){
+        d(tag, "logDeleteFavourites")
         Firebase.analytics.logEvent(DELETE_FAVOURITES_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logRestoreDefaultPlaylists(){
+    fun logRestoreDefaultPlaylists(tag: String?){
+        d(tag, "logRestoreDefaultPlaylists")
         Firebase.analytics.logEvent(RESTORE_DEFAULTS_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logLogout(){
+    fun logLogout(tag: String?){
+        d(tag, "logLogout")
         Firebase.analytics.logEvent(LOGOUT_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logTokenRefresh(){
+    fun logTokenRefresh(tag: String?){
+        d(tag, "logTokenRefresh")
         Firebase.analytics.logEvent(TOKEN_REFRESH_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }
 
-    fun logShowInterstitialAd(){
-        Firebase.analytics.logEvent(SHOW_INTERSTITIAL_AD_EVENT){
+    fun logShowRewardedInterstitialAd(tag: String?){
+        d(tag, "logShowRewardedInterstitialAd")
+        Firebase.analytics.logEvent(SHOW_REWARDED_INTERSTITIAL_AD_EVENT){
+            tag?.let { param(PARAM_TAG, it) }
             param(PARAM_ACCOUNT_ID, accountService.getAccountId())
         }
     }

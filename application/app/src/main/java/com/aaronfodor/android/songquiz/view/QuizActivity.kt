@@ -271,7 +271,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             when(state){
                 AdState.HIDE -> {}
                 AdState.SHOW -> {
-                    viewModel.showInterstitialAd(this)
+                    viewModel.showRewardedInterstitialAd(this)
                     viewModel.adState.postValue(AdState.HIDE)
                 }
                 else -> {}
@@ -344,6 +344,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 }
                 QuizNotification.REMOVED_FROM_FAVOURITES -> {
                     showInfo(QuizNotification.REMOVED_FROM_FAVOURITES)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.REWARD_GRANTED -> {
+                    showInfo(QuizNotification.REWARD_GRANTED)
                     viewModel.notification.postValue(QuizNotification.PLAY)
                 }
                 QuizNotification.EXIT -> {
@@ -642,6 +646,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             }
             QuizNotification.REMOVED_FROM_FAVOURITES -> {
                 val message = getString(R.string.removed_from_favourites)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+            QuizNotification.REWARD_GRANTED -> {
+                val message = getString(R.string.reward_granted)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
             else -> {}

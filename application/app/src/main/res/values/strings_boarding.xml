@@ -2,7 +2,7 @@
 
 <resources>
     <string name="boarding1_title">Welcome…</string>
-    <string name="boarding1_content">My name is Musicat. Let me introduce you how to use Song Quiz!</string>
+    <string name="boarding1_content">My name is %1$s. Let me introduce you how to use %2$s!</string>
 
     <string name="boarding2_title">What is the point?</string>
     <string name="boarding2_content">It is a trivia game where you need to guess the title and artist based on an audio clip.</string>

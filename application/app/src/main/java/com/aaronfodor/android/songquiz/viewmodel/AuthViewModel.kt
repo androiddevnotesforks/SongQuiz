@@ -81,7 +81,7 @@ class AuthViewModel @Inject constructor(
                     isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
                 )
                 accountService.setAccount(accountToSet)
-                loggerService.logTokenRefresh()
+                loggerService.logTokenRefresh(this::class.simpleName)
                 uiState.postValue(AuthUiState.SUCCESS)
             }
             AuthorizationResponse.Type.ERROR -> {

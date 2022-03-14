@@ -72,7 +72,7 @@ class PlaylistsAddViewModel @Inject constructor(
         lastSearchExpression = searchExpression
         uiState.postValue(PlaylistsAddUiState.LOADING)
         val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
-        loggerService.logSearchPlaylist(searchExpression)
+        loggerService.logSearchPlaylist(this::class.simpleName, searchExpression)
         uiState.postValue(PlaylistsAddUiState.READY)
         searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
@@ -102,7 +102,7 @@ class PlaylistsAddViewModel @Inject constructor(
 
         val success = searchResult.value?.items?.let {
             val playlistToInsert = it.first{ item -> item.id == id }
-            loggerService.logAddPlaylist(playlistToInsert.id)
+            loggerService.logAddPlaylist(this::class.simpleName, playlistToInsert.id)
             repository.insertPlaylist(playlistToInsert.toPlaylist())
         } ?: false
 

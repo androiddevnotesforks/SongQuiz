@@ -44,6 +44,8 @@ class EndFeedback(
     val numWinners: Int
 ) : InformationItem()
 
+class Advertisement() : InformationItem()
+
 class NotifyGetNextInfo() : InformationItem()
 class ExitRequest() : InformationItem()
 
