@@ -601,16 +601,16 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 .setTarget(binding.content.userSpeechButton)
                 .setPrimaryText(getString(R.string.boarding_quiz_user_input))
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
-                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
-                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                .setBackgroundColour(getColor(R.color.colorBoardingBackground))
+                .setFocalColour(getColor(R.color.colorBoardingFocal))
                 .create()
             ).addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.ttsSpeechButton)
                 .setPrimaryText("${getString(R.string.boarding_quiz_speech)} ${getString(R.string.boarding_tap_to_start)}")
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
-                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
-                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                .setBackgroundColour(getColor(R.color.colorBoardingBackground))
+                .setFocalColour(getColor(R.color.colorBoardingFocal))
                     .setPromptStateChangeListener { prompt, state ->
                         if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
                             // persist showed flag to preferences

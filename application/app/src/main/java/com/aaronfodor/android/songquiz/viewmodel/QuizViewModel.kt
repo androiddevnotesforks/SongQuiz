@@ -639,12 +639,14 @@ class QuizViewModel @Inject constructor(
 
     var isAdShowStarted = false
     var rewardInfoNeeded = false
+    var adFinishedAction = {}
+    var adRewardAction: (Int) -> Unit = {}
 
     private suspend fun showAd() : Boolean {
         var isSuccess = false
 
         suspendCoroutine<Boolean> { cont ->
-            val finished = {
+            adFinishedAction = {
                 isSuccess = true
                 isAdShowStarted = false
                 if(rewardInfoNeeded){
@@ -654,7 +656,7 @@ class QuizViewModel @Inject constructor(
                 cont.resume(true)
             }
 
-            val reward = { amount: Int ->
+            adRewardAction = { amount: Int ->
                 viewModelScope.launch(Dispatchers.IO){
                     quizService.addReward()
                     rewardInfoNeeded = true
@@ -662,7 +664,6 @@ class QuizViewModel @Inject constructor(
                 Unit
             }
 
-            adService.setRewardedInterstitialAdCallbacks(finishedAction = finished, rewardAction = reward)
             // request showing the ad
             adState.postValue(AdState.SHOW)
         }
@@ -670,12 +671,14 @@ class QuizViewModel @Inject constructor(
         return isSuccess
     }
 
-    fun showRewardedInterstitialAd(activity: Activity){
+    fun showRewardedInterstitialAd(activity: Activity) = viewModelScope.launch{
         // show the ad, if showing is not started yet
         if(!isAdShowStarted){
             isAdShowStarted = true
             loggerService.logShowRewardedInterstitialAd(this::class.simpleName)
-            adService.showRewardedInterstitialAd(activity)
+            adService.showRewardedInterstitialAd(activity, finishedAction = adFinishedAction, rewardAction = adRewardAction)
+            adFinishedAction = {}
+            adRewardAction = {}
         }
     }
 

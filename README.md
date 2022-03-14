@@ -1,11 +1,11 @@
-# Song Quiz
-[<img src="https://user-images.githubusercontent.com/37120889/122938687-43f8a300-d373-11eb-829d-4522f2e529a8.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
+# Song Quiz: Guess with Melody!
+[<img src="https://user-images.githubusercontent.com/37120889/158266044-ac227b70-dd40-4d1c-9b50-d7d799273065.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
 
 ![](https://img.shields.io/github/license/aaronfodor/SongQuiz) 
 
 [<img src="https://user-images.githubusercontent.com/37120889/122966033-22a2b180-d389-11eb-8b13-f65fabed4bf7.png" alt="google-play-badge" width="200"/>](https://play.google.com/store/apps/details?id=com.aaronfodor.android.songquiz)
 
-Guess what you hear! Challenge yourself on more than 4 billion playlists.
+Do you know what you hear? Challenge yourself on more than 4 billion playlists!
 
 Song Quiz guides you into the world of music. Play with more than 4 billion Spotify playlists. Save playlists to your library, set up the game based on your preferences. Would it be too easy? Shorten the length of a song or disable repetition to make it more exciting. Spark your music knowledge against your friends with your own playlists. As it is easy to use, you can play while traveling, taking a shower, and so on. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
 

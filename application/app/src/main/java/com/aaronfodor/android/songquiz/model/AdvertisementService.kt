@@ -19,7 +19,6 @@ class AdvertisementService  @Inject constructor(
     val loggerService: LoggerService
 ){
     var rewardedInterstitialAd: RewardedInterstitialAd? = null
-    var rewardListener = OnUserEarnedRewardListener{}
 
     fun init(){
         // Initialize Ads
@@ -53,36 +52,46 @@ class AdvertisementService  @Inject constructor(
 
                 override fun onAdDismissedFullScreenContent() {
                     loggerService.d(this::class.simpleName, "Ad was dismissed.")
-                    finishedAction()
                     loadRewardedInterstitialAd()
+                    finishedAction()
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
                     loggerService.d(this::class.simpleName, "Ad failed to show.")
-                    finishedAction()
                     loadRewardedInterstitialAd()
+                    finishedAction()
                 }
             }
         }
     }
 
-    fun setRewardedInterstitialAdCallbacks(finishedAction: () -> Unit, rewardAction: (Int) -> Unit){
-        rewardedInterstitialAd?.let {
-            setRewardedInterstitialAdContentCallbacks(finishedAction)
+    fun showRewardedInterstitialAd(activity: Activity, finishedAction: () -> Unit, rewardAction: (Int) -> Unit){
+        var isFinishedActionCalled = false
 
-            rewardListener = OnUserEarnedRewardListener { reward ->
+        val finishAction = {
+            if(!isFinishedActionCalled){
+                isFinishedActionCalled = true
+                finishedAction()
+            }
+        }
+
+        if(rewardedInterstitialAd != null) {
+            setRewardedInterstitialAdContentCallbacks(finishAction)
+            val rewardListener = OnUserEarnedRewardListener { reward ->
                 loggerService.d(this::class.simpleName, "Reward earned.")
                 rewardAction(reward.amount)
             }
-        }
-    }
-
-    fun showRewardedInterstitialAd(activity: Activity){
-        if(rewardedInterstitialAd != null) {
             rewardedInterstitialAd?.show(activity, rewardListener)
         }
         else {
             loggerService.d(this::class.simpleName, "The rewarded interstitial ad is not ready yet.")
+            loadRewardedInterstitialAd()
+            finishAction()
+        }
+
+        if(rewardedInterstitialAd == null){
+            loadRewardedInterstitialAd()
+            finishAction()
         }
     }
 

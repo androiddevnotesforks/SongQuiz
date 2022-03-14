@@ -22,8 +22,8 @@
     <color name="colorActionButton">#336699</color>
     <color name="colorActionGameButtonGlow">#121212</color>
 
-    <color name="colorOnboardingBackground">#EE336699</color>
-    <color name="colorOnboardingFocal">#EE121212</color>
+    <color name="colorBoardingBackground">#EE336699</color>
+    <color name="colorBoardingFocal">#EE121212</color>
 
     <color name="colorButton">#336699</color>
     <color name="colorButtonPressed">#BB4DEEEA</color>

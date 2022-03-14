@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="nav_header_subtitle">Találd ki, mit hallasz!</string>
+    <string name="nav_header_subtitle">Találd ki Melodyval!</string>
 
     <string name="about_text">
         %1$s\n\n
         Készítette %2$s\n\n
         %3$s\n\n
-        Az alkalmazás Spotify listákat használ, ezért általuk történő azonosításra van szükség. Privát listák csak az egyedi azonosítójuk alapján kereshetők, név alapján nem kerülnek listázásra. Nem minden dalnak van zenei előnézete. Ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van.\n\n
+        Az alkalmazás Spotify zenei listákat használ, ezért Spotify azonosításra van szükség. Privát listák csak az egyedi azonosítójuk alapján kereshetők, név alapján nem kerülnek listázásra. Nem minden dalnak van zenei előnézete. Ezért általában egy játékban kevesebb dallal lehet játszani, mint ahány ténylegesen egy listán van.\n\n
         A szövegfelismerés magyar és angol nyelven működik legbiztosabban. Más nyelvű szavak felismerése problémába ütközhet. Játék közben internetkapcsolatra van szükség.\n\n
     </string>
 
