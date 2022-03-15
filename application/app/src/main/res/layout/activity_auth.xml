@@ -48,7 +48,7 @@
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnLogin"
-        style="@style/AuthButton"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:contentDescription="@string/login_button"
@@ -60,7 +60,7 @@
 
     <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
         android:id="@+id/btnSkip"
-        style="@style/AuthButton"
+        style="@style/AppButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:contentDescription="@string/skip_button"

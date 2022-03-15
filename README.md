@@ -9,12 +9,17 @@
 
 Let Song Quiz and Melody guide you into the world of music!
 
-• Play with arbitrary Spotify playlists, and add them to your library 🎮
-• Do you like a melody? Add it to your favourites and listen to it later ❤️
-• Challenge your friends or remote opponents ⚔️
-• Would it be easy? Configure your game to make it more exciting ⚙️
-• Train your brain with melodies to keep your memory sharp 🧠
-• Spark your music knowledge against your friends with your playlists💡
+- While playing, you interact with a speech oriented UI - all you need is your voice 🎵
+- Play with arbitrary playlists, and add them to your library 🎮
+- Do you like a melody? Add it to your favourites and listen to it later ❤️
+- Challenge your friends or remote opponents ⚔️
+- Train your brain with melodies to keep your memory sharp 🧠
+- Spark your music knowledge against your friends 💡
+- Choose any genre, era, or performer without restrictions 🕺
+- Play anywhere, anytime 🚿
+- Would it be easy? Configure your game to make it more exciting ⚙️
+- Seasonal themes, dark & light mode support, plenty of customization options 🌗
+- Type if you prefer the traditional way – you are not forced to talk ⌨️
 
 As it is easy to use, you can play while traveling, taking a shower, cooking, and so on. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
 
@@ -34,23 +39,27 @@ I always loved music trivia games, but I never found one which would have contai
 • Acknowledgments: https://github.com/aaronfodor/SongQuiz/blob/master/ACKNOWLEDGMENTS.md
 • Support: contact us in-game via About > Report a problem or suggest features
 
-<p float="middle">
- 	<img src="https://user-images.githubusercontent.com/37120889/125031538-160ea080-e08d-11eb-9065-aa9920afa8ca.PNG" alt="Song Quiz1" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/125031544-173fcd80-e08d-11eb-918e-6f148a304edd.PNG" alt="Song Quiz2" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/125031546-173fcd80-e08d-11eb-9e3e-0d9e762a53e6.PNG" alt="Song Quiz3" width="240"/>
-</p>
-<p float="middle">
-	<img src="https://user-images.githubusercontent.com/37120889/126392564-502783c0-630d-441a-b771-2ebbb7592771.png" alt="Song Quiz4" width="240"/>
-	<img src="https://user-images.githubusercontent.com/37120889/126392736-599e6913-b624-47eb-8d97-7e2877be45ad.png" alt="Song Quiz5" width="240"/>
-    <img src="https://user-images.githubusercontent.com/37120889/125031551-1870fa80-e08d-11eb-9f39-535f76b4ec5f.PNG" alt="Song Quiz6" width="240"/>
-</p>
 
 
 <p float="middle">
-	<img src="https://user-images.githubusercontent.com/37120889/125031565-1c9d1800-e08d-11eb-909d-803a1715e269.PNG" alt="Song Quiz7" height="240"/>
- 	<img src="https://user-images.githubusercontent.com/37120889/125031567-1dce4500-e08d-11eb-94f6-8bfe6bb4e871.PNG" alt="Song Quiz8" height="240"/>
- 	<img src="https://user-images.githubusercontent.com/37120889/125031568-1dce4500-e08d-11eb-93be-65c990725c16.PNG" alt="Song Quiz9" height="240"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/158444982-13b6ac7e-9487-4ea6-bed9-e9b6ccff73c6.PNG" alt="Song Quiz1" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/158444994-e29e6504-b7a8-41b7-b477-5f17ef08276e.PNG" alt="Song Quiz2" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/158445002-8f4db1b0-07f3-444c-beff-2020841eed94.PNG" alt="Song Quiz3" width="240"/>
 </p>
+<p float="middle">
+	<img src="https://user-images.githubusercontent.com/37120889/158445010-7b0ef1b2-38b8-432f-8360-c80a155c091c.PNG" alt="Song Quiz4" width="240"/>
+	<img src="https://user-images.githubusercontent.com/37120889/158445018-c9ef872b-074c-4b60-a998-e9b353acab6d.PNG" alt="Song Quiz5" width="240"/>
+    <img src="https://user-images.githubusercontent.com/37120889/158445025-a29a6704-5d74-4f05-b329-fff4346e61c6.PNG" alt="Song Quiz6" width="240"/>
+</p>
+
+
+
+<p float="middle">
+	<img src="https://user-images.githubusercontent.com/37120889/158445024-5d81f3d0-02fb-494a-8f89-16f01a78ab90.PNG" alt="Song Quiz7" height="360"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/158445030-ce90158f-361a-4498-83c9-6def576c6d1d.PNG" alt="Song Quiz8" height="360"/>
+ 	<img src="https://user-images.githubusercontent.com/37120889/158445034-1384566d-68cc-473f-8940-468748789672.PNG" alt="Song Quiz9" height="360"/>
+</p>
+
 
 # License
 

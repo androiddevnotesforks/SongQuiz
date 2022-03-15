@@ -22,23 +22,6 @@
         <item name="textAllCaps">true</item>
     </style>
 
-    <style name="AuthButton" parent="Theme.SongQuiz">
-        <item name="android:minWidth">@dimen/button_size</item>
-        <item name="android:minHeight">@dimen/button_size</item>
-        <item name="android:layout_marginStart">@dimen/margin_big</item>
-        <item name="android:layout_marginEnd">@dimen/margin_big</item>
-        <item name="android:layout_marginTop">@dimen/margin_big</item>
-        <item name="android:layout_marginBottom">@dimen/margin_big</item>
-        <item name="android:paddingTop">@dimen/padding_small</item>
-        <item name="android:paddingBottom">@dimen/padding_small</item>
-        <item name="android:paddingStart">@dimen/padding_small</item>
-        <item name="android:paddingEnd">@dimen/padding_small</item>
-        <item name="android:textStyle">bold</item>
-        <item name="tint">@color/colorLight</item>
-        <item name="textAllCaps">true</item>
-        <item name="backgroundTint">@color/colorDark</item>
-    </style>
-
     <style name="FAB" parent="Theme.SongQuiz">
         <item name="backgroundTint">@color/colorAccent</item>
         <item name="tint">@color/colorLight</item>

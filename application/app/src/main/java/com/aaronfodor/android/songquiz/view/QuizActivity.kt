@@ -1,6 +1,7 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.R.attr.bitmap
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -13,6 +14,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toColor
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,9 +24,9 @@ import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
 import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelEndFeedback
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
 import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
-import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelEndFeedback
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
@@ -35,6 +37,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.snackbar.Snackbar
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
+
 
 class QuizActivity : AppActivity(keepScreenAlive = true) {
 
@@ -377,26 +380,35 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     .apply(options)
                     .listener(object : RequestListener<Drawable>{
 
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             resource.let {
-                                val palette = Palette.from(resource.toBitmap()).generate()
-                                val fallbackColor = getColor(R.color.colorPrimary)
-                                val playlistColor = palette.getMutedColor(fallbackColor)
-                                viewModel.playlistPrimaryColor.postValue(playlistColor)
+                                Thread{
+                                    val paletteBitmap = resource.toBitmap(20, 20)
+                                    var redSum: Long = 0
+                                    var greenSum: Long = 0
+                                    var blueSum: Long = 0
+                                    var pixelCount: Long = 0
+
+                                    for (y in 0 until paletteBitmap.height) {
+                                        for (x in 0 until paletteBitmap.width) {
+                                            val currentColorInt = paletteBitmap.getPixel(x, y)
+                                            redSum += Color.red(currentColorInt)
+                                            greenSum += Color.green(currentColorInt)
+                                            blueSum += Color.blue(currentColorInt)
+                                            pixelCount++
+                                        }
+                                    }
+
+                                    val redFloat = ((redSum / pixelCount) / 255.0).toFloat()
+                                    val greenFloat = ((greenSum / pixelCount) / 255.0).toFloat()
+                                    val blueFloat = ((blueSum / pixelCount) / 255.0).toFloat()
+                                    val averageColor = Color.rgb(redFloat, greenFloat, blueFloat)
+                                    viewModel.playlistPrimaryColor.postValue(averageColor)
+                                }.start()
                             }
                             // explicit transition
                             target.onResourceReady(resource, CrossFadeTransition())
@@ -658,9 +670,13 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     private fun playlistColorSetter(colorInt: Int){
         val backgroundColor = getColor(R.color.colorBackground)
-        val playlistColor = colorInt
+        var playlistColor = colorInt
 
-        //val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
+        val brightness = (0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt)) / 255
+        if(brightness < 0.15 || brightness > 0.85 ){
+            // fallback, because too dark/too bright color is received
+            playlistColor = getColor(R.color.colorPrimary)
+        }
 
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(playlistColor, backgroundColor))
         gradientDrawable.cornerRadius = 0F
