@@ -36,6 +36,6 @@
 
     <include
         android:id="@+id/menu"
-        layout="@layout/nav_menu_layout" />
+        layout="@layout/main_menu_layout" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

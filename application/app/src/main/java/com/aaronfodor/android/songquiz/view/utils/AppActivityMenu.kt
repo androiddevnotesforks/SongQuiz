@@ -58,28 +58,10 @@ abstract class AppActivityMenu(keepScreenAlive: Boolean) : AppActivity(keepScree
      * @return true to display the item as the selected item
      **/
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-
-            R.id.nav_playlists -> {
-                navController.navigate(R.id.to_nav_playlists)
-            }
-
-            R.id.nav_about -> {
-                navController.navigate(R.id.to_nav_about)
-            }
-
-            else ->{
-                return false
-            }
-
-        }
-
         if(activityDrawerLayout.isDrawerOpen(GravityCompat.START)){
             activityDrawerLayout.closeDrawer(GravityCompat.START)
         }
         return true
-
     }
 
 }

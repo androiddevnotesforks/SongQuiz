@@ -23,6 +23,13 @@
             android:defaultValue="@integer/song_duration_sec_default"/>
 
         <SwitchPreferenceCompat
+            app:key="@string/SETTINGS_KEY_DIFFICULTY_COMPENSATION"
+            app:title="@string/settings_title_difficulty_compensation"
+            app:summaryOn="@string/enabled"
+            app:summaryOff="@string/disabled"
+            android:defaultValue="@bool/difficulty_compensation_default"/>
+
+        <SwitchPreferenceCompat
             app:key="@string/SETTINGS_KEY_EXTENDED_QUIZ_INFO"
             app:title="@string/settings_title_extended_quiz_info"
             app:summaryOn="@string/settings_title_extended_quiz_info_enabled"
@@ -56,9 +63,9 @@
             app:summary="@string/settings_summary_color_mode" />
 
         <Preference
-            app:key="@string/SETTINGS_KEY_ONBOARDING"
-            app:title="@string/settings_title_onboarding"
-            app:summary="@string/settings_summary_onboarding" />
+            app:key="@string/SETTINGS_KEY_BOARDING"
+            app:title="@string/settings_title_boarding"
+            app:summary="@string/settings_summary_boarding" />
 
     </PreferenceCategory>
 
@@ -78,9 +85,21 @@
             app:selectable="true"/>
 
         <Preference
-            app:key="@string/SETTINGS_KEY_RESTORE_DEFAULT_DB"
-            app:title="@string/settings_title_restore_default_db"
-            app:summary="@string/settings_summary_restore_default_db"
+            app:key="@string/SETTINGS_KEY_RESTORE_DEFAULT_PLAYLISTS"
+            app:title="@string/settings_title_restore_default_playlists"
+            app:summary="@string/settings_summary_restore_default_playlists"
+            app:selectable="true"/>
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_DELETE_ALL_FAVOURITES"
+            app:title="@string/settings_title_delete_all_favourites"
+            app:summary="@string/settings_summary_delete_all_favourites"
+            app:selectable="true"/>
+
+        <Preference
+            app:key="@string/SETTINGS_KEY_DELETE_PROFILE_STATS"
+            app:title="@string/settings_title_delete_profile_stats"
+            app:summary="@string/settings_summary_delete_profile_stats"
             app:selectable="true"/>
 
     </PreferenceCategory>
@@ -91,6 +110,18 @@
         <Preference
             app:key="@string/SETTINGS_KEY_ACCOUNT"
             app:selectable="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/PREF_KEY_DEBUG_CATEGORY"
+        app:title="Debug mode settings"
+        app:isPreferenceVisible="false">
+
+        <Preference
+            app:key="@string/PREF_KEY_SETUP_DEFAULT_PLAYLISTS"
+            app:title="Set default playlists mode"
+            app:summary="" />
 
     </PreferenceCategory>
 

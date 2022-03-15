@@ -5,9 +5,9 @@ data class Track (
         val name: String = "",
         val artists: List<String> = arrayListOf(),
         val album: String = "",
+        val imageUri: String = "",
         val durationMs: Int = 0,
-        val uri: String = "",
         val popularity: Int = 0,
-        val previewUri: String = "",
-        val type: String = "",
+        val uri: String = "",
+        val previewUrl: String = ""
 )

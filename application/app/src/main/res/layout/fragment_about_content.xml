@@ -28,35 +28,13 @@
     <TextView
         style="@style/SubtitleText"
         android:gravity="center"
-        android:id="@+id/acknowledgements_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/about_text"/>
-
-    <TextView
-        style="@style/ParagraphText"
-        android:gravity="center"
-        android:id="@+id/acknowledgements_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/acknowledgments_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_title" />
-
-    <TextView
-        style="@style/SubtitleText"
-        android:gravity="center"
         android:id="@+id/legal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/legal_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acknowledgements_text"/>
+        app:layout_constraintTop_toBottomOf="@+id/about_text"/>
 
     <TextView
         style="@style/ParagraphText"
@@ -68,94 +46,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/legal_title" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
-        android:id="@+id/fabPrivacy"
-        app:srcCompat="@drawable/icon_privacy"
+    <include
+        android:id="@+id/action1"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/legal_text"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/app_privacy" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <TextView
-        android:id="@+id/tvPrivacy"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/action2"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabPrivacy"
-        app:layout_constraintTop_toTopOf="@+id/fabPrivacy"
-        app:layout_constraintBottom_toBottomOf="@+id/fabPrivacy"
-        style="@style/ButtonLabel"
-        android:text="@string/app_privacy"/>
+        app:layout_constraintTop_toBottomOf="@+id/action1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
-        android:id="@+id/fabLicense"
-        app:srcCompat="@drawable/icon_license"
-        app:layout_constraintTop_toBottomOf="@+id/fabPrivacy"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/app_license" />
-
-    <TextView
-        android:id="@+id/tvLicense"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/action3"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabLicense"
-        app:layout_constraintTop_toTopOf="@+id/fabLicense"
-        app:layout_constraintBottom_toBottomOf="@+id/fabLicense"
-        style="@style/ButtonLabel"
-        android:text="@string/app_license"/>
+        app:layout_constraintTop_toBottomOf="@+id/action2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
-        android:id="@+id/fabReview"
-        app:srcCompat="@drawable/icon_review"
-        app:layout_constraintTop_toBottomOf="@+id/fabLicense"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/review_app" />
-
-    <TextView
-        android:id="@+id/tvReview"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/action4"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabReview"
-        app:layout_constraintTop_toTopOf="@+id/fabReview"
-        app:layout_constraintBottom_toBottomOf="@+id/fabReview"
-        style="@style/ButtonLabel"
-        android:text="@string/review_app"/>
+        app:layout_constraintTop_toBottomOf="@+id/action3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
-        android:id="@+id/fabReport"
-        app:srcCompat="@drawable/icon_bug"
-        app:layout_constraintTop_toBottomOf="@+id/fabReview"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/report" />
-
-    <TextView
-        android:id="@+id/tvReport"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/action5"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabReport"
-        app:layout_constraintTop_toTopOf="@+id/fabReport"
-        app:layout_constraintBottom_toBottomOf="@+id/fabReport"
-        style="@style/ButtonLabel"
-        android:text="@string/report"/>
+        app:layout_constraintTop_toBottomOf="@+id/action4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        style="@style/ActionImageButton"
-        android:id="@+id/fabMoreFromDeveloper"
-        app:srcCompat="@drawable/icon_more_apps"
-        app:layout_constraintTop_toBottomOf="@+id/fabReport"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/more_from_developer" />
-
-    <TextView
-        android:id="@+id/tvMoreFromDeveloper"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/action6"
+        layout="@layout/action_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/fabMoreFromDeveloper"
-        app:layout_constraintTop_toTopOf="@+id/fabMoreFromDeveloper"
-        app:layout_constraintBottom_toBottomOf="@+id/fabMoreFromDeveloper"
-        style="@style/ButtonLabel"
-        android:text="@string/more_from_developer"/>
+        app:layout_constraintTop_toBottomOf="@+id/action5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

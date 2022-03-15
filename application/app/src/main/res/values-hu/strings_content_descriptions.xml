@@ -3,6 +3,8 @@
 <resources>
     <string name="content_description_get_information">Információkérés</string>
     <string name="content_description_user_input">Felhasználói bevitel</string>
+    <string name="content_description_add_to_favourites">Kedvencekhez adás</string>
+    <string name="content_description_type_input">Szövegbevitel gépeléssel</string>
     <string name="content_description_search">Keresés</string>
     <string name="content_description_add_playlist">Lista hozzáadása</string>
     <string name="content_description_play">Start</string>

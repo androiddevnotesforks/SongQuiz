@@ -11,17 +11,17 @@ import android.speech.SpeechRecognizer
 import android.util.Log
 import com.aaronfodor.android.songquiz.R
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
 /**
- * Injected everywhere as a singleton
+ * Injected anywhere as a singleton
  */
 @Singleton
 class SpeechRecognizerService @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    val languageService: LanguageService
 ) : RecognitionListener{
 
     companion object{
@@ -37,30 +37,16 @@ class SpeechRecognizerService @Inject constructor(
     var resultCallback: (ArrayList<String>) -> Unit = {}
     var errorCallback: (String) -> Unit = {}
 
-    init {
-        init(Locale.getDefault().isO3Language)
-    }
+    init { init() }
 
     /**
      * Initialize speech recognizer
      */
-    fun init(languageISO3: String){
+    fun init(){
         stopListening()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer?.setRecognitionListener(this)
-
-        languageBCP47 = when (languageISO3.uppercase()) {
-            "GBR" -> {
-                "en-GB"
-            }
-            "HUN" -> {
-                "hu-HU"
-            }
-            // fallback to British English
-            else -> {
-                "en-GB"
-            }
-        }
+        languageBCP47 = languageService.getLanguageBCP47()
     }
 
     fun startListening(started: () -> Unit, dBResultChanged: (Float) -> Unit,

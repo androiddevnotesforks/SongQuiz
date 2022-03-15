@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="boarding1_title">Welcome…</string>
+    <string name="boarding1_content">My name is %1$s. Let me introduce you how to use %2$s!</string>
+
+    <string name="boarding2_title">What is the point?</string>
+    <string name="boarding2_content">It is a trivia game where you need to guess the title and artist based on an audio clip.</string>
+
+    <string name="boarding3_title">Who are you playing with?</string>
+    <string name="boarding3_content">In a multiplayer game, people can play on the same device. When you select single player mode, you get a remote opponent.</string>
+
+    <string name="boarding4_title">Gameplay</string>
+    <string name="boarding4_content">The game has a speech-based interface, but typing is also possible.</string>
+
+    <string name="boarding5_title">When to listen</string>
+    <string name="boarding_quiz_speech">The speaker serves for providing audio information. When it is active, the app is broadcasting speech or audio information.</string>
+
+    <string name="boarding6_title">When to speak</string>
+    <string name="boarding_quiz_user_input">The microphone indicates the user input state. When it shows a waveform, the app is listening to you.</string>
+
+    <string name="boarding7_title">When to type</string>
+    <string name="boarding7_content">Alternatively, you can type your input by tapping the keyboard icon instead of speech input.</string>
+
+    <string name="boarding8_title">Do you like this melody?</string>
+    <string name="boarding8_content">While listening to a song, you can add it to your favourites by tapping the favourite icon. You can find your favourites in the menu.</string>
+
+    <string name="boarding9_title">Your playlists</string>
+    <string name="boarding9_content">When you tap the playlists icon, you can see your added items (with the most recently used items on top). You can tap any playlist to start a game.</string>
+
+    <string name="boarding10_title">Add arbitrary playlist!</string>
+    <string name="boarding10_content">You can add any playlist from Spotify that has enough songs to play. Just tap add, then search for the name or the Spotify Id. Note: private playlists can only be found by their unique Id.</string>
+
+    <string name="boarding11_title">…And that\'s it!</string>
+    <string name="boarding11_content">You can find plenty of customization options in the settings, and you can also monitor your statistics. If you need help, you can always find me by tapping How to use. Have fun!</string>
+
+    <string name="boarding_tap_to_start">Tap to start the quiz.</string>
+</resources>

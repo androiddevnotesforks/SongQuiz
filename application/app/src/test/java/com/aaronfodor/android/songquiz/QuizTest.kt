@@ -1,6 +1,6 @@
 package com.aaronfodor.android.songquiz
 
-import com.aaronfodor.android.songquiz.model.quiz.QuizStanding
+import com.aaronfodor.android.songquiz.model.quiz.*
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -10,9 +10,9 @@ import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class QuizStandingTest{
+class QuizTest{
 
-    private lateinit var quizStanding: QuizStanding
+    private lateinit var quiz: Quiz
 
     @Before
     fun setup() {
@@ -20,64 +20,84 @@ class QuizStandingTest{
     }
 
     @Test
-    fun quizStandingFinishedTest() {
+    fun quizFinishedTest() {
         // Given
         val numPlayers = 4
-        val numRounds = 3
-        quizStanding = QuizStanding()
-        quizStanding.numPlayers = numPlayers
-        quizStanding.numRounds = numRounds
-        quizStanding.clearState()
+        val quizType = ShortQuiz(0, false, false)
+        quiz = Quiz()
+        quiz.type = quizType
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
+        quiz.startState()
         // When
-        for(i in 0 until (numPlayers*numRounds)){
-            quizStanding.recordResult(0)
+        for(i in 0 until (numPlayers*quiz.type.numRounds)){
+            quiz.recordResult(0, 0, 0)
         }
         // Then
-        assertThat(quizStanding.isFinished, `is`(true))
-        assertThat(quizStanding.getCurrentPlayer().id, `is`(1))
-        assertThat(quizStanding.getCurrentRoundIndex(), `is`(numRounds))
+        assertThat(quiz.isFinished, `is`(true))
+        assertThat(quiz.getCurrentPlayer().id, `is`(1))
+        assertThat(quiz.getCurrentRoundIndex(), `is`(quiz.type.numRounds))
     }
 
     @Test
     fun quizStandingNotFinishedTest() {
         // Given
         val numPlayers = 2
-        val numRounds = 3
-        quizStanding = QuizStanding()
-        quizStanding.numPlayers = numPlayers
-        quizStanding.numRounds = numRounds
-        quizStanding.clearState()
+        val quizType = ShortQuiz(0, false, false)
+        quiz = Quiz()
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
+        quiz.type = quizType
+        quiz.startState()
         // When
-        for(i in 0 until (numPlayers*(numRounds-1))){
-            quizStanding.recordResult(0)
+        for(i in 0 until (numPlayers*(quiz.type.numRounds-1))){
+            quiz.recordResult(0, 0, 0)
         }
         // Then
-        assertThat(quizStanding.isFinished, `is`(false))
-        assertThat(quizStanding.getCurrentPlayer().id, `is`(1))
-        assertThat(quizStanding.getCurrentRoundIndex(), `is`(numRounds))
+        assertThat(quiz.isFinished, `is`(false))
+        assertThat(quiz.getCurrentPlayer().id, `is`(1))
+        assertThat(quiz.getCurrentRoundIndex(), `is`(quiz.type.numRounds))
     }
 
     @Test
     fun quizStandingCountsWellTest() {
         // Given
         val numPlayers = 4
-        val numRounds = 5
-        quizStanding = QuizStanding()
-        quizStanding.numPlayers = numPlayers
-        quizStanding.numRounds = numRounds
-        quizStanding.clearState()
+        val quizType = MediumQuiz(0, false, false)
+        quiz = Quiz()
+
+        val players = mutableListOf<QuizPlayer>()
+        for(i in 0 until numPlayers){
+            players.add(QuizPlayerLocal(i, i.toString()))
+        }
+        quiz.setQuizPlayers(players)
+
+        quiz.type = quizType
+        quiz.startState()
         // When
-        for(i in 0 until (numPlayers*numRounds)){
-            if(quizStanding.currentPlayerIdx % 2 == 0){
-                quizStanding.recordResult(20)
+        for(i in 0 until (numPlayers*quiz.type.numRounds)){
+            if(quiz.currentPlayerIdx % 2 == 0){
+                quiz.recordResult(10, 10, 0)
+                quiz.toNextTurn()
             }
             else{
-                quizStanding.recordResult(0)
+                quiz.recordResult(0, 0, 0)
+                quiz.toNextTurn()
             }
         }
         // Then
-        assertThat(quizStanding.players[0].points, `is`(numRounds*20))
-        assertThat(quizStanding.players[1].points, `is`(0))
+        assertThat(quiz.players[0].getPoints(quiz.type.difficultyCompensation), `is`(quiz.type.numRounds*20))
+        assertThat(quiz.players[1].getPoints(quiz.type.difficultyCompensation), `is`(0))
     }
 
 }

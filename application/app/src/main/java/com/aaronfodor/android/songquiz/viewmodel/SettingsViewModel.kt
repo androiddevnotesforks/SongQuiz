@@ -1,75 +1,86 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
-import com.aaronfodor.android.songquiz.model.repository.AccountRepository
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
+import com.aaronfodor.android.songquiz.model.repository.ProfileRepository
+import com.aaronfodor.android.songquiz.model.repository.TracksRepository
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class SettingsUiState{
-    READY, CACHE_CLEARED, PLAYLISTS_DELETED, DEFAULT_DB_RESTORED, ACCOUNT_LOGGED_OUT
-}
-
-enum class SettingsAccountState{
-    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT
+enum class SettingsNotification{
+    NONE, CACHE_CLEARED, PLAYLISTS_DELETED, FAVOURITES_DELETED, PROFILE_STATS_DELETED, DEFAULT_PLAYLISTS_RESTORED, ACCOUNT_LOGGED_OUT
 }
 
 @HiltViewModel
 class SettingsViewModel  @Inject constructor(
-    val playlistsRepository: PlaylistsRepository,
-    val accountRepository: AccountRepository,
-    val accountService: AccountService
-) : ViewModel() {
+    private val playlistsRepository: PlaylistsRepository,
+    private val tracksRepository: TracksRepository,
+    private val profileRepository: ProfileRepository,
+    private val loggerService: LoggerService,
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     /**
      * Settings state
      */
-    val uiState: MutableLiveData<SettingsUiState> by lazy {
-        MutableLiveData<SettingsUiState>()
-    }
-
-    // subscribe to the service's MutableLiveData from the ViewModel with Transformations
-    val accountState = Transformations.map(accountService.accountState) { serviceAccountState ->
-        when(serviceAccountState){
-            AccountState.LOGGED_IN -> SettingsAccountState.LOGGED_IN
-            AccountState.INVALID_TOKEN -> SettingsAccountState.INVALID_TOKEN
-            AccountState.LOGGED_OUT -> SettingsAccountState.LOGGED_OUT
-            else -> {SettingsAccountState.LOGGED_OUT}
-        }
+    val notification: MutableLiveData<SettingsNotification> by lazy {
+        MutableLiveData<SettingsNotification>()
     }
 
     fun getUserNameAndEmail() : Pair<String, String>{
-        return accountService.getUserNameAndEmail()
-    }
-
-    fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
-        playlistsRepository.deleteAllPlaylists()
-        uiState.postValue(SettingsUiState.PLAYLISTS_DELETED)
-    }
-
-    fun restoredDefaultDB() = viewModelScope.launch {
-        uiState.value = SettingsUiState.DEFAULT_DB_RESTORED
-    }
-
-    fun logout() = viewModelScope.launch(Dispatchers.IO) {
-        accountRepository.deleteAccount()
-        accountService.logout()
-        uiState.postValue(SettingsUiState.ACCOUNT_LOGGED_OUT)
-    }
-
-    fun ready() = viewModelScope.launch {
-        uiState.value = SettingsUiState.READY
+        val publicAccountInfo = accountService.getPublicInfo()
+        return Pair(publicAccountInfo.name, publicAccountInfo.email)
     }
 
     fun cacheCleared() = viewModelScope.launch {
-        uiState.value = SettingsUiState.CACHE_CLEARED
+        notification.value = SettingsNotification.CACHE_CLEARED
+    }
+
+    fun deletePlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeletePlaylists(this::class.simpleName)
+        playlistsRepository.deleteAllPlaylists()
+        notification.postValue(SettingsNotification.PLAYLISTS_DELETED)
+    }
+
+    fun deleteFavourites() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeleteFavourites(this::class.simpleName)
+        tracksRepository.deleteAllTracks()
+        notification.postValue(SettingsNotification.FAVOURITES_DELETED)
+    }
+
+    fun deleteProfileStats() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logDeleteProfileStats(this::class.simpleName)
+        profileRepository.deleteCurrentProfile()
+        notification.postValue(SettingsNotification.PROFILE_STATS_DELETED)
+    }
+
+    fun restoreDefaultPlaylists() = viewModelScope.launch(Dispatchers.IO) {
+        // rollback to default database content
+        loggerService.logRestoreDefaultPlaylists(this::class.simpleName)
+        playlistsRepository.restoreDefaultPlaylists()
+        notification.postValue(SettingsNotification.DEFAULT_PLAYLISTS_RESTORED)
+    }
+
+    fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        loggerService.logLogout(this::class.simpleName)
+        accountService.logout()
+        notification.postValue(SettingsNotification.ACCOUNT_LOGGED_OUT)
+    }
+
+    // for debug mode
+    fun changeDefaultPlaylistsMode(){
+        val newMode = !accountService.setDefaultsMode
+        accountService.setDefaultsMode = newMode
+    }
+    // for debug mode
+    fun getDefaultPlaylistsMode() : Boolean{
+        return accountService.setDefaultsMode
     }
 
 }

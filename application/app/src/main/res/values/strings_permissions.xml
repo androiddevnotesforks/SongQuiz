@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="request_permission_title">Permission request</string>
+    <string name="request_permission_description">In order to work properly, %1$s permission is required. %2$s</string>
+    <string name="request_permission_settings_title">Permission request</string>
+    <string name="request_permission_settings_description">In order to work properly, %1$s permission is required. %2$s You can enable it by tapping OK, in the app settings.</string>
+
+    <string name="permission_internet">internet access</string>
+    <string name="permission_internet_explanation">This is needed for logging in, accessing playlists, and playing songs.</string>
+
+    <string name="permission_record_audio">microphone</string>
+    <string name="permission_record_audio_explanation">This is needed for in-game speech input (no recordings are saved).</string>
+
+    <string name="permission_vibrate">vibration</string>
+    <string name="permission_vibrate_explanation">This is needed for indicating that the user input is active.</string>
+</resources>

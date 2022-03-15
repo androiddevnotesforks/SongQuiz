@@ -9,76 +9,69 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/viewAppDialog">
+        android:layout_height="match_parent"
+        android:id="@+id/layoutDialog">
 
         <ImageView
             android:id="@+id/ivAppDialog"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/dialog_margin"
             android:layout_marginEnd="@dimen/dialog_margin"
             android:layout_marginTop="@dimen/dialog_margin"
             android:layout_marginBottom="@dimen/dialog_margin"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/layoutDialog"
+            app:layout_constraintEnd_toEndOf="@+id/glVertical"
+            app:layout_constraintTop_toTopOf="@+id/layoutDialog"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAppDialogDescription"
             android:importantForAccessibility="no" />
 
         <TextView
-            style="@style/TitleText"
             android:id="@+id/tvCustomDialogTitle"
+            style="@style/TitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivAppDialog" />
+            app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+            app:layout_constraintStart_toStartOf="@+id/glVertical"
+            app:layout_constraintTop_toTopOf="@+id/layoutDialog" />
 
         <TextView
-            style="@style/ParagraphCenterText"
             android:id="@+id/tvAppDialogDescription"
+            style="@style/ParagraphCenterText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+            app:layout_constraintStart_toStartOf="@+id/glVertical"
             app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/glVertical"
+            app:layout_constraintGuide_percent="0.5"
+            android:orientation="vertical"/>
 
         <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
             android:id="@+id/btnPositiveAppDialog"
             style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/ok_button"
             android:contentDescription="@string/cancel_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow"/>
+            android:text="@string/ok_button"
+            app:layout_constraintTop_toBottomOf="@+id/tvAppDialogDescription"
+            app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+            app:layout_constraintStart_toStartOf="@+id/glVertical"/>
 
         <com.aaronfodor.android.songquiz.view.utils.AppButton
             android:id="@+id/btnNegativeAppDialog"
             style="@style/AppButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/cancel_button"
             android:contentDescription="@string/cancel_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalLow"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/glVerticalMiddle"
-            app:layout_constraintGuide_percent="0.5"
-            android:orientation="vertical"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/glHorizontalLow"
-            app:layout_constraintGuide_percent="0.5"
-            android:orientation="horizontal"/>
+            android:text="@string/cancel_button"
+            app:layout_constraintTop_toBottomOf="@+id/tvAppDialogDescription"
+            app:layout_constraintStart_toStartOf="@+id/layoutDialog"
+            app:layout_constraintEnd_toStartOf="@+id/glVertical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

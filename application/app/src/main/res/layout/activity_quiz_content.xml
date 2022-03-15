@@ -6,16 +6,26 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <include
+        android:id="@+id/standing"
+        layout="@layout/standing_dashboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/userSpeechButton"
+        android:layout_marginTop="@dimen/standing_dashboard_correction_in_layout"/>
+
     <ProgressBar
         style="@style/SongPlayProgressBar"
         android:id="@+id/songPlayProgressBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/ivPlaylist"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/standing"
+        app:layout_constraintStart_toStartOf="@+id/ivPlaylist"
+        app:layout_constraintEnd_toEndOf="@+id/ivPlaylist"
+        android:layout_marginTop="@dimen/standing_dashboard_correction_in_layout"/>
 
     <ImageView
-        style="@style/ElevatedMainImage"
+        style="@style/QuizMainImage"
         android:id="@+id/ivPlaylist"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -24,7 +34,7 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songPlayProgressBar"
         app:layout_constraintBottom_toBottomOf="@+id/glHorizontalHigh"/>
 
     <androidx.core.widget.NestedScrollView
@@ -97,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/glHorizontalLow"
-        app:layout_constraintGuide_percent="0.76"
+        app:layout_constraintGuide_percent="0.74"
         android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
@@ -112,25 +122,48 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/SecondaryActionGameImageButton"
+        android:id="@+id/addToFavouritesButton"
+        android:src="@drawable/icon_favourite"
+        android:contentDescription="@string/content_description_add_to_favourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/ttsSpeechButton"
+        app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/ttsSpeechButton"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
         style="@style/ActionGameImageButton"
         android:id="@+id/userSpeechButton"
         android:src="@drawable/icon_mic_off"
         android:contentDescription="@string/content_description_user_input"
+        android:layout_marginBottom="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/adQuiz"
+        app:layout_constraintBottom_toTopOf="@+id/feedback"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adQuiz"
+    <androidx.appcompat.widget.AppCompatImageButton
+        style="@style/SecondaryActionGameImageButton"
+        android:id="@+id/typeInputButton"
+        android:src="@drawable/icon_keyboard"
+        android:contentDescription="@string/content_description_type_input"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/userSpeechButton"
+        app:layout_constraintStart_toStartOf="@+id/userSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/userSpeechButton"/>
+
+    <include
+        android:id="@+id/feedback"
+        layout="@layout/feedback_dashboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/adMobQuizAdId" />
+        app:layout_constraintStart_toStartOf="@+id/ttsSpeechButton"
+        app:layout_constraintEnd_toEndOf="@+id/userSpeechButton"/>
 
     <ProgressBar
         style="@style/LoadIndicatorProgressBar"

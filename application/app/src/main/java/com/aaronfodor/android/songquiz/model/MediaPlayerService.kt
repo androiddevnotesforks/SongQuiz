@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Injected everywhere as a singleton
+ * Injected anywhere as a singleton
  */
 @Singleton
 class MediaPlayerService  @Inject constructor(
@@ -17,7 +17,22 @@ class MediaPlayerService  @Inject constructor(
 
     private var mediaPlayer: MediaPlayer? = null
 
+    private var startedCallback: () -> Unit = {}
+    private var finishedCallback: () -> Unit = {}
+    private var errorCallback: () -> Unit = {}
+
+    fun setCallbacks(started: () -> Unit, finished: () -> Unit, error: () -> Unit){
+        this.startedCallback = started
+        this.finishedCallback = finished
+        this.errorCallback = error
+    }
+
     fun playUrlSound(soundUrl: String, started: () -> Unit, finished: () -> Unit, error: () -> Unit){
+        if(isPlaying()){
+            stop()
+        }
+        setCallbacks(started, finished, error)
+
         mediaPlayer = MediaPlayer().apply {
             try{
                 setAudioAttributes(
@@ -28,19 +43,19 @@ class MediaPlayerService  @Inject constructor(
                 )
                 setOnPreparedListener {
                     start()
-                    started()
+                    startedCallback()
                 }
                 setOnCompletionListener { player ->
                     player.reset()
                     player.release()
                     mediaPlayer = null
-                    finished()
+                    finishedCallback()
                 }
                 setOnErrorListener { player, what, extra ->
                     player.reset()
                     player.release()
                     mediaPlayer = null
-                    error()
+                    errorCallback()
                     true
                 }
 
@@ -48,12 +63,17 @@ class MediaPlayerService  @Inject constructor(
                 prepare()
             }
             catch (e: Exception){
-                error()
+                errorCallback()
             }
         }
     }
 
     fun playLocalSound(soundName: String, finished: () -> Unit, error: () -> Unit) : Boolean{
+        if(isPlaying()){
+            stop()
+        }
+        setCallbacks({}, finished, error)
+
         val assetFileDescriptor = context.assets.openFd(soundName)
         var isSuccess = true
 
@@ -64,13 +84,13 @@ class MediaPlayerService  @Inject constructor(
                     player.reset()
                     player.release()
                     mediaPlayer = null
-                    finished()
+                    finishedCallback()
                 }
                 setOnErrorListener { player, what, extra ->
                     player.reset()
                     player.release()
                     mediaPlayer = null
-                    error()
+                    errorCallback()
                     true
                 }
                 setOnPreparedListener {
@@ -85,7 +105,7 @@ class MediaPlayerService  @Inject constructor(
                 prepare()
             }
             catch (e: Exception){
-                error()
+                errorCallback()
                 isSuccess = false
             }
 
@@ -95,11 +115,18 @@ class MediaPlayerService  @Inject constructor(
     }
 
     fun stop(){
-        mediaPlayer?.apply {
-            reset()
-            release()
+        if(isPlaying()){
+            mediaPlayer?.apply {
+                reset()
+                release()
+            }
+            mediaPlayer = null
+            finishedCallback()
         }
-        mediaPlayer = null
+    }
+
+    fun isPlaying(): Boolean{
+        return mediaPlayer?.isPlaying ?: false
     }
 
 }

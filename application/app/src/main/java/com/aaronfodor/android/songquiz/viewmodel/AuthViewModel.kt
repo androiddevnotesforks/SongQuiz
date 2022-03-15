@@ -2,13 +2,13 @@ package com.aaronfodor.android.songquiz.viewmodel
 
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
-import com.aaronfodor.android.songquiz.model.repository.AccountRepository
+import com.aaronfodor.android.songquiz.model.LoggerService
+import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toAccount
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,18 +17,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class AuthUiState{
-    EMPTY, START_LOGIN, SUCCESS, ERROR_INTERNET, ERROR_DENIED, ERROR
+    EMPTY, START_LOGIN, SUCCESS
 }
 
-enum class AuthAccountState{
-    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT
+enum class AuthNotification{
+    ERROR_INTERNET, ERROR_DENIED, ERROR, NONE
 }
 
 @HiltViewModel
-class AuthViewModel  @Inject constructor(
-    val repository: AccountRepository,
-    val accountService: AccountService
-) : ViewModel() {
+class AuthViewModel @Inject constructor(
+    accountService: AccountService,
+    private val apiService: SpotifyApiService,
+    private val loggerService: LoggerService
+    ) : AppViewModel(accountService) {
 
     /**
      * Login state
@@ -37,20 +38,20 @@ class AuthViewModel  @Inject constructor(
         MutableLiveData<AuthUiState>()
     }
 
-    // subscribe to the service's MutableLiveData from the ViewModel with Transformations
-    val accountState = Transformations.map(accountService.accountState) { serviceAccountState ->
-        when(serviceAccountState){
-            AccountState.LOGGED_IN -> AuthAccountState.LOGGED_IN
-            AccountState.INVALID_TOKEN -> AuthAccountState.INVALID_TOKEN
-            AccountState.LOGGED_OUT -> AuthAccountState.LOGGED_OUT
-            else -> AuthAccountState.LOGGED_OUT
+    val notification: MutableLiveData<AuthNotification> by lazy {
+        MutableLiveData<AuthNotification>()
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            // initialize the account service
+            accountService.initialize()
         }
     }
 
-    init { viewModelScope.launch(Dispatchers.IO) {
-        // initialize the account service
-        accountService.setAccount(repository.getAccount())
-    } }
+    fun isAuthNeeded() : Boolean{
+        return accountService.isAuthNeeded()
+    }
 
     fun getLoginRequest() : AuthorizationRequest {
         return accountService.getAuthRequest()
@@ -61,38 +62,41 @@ class AuthViewModel  @Inject constructor(
 
         val token = response.accessToken
         val tokenExpireTime = System.currentTimeMillis() + ((response.expiresIn - accountService.tokenRequireBeforeExpiresSec) * 1000)
+        // to make a token to expire every second
+        //val tokenExpireTime = System.currentTimeMillis() + 1000
 
         when (response.type) {
             // success
             AuthorizationResponse.Type.TOKEN -> {
-                val account = repository.searchSelfAccount(token)
+                val account = apiService.getCurrentAccount(token).toAccount(accountService.getPublicInfo().isFirstLoadAfterLogin)
                 val accountToSet = Account(
                     id = account.id,
                     name = account.name,
                     email = account.email,
-                    uri = account.uri,
                     country = account.country,
+                    uri = account.uri,
+                    imageUri = account.imageUri,
                     token = token,
-                    tokenExpireTime = tokenExpireTime
+                    tokenExpireTime = tokenExpireTime,
+                    isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
                 )
-                repository.updateAccount(accountToSet)
                 accountService.setAccount(accountToSet)
+                loggerService.logTokenRefresh(this::class.simpleName)
                 uiState.postValue(AuthUiState.SUCCESS)
             }
             AuthorizationResponse.Type.ERROR -> {
-                uiState.postValue(AuthUiState.ERROR_INTERNET)
+                notification.postValue(AuthNotification.ERROR_INTERNET)
+                uiState.postValue(AuthUiState.EMPTY)
             }
             AuthorizationResponse.Type.EMPTY -> {
-                uiState.postValue(AuthUiState.ERROR_DENIED)
+                notification.postValue(AuthNotification.ERROR_DENIED)
+                uiState.postValue(AuthUiState.EMPTY)
             }
             else -> {
-                uiState.postValue(AuthUiState.ERROR)
+                notification.postValue(AuthNotification.ERROR)
+                uiState.postValue(AuthUiState.EMPTY)
             }
         }
-    }
-
-    fun empty() = viewModelScope.launch {
-        uiState.value = AuthUiState.EMPTY
     }
 
 }

@@ -1,5 +1,6 @@
 <resources>
     <bool name="repeat_default">true</bool>
+    <bool name="difficulty_compensation_default">true</bool>
     <bool name="seasonal_themes_default">true</bool>
     <bool name="extended_quiz_info_default">false</bool>
 </resources>

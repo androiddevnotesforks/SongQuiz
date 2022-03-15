@@ -1,5 +1,5 @@
 /**
- * Spofity API
+ * Spotify API
  * Spotify API description
  *
  * OpenAPI spec version: 1.0.0
@@ -61,7 +61,7 @@ data class PlaylistDTO (
     val description: String? = null,
     val external_urls: PlaylistExternalUrlsDTO? = null,
     val followers: PlaylistFollowersDTO? = null,
-    val images: Array<PlaylistImagesDTO>? = null,
+    val images: Array<ImagesDTO>? = null,
     val name: String = "",
     val owner: PlaylistOwnerDTO? = null,
     val `public`: Any? = null,
@@ -89,14 +89,6 @@ data class PlaylistExternalUrlsDTO (
 data class PlaylistFollowersDTO (
     val href: Any? = null,
     val total: Int? = null
-)
-
-/**
- *
- * @param url
- */
-data class PlaylistImagesDTO (
-    val url: String? = null
 )
 
 /**

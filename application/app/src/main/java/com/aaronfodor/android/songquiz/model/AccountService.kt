@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import com.aaronfodor.android.songquiz.R
+import com.aaronfodor.android.songquiz.model.repository.AccountRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.PublicAccountInfo
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toPublicAccountInfo
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
@@ -13,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 enum class AccountState{
-    LOGGED_IN, INVALID_TOKEN, LOGGED_OUT
+    LOGGED_IN, LOGGED_OUT, NONE
 }
 
 /**
@@ -21,13 +24,21 @@ enum class AccountState{
  */
 @Singleton
 class AccountService @Inject constructor(
-    @ApplicationContext val context: Context
-) {
+    @ApplicationContext val context: Context,
+    val repository: AccountRepository
+){
 
-    private var account= Account("")
+    companion object{
+        const val DEFAULTS_ACCOUNT_ID = "default"
+    }
+
+    private var account = Account("")
 
     private val clientId = context.getString(R.string.spotifyClientId)
     private val spotifyRedirectURI = context.getString(R.string.com_spotify_sdk_redirect_uri)
+
+    // for setting the defaults
+    var setDefaultsMode = false
 
     /**
      * Used for fallback token requests on behalf of the app. Works when client secret is available.
@@ -44,14 +55,16 @@ class AccountService @Inject constructor(
         MutableLiveData<AccountState>()
     }
 
+    fun initialize(){
+        // if a user was logged in, remember it from the disk
+        setAccount(repository.getAccount())
+    }
+
     fun getAuthRequest() : AuthorizationRequest{
         if(accountState.value == AccountState.LOGGED_OUT){
             // force the logged out dialog
-            AuthorizationClient.clearCookies(context)
         }
-
-        val builder = AuthorizationRequest.Builder(
-            clientId, AuthorizationResponse.Type.TOKEN, spotifyRedirectURI)
+        val builder = AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.TOKEN, spotifyRedirectURI)
         return builder.setScopes(arrayOf("user-read-email")).setShowDialog(false).build()
     }
 
@@ -62,17 +75,14 @@ class AccountService @Inject constructor(
     fun setAccount(accountToSet: Account){
         if(accountToSet.id.isNotBlank()){
             account = accountToSet
-
-            if(isValidToken(accountToSet.token, accountToSet.tokenExpireTime)){
-                accountState.postValue(AccountState.LOGGED_IN)
-            }
-            else{
-                accountState.postValue(AccountState.INVALID_TOKEN)
-            }
+            repository.updateAccount(accountToSet)
+            accountState.postValue(AccountState.LOGGED_IN)
         }
         else{
+            val emptyAccount = Account("")
+            account = emptyAccount
+            repository.updateAccount(emptyAccount)
             accountState.postValue(AccountState.LOGGED_OUT)
-            account = Account("")
         }
     }
 
@@ -84,16 +94,11 @@ class AccountService @Inject constructor(
             uri = account.uri,
             country = account.country,
             token = token,
-            tokenExpireTime = tokenExpireTime
+            tokenExpireTime = tokenExpireTime,
+            isFirstLoadAfterLogin = account.isFirstLoadAfterLogin
         )
         account = accountToSet
-
-        if(isValidToken(token, tokenExpireTime)){
-            accountState.postValue(AccountState.LOGGED_IN)
-        }
-        else{
-            accountState.postValue(AccountState.INVALID_TOKEN)
-        }
+        accountState.postValue(AccountState.LOGGED_IN)
     }
 
     private fun isValidToken(token: String, tokenExpireTime: Long) : Boolean{
@@ -101,22 +106,45 @@ class AccountService @Inject constructor(
         return token.isNotBlank() && currentTime < tokenExpireTime
     }
 
+    fun isAuthNeeded() : Boolean {
+        return !(accountState.value == AccountState.LOGGED_IN && isValidToken(account.token, account.tokenExpireTime))
+    }
+
     fun getValidToken() : String{
-        val currentTime = System.currentTimeMillis()
-        if(account.token.isBlank() || currentTime > account.tokenExpireTime){
-            accountState.postValue(AccountState.INVALID_TOKEN)
+        return if(isAuthNeeded()){
+            // token is invalid
+            ""
         }
-        return account.token
+        else{
+            // token is valid
+            account.token
+        }
     }
 
     fun logout(){
-        AuthorizationClient.clearCookies(context)
+        repository.deleteAccount()
         account = Account("")
         accountState.postValue(AccountState.LOGGED_OUT)
     }
 
-    fun getUserNameAndEmail() : Pair<String, String>{
-        return Pair(account.name, account.email)
+    fun getPublicInfo() : PublicAccountInfo {
+        return account.toPublicAccountInfo()
+    }
+
+    fun getAccountId() : String{
+        val id = if(setDefaultsMode){
+            AccountService.DEFAULTS_ACCOUNT_ID
+        }
+        else{
+            account.id
+        }
+
+        return id
+    }
+
+    fun firstLoadFinishedAfterLogin(){
+        repository.firstLoadFinishedAfterLogin()
+        account.isFirstLoadAfterLogin = false
     }
 
 }

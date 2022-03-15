@@ -1,6 +1,6 @@
 package com.aaronfodor.android.songquiz
 
-import com.aaronfodor.android.songquiz.model.api.ApiService
+import com.aaronfodor.android.songquiz.model.api.SpotifyApiService
 import com.aaronfodor.android.songquiz.model.api.dataclasses.ArtistDTO
 import com.aaronfodor.android.songquiz.model.api.dataclasses.TrackDTO
 import com.aaronfodor.android.songquiz.model.database.PlaylistDAO
@@ -8,9 +8,9 @@ import com.aaronfodor.android.songquiz.model.database.dataclasses.DbPlaylist
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Playlist
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Track
-import com.aaronfodor.android.songquiz.model.repository.toDbPlaylist
-import com.aaronfodor.android.songquiz.model.repository.toPlaylist
-import com.aaronfodor.android.songquiz.model.repository.toTrack
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toDbPlaylist
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toPlaylist
+import com.aaronfodor.android.songquiz.model.repository.dataclasses.toTrack
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -27,7 +27,7 @@ class PlaylistRepositoryTest{
     private val FAKE_DB_CONTENT = DbPlaylist(id = "1", name = "Best playlist")
 
     @Mock
-    private lateinit var mockApi: ApiService
+    private lateinit var mockSpotifyApi: SpotifyApiService
     @Mock
     private lateinit var mockDAO: PlaylistDAO
 
@@ -36,9 +36,9 @@ class PlaylistRepositoryTest{
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        mockApi = mock(ApiService::class.java)
+        mockSpotifyApi = mock(SpotifyApiService::class.java)
         mockDAO = mock(PlaylistDAO::class.java)
-        repo = PlaylistsRepository(mockDAO, mockApi)
+        repo = PlaylistsRepository(mockDAO, mockSpotifyApi)
     }
 
     @Test

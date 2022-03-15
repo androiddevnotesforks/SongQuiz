@@ -5,17 +5,27 @@
     <string name="c_playlist_info">Your chosen playlist is %1$s, which contains %2$s playable songs.</string>
     <string name="c_reconfigure">Configure your game. The current playlist is %1$s, which contains %2$s playable songs.</string>
 
+    <string name="c_player">Player %1$s</string>
+    <string name="c_you">You</string>
+    <string name="c_drawing">drawing…</string>
+
     <string name="c_ask_num_players">How many players want to play? Say a number between 1 and 4.</string>
     <string name="c_num_players_selected">%1$s-player game selected.</string>
+    <string name="c_duel_selected">%1$s-player game selected. In this mode, you are going to duel with another player.</string>
 
     <string name="c_ask_game_type">What type of game do you want to play? Choose from one-shot, short, medium or long.</string>
-    <string name="c_ask_game_type_invalid">Cannot start %1$s game: there are %2$s playable tracks, but %3$s is required with %4$s players. Please choose another game type.</string>
+    <string name="c_ask_game_type_invalid">Cannot start %1$s game: there are %2$s playable songs, but at least %3$s are required with %4$s players. Please choose another game type.</string>
     <string name="c_game_type_selected">A %1$s game is selected. In this type, the number of rounds is %2$s.</string>
     <string name="c_game_type_points">You get %1$s.</string>
 
+    <string name="c_generated_player_info">Your duel partner will be %1$s.</string>
+    <string name="c_generated_player_guess_info">%1$s scored %2$s points.</string>
+    <string name="c_generated_player_same_guess_info">%1$s also scored %2$s points.</string>
+
     <string name="c_starting_game">Starting your %1$s game.</string>
 
-    <string name="c_player_turn">Player %1$s, question %2$s, name the song title and artist:</string>
+    <string name="c_player_turn">%1$s, question %2$s, name the song title and artist:</string>
+    <string name="c_your_turn">Question %1$s, name the song title and artist:</string>
     <string name="c_repeating_song">Repeating the previous song.</string>
 
     <string name="c_not_understand">Sorry, I could not catch it.</string>
@@ -45,7 +55,17 @@
         <item>You go girl!</item>
         <item>Oh snap!</item>
         <item>Kerpow!</item>
+        <item>Impressive!</item>
         <item>Cha Ching!</item>
+        <item>Yowza!</item>
+        <item>Well done!</item>
+        <item>Excellent!</item>
+        <item>Marvelous!</item>
+        <item>Wonderful!</item>
+        <item>Incredible!</item>
+        <item>Fascinating!</item>
+        <item>Majestic!</item>
+        <item>Sublime!</item>
     </string-array>
 
     <string-array
@@ -59,31 +79,37 @@
         <item>Ouch.</item>
         <item>Sad news.</item>
         <item>Whoops-a-daisy.</item>
+        <item>Oops-a-daisy.</item>
+        <item>Meh.</item>
+        <item>Tough cheese!</item>
     </string-array>
 
-    <string name="c_points">points</string>
-    <string name="c_for">for</string>
     <string name="c_and">and</string>
+    <string name="c_comma_and_and">, and</string>
     <string name="c_not">not</string>
-    <string name="c_few_extra">a few extra</string>
+    <string name="c_points_for_the">%1$s points for the %2$s</string>
+    <string name="c_difficulty_compensation">%1$s points for the %2$s%% difficulty</string>
     <string name="c_title">title</string>
     <string name="c_artist">artist</string>
-    <string name="c_album">album</string>
+    <string name="c_difficulty">difficulty</string>
     <string name="c_settings_info">Based on your settings, a song lasts for %1$s seconds, and repeating a song is %2$s allowed.</string>
     <string name="c_player_good_guess">%1$s You got %2$s.</string>
-    <string name="c_song_info">The song was %1$s from %2$s. It is on the following album: %3$s.</string>
-    <string name="c_song_popularity">This song has a popularity score of %1$s.</string>
+    <string name="c_player_bad_guess">%1$s You only got %2$s.</string>
+    <string name="c_song_info">The song was %1$s from %2$s.</string>
+    <string name="c_song_extended_info">It is on the following album: %1$s.</string>
     <string name="c_your_score">Your score is %1$s.</string>
 
     <string name="c_end_game">That\'s the end of the game.</string>
-    <string name="c_player_scored">Player %1$s scored %2$s points.</string>
+    <string name="c_player_scored">%1$s scored %2$s points.</string>
 
-    <string name="c_winner_player">Player %1$s is the winner. Congratulations!</string>
+    <string name="c_winner_player">%1$s is the winner. Congratulations!</string>
+    <string name="c_winner_generated_player">%1$s is the winner. Better luck next time!</string>
+    <string name="c_winner_is_you">You are the winner. Congratulations!</string>
     <string name="c_winner_tie">It\'s a tie. Congratulations!</string>
     <string name="c_next_time">Better luck next time!</string>
-    <string name="c_play_again_possible">If you want to restart this game, say restart. If you want to configure the game, say configure.</string>
+    <string name="c_play_again_possible">If you want to restart this game, say restart. To configure the game, say configure. Say exit to leave.</string>
 
-    <string name="c_not_enough_tracks">Unfortunately, this is not enough to play a quiz, because at least %1$s songs needed. Please exit this quiz and select another playlist.</string>
+    <string name="c_not_enough_tracks">Unfortunately, this is not enough to play a quiz, because at least %1$s songs are needed. Please exit this quiz and select another playlist.</string>
     <string name="c_error">Looks like an error occurred.</string>
 
     <string-array
@@ -113,6 +139,10 @@
         <item>for</item>
     </string-array>
 
+    <string-array
+        name="input_undefined" tools:ignore="InconsistentArrays">
+        <item>undefined</item>
+    </string-array>
     <string-array
         name="input_oneshot" tools:ignore="InconsistentArrays">
         <item>one-shot</item>
@@ -155,6 +185,16 @@
         <item>config</item>
         <item>conf</item>
         <item>con</item>
+        <item>configuration</item>
+    </string-array>
+
+    <string-array
+        name="input_exit" tools:ignore="InconsistentArrays">
+        <item>exit</item>
+        <item>leave</item>
+        <item>live</item>
+        <item>bye</item>
+        <item>goodbye</item>
     </string-array>
 
 </resources>

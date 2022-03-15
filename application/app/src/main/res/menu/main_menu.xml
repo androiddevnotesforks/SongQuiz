@@ -4,11 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_group_primary"
+        android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_playlists"
+            android:id="@+id/nav_home"
+            android:icon="@drawable/icon_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_play"
             android:icon="@drawable/icon_playlists"
-            android:title="@string/menu_playlists" />
+            android:title="@string/menu_play" />
+        <item
+            android:id="@+id/nav_add"
+            android:icon="@drawable/icon_add_playlist"
+            android:title="@string/menu_add" />
+        <item
+            android:id="@+id/nav_favourites"
+            android:icon="@drawable/icon_favourite"
+            android:title="@string/menu_favourites" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/icon_profile"
+            android:title="@string/menu_profile" />
+    </group>
+
+    <group
+        android:id="@+id/menu_group_secondary"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/icon_question"
+            android:title="@string/menu_help" />
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/icon_info"
@@ -18,4 +45,5 @@
             android:icon="@drawable/icon_settings"
             android:title="@string/menu_settings" />
     </group>
+
 </menu>

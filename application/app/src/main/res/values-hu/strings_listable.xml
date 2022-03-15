@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="owner_text">készítette: %1$s</string>
+    <string name="songs_followers_difficulty">Ez a lista %1$s lejátszható dalt tartalmaz, és %2$s követővel rendelkezik.\n\nÁtlagos nehézség: %3$s%%\n\n</string>
+
+    <string name="artist_text">előadó: %1$s</string>
+    <string name="track_info">Ez a szám az alábbi albumon szerepel: %1$s \n\nA dal teljes hossza %2$s perc %3$s másodperc \n\nA szám népszerűsége %4$s%%\n\n</string>
+
+    <string name="view_on_spotify">Megnyitás Spotify-on</string>
+    <string name="play">Játék indítása</string>
+    <string name="info">Információ</string>
+    <string name="delete">Törlés</string>
+    <string name="add">Hozzáadás</string>
+    <string name="listen">Belehallgatás</string>
+    <string name="stop">Megállítás</string>
+    <string name="read_aloud">Felolvasás</string>
+    <string name="random_play">Koppints ide egy játék indításához véletlen listán</string>
+    <string name="recommended_for_you">Neked ajánlott</string>
+
+    <string name="empty_list_playlists">Koppints egy lista felvételéhez</string>
+    <string name="empty_search_list">Koppints a listák kereséséhez</string>
+    <string name="empty_list_playlists_random">Nincsenek lejátszási listák, amik közül választani lehetne</string>
+
+    <string name="empty_list_tracks">A kedvenceid listája üres. Új elemet felvenni játék közben, az alábbi ikonnal tudsz</string>
+
+    <string name="cannot_find_listable">Nem található, vagy nincs internetkapcsolat</string>
+    <string name="error_listable_load">Nem sikerült az elem betöltése</string>
+    <string name="error_listable_add">Nem sikerült hozzáadni</string>
+    <string name="success_listable_add">Hozzáadva</string>
+    <string name="listable_already_added">Már szerepel a gyűjteményedben</string>
+    <string name="listable_partially_loaded">A részletek betöltése sikertelen</string>
+
+    <string name="error_listable_delete">Nem sikerült a törlés</string>
+    <string name="success_listable_delete">Elem törölve</string>
+    <string name="listable_already_deleted">Az elem már le van törölve</string>
+    <string name="listable_discarded">Elem eldobva</string>
+</resources>

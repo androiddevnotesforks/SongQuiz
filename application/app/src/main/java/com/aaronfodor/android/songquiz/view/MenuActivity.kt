@@ -1,23 +1,25 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
+import androidx.core.view.GravityCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.navigateUp
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityMenuBinding
 import com.aaronfodor.android.songquiz.view.utils.AppActivityMenu
+import com.aaronfodor.android.songquiz.view.utils.RequiredPermission
+import com.aaronfodor.android.songquiz.viewmodel.MenuViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.MemoryCategory
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
 
 class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
 
@@ -26,12 +28,13 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
     override lateinit var appBarConfiguration: AppBarConfiguration
     override lateinit var navController: NavController
 
-    override var requiredPermissions: List<String> = listOf(
-        Manifest.permission.INTERNET
-    )
+    override lateinit var viewModel: MenuViewModel
+
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)))
 
         binding = ActivityMenuBinding.inflate(layoutInflater)
         val view = binding.root
@@ -39,48 +42,44 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         setSupportActionBar(binding.mainToolbar)
 
         activityDrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.menu.navMenu
+        // Each menu Id as a set of Ids - each should be considered as a top level destination, where the back button is not shown
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.nav_home, R.id.nav_play, R.id.nav_favourites, R.id.nav_profile, R.id.nav_help, R.id.nav_about, R.id.nav_settings),
+            activityDrawerLayout)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        // Each menu Id as a set of Ids - each should be considered as a top level destination
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_playlists, R.id.nav_about, R.id.nav_settings),
-            activityDrawerLayout)
+        setupNavigationMenu(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+
+        viewModel = ViewModelProvider(this)[MenuViewModel::class.java]
+    }
+
+    private fun setupNavigationMenu(navController: NavController) {
+        val sideNavView = binding.menu.navMenu
+        sideNavView.setupWithNavController(navController)
     }
 
     override fun subscribeViewModel() {}
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun onboardingDialog(){
-        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_MENU_SHOWED)
+    override fun boardingCheck(){
+        val keyBoardingFlag = getString(R.string.PREF_KEY_BOARDING_SHOWED)
         // get saved info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+        val boardingFlag = sharedPreferences.getBoolean(keyBoardingFlag, false)
 
-        if(!onboardingFlag){
-            MaterialTapTargetSequence().addPrompt(
-                MaterialTapTargetPrompt.Builder(this)
-                    .setTarget(binding.mainToolbar.getChildAt(1))
-                    .setPrimaryText(getString(R.string.onboarding_menu))
-                    .setAnimationInterpolator(FastOutSlowInInterpolator())
-                    .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
-                    .setFocalColour(getColor(R.color.colorOnboardingFocal))
-                    .setPromptStateChangeListener { prompt, state ->
-                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
-                            // persist showed flag to preferences
-                            with(sharedPreferences.edit()){
-                                remove(keyOnboardingFlag)
-                                putBoolean(keyOnboardingFlag, true)
-                                apply()
-                            }
-                        }
-                    }
-                    .create()
-            ).show()
+        if(!boardingFlag){
+            // persist showed flag to preferences
+            with(sharedPreferences.edit()){
+                remove(keyBoardingFlag)
+                putBoolean(keyBoardingFlag, true)
+                apply()
+            }
+
+            val intent = Intent(this, BoardingActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -96,43 +95,42 @@ class MenuActivity : AppActivityMenu(keepScreenAlive = false) {
         Glide.get(this).setMemoryCategory(MemoryCategory.NORMAL)
     }
 
-    // to handle pop behavior specifically
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
+    }
+
+    // to handle back button specifically
     override fun onBackPressed() {
-        when (navController.currentDestination?.id) {
-            R.id.nav_playlist_add -> {
-                navController.navigate(R.id.to_nav_playlists, null)
+        when {
+            activityDrawerLayout.isDrawerOpen(GravityCompat.START) -> {
+                activityDrawerLayout.closeDrawer(GravityCompat.START)
             }
-            R.id.nav_info_from_playlists -> {
-                navController.navigate(R.id.to_nav_playlists, null)
+            navController.currentDestination?.id == R.id.nav_home -> {
+                // exit dialog
+                super.onBackPressed()
             }
-            R.id.nav_info_from_add_playlists -> {
-                navController.navigate(R.id.to_nav_playlist_add, null)
+            navController.currentDestination?.id == R.id.nav_play -> {
+                navController.navigate(R.id.nav_home)
+            }
+            navController.currentDestination?.id == R.id.nav_favourites -> {
+                navController.navigate(R.id.nav_home)
+            }
+            navController.currentDestination?.id == R.id.nav_profile -> {
+                navController.navigate(R.id.nav_home)
+            }
+            navController.currentDestination?.id == R.id.nav_help -> {
+                navController.navigate(R.id.nav_home)
+            }
+            navController.currentDestination?.id == R.id.nav_about -> {
+                navController.navigate(R.id.nav_home)
+            }
+            navController.currentDestination?.id == R.id.nav_settings -> {
+                navController.navigate(R.id.nav_home)
             }
             else -> {
-                super.onBackPressed()
+                navController.navigateUp(appBarConfiguration)
             }
         }
     }
 
-    // to handle back button specifically
-    override fun onSupportNavigateUp(): Boolean {
-        return when (navController.currentDestination?.id) {
-            R.id.nav_playlist_add -> {
-                navController.navigate(R.id.to_nav_playlists, null)
-                true
-            }
-            R.id.nav_info_from_playlists -> {
-                navController.navigate(R.id.to_nav_playlists, null)
-                true
-            }
-            R.id.nav_info_from_add_playlists -> {
-                navController.navigate(R.id.to_nav_playlist_add, null)
-                true
-            }
-            else -> {
-                super.onSupportNavigateUp()
-            }
-        }
-    }
-    
 }

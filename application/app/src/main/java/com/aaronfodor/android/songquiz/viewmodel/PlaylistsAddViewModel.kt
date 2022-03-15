@@ -1,96 +1,119 @@
 package com.aaronfodor.android.songquiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaronfodor.android.songquiz.model.AccountService
-import com.aaronfodor.android.songquiz.model.AccountState
+import com.aaronfodor.android.songquiz.model.LoggerService
 import com.aaronfodor.android.songquiz.model.repository.PlaylistsRepository
-import com.aaronfodor.android.songquiz.model.repository.dataclasses.PlaylistSearchResult
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.*
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class PlaylistsAddUiState{
-    LOADING, READY, NOT_FOUND, AUTH_NEEDED, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED
+    LOADING, READY
+}
+
+enum class PlaylistsAddNotification{
+    NONE, DISCARDED, ERROR_ADD_PLAYLIST, SUCCESS_ADD_PLAYLIST, PLAYLIST_ALREADY_ADDED, NOT_FOUND
 }
 
 @HiltViewModel
 class PlaylistsAddViewModel @Inject constructor(
     val repository: PlaylistsRepository,
-    val accountService: AccountService
-) : ViewModel() {
+    val loggerService: LoggerService,
+    accountService: AccountService
+) : AppViewModel(accountService) {
 
     companion object{
-        var transferPlaylistIdsAlreadyAdded : List<String> = listOf()
+        var notificationFromCaller = PlaylistsAddNotification.NONE
+
+        fun getInitialNotification() : PlaylistsAddNotification {
+            val value = notificationFromCaller
+            notificationFromCaller = PlaylistsAddNotification.NONE
+            return value
+        }
     }
 
-    val searchResult : MutableLiveData<PlaylistSearchResult> by lazy {
-        MutableLiveData<PlaylistSearchResult>()
+    val callerType = InfoPlaylistScreenCaller.ADD_PLAYLIST.name
+    var lastSearchExpression = ""
+    var playlistIdsAlreadyAdded = mutableListOf<String>()
+
+    val searchResult : MutableLiveData<ViewModelPlaylistSearchResult> by lazy {
+        MutableLiveData<ViewModelPlaylistSearchResult>()
     }
 
     val uiState: MutableLiveData<PlaylistsAddUiState> by lazy {
         MutableLiveData<PlaylistsAddUiState>()
     }
 
-    var playlistIdsAlreadyAdded = mutableListOf<String>()
-
-    init { viewModelScope.launch {
-        uiState.value = PlaylistsAddUiState.READY
-    } }
-
-    fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch {
-        playlistIdsAlreadyAdded = transferPlaylistIdsAlreadyAdded.toMutableList()
+    val notification: MutableLiveData<PlaylistsAddNotification> by lazy {
+        MutableLiveData<PlaylistsAddNotification>(getInitialNotification())
     }
 
-    fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
-        if(accountService.accountState.value != AccountState.LOGGED_IN){
-            uiState.postValue(PlaylistsAddUiState.AUTH_NEEDED)
-            return@launch
+    init {
+        viewModelScope.launch {
+            uiState.value = PlaylistsAddUiState.READY
         }
+    }
 
+    fun setPlaylistIdsAlreadyAdded() = viewModelScope.launch(Dispatchers.IO) {
+        playlistIdsAlreadyAdded = repository.getPlaylists().map{it.id}.toMutableList()
+        searchResult.postValue(searchResult.value?.removeIds(playlistIdsAlreadyAdded))
+    }
+
+    fun searchPlaylist(searchExpression: String) = tryAuthenticateLaunch{
+        searchPlaylistByIdOrName(searchExpression)
+    }
+
+    private fun searchPlaylistByIdOrName(searchExpression: String) = viewModelScope.launch(Dispatchers.IO) {
+        lastSearchExpression = searchExpression
         uiState.postValue(PlaylistsAddUiState.LOADING)
-
-        val result = repository.searchPlaylistByIdOrName(searchExpression)
-        searchResult.postValue(result)
+        val result = repository.searchPlaylistByIdOrName(searchExpression).toViewModelPlaylistSearchResult()
+        loggerService.logSearchPlaylist(this::class.simpleName, searchExpression)
+        uiState.postValue(PlaylistsAddUiState.READY)
+        searchResult.postValue(result.removeIds(playlistIdsAlreadyAdded))
 
         if(result.items.isEmpty()){
-            uiState.postValue(PlaylistsAddUiState.NOT_FOUND)
-        }
-        else{
-            uiState.postValue(PlaylistsAddUiState.READY)
+            notification.postValue(PlaylistsAddNotification.NOT_FOUND)
         }
     }
 
-    fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
+    fun getNextBatch() = tryAuthenticateLaunch{
+        searchGetNextBatch()
+    }
+
+    private fun searchGetNextBatch() = viewModelScope.launch(Dispatchers.IO) {
         val currentResult = searchResult.value ?: return@launch
 
         uiState.postValue(PlaylistsAddUiState.LOADING)
-        searchResult.postValue(repository.searchGetNextBatch(currentResult))
+        val searchBatch = repository.searchGetNextBatch(currentResult.toPlaylistSearchResult()).toViewModelPlaylistSearchResult()
         uiState.postValue(PlaylistsAddUiState.READY)
+        searchResult.postValue(searchBatch.removeIds(playlistIdsAlreadyAdded))
     }
 
     fun addPlaylistById(id: String) = viewModelScope.launch(Dispatchers.IO) {
         if(playlistIdsAlreadyAdded.contains(id)){
-            uiState.postValue(PlaylistsAddUiState.PLAYLIST_ALREADY_ADDED)
+            notification.postValue(PlaylistsAddNotification.PLAYLIST_ALREADY_ADDED)
             return@launch
         }
 
-        uiState.postValue(PlaylistsAddUiState.LOADING)
-        val success = searchResult.value?.items?.let { repository.insertPlaylist(it.first{ item -> item.id == id }) } ?: false
+        val success = searchResult.value?.items?.let {
+            val playlistToInsert = it.first{ item -> item.id == id }
+            loggerService.logAddPlaylist(this::class.simpleName, playlistToInsert.id)
+            repository.insertPlaylist(playlistToInsert.toPlaylist())
+        } ?: false
 
         if(success){
-            uiState.postValue(PlaylistsAddUiState.SUCCESS_ADD_PLAYLIST)
+            notification.postValue(PlaylistsAddNotification.SUCCESS_ADD_PLAYLIST)
             playlistIdsAlreadyAdded.add(id)
+            searchResult.postValue(searchResult.value?.removeIds(playlistIdsAlreadyAdded))
         }
         else{
-            uiState.postValue(PlaylistsAddUiState.ERROR_ADD_PLAYLIST)
+            notification.postValue(PlaylistsAddNotification.ERROR_ADD_PLAYLIST)
         }
-    }
-
-    fun ready() = viewModelScope.launch {
-        uiState.value = PlaylistsAddUiState.READY
     }
 
 }

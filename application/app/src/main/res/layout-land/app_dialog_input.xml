@@ -10,35 +10,34 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/viewAppInputDialog">
+        android:id="@+id/layoutInputDialog">
 
         <TextView
             style="@style/TitleText"
             android:id="@+id/tvCustomDialogTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tvAppDialogDescription"/>
+            app:layout_constraintEnd_toEndOf="@+id/layoutInputDialog"
+            app:layout_constraintStart_toStartOf="@+id/layoutInputDialog"
+            app:layout_constraintTop_toTopOf="@+id/layoutInputDialog"/>
 
         <TextView
             style="@style/ParagraphCenterText"
             android:id="@+id/tvAppDialogDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow" />
+            app:layout_constraintEnd_toEndOf="@+id/layoutInputDialog"
+            app:layout_constraintStart_toStartOf="@+id/layoutInputDialog"
+            app:layout_constraintTop_toBottomOf="@+id/tvCustomDialogTitle" />
 
         <com.google.android.material.textfield.TextInputEditText
             style="@style/InputText"
             android:id="@+id/itInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAppDialogDescription"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintEnd_toEndOf="@+id/layoutInputDialog"
+            app:layout_constraintStart_toStartOf="@+id/layoutInputDialog"
+            app:layout_constraintTop_toBottomOf="@+id/tvAppDialogDescription"/>
 
         <com.aaronfodor.android.songquiz.view.utils.AppPositiveButton
             android:id="@+id/btnPositiveAppDialog"
@@ -47,9 +46,9 @@
             android:layout_height="wrap_content"
             android:text="@string/ok_button"
             android:contentDescription="@string/ok_button"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/layoutInputDialog"
             app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintBottom_toBottomOf="@+id/glHorizontalLow"/>
+            app:layout_constraintTop_toBottomOf="@+id/itInput"/>
 
         <com.aaronfodor.android.songquiz.view.utils.AppButton
             android:id="@+id/btnNegativeAppDialog"
@@ -58,9 +57,9 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel_button"
             android:contentDescription="@string/cancel_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/glVerticalMiddle"
-            app:layout_constraintTop_toTopOf="@+id/glHorizontalLow"/>
+            app:layout_constraintStart_toStartOf="@+id/layoutInputDialog"
+            app:layout_constraintEnd_toEndOf="@+id/glVerticalMiddle"
+            app:layout_constraintTop_toBottomOf="@+id/itInput"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:layout_width="wrap_content"
@@ -68,13 +67,6 @@
             android:id="@+id/glVerticalMiddle"
             app:layout_constraintGuide_percent="0.5"
             android:orientation="vertical"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/glHorizontalLow"
-            app:layout_constraintGuide_percent="0.5"
-            android:orientation="horizontal"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

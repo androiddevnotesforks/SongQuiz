@@ -3,7 +3,6 @@ package com.aaronfodor.android.songquiz.model.repository
 import android.content.Context
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
-import com.aaronfodor.android.songquiz.model.api.ApiService
 import com.aaronfodor.android.songquiz.model.repository.dataclasses.Account
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -14,22 +13,18 @@ import javax.inject.Singleton
  */
 @Singleton
 class AccountRepository @Inject constructor(
-    @ApplicationContext val context: Context,
-    private val apiService: ApiService
-) {
+    @ApplicationContext val context: Context
+){
 
     private val keyAccountId = context.getString(R.string.PREF_KEY_ACCOUNT_ID)
     private val keyAccountName = context.getString(R.string.PREF_KEY_ACCOUNT_NAME)
     private val keyAccountEmail = context.getString(R.string.PREF_KEY_ACCOUNT_EMAIL)
     private val keyAccountUri = context.getString(R.string.PREF_KEY_ACCOUNT_URI)
+    private val keyAccountImageUri = context.getString(R.string.PREF_KEY_ACCOUNT_IMAGE_URI)
     private val keyAccountCountry = context.getString(R.string.PREF_KEY_ACCOUNT_COUNTRY)
     private val keyToken = context.getString(R.string.PREF_KEY_TOKEN)
     private val keyTokenExpireTime = context.getString(R.string.PREF_KEY_TOKEN_EXPIRE_TIME)
-
-    fun searchSelfAccount(token: String) : Account{
-        val apiAccount = apiService.getCurrentAccount(token)
-        return apiAccount.toAccount()
-    }
+    private val keyIsFirstLoadAfterLogin = context.getString(R.string.PREF_KEY_IS_FIRST_LOAD_AFTER_LOGIN)
 
     fun getAccount() : Account{
         // get saved account info from preferences
@@ -39,16 +34,18 @@ class AccountRepository @Inject constructor(
         val accountName = sharedPreferences.getString(keyAccountName, "") ?: ""
         val accountEmail = sharedPreferences.getString(keyAccountEmail, "") ?: ""
         val accountUri = sharedPreferences.getString(keyAccountUri, "") ?: ""
+        val accountImageUri = sharedPreferences.getString(keyAccountImageUri, "") ?: ""
         val accountCountry = sharedPreferences.getString(keyAccountCountry, "") ?: ""
         val token = sharedPreferences.getString(keyToken, "") ?: ""
         val tokenExpireTime = sharedPreferences.getString(keyTokenExpireTime, "") ?: ""
+        val isFirstLoadAfterLogin = sharedPreferences.getBoolean(keyIsFirstLoadAfterLogin, true)
 
         var tokenExpireTimeLong = 0L
         if(tokenExpireTime.isNotBlank()){
             tokenExpireTimeLong = tokenExpireTime.toLong()
         }
 
-        return Account(accountId, accountName, accountEmail, accountUri, accountCountry, token, tokenExpireTimeLong)
+        return Account(accountId, accountName, accountEmail, accountCountry, accountUri, accountImageUri, token, tokenExpireTimeLong, isFirstLoadAfterLogin)
     }
 
     fun updateAccount(account: Account){
@@ -63,12 +60,23 @@ class AccountRepository @Inject constructor(
             putString(keyAccountEmail, account.email)
             remove(keyAccountUri)
             putString(keyAccountUri, account.uri)
+            remove(keyAccountImageUri)
+            putString(keyAccountImageUri, account.imageUri)
             remove(keyAccountCountry)
             putString(keyAccountCountry, account.country)
             remove(keyToken)
             putString(keyToken, account.token)
             remove(keyTokenExpireTime)
             putString(keyTokenExpireTime, account.tokenExpireTime.toString())
+            apply()
+        }
+    }
+
+    fun firstLoadFinishedAfterLogin(){
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        with(sharedPreferences.edit()){
+            remove(keyIsFirstLoadAfterLogin)
+            putBoolean(keyIsFirstLoadAfterLogin, false)
             apply()
         }
     }
@@ -85,12 +93,16 @@ class AccountRepository @Inject constructor(
             putString(keyAccountEmail, "")
             remove(keyAccountUri)
             putString(keyAccountUri, "")
+            remove(keyAccountImageUri)
+            putString(keyAccountImageUri, "")
             remove(keyAccountCountry)
             putString(keyAccountCountry, "")
             remove(keyToken)
             putString(keyToken, "")
             remove(keyTokenExpireTime)
             putString(keyTokenExpireTime, "")
+            remove(keyIsFirstLoadAfterLogin)
+            putBoolean(keyIsFirstLoadAfterLogin, true)
             apply()
         }
     }

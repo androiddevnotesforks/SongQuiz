@@ -2,7 +2,7 @@
 
 <!DOCTYPE resources [
     <!ENTITY appName "Song Quiz">
-    <!ENTITY appDate "24/07/2021">
+    <!ENTITY appDate "15/03/2022">
     <!ENTITY appCreator "Arpad Fodor">
     <!ENTITY developerContact "arpadfodor01@gmail.com">
     <!ENTITY developerPage "https://github.com/aaronfodor">
@@ -10,33 +10,232 @@
     ]>
 
 <resources>
+    <string name="mascot_name" translatable="false">Melody</string>
     <string name="app_name" translatable="false">&appName;</string>
     <string name="app_date" translatable="false">&appDate;</string>
     <string name="app_creator" translatable="false">&appCreator;</string>
     <string name="app_copyright" translatable="false">© &appDate; &appCreator;\n\n</string>
-    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE.md</string>
     <string name="privacy_page" translatable="false">&developerPage;/SongQuiz/blob/master/PRIVACY.md</string>
+    <string name="license_page" translatable="false">&developerPage;/SongQuiz/blob/master/LICENSE</string>
+    <string name="acknowledgments_page" translatable="false">&developerPage;/SongQuiz/blob/master/ACKNOWLEDGMENTS.md</string>
     <string name="developer_page" translatable="false">&storePage;</string>
     <string name="report_contact" translatable="false">&developerContact;</string>
     <string name="report_message_title" translatable="false">[%1$s][report]</string>
     <string name="store_page" translatable="false">http://play.google.com/store/apps/details?id=%1$s</string>
     <string name="spotify_open_playlist" translatable="false">https://open.spotify.com/playlist/%1$s</string>
+    <string name="spotify_open_track" translatable="false">https://open.spotify.com/track/%1$s</string>
 
     <string name="com_spotify_sdk_redirect_uri" translatable="false">com.aaronfodor.android.songquiz://token</string>
 
-    <string name="acknowledgments_text" translatable="false">
-        naobim,\n
-        Gordon Johnson,\n
-        OpenClipart-Vectors\n
-        (Pixabay)\n\n
-        wishforge.games\n
-        (Freeicons.io)\n\n
-        Freepik\n
-        (Flaticon.com)\n\n
-    </string>
-
-    <string name="unicode_start" translatable="false">►</string>
-    <string name="unicode_add" translatable="false">＋</string>
+    <string name="current_per_round" translatable="false">%1$s/%2$s</string>
 
     <string name="nav_header_title" translatable="false">&appName;</string>
+
+    <string-array
+        name="generated_names" translatable="false">
+        <item>Susana</item>
+        <item>Beatriz</item>
+        <item>António</item>
+        <item>Ana</item>
+        <item>Juan</item>
+        <item>Laura</item>
+        <item>Amanda</item>
+        <item>Simon</item>
+        <item>Julian</item>
+        <item>Julia</item>
+        <item>Juliet</item>
+        <item>Kiara</item>
+        <item>Florence</item>
+        <item>Tiago</item>
+        <item>Eduardo</item>
+        <item>Paolo</item>
+        <item>Bere</item>
+        <item>Alessandro</item>
+        <item>Giacomo</item>
+        <item>Luca</item>
+        <item>Mariana</item>
+        <item>Gabriel</item>
+        <item>Francesco</item>
+        <item>Giulia</item>
+        <item>Rodrigo</item>
+        <item>Lucian</item>
+        <item>Zsófia</item>
+        <item>Csenge</item>
+        <item>Lilla</item>
+        <item>Fanni</item>
+        <item>Noémi</item>
+        <item>Flóra</item>
+        <item>Patrícia</item>
+        <item>Lívia</item>
+        <item>Anna</item>
+        <item>Thomas</item>
+        <item>Adam</item>
+        <item>Aaron</item>
+        <item>Hannah</item>
+        <item>Vincent</item>
+        <item>Eduard</item>
+        <item>David</item>
+        <item>Ben</item>
+        <item>Lukas</item>
+        <item>Marin</item>
+        <item>Shanly</item>
+        <item>Evelyn</item>
+        <item>Evelin</item>
+        <item>Sophie</item>
+        <item>Phanie</item>
+        <item>Sebastian</item>
+        <item>Maxime</item>
+        <item>Axel</item>
+        <item>Léa</item>
+        <item>Corentin</item>
+        <item>Yanniq</item>
+        <item>Elin</item>
+        <item>Dario</item>
+        <item>Annika</item>
+        <item>Mélissa</item>
+        <item>Raúl</item>
+        <item>Mark</item>
+        <item>Tiana</item>
+        <item>Claudia</item>
+        <item>Romain</item>
+        <item>Adel</item>
+        <item>Veronica</item>
+        <item>Erik</item>
+        <item>Carolina</item>
+        <item>Carolin</item>
+        <item>Emily</item>
+        <item>Anja</item>
+        <item>Nick</item>
+        <item>Michael</item>
+        <item>Ilona</item>
+        <item>Martijn</item>
+        <item>Noor</item>
+        <item>Mandar</item>
+        <item>Benjamin</item>
+        <item>Karl</item>
+        <item>Helena</item>
+        <item>Konstantinos</item>
+        <item>Tanja</item>
+        <item>Tatiana</item>
+        <item>Olivia</item>
+        <item>Naomi</item>
+        <item>Larina</item>
+        <item>Palmira</item>
+        <item>Valeria</item>
+        <item>Miranda</item>
+        <item>Hannah</item>
+        <item>Natasha</item>
+        <item>Franciska</item>
+        <item>Bella</item>
+        <item>Silvia</item>
+        <item>Bernadette</item>
+        <item>Bernadett</item>
+        <item>Peter</item>
+        <item>Armin</item>
+        <item>Florian</item>
+        <item>Tim</item>
+        <item>Oriol</item>
+        <item>Wanda</item>
+        <item>Cecilia</item>
+        <item>Anastasia</item>
+        <item>Alice</item>
+        <item>Embla</item>
+        <item>Pietro</item>
+        <item>Rico</item>
+        <item>Erdem</item>
+        <item>Klervie</item>
+        <item>Carlo</item>
+        <item>Eric</item>
+        <item>Daniele</item>
+        <item>Seela</item>
+        <item>Jannes</item>
+        <item>Lilian</item>
+        <item>Hafssa</item>
+        <item>Jannik</item>
+        <item>Naveen</item>
+        <item>Ilaria</item>
+        <item>Marvin</item>
+        <item>Stefanos</item>
+        <item>Armen</item>
+        <item>Aditya</item>
+        <item>Sihang</item>
+        <item>Kuan</item>
+        <item>Feng</item>
+        <item>Huan</item>
+        <item>Bai</item>
+        <item>Chang</item>
+        <item>Huang</item>
+        <item>Akira</item>
+        <item>Bao</item>
+        <item>Fang</item>
+        <item>Liu</item>
+        <item>Xiu</item>
+        <item>Lei</item>
+        <item>Ami</item>
+        <item>Ming</item>
+        <item>Aki</item>
+        <item>Oliver</item>
+        <item>Emma</item>
+        <item>Baptiste</item>
+        <item>Hugo</item>
+        <item>Isabella</item>
+        <item>Lotte</item>
+        <item>Jasper</item>
+        <item>Nala</item>
+        <item>Ola</item>
+        <item>Sade</item>
+        <item>Taraji</item>
+        <item>Niraij</item>
+        <item>Saanvi</item>
+        <item>Arjun</item>
+        <item>Aditi</item>
+        <item>Kabir</item>
+        <item>Daksh</item>
+        <item>Leo</item>
+        <item>Noah</item>
+        <item>William</item>
+        <item>Lia</item>
+        <item>Hairis</item>
+        <item>Daniel</item>
+        <item>Dhruvi</item>
+        <item>Pere</item>
+        <item>Paddy</item>
+        <item>Zakaria</item>
+        <item>Marie</item>
+        <item>Álex</item>
+        <item>Alex</item>
+        <item>Rui</item>
+        <item>Avinash</item>
+        <item>Aarati</item>
+        <item>Chiara</item>
+        <item>Effie</item>
+        <item>Maarten</item>
+        <item>Marion</item>
+        <item>Paul</item>
+        <item>Eugénie</item>
+        <item>Alexandros</item>
+        <item>Irene</item>
+        <item>Pierre</item>
+        <item>Nuria</item>
+        <item>Marc</item>
+        <item>Omar</item>
+        <item>Remi</item>
+        <item>Robin</item>
+        <item>Jack</item>
+        <item>Hamza</item>
+        <item>Ivan</item>
+        <item>Jacob</item>
+        <item>Naoki</item>
+        <item>Aimi</item>
+        <item>Claire</item>
+        <item>Aswath</item>
+        <item>Mohamed</item>
+        <item>Jeremy</item>
+        <item>Richard</item>
+        <item>James</item>
+        <item>Anette</item>
+        <item>Lucas</item>
+        <item>Giada</item>
+    </string-array>
+
 </resources>

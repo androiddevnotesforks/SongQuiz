@@ -13,14 +13,29 @@
     <string name="delete_playlist">Delete playlist</string>
     <string name="delete_playlist_description">Are you sure you want to delete %1$s? This will not affect any Spotify playlists, and you can add it again later.</string>
 
+    <string name="delete_track">Delete track</string>
+    <string name="delete_track_description">Are you sure you want to delete %1$s? This will only affect your favourites, and you can add it again later.</string>
+
     <string name="clear_cache">Clear cache</string>
     <string name="clear_cache_description">Are you sure you want to clear image cache? This will reduce memory usage, but may increase network traffic.</string>
 
-    <string name="delete_playlists">Delete all playlists</string>
-    <string name="delete_playlists_description">Are you sure you want to delete all playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
+    <string name="delete_all_playlists">Delete all playlists</string>
+    <string name="delete_all_playlists_description">Are you sure you want to delete all of your playlists? This will not affect playlists on Spotify, and you can add them again later.</string>
 
-    <string name="restore_default_db">Restore default playlists</string>
-    <string name="restore_default_db_description">Are you sure you want to delete your local data and restore the defaults? This will not affect anything on Spotify.</string>
+    <string name="delete_all_favourites">Delete all favourites</string>
+    <string name="delete_all_favourites_description">Are you sure you want to delete all of your favourites? This will not affect tracks on Spotify, and you can add them to your favourites again.</string>
+
+    <string name="delete_profile_stats">Delete profile statistics</string>
+    <string name="delete_profile_stats_description">Are you sure you want to remove your profile scores and achievements?</string>
+
+    <string name="restore_default_playlists">Restore default playlists</string>
+    <string name="restore_default_playlists_description">Are you sure you want to delete your local playlists and restore defaults? This will not affect anything on Spotify.</string>
+
+    <string name="search_playlist">Search playlist</string>
+    <string name="search_playlist_description">Type the name or the Spotify Id of the playlist.</string>
+
+    <string name="type_input">Type</string>
+    <string name="type_input_description">Type your input text.</string>
 
     <string name="exit_title">Confirm exit</string>
     <string name="exit_dialog">Are you sure you want to exit?</string>

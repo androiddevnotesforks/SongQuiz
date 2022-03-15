@@ -10,11 +10,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Injected everywhere as a singleton
+ * Injected anywhere as a singleton
  */
 @Singleton
 class TextToSpeechService  @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    val languageService: LanguageService
 ) : UtteranceProgressListener(){
 
     var requestCounter = 0
@@ -26,31 +27,19 @@ class TextToSpeechService  @Inject constructor(
     var finishedCallback: () -> Unit = {}
     var errorCallback: () -> Unit = {}
 
-    init {
-        init(Locale.getDefault().isO3Language)
-    }
+    init { init() }
 
     /**
      * Initialize text to speech
      * Set text to speech listener
      */
-    fun init(languageISO3: String){
+    fun init(){
         stop()
         textToSpeech = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 textToSpeech?.let {
-                    val ttsLanguage = when (languageISO3.uppercase()) {
-                        "GBR" -> {
-                            Locale("GBR")
-                        }
-                        "HUN" -> {
-                            Locale("HUN")
-                        }
-                        // fallback to British English
-                        else -> {
-                            Locale.UK
-                        }
-                    }
+
+                    val ttsLanguage = languageService.getLanguageLocale()
 
                     val languageAvailable = it.isLanguageAvailable(ttsLanguage)
                     if(languageAvailable == TextToSpeech.LANG_COUNTRY_AVAILABLE ||
@@ -58,10 +47,11 @@ class TextToSpeechService  @Inject constructor(
                         languageAvailable == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE){
                         it.language = ttsLanguage
                     }
-                    // fallback to British English
+                    // fallback to English
                     else{
-                        it.language = Locale.UK
+                        it.language = Locale.ENGLISH
                     }
+
                 }
             }
         }

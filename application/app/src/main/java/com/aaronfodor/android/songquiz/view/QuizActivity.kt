@@ -1,6 +1,8 @@
 package com.aaronfodor.android.songquiz.view
 
 import android.Manifest
+import android.R.attr.bitmap
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -9,8 +11,10 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toColor
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,10 +22,11 @@ import androidx.palette.graphics.Palette
 import androidx.preference.PreferenceManager
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityQuizBinding
-import com.aaronfodor.android.songquiz.view.utils.AppActivity
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.CrossFadeTransition
+import com.aaronfodor.android.songquiz.view.utils.*
 import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelEndFeedback
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelGuessItem
+import com.aaronfodor.android.songquiz.viewmodel.dataclasses.ViewModelQuizState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
@@ -29,51 +34,84 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
+
 
 class QuizActivity : AppActivity(keepScreenAlive = true) {
 
     companion object{
         const val PLAYLIST_KEY = "playlist key"
+        const val PLAYLIST_FALLBACK_ID = "invalid id"
     }
 
     private lateinit var binding: ActivityQuizBinding
-    private lateinit var viewModel: QuizViewModel
+    override lateinit var viewModel: QuizViewModel
 
     var imageSize = 0
 
-    override var requiredPermissions = listOf(
-        Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET, Manifest.permission.VIBRATE
-    )
+    var userInputButtonAnimation: ObjectAnimator? = null
+    var ttsButtonAnimation: ObjectAnimator? = null
+    var typeInputButtonAnimation: ObjectAnimator? = null
+
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(
+            RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)),
+            RequiredPermission(Manifest.permission.RECORD_AUDIO, getString(R.string.permission_record_audio), getString(R.string.permission_record_audio_explanation)),
+            RequiredPermission(Manifest.permission.VIBRATE, getString(R.string.permission_vibrate), getString(R.string.permission_vibrate_explanation))
+        )
 
         binding = ActivityQuizBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        playlistColorSetter(getColor(R.color.colorAccent))
+        playlistColorSetter(getColor(R.color.colorPrimary))
 
         // get settings related to the quiz
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), this.resources.getBoolean(R.bool.repeat_default))
         val songDuration = sharedPreferences.getInt(getString(R.string.SETTINGS_KEY_SONG_DURATION), this.resources.getInteger(R.integer.song_duration_sec_default))
+        val repeatAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_REPEAT), this.resources.getBoolean(R.bool.repeat_default))
+        val difficultyCompensation = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_DIFFICULTY_COMPENSATION), this.resources.getBoolean(R.bool.difficulty_compensation_default))
         val extendedInfoAllowed = sharedPreferences.getBoolean(getString(R.string.SETTINGS_KEY_EXTENDED_QUIZ_INFO), this.resources.getBoolean(R.bool.extended_quiz_info_default))
 
-        // load ad
-        val adRequest = AdRequest.Builder().build()
-        binding.content.adQuiz.loadAd(adRequest)
+        viewModel = ViewModelProvider(this)[QuizViewModel::class.java]
 
-        viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
+        // try to see whether explicit intent can be parsed
+        var playlistId = parseExplicitIntent()
+        if(playlistId.isBlank()){
+            // if not, parse implicit intent
+            playlistId = parseImplicitIntent()
+        }
+        if(playlistId.isBlank()){
+            // if still no playlist Id, revert to a fallback Id
+            playlistId = PLAYLIST_FALLBACK_ID
+        }
 
-        val playlistId = intent.extras?.getString(PLAYLIST_KEY) ?: ""
-        viewModel.setPlaylistByIdAndSettings(playlistId, repeatAllowed, songDuration, extendedInfoAllowed)
+        viewModel.setPlaylistAndSettings(playlistId, songDuration, repeatAllowed, difficultyCompensation, extendedInfoAllowed)
         viewModel.numProgressBarSteps = resources.getInteger(R.integer.progressbar_max_value)
         imageSize = resources.getDimension(R.dimen.game_image_pixels).toInt()
+    }
+
+    private fun parseExplicitIntent(): String {
+        return intent.extras?.getString(PLAYLIST_KEY) ?: ""
+    }
+
+    private fun parseImplicitIntent() : String{
+        var playlistId = ""
+
+        if(intent.type == "text/plain"){
+            var text = intent.clipData?.getItemAt(0)?.text.toString()
+            text = text.removePrefix("https://open.spotify.com/playlist/")
+            text = text.replaceAfter("?", "")
+            text = text.replace("?", "")
+            playlistId = text
+        }
+
+        return playlistId
     }
 
     override fun onBackPressed() {
@@ -87,6 +125,11 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             startActivity(Intent(this, MenuActivity::class.java))
         }
         closeDialog.show()
+    }
+
+    fun navigateToMainMenu() {
+        viewModel.clearState()
+        startActivity(Intent(this, MenuActivity::class.java))
     }
 
     override fun subscribeViewModel() {
@@ -104,19 +147,61 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 UserInputState.ENABLED -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_on)
                     binding.content.userSpeechButton.isEnabled = true
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableInfiniteAnimation()
+                    userInputButtonAnimation?.start()
                 }
                 UserInputState.DISABLED -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_mic_off)
                     binding.content.userSpeechButton.isEnabled = false
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
+                    userInputButtonAnimation?.start()
                 }
                 UserInputState.RECORDING -> {
                     binding.content.userSpeechButton.setImageResource(R.drawable.icon_waveform)
                     binding.content.userSpeechButton.isEnabled = true
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
+                    userInputButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.userSpeechButton.isEnabled = false
+                    userInputButtonAnimation?.cancel()
+                    userInputButtonAnimation = binding.content.userSpeechButton.tappableEndAnimation()
+                    userInputButtonAnimation?.start()
                 }
             }
+
+            when(state){
+                UserInputState.RECORDING, UserInputState.ENABLED -> {
+                    binding.content.typeInputButton.let {
+                        it.setOnClickListener {
+                            viewModel.cancelUserInputJob()
+                            showTypeInputDialog()
+                        }
+                        it.appear(R.anim.slide_in_bottom)
+                    }
+                }
+                else -> {
+                    binding.content.typeInputButton.let {
+                        it.setOnClickListener {}
+                        it.disappear(R.anim.slide_out_bottom)
+                    }
+                }
+            }
+
+            if(state == UserInputState.ENABLED){
+                typeInputButtonAnimation?.cancel()
+                typeInputButtonAnimation = binding.content.typeInputButton.tappableInfiniteAnimation()
+                typeInputButtonAnimation?.start()
+            }
+            else{
+                typeInputButtonAnimation?.cancel()
+                typeInputButtonAnimation = binding.content.typeInputButton.tappableEndAnimation()
+                typeInputButtonAnimation?.start()
+            }
+
         }
         viewModel.userInputState.observe(this, userInputStateObserver)
 
@@ -157,51 +242,124 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                 TtsState.ENABLED -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_on)
                     binding.content.ttsSpeechButton.isEnabled = true
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableInfiniteAnimation()
+                    ttsButtonAnimation?.start()
                 }
                 TtsState.DISABLED -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_off)
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
+                    ttsButtonAnimation?.start()
                 }
                 TtsState.SPEAKING -> {
                     binding.content.ttsSpeechButton.setImageResource(R.drawable.icon_sound_speaking)
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
+                    ttsButtonAnimation?.start()
                 }
                 else -> {
                     binding.content.ttsSpeechButton.isEnabled = false
+                    ttsButtonAnimation?.cancel()
+                    ttsButtonAnimation = binding.content.ttsSpeechButton.tappableEndAnimation()
+                    ttsButtonAnimation?.start()
                 }
             }
         }
         viewModel.ttsState.observe(this, ttsStateObserver)
 
-        val quizStateObserver = Observer<QuizUiState> { state ->
-
-            if(state != QuizUiState.LOADING){
-                binding.content.loadIndicatorProgressBar.visibility = View.GONE
-            }
-
+        val adStateObserver = Observer<AdState> { state ->
             when(state){
-                QuizUiState.LOADING -> {
-                    binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
-                }
-                QuizUiState.READY_TO_START -> {
-                    viewModel.info.value = getString(R.string.ready_to_start)
-                }
-                QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                    viewModel.info.value = getString(R.string.error_playlist_load_description)
-                    showInfo(QuizUiState.ERROR_PLAYLIST_LOAD)
-                }
-                QuizUiState.ERROR_PLAY_SONG -> {
-                    viewModel.info.value = getString(R.string.error_play_song_description)
-                    showInfo(QuizUiState.ERROR_PLAY_SONG)
-                }
-                QuizUiState.ERROR_SPEAK_TO_USER -> {
-                    viewModel.info.value = getString(R.string.error_speak_to_user_description)
-                    showInfo(QuizUiState.ERROR_SPEAK_TO_USER)
+                AdState.HIDE -> {}
+                AdState.SHOW -> {
+                    viewModel.showRewardedInterstitialAd(this)
+                    viewModel.adState.postValue(AdState.HIDE)
                 }
                 else -> {}
             }
         }
-        viewModel.uiState.observe(this, quizStateObserver)
+        viewModel.adState.observe(this, adStateObserver)
+
+        val addToFavouritesButtonStateObserver = Observer<AddToFavouritesState> { state ->
+            when(state){
+                AddToFavouritesState.VISIBLE_SONG_NOT_IN_FAVOURITES -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {
+                            viewModel.addCurrentTrackToFavourites()
+                        }
+
+                        it.setImageResource(R.drawable.icon_favourite)
+                        it.appear(R.anim.slide_in_top)
+                    }
+                }
+                AddToFavouritesState.VISIBLE_SONG_IN_FAVOURITES -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {
+                            viewModel.removeCurrentTrackFromFavourites()
+                        }
+
+                        it.setImageResource(R.drawable.icon_favourite_active)
+                        it.appear(R.anim.slide_in_top)
+                    }
+                }
+                else -> {
+                    binding.content.addToFavouritesButton.let {
+                        it.setOnClickListener {}
+                        it.disappear(R.anim.slide_out_top)
+                    }
+                }
+            }
+        }
+        viewModel.addToFavouritesState.observe(this, addToFavouritesButtonStateObserver)
+
+        val notificationObserver = Observer<QuizNotification> { state ->
+            if(state != QuizNotification.LOADING){
+                binding.content.loadIndicatorProgressBar.visibility = View.GONE
+            }
+
+            when(state){
+                QuizNotification.LOADING -> {
+                    binding.content.loadIndicatorProgressBar.visibility = View.VISIBLE
+                }
+                QuizNotification.READY_TO_START -> {
+                    viewModel.info.value = getString(R.string.ready_to_start)
+                }
+                QuizNotification.ERROR_PLAYLIST_LOAD -> {
+                    viewModel.info.value = getString(R.string.error_playlist_load_description)
+                    showInfo(QuizNotification.ERROR_PLAYLIST_LOAD)
+                    viewModel.notification.postValue(QuizNotification.EMPTY)
+                }
+                QuizNotification.ERROR_PLAY_SONG -> {
+                    viewModel.info.value = getString(R.string.error_play_song_description)
+                    showInfo(QuizNotification.ERROR_PLAY_SONG)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.ERROR_SPEAK_TO_USER -> {
+                    viewModel.info.value = getString(R.string.error_speak_to_user_description)
+                    showInfo(QuizNotification.ERROR_SPEAK_TO_USER)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.ADDED_TO_FAVOURITES -> {
+                    showInfo(QuizNotification.ADDED_TO_FAVOURITES)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.REMOVED_FROM_FAVOURITES -> {
+                    showInfo(QuizNotification.REMOVED_FROM_FAVOURITES)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.REWARD_GRANTED -> {
+                    showInfo(QuizNotification.REWARD_GRANTED)
+                    viewModel.notification.postValue(QuizNotification.PLAY)
+                }
+                QuizNotification.EXIT -> {
+                    navigateToMainMenu()
+                }
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
 
         val playlistUriObserver = Observer<String> { uri ->
             if(uri.isEmpty()){
@@ -222,26 +380,35 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                     .apply(options)
                     .listener(object : RequestListener<Drawable>{
 
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
+                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             resource.let {
-                                val palette = Palette.from(resource.toBitmap()).generate()
-                                val fallbackColor = getColor(R.color.colorAccent)
-                                val playlistColor = palette.getMutedColor(fallbackColor)
-                                viewModel.playlistPrimaryColor.postValue(playlistColor)
+                                Thread{
+                                    val paletteBitmap = resource.toBitmap(20, 20)
+                                    var redSum: Long = 0
+                                    var greenSum: Long = 0
+                                    var blueSum: Long = 0
+                                    var pixelCount: Long = 0
+
+                                    for (y in 0 until paletteBitmap.height) {
+                                        for (x in 0 until paletteBitmap.width) {
+                                            val currentColorInt = paletteBitmap.getPixel(x, y)
+                                            redSum += Color.red(currentColorInt)
+                                            greenSum += Color.green(currentColorInt)
+                                            blueSum += Color.blue(currentColorInt)
+                                            pixelCount++
+                                        }
+                                    }
+
+                                    val redFloat = ((redSum / pixelCount) / 255.0).toFloat()
+                                    val greenFloat = ((greenSum / pixelCount) / 255.0).toFloat()
+                                    val blueFloat = ((blueSum / pixelCount) / 255.0).toFloat()
+                                    val averageColor = Color.rgb(redFloat, greenFloat, blueFloat)
+                                    viewModel.playlistPrimaryColor.postValue(averageColor)
+                                }.start()
                             }
                             // explicit transition
                             target.onResourceReady(resource, CrossFadeTransition())
@@ -264,16 +431,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             val view = binding.content.svInfo
 
             if(info.isBlank() && binding.content.tvInfo.text.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_out_left).also {
-                    view.startAnimation(it)
-                    view.visibility = View.INVISIBLE
-                }
+                view.disappear(R.anim.slide_out_left)
             }
             else if(info.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_in_left).also {
-                    view.startAnimation(it)
-                    view.visibility = View.VISIBLE
-                }
+                view.appear(R.anim.slide_in_left, true)
             }
 
             binding.content.tvInfo.text = info
@@ -286,16 +447,10 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
             val view = binding.content.svRecognition
 
             if(recognition.isBlank() && binding.content.tvRecognition.text.isNotBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_out_right).also {
-                    view.startAnimation(it)
-                    view.visibility = View.INVISIBLE
-                }
+                view.disappear(R.anim.slide_out_right)
             }
             else if(recognition.isNotBlank() && binding.content.tvRecognition.text.isBlank()){
-                AnimationUtils.loadAnimation(this, R.anim.slide_in_right).also {
-                    view.startAnimation(it)
-                    view.visibility = View.VISIBLE
-                }
+                view.appear(R.anim.slide_in_right, true)
             }
 
             binding.content.tvRecognition.text = recognition
@@ -319,87 +474,222 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         }
         viewModel.songPlayProgressPercentage.observe(this, songPlayedProgressPercentageObserver)
 
+        // to set a placeholder which defines the height
+        binding.content.standing.itemPlaceholder.tvName.text = ""
+        binding.content.standing.itemPlaceholder.tvScore.text = ""
+        binding.content.standing.itemPlaceholder.standingItemLayout.visibility = View.INVISIBLE
+        // list of real items
+        val playerStandingsToSet = listOf(binding.content.standing.item1, binding.content.standing.item2, binding.content.standing.item3, binding.content.standing.item4)
+        val quizStandingObserver = Observer<ViewModelQuizState> { state ->
+
+            val roundText = getString(R.string.current_per_round, state.currentRound.toString(), state.numRounds.toString())
+            if(roundText != binding.content.standing.round.text){
+                binding.content.standing.round.text = roundText
+                binding.content.standing.round.changedAnimation().start()
+                binding.content.standing.roundPlaceholder.text = roundText
+            }
+
+            if(!state.isFinished && state.currentRound != 0 && state.numRounds != 0){
+                // if currently invisible, animate to appear
+                binding.content.standing.round.appear(R.anim.slide_in_top)
+            }
+            else{
+                // if currently visible, animate to hide
+                binding.content.standing.round.disappear(R.anim.slide_out_top)
+            }
+
+            // player points
+            playerStandingsToSet.forEachIndexed { index, item ->
+                if(state.players.size > index){
+                    // if item is not visible, show it
+                    item.standingItemLayout.appear(R.anim.slide_in_top)
+
+                    val currentPlayerData = state.players[index]
+                    val scoreTextToSet = currentPlayerData.points.toString()
+                    // if the score text has changed, set and animate it
+                    if(scoreTextToSet != item.tvScore.text){
+                        item.tvScore.text = scoreTextToSet
+                        item.tvScore.changedAnimation().start()
+                    }
+                    // if the name text has changed, set and animate it
+                    if(currentPlayerData.name != item.tvName.text){
+                        item.tvName.text = currentPlayerData.name
+                        item.tvName.changedAnimation().start()
+                    }
+
+                    // if this is the current player and the quiz is not finished
+                    if(state.currentPlayerIdx == index && !state.isFinished && state.numRounds > 0){
+                        val color = getColor(R.color.colorActive)
+                        item.tvScore.setTextColor(color)
+                        item.tvName.setTextColor(color)
+                        item.tvName.textColors
+                    }
+                    else{
+                        val color = getColor(R.color.colorIcon)
+                        item.tvScore.setTextColor(color)
+                        item.tvName.setTextColor(color)
+                    }
+                }
+                else{
+                    // if item is not gone, hide it
+                    if(item.standingItemLayout.visibility != View.GONE){
+                        AnimationUtils.loadAnimation(this, R.anim.slide_out_top).also {
+                            item.standingItemLayout.startAnimation(it)
+                            item.standingItemLayout.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+
+        }
+        viewModel.viewModelQuizStanding.observe(this, quizStandingObserver)
+
+        val guessesToSet = listOf(binding.content.feedback.guess1, binding.content.feedback.guess2)
+        val currentGuessObserver = Observer<List<ViewModelGuessItem>> { guesses ->
+            // last guesses
+            guessesToSet.forEachIndexed { index, item ->
+                if(guesses.size > index){
+                    val currentGuess = guesses[index]
+                    item.text = currentGuess.truth
+
+                    val drawable = when(currentGuess.isAccepted){
+                        true -> {
+                            ContextCompat.getDrawable(applicationContext, R.drawable.icon_correct)
+                        }
+                        false -> {
+                            ContextCompat.getDrawable(applicationContext, R.drawable.icon_incorrect)
+                        }
+                    }
+                    item.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                    // if item is not visible, show it
+                    item.appear(R.anim.slide_in_bottom)
+                }
+                else{
+                    // if item is not invisible, hide it
+                    item.disappear(R.anim.slide_out_bottom)
+                }
+            }
+        }
+        viewModel.currentGuesses.observe(this, currentGuessObserver)
+
+        val endFeedbackObserver = Observer<ViewModelEndFeedback> { feedback ->
+            // if valid end feedback observed
+            if(feedback.numWinners >= 0){
+                if(feedback.numWinners == 0){
+                    binding.content.feedback.endIndicator.text = getString(R.string.c_next_time)
+                    val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_luck)
+                    binding.content.feedback.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                }
+                else{
+                    binding.content.feedback.endIndicator.text = feedback.winnerNames
+                    val drawable = ContextCompat.getDrawable(applicationContext, R.drawable.icon_celebration)
+                    binding.content.feedback.endIndicator.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+                }
+
+                // if item is not visible, show it
+                binding.content.feedback.endIndicator.appear(R.anim.slide_in_bottom)
+            }
+            else{
+                // if item is not invisible, hide it
+                binding.content.feedback.endIndicator.disappear(R.anim.slide_out_bottom)
+            }
+        }
+        viewModel.endFeedback.observe(this, endFeedbackObserver)
+
     }
 
     override fun appearingAnimations() {}
     override fun unsubscribeViewModel() {}
 
-    override fun onboardingDialog(){
-        val keyOnboardingFlag = getString(R.string.PREF_KEY_ONBOARDING_QUIZ_SHOWED)
+    override fun boardingCheck(){
+        val keyBoardingFlag = getString(R.string.PREF_KEY_BOARDING_QUIZ_SHOWED)
         // get saved info from preferences
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val onboardingFlag = sharedPreferences.getBoolean(keyOnboardingFlag, false)
+        val boardingFlag = sharedPreferences.getBoolean(keyBoardingFlag, false)
 
-        if(!onboardingFlag){
+        if(!boardingFlag){
             MaterialTapTargetSequence().addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.userSpeechButton)
-                .setPrimaryText(getString(R.string.onboarding_quiz_user_input))
+                .setPrimaryText(getString(R.string.boarding_quiz_user_input))
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
-                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
-                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                .setBackgroundColour(getColor(R.color.colorBoardingBackground))
+                .setFocalColour(getColor(R.color.colorBoardingFocal))
                 .create()
-        ).addPrompt(
+            ).addPrompt(
                 MaterialTapTargetPrompt.Builder(this)
                 .setTarget(binding.content.ttsSpeechButton)
-                .setPrimaryText(getString(R.string.onboarding_quiz_speech))
+                .setPrimaryText("${getString(R.string.boarding_quiz_speech)} ${getString(R.string.boarding_tap_to_start)}")
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
-                .setBackgroundColour(getColor(R.color.colorOnboardingBackground))
-                .setFocalColour(getColor(R.color.colorOnboardingFocal))
+                .setBackgroundColour(getColor(R.color.colorBoardingBackground))
+                .setFocalColour(getColor(R.color.colorBoardingFocal))
                     .setPromptStateChangeListener { prompt, state ->
                         if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
                             // persist showed flag to preferences
                             with(sharedPreferences.edit()){
-                                remove(keyOnboardingFlag)
-                                putBoolean(keyOnboardingFlag, true)
+                                remove(keyBoardingFlag)
+                                putBoolean(keyBoardingFlag, true)
                                 apply()
                             }
                         }
                     }
                 .create()
-        ).show()
+            ).show()
         }
     }
 
-    private fun showInfo(infoType: QuizUiState){
-
+    private fun showInfo(infoType: QuizNotification){
         when(infoType){
-            QuizUiState.ERROR_PLAYLIST_LOAD -> {
-                val message = getString(R.string.error_playlist_load)
+            QuizNotification.ERROR_PLAYLIST_LOAD -> {
+                val message = getString(R.string.error_listable_load)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
             }
-            QuizUiState.ERROR_PLAY_SONG -> {
+            QuizNotification.ERROR_PLAY_SONG -> {
                 val message = getString(R.string.error_play_song)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.play()
             }
-            QuizUiState.ERROR_SPEAK_TO_USER -> {
+            QuizNotification.ERROR_SPEAK_TO_USER -> {
                 val message = getString(R.string.error_speak_to_user)
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.play()
+            }
+            QuizNotification.ADDED_TO_FAVOURITES -> {
+                val message = getString(R.string.added_to_favourites)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+            QuizNotification.REMOVED_FROM_FAVOURITES -> {
+                val message = getString(R.string.removed_from_favourites)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+            }
+            QuizNotification.REWARD_GRANTED -> {
+                val message = getString(R.string.reward_granted)
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
             else -> {}
         }
-
     }
 
     private fun playlistColorSetter(colorInt: Int){
-        val darkness = 1-(0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt))/255
-        val playlistColor = if(darkness < 0.35){
-            // color is too light, replace with accent
-            getColor(R.color.colorAccent)
-        }
-        else{
-            colorInt
+        val backgroundColor = getColor(R.color.colorBackground)
+        var playlistColor = colorInt
+
+        val brightness = (0.299*Color.red(colorInt) + 0.587*Color.green(colorInt) + 0.114*Color.blue(colorInt)) / 255
+        if(brightness < 0.15 || brightness > 0.85 ){
+            // fallback, because too dark/too bright color is received
+            playlistColor = getColor(R.color.colorPrimary)
         }
 
-        val backgroundColor = getColor(R.color.colorBackground)
-        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(playlistColor, backgroundColor))
+        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(playlistColor, backgroundColor))
         gradientDrawable.cornerRadius = 0F
         binding.root.background = gradientDrawable
         this.window.statusBarColor = playlistColor
+    }
+
+    private fun showTypeInputDialog() {
+        val inputDialog = AppDialogInput(this, getString(R.string.type_input), getString(R.string.type_input_description))
+        inputDialog.setPositiveButton {
+            viewModel.explicitUserInput(it)
+        }
+        inputDialog.show()
     }
 
 }

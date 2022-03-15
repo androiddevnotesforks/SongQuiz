@@ -1,12 +1,14 @@
 package com.aaronfodor.android.songquiz.view.utils
 
-import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import android.view.WindowManager
+import androidx.appcompat.app.AlertDialog
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.AppDialogInputBinding
+
 
 /**
  * Dialog input class of the app
@@ -59,6 +61,12 @@ class AppDialogInput(context: Context, title: String, description: String) : Ale
             this.dismiss()
             func()
         }
+    }
+
+    override fun show() {
+        super.show()
+        binding.itInput.requestFocus()
+        this.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
 
 }

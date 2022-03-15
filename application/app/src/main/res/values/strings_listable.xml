@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="owner_text">by %1$s</string>
+    <string name="songs_followers_difficulty">This playlist has %1$s playable songs with %2$s followers.\n\nAverage difficulty: %3$s%%\n\n</string>
+
+    <string name="artist_text">by %1$s</string>
+    <string name="track_info">It is on the following album: %1$s \n\nThe total duration is %2$s minute(s) %3$s second(s) \n\nThis song has %4$s%% popularity\n\n</string>
+
+    <string name="view_on_spotify">Open with Spotify</string>
+    <string name="play">Play</string>
+    <string name="info">Information</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="listen">Listen</string>
+    <string name="stop">Stop</string>
+    <string name="read_aloud">Read aloud</string>
+    <string name="random_play">Tap here to play on a random playlist</string>
+    <string name="recommended_for_you">Recommended for you</string>
+
+    <string name="empty_list_playlists">Tap to add playlists</string>
+    <string name="empty_search_list">Tap to search for playlists</string>
+    <string name="empty_list_playlists_random">No playlists to choose from</string>
+
+    <string name="empty_list_tracks">No favourites. While playing, you can add an item with the icon</string>
+
+    <string name="cannot_find_listable">Not found or internet is not available</string>
+    <string name="error_listable_load">Cannot load item</string>
+    <string name="error_listable_add">Failed to add</string>
+    <string name="success_listable_add">Successfully added</string>
+    <string name="listable_already_added">Already added</string>
+    <string name="listable_partially_loaded">Details failed to load</string>
+
+    <string name="error_listable_delete">Failed to delete</string>
+    <string name="success_listable_delete">Item deleted</string>
+    <string name="listable_already_deleted">Already deleted</string>
+    <string name="listable_discarded">Item discarded</string>
+</resources>

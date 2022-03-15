@@ -3,34 +3,45 @@ package com.aaronfodor.android.songquiz.view.utils
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.aaronfodor.android.songquiz.R
+import com.aaronfodor.android.songquiz.viewmodel.utils.AppViewModel
+import com.aaronfodor.android.songquiz.viewmodel.utils.AuthNotification
+import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
+data class RequiredPermission(
+    val id: String,
+    val name: String,
+    val explanation: String
+)
 
 /**
  * The base activity class of the app - can be inherited from
  */
 @AndroidEntryPoint
-abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActivity() {
+abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActivity(), AuthRequestModule {
 
     companion object{
         var systemPermissionDialogShowed = false
     }
 
-    abstract var requiredPermissions: List<String>
+    abstract val viewModel: AppViewModel
+
+    abstract var requiredPermissions: List<RequiredPermission>
     var permissionDialogShowed = false
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
-            // Permission is granted
+            // Permission granted
         } else {
             // Permission denied
         }
@@ -41,10 +52,11 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
     override fun onResume() {
         super.onResume()
         permissionCheck()
-        setKeepScreenFlag()
+        setScreenFlags()
         subscribeViewModel()
+        subscribeViewModelAccountState()
         appearingAnimations()
-        onboardingDialog()
+        boardingCheck()
     }
 
     override fun onPause() {
@@ -54,16 +66,16 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     private fun permissionCheck(){
 
-        val requestPermissionLambda: (requiredPermission: String) -> Unit = {
+        val requestPermissionLambda: (requiredPermission: RequiredPermission) -> Unit = {
             val requestPermissionDialog = AppDialog(
                 this,
                 getString(R.string.request_permission_title),
-                getString(R.string.request_permission_description, it),
+                getString(R.string.request_permission_description, it.name, it.explanation),
                 R.drawable.icon_warning
             )
             requestPermissionDialog.setPositiveButton{
                 lifecycleScope.launch(Dispatchers.Main) {
-                    requestPermissionLauncher.launch(it)
+                    requestPermissionLauncher.launch(it.id)
                     systemPermissionDialogShowed = true
                 }
             }
@@ -74,11 +86,11 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
             permissionDialogShowed = true
         }
 
-        val requestSettingsLambda: (requiredPermission: String) -> Unit = {
+        val requestPermissionSettingsLambda: (requiredPermission: RequiredPermission) -> Unit = {
             val requestSettingsDialog = AppDialog(
                 this,
-                getString(R.string.request_settings_title),
-                getString(R.string.request_settings_description, it),
+                getString(R.string.request_permission_settings_title),
+                getString(R.string.request_permission_settings_description, it.name, it.explanation),
                 R.drawable.icon_warning
             )
             requestSettingsDialog.setPositiveButton{
@@ -101,11 +113,11 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         for(requiredPermission in requiredPermissions){
             when{
                 // permission is granted
-                ContextCompat.checkSelfPermission(this, requiredPermission) == PackageManager.PERMISSION_GRANTED -> {
+                ContextCompat.checkSelfPermission(this, requiredPermission.id) == PackageManager.PERMISSION_GRANTED -> {
                     // Hooray, permission granted
                 }
                 // permission rejected
-                shouldShowRequestPermissionRationale(requiredPermission) -> {
+                shouldShowRequestPermissionRationale(requiredPermission.id) -> {
                     if(!permissionDialogShowed && !systemPermissionDialogShowed){
                         requestPermissionLambda(requiredPermission)
                     }
@@ -113,7 +125,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
                 // permission rejected & don't ask again/device policy prohibits having the permission
                 else -> {
                     if(!permissionDialogShowed && !systemPermissionDialogShowed){
-                        requestSettingsLambda(requiredPermission)
+                        requestPermissionSettingsLambda(requiredPermission)
                     }
                 }
             }
@@ -121,7 +133,7 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
 
     }
 
-    private fun setKeepScreenFlag(){
+    private fun setScreenFlags(){
         if(keepScreenAlive){
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
@@ -130,11 +142,35 @@ abstract class AppActivity(private val keepScreenAlive: Boolean) : AppCompatActi
         }
     }
 
+    abstract override fun onBackPressed()
+
     abstract fun subscribeViewModel()
     abstract fun appearingAnimations()
-    abstract fun onboardingDialog()
+    abstract fun boardingCheck()
+
     abstract fun unsubscribeViewModel()
 
-    abstract override fun onBackPressed()
+    private fun subscribeViewModelAccountState(){
+        // this observer is needed in order to propagate the information to the fragments
+        val accountStateObserver = Observer<ViewModelAccountState> { accountState -> }
+        viewModel.accountState.observe(this, accountStateObserver)
+
+        val authNotificationObserver = Observer<AuthNotification> { notification ->
+            when(notification){
+                AuthNotification.AUTH_NEEDED -> {
+                    viewModel.authNotification.postValue(AuthNotification.NONE)
+                    startAuthentication()
+                }
+                else -> {}
+            }
+        }
+        viewModel.authNotification.observe(this, authNotificationObserver)
+    }
+
+    override var authLauncherStarted = false
+    override val authLauncher = registerForActivityResult(AuthRequestContract()){ isAuthSuccess ->
+        viewModel.authenticationReturned(isAuthSuccess)
+        authLauncherStarted = false
+    }
 
 }

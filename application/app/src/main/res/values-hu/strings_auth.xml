@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="error_login_internet">Ellenőrizd az internetkapcsolatod, vagy próbálj máshogy bejelentkezni</string>
+    <string name="error_login_internet">Sikertelen hitelesítés</string>
     <string name="error_login_denied">Jelentkezz be a folytatáshoz</string>
-    <string name="error_login">Hiba történt - próbáld újra</string>
+    <string name="error_login">Hiba történt - kérlek próbáld újra</string>
 
-    <string name="login_button">BEJELENTKEZÉS</string>
-    <string name="skip_button">MAJD MÁSKOR</string>
+    <string name="login_button">bejelentkezés</string>
+    <string name="skip_button">most nem</string>
+
+    <string name="login_why_title">Miért kérünk, hogy jelentkezz be</string>
+    <string name="login_why_dialog">A Spotify segítségével érjük el a dalokat és a lejátszási listákat. Ezért, hogy zenét tudjunk lejátszani Neked, be kell jelentkezned. Adataid a Spotify saját felületén adod meg – mi csak olyan adatokhoz férünk hozzá, amelyekhez előzetesen hozzájárultál.</string>
 </resources>

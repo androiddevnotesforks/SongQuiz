@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="error_login_internet">Please check your internet connection or try a different log in method</string>
+    <string name="error_login_internet">Authentication failed</string>
     <string name="error_login_denied">Please log in to continue</string>
     <string name="error_login">An error occurred - please try again</string>
 
-    <string name="login_button">LOG IN</string>
-    <string name="skip_button">NOT NOW</string>
+    <string name="login_button">login</string>
+    <string name="skip_button">not now</string>
+
+    <string name="login_why_title">Why we ask you to log in</string>
+    <string name="login_why_dialog">We use Spotify to access songs and playlists. We need you to be authenticated in order to play music for you. You enter your credentials on Spotify\'s own interface - we only access user information to which you have previously consented.</string>
 </resources>

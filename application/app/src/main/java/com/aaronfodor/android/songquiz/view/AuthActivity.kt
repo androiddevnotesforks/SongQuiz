@@ -6,18 +6,15 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.aaronfodor.android.songquiz.R
 import com.aaronfodor.android.songquiz.databinding.ActivityAuthBinding
-import com.aaronfodor.android.songquiz.view.utils.AppActivity
-import com.aaronfodor.android.songquiz.view.utils.AppDialog
-import com.aaronfodor.android.songquiz.view.utils.AuthRequestContract
-import com.aaronfodor.android.songquiz.viewmodel.AuthAccountState
-import com.aaronfodor.android.songquiz.viewmodel.AuthUiState
-import com.aaronfodor.android.songquiz.viewmodel.AuthViewModel
+import com.aaronfodor.android.songquiz.view.utils.*
+import com.aaronfodor.android.songquiz.viewmodel.*
+import com.aaronfodor.android.songquiz.viewmodel.utils.ViewModelAccountState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,9 +22,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class AuthActivity : AppActivity(keepScreenAlive = false) {
 
     private lateinit var binding: ActivityAuthBinding
-    private lateinit var viewModel: AuthViewModel
+    override lateinit var viewModel: AuthViewModel
 
-    override var requiredPermissions = listOf(Manifest.permission.INTERNET)
+    override var requiredPermissions: List<RequiredPermission> = listOf()
 
     var loginStarted = false
     var showNextScreenCalled = false
@@ -37,15 +34,19 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requiredPermissions = listOf(RequiredPermission(Manifest.permission.INTERNET, getString(R.string.permission_internet), getString(R.string.permission_internet_explanation)))
 
         binding = ActivityAuthBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
         // When authentication is ready, does the activity should finish itself
         forResultAuthNeeded = intent.extras?.getBoolean(AuthRequestContract.FOR_RESULT_AUTH_SCREEN_KEY) ?: false
+
+        val drawableQuestion = ContextCompat.getDrawable(applicationContext, R.drawable.icon_question)
+        binding.whyLoginInfo.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableQuestion, null)
     }
 
     override fun onBackPressed() {
@@ -61,26 +62,43 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         exitDialog.show()
     }
 
+    private fun skipLoginTapped() {
+        hideAuthActions()
+        //showing the next screen
+        showNextScreenCalled = false
+        showMenuActivity(false)
+    }
+
+    private fun whyLoginTapped(){
+        val infoDialog = AppDialog(this, getString(R.string.login_why_title),
+            getString(R.string.login_why_dialog), R.drawable.icon_question)
+        infoDialog.setPositiveButton{}
+        infoDialog.show()
+    }
+
     override fun subscribeViewModel() {
 
         binding.btnLogin.setOnClickListener {
             loginStarted = false
+            hideAuthActions()
             login()
         }
 
         binding.btnSkip.setOnClickListener {
-            showNextScreenCalled = false
-            showNextScreen(false)
+            skipLoginTapped()
+        }
+
+        binding.whyLoginInfo.setOnClickListener {
+            whyLoginTapped()
         }
         
         val uiStateObserver = Observer<AuthUiState> { state ->
-
             if(state == AuthUiState.EMPTY){
-                binding.btnLogin.visibility = View.VISIBLE
-                binding.btnSkip.visibility = View.VISIBLE
+                showAuthActions()
             }
 
             if(state == AuthUiState.START_LOGIN){
+                hideAuthActions()
                 binding.loadIndicatorProgressBar.visibility = View.VISIBLE
             }
             else{
@@ -92,25 +110,39 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
                     login()
                 }
                 AuthUiState.SUCCESS -> {
-                    showNextScreen(true)
+                    showMenuActivity(true)
                 }
-                AuthUiState.ERROR_DENIED -> {
-                    showInfo(AuthUiState.ERROR_DENIED)
-                }
-                AuthUiState.ERROR_INTERNET -> {
-                    showInfo(AuthUiState.ERROR_INTERNET)
-                }
-                AuthUiState.ERROR -> {
-                    showInfo(AuthUiState.ERROR)
-                }
-                else -> {}
+                AuthUiState.EMPTY -> {}
             }
         }
         viewModel.uiState.observe(this, uiStateObserver)
 
-        val accountStateObserver = Observer<AuthAccountState> { accountState ->
-            if(accountState == AuthAccountState.LOGGED_IN){
-                showNextScreen(true)
+        val notificationObserver = Observer<AuthNotification> { notification ->
+            when(notification){
+                AuthNotification.ERROR_INTERNET -> {
+                    val message = getString(R.string.error_login_internet)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.ERROR_DENIED -> {
+                    val message = getString(R.string.error_login_denied)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.ERROR -> {
+                    val message = getString(R.string.error_login)
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    viewModel.notification.postValue(AuthNotification.NONE)
+                }
+                AuthNotification.NONE -> {}
+                else -> {}
+            }
+        }
+        viewModel.notification.observe(this, notificationObserver)
+
+        val accountStateObserver = Observer<ViewModelAccountState> { accountState ->
+            if(accountState == ViewModelAccountState.LOGGED_IN && !viewModel.isAuthNeeded()){
+                showMenuActivity(true)
             }
             else{
                 login()
@@ -119,39 +151,22 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.accountState.observe(this, accountStateObserver)
     }
 
-    override fun appearingAnimations() {
-        val topAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_top)
-        binding.tvTitle.startAnimation(topAnimation)
-        binding.tvTitle.visibility = View.VISIBLE
+    override fun appearingAnimations() {}
 
-        val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom)
-        binding.AppIcon.startAnimation(bottomAnimation)
-        binding.AppIcon.visibility = View.VISIBLE
+    private fun showAuthActions(){
+        binding.btnLogin.appear(R.anim.slide_in_bottom, true)
+        binding.btnSkip.appear(R.anim.slide_in_bottom, true)
+        binding.whyLoginInfo.appear(R.anim.slide_in_bottom, true)
     }
 
-    override fun onboardingDialog() {}
+    private fun hideAuthActions(){
+        binding.btnLogin.disappear(R.anim.slide_out_bottom)
+        binding.btnSkip.disappear(R.anim.slide_out_bottom)
+        binding.whyLoginInfo.disappear(R.anim.slide_out_bottom)
+    }
+
+    override fun boardingCheck() {}
     override fun unsubscribeViewModel() {}
-
-    private fun showInfo(infoType: AuthUiState){
-        when(infoType){
-            AuthUiState.ERROR_INTERNET -> {
-                val message = getString(R.string.error_login_internet)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            AuthUiState.ERROR_DENIED -> {
-                val message = getString(R.string.error_login_denied)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            AuthUiState.ERROR -> {
-                val message = getString(R.string.error_login)
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                viewModel.empty()
-            }
-            else -> {}
-        }
-    }
 
     private fun login(){
         if(loginStarted){
@@ -170,7 +185,7 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
         viewModel.processLoginResult(result.resultCode, result.data ?: Intent())
     }
 
-    private fun showNextScreen(isAuthenticated: Boolean){
+    private fun showMenuActivity(isAuthenticated: Boolean){
         if(showNextScreenCalled){
             return
         }
@@ -188,7 +203,6 @@ class AuthActivity : AppActivity(keepScreenAlive = false) {
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
         }
-
     }
 
 }

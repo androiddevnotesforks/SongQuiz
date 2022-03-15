@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="@dimen/button_margin_big"
+        android:paddingBottom="@dimen/margin_big"
         android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,8 +25,8 @@
             <ImageView
                 style="@style/MainImage"
                 android:id="@+id/ivLogo"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:src="@drawable/song_quiz"
                 android:importantForAccessibility="no"
                 app:layout_constraintDimensionRatio="1.0"
@@ -50,7 +50,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         style="@style/FAB"
         android:visibility="invisible"
-        android:id="@+id/fabSpeak"
+        android:id="@+id/fabMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
