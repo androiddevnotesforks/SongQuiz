@@ -1,13 +1,38 @@
 # Song Quiz: Guess with Melody!
-[<img src="https://user-images.githubusercontent.com/37120889/158266044-ac227b70-dd40-4d1c-9b50-d7d799273065.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
+[<img src="https://user-images.githubusercontent.com/37120889/158391665-a8c716bf-f7f2-47d8-ae99-799b2a462658.png" alt="icon_launcher" width="150"/>](https://github.com/aaronfodor/SongQuiz)
 
 ![](https://img.shields.io/github/license/aaronfodor/SongQuiz) 
 
 [<img src="https://user-images.githubusercontent.com/37120889/122966033-22a2b180-d389-11eb-8b13-f65fabed4bf7.png" alt="google-play-badge" width="200"/>](https://play.google.com/store/apps/details?id=com.aaronfodor.android.songquiz)
 
-Do you know what you hear? Challenge yourself on more than 4 billion playlists!
+*Do you know what you hear? Challenge yourself on billions of playlists!*
 
-Song Quiz guides you into the world of music. Play with more than 4 billion Spotify playlists. Save playlists to your library, set up the game based on your preferences. Would it be too easy? Shorten the length of a song or disable repetition to make it more exciting. Spark your music knowledge against your friends with your own playlists. As it is easy to use, you can play while traveling, taking a shower, and so on. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
+Let Song Quiz and Melody guide you into the world of music!
+
+• Play with arbitrary Spotify playlists, and add them to your library 🎮
+• Do you like a melody? Add it to your favourites and listen to it later ❤️
+• Challenge your friends or remote opponents ⚔️
+• Would it be easy? Configure your game to make it more exciting ⚙️
+• Train your brain with melodies to keep your memory sharp 🧠
+• Spark your music knowledge against your friends with your playlists💡
+
+As it is easy to use, you can play while traveling, taking a shower, cooking, and so on. While playing, you interact with a speech oriented UI - all you need is your voice 🎵
+
+
+
+
+FEW WORDS FROM THE DEVELOPER
+
+I always loved music trivia games, but I never found one which would have contained enough songs to be challenging in the long run. Song Quiz makes it possible to play on billions of playlists, solving this issue entirely for free. I hope you have as much fun with it as much as I did making it.
+
+-Aaron
+
+
+
+• Privacy: https://github.com/aaronfodor/SongQuiz/blob/master/PRIVACY.md
+• License: https://github.com/aaronfodor/SongQuiz/blob/master/LICENSE
+• Acknowledgments: https://github.com/aaronfodor/SongQuiz/blob/master/ACKNOWLEDGMENTS.md
+• Support: contact us in-game via About > Report a problem or suggest features
 
 <p float="middle">
  	<img src="https://user-images.githubusercontent.com/37120889/125031538-160ea080-e08d-11eb-9065-aa9920afa8ca.PNG" alt="Song Quiz1" width="240"/>

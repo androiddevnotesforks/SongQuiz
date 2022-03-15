@@ -180,7 +180,7 @@ class FavouritesFragment : AppFragment(R.layout.fragment_favourites), View.OnCre
         val drawable = getDrawable(requireContext(), R.drawable.icon_favourite)
         binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
-        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorPrimary))
         binding.list.swipeRefreshLayout.setOnRefreshListener {
             viewModel.loadData()
         }

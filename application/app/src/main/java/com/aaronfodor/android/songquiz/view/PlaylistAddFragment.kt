@@ -186,7 +186,7 @@ class PlaylistAddFragment : AppFragment(R.layout.fragment_playlist_add), Listabl
         val drawable = getDrawable(requireContext(), R.drawable.icon_search)
         binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
-        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorPrimary))
         binding.list.swipeRefreshLayout.setOnRefreshListener {
             viewModel.searchPlaylist(viewModel.lastSearchExpression)
         }

@@ -10,7 +10,7 @@
     <string name="settings_title_difficulty_compensation">Nehézségi pontok</string>
     <string name="settings_title_extended_quiz_info">Információ a kvíz során</string>
     <string name="settings_title_seasonal_themes">Szezonális témák</string>
-    <string name="settings_title_onboarding">Használati tippek</string>
+    <string name="settings_title_boarding">Használati tippek</string>
     <string name="settings_title_color_mode">Színmódok</string>
     <string name="settings_title_language">Aktuális nyelv: magyar</string>
     <string name="settings_title_speech">Beszéd</string>
@@ -23,7 +23,7 @@
     <string name="settings_summary_log_in">Koppints a bejelentkezéshez</string>
     <string name="settings_summary_log_out">Koppints a kijelentkezéshez</string>
     <string name="settings_summary_song_duration">Egy dal lejátszási hossza másodpercben</string>
-    <string name="settings_summary_onboarding">Koppints a használati tippek ismételt megjelenítéséhez</string>
+    <string name="settings_summary_boarding">Koppints a használati tippek ismételt megjelenítéséhez</string>
     <string name="settings_summary_color_mode">Az alkalmazás témája a telefonod alapján kerül beállításra</string>
     <string name="settings_summary_language">Koppints a nyelvi beállítások megnyitásához</string>
     <string name="settings_summary_speech">Koppints a beszéd beállítások megnyitásához</string>

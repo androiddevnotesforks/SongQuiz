@@ -205,7 +205,7 @@ class PlaylistsFragment : AppFragment(R.layout.fragment_playlists), View.OnCreat
         val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
         binding.list.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
-        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.list.swipeRefreshLayout.setColorSchemeColors(getColor(requireContext(), R.color.colorPrimary))
         binding.list.swipeRefreshLayout.setOnRefreshListener {
             viewModel.loadData()
         }

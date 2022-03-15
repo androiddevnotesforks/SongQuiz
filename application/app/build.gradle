@@ -141,7 +141,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // Spotify auth Maven dependency
-    implementation 'com.spotify.android:auth:2.0.0'
+    implementation 'com.spotify.android:auth:2.0.1'
 
     // settings
     def preference_version = "1.2.0"

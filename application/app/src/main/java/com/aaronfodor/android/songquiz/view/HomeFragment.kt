@@ -256,7 +256,7 @@ class HomeFragment : AppFragment(R.layout.fragment_home), View.OnCreateContextMe
         val drawable = getDrawable(requireContext(), R.drawable.icon_add_playlist)
         binding.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
 
-        binding.swipeRefreshLayout?.setColorSchemeColors(getColor(requireContext(), R.color.colorAccent))
+        binding.swipeRefreshLayout?.setColorSchemeColors(getColor(requireContext(), R.color.colorPrimary))
         binding.swipeRefreshLayout?.setOnRefreshListener {
             viewModel.loadData()
         }

@@ -66,7 +66,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
         val view = binding.root
         setContentView(view)
 
-        playlistColorSetter(getColor(R.color.colorAccent))
+        playlistColorSetter(getColor(R.color.colorPrimary))
 
         // get settings related to the quiz
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -394,7 +394,7 @@ class QuizActivity : AppActivity(keepScreenAlive = true) {
                         ): Boolean {
                             resource.let {
                                 val palette = Palette.from(resource.toBitmap()).generate()
-                                val fallbackColor = getColor(R.color.colorAccent)
+                                val fallbackColor = getColor(R.color.colorPrimary)
                                 val playlistColor = palette.getMutedColor(fallbackColor)
                                 viewModel.playlistPrimaryColor.postValue(playlistColor)
                             }

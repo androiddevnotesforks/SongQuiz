@@ -64,8 +64,8 @@
 
         <Preference
             app:key="@string/SETTINGS_KEY_BOARDING"
-            app:title="@string/settings_title_onboarding"
-            app:summary="@string/settings_summary_onboarding" />
+            app:title="@string/settings_title_boarding"
+            app:summary="@string/settings_summary_boarding" />
 
     </PreferenceCategory>
 

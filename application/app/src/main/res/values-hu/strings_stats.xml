@@ -4,7 +4,6 @@
     <string name="stats_reward">jutalom</string>
     <string name="stats_single_player">Egyjátékos</string>
     <string name="stats_multiplayer">Többjátékos</string>
-    <string name="stats_total_xp">Összes %1$s XP</string>
 
     <string name="stats_total_play">Játékok száma</string>
     <string name="stats_total_win">Győzelmek</string>

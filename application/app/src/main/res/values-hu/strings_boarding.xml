@@ -13,7 +13,7 @@
     <string name="boarding4_title">Játékmenet</string>
     <string name="boarding4_content">A játék beszédalapú felületen zajlik, de gépelésre is van lehetőséged.</string>
 
-    <string name="boarding5_title">Mikor hallgass</string>
+    <string name="boarding5_title">Mikor figyelj</string>
     <string name="boarding_quiz_speech">A hangszóró hangalapú információt jelez. Ha aktív, az alkalmazás épp beszél hozzád, vagy zenét játszik le.</string>
 
     <string name="boarding6_title">Mikor beszélj</string>
